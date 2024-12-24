@@ -49,7 +49,7 @@ namespace Lean.Meta.DiscrTree
   2- Distinguish partial applications `f a`, `f a b`, and `f a b c`.
 -/
 
-def Key.ctorIdx : Key → Nat
+def Key.ctorIdx : Key  Nat
   | .star     => 0
   | .other    => 1
   | .lit ..   => 2
@@ -58,7 +58,7 @@ def Key.ctorIdx : Key → Nat
   | .arrow    => 5
   | .proj ..  => 6
 
-def Key.lt : Key → Key → Bool
+def Key.lt : Key  Key  Bool
   | .lit v₁,        .lit v₂        => v₁ < v₂
   | .fvar n₁ a₁,    .fvar n₂ a₂    => Name.quickLt n₁.name n₂.name || (n₁ == n₂ && a₁ < a₂)
   | .const n₁ a₁,   .const n₂ a₂   => Name.quickLt n₁ n₂ || (n₁ == n₂ && a₁ < a₂)
@@ -68,7 +68,7 @@ def Key.lt : Key → Key → Bool
 instance : LT Key := ⟨fun a b => Key.lt a b⟩
 instance (a b : Key) : Decidable (a < b) := inferInstanceAs (Decidable (Key.lt a b))
 
-def Key.format : Key → Format
+def Key.format : Key  Format
   | .star            => "*"
   | .other           => "◾"
   | .lit (.natVal v) => Std.format v
@@ -126,7 +126,7 @@ where
       r := r.push (← go)
     return r
 
-def Key.arity : Key → Nat
+def Key.arity : Key  Nat
   | .const _ a  => a
   | .fvar _ a   => a
   /-
@@ -146,7 +146,7 @@ instance : Inhabited (Trie α) := ⟨.node #[] #[]⟩
 
 def empty : DiscrTree α := { root := {} }
 
-partial def Trie.format [ToFormat α] : Trie α → Format
+partial def Trie.format [ToFormat α] : Trie α  Format
   | .node vs cs => Format.group $ Format.paren $
     "node" ++ (if vs.isEmpty then Format.nil else " " ++ Std.format vs)
     ++ Format.join (cs.toList.map fun ⟨k, c⟩ => Format.line ++ Format.paren (Std.format k ++ " => " ++ format c))
@@ -212,7 +212,7 @@ private def ignoreArg (a : Expr) (i : Nat) (infos : Array ParamInfo) : MetaM Boo
   else
     isProof a
 
-private partial def pushArgsAux (infos : Array ParamInfo) : Nat → Expr → Array Expr → MetaM (Array Expr)
+private partial def pushArgsAux (infos : Array ParamInfo) : Nat  Expr  Array Expr  MetaM (Array Expr)
   | i, .app f a, todo => do
     if (← ignoreArg a i infos) then
       pushArgsAux infos (i-1) f (todo.push tmpStar)
@@ -317,8 +317,8 @@ partial def reduce (e : Expr) : MetaM Expr := do
 /--
   Return `true` if `fn` is a "bad" key. That is, `pushArgs` would add `Key.other` or `Key.star`.
   We use this function when processing "root terms, and will avoid unfolding terms.
-  Note that without this trick the pattern `List.map f ∘ List.map g` would be mapped into the key `Key.other`
-  since the function composition `∘` would be unfolded and we would get `fun x => List.map g (List.map f x)`
+  Note that without this trick the pattern `List.map f  List.map g` would be mapped into the key `Key.other`
+  since the function composition `` would be unfolded and we would get `fun x => List.map g (List.map f x)`
 -/
 private def isBadKey (fn : Expr) : Bool :=
   match fn with
@@ -464,7 +464,7 @@ where
       vs.push v
   termination_by vs.size - i
 
-private partial def insertAux [BEq α] (keys : Array Key) (v : α) : Nat → Trie α → Trie α
+private partial def insertAux [BEq α] (keys : Array Key) (v : α) : Nat  Trie α  Trie α
   | i, .node vs cs =>
     if h : i < keys.size then
       let k := keys[i]
@@ -524,9 +524,9 @@ private def getKeyArgs (e : Expr) (isMatch root : Bool) : MetaM (Key × Array Ex
               | bool | fn (a ty : Ty)
 
 
-            @[reducible] def Ty.interp : Ty → Type
+            @[reducible] def Ty.interp : Ty  Type
               | bool   => Bool
-              | fn a b => a.interp → b.interp
+              | fn a b => a.interp  b.interp
            ```
            and we are trying to synthesize `BEq (Ty.interp ?m)`
         -/
@@ -768,7 +768,7 @@ namespace Trie
 Monadically fold the keys and values stored in a `Trie`.
 -/
 partial def foldM [Monad m] (initialKeys : Array Key)
-    (f : σ → Array Key → α → m σ) : (init : σ) → Trie α → m σ
+    (f : σ  Array Key  α  m σ) : (init : σ)  Trie α  m σ
   | init, Trie.node vs children => do
     let s ← vs.foldlM (init := init) fun s v => f s initialKeys v
     children.foldlM (init := s) fun s (k, t) =>
@@ -778,13 +778,13 @@ partial def foldM [Monad m] (initialKeys : Array Key)
 Fold the keys and values stored in a `Trie`.
 -/
 @[inline]
-def fold (initialKeys : Array Key) (f : σ → Array Key → α → σ) (init : σ) (t : Trie α) : σ :=
+def fold (initialKeys : Array Key) (f : σ  Array Key  α  σ) (init : σ) (t : Trie α) : σ :=
   Id.run <| t.foldM initialKeys (init := init) fun s k a => return f s k a
 
 /--
 Monadically fold the values stored in a `Trie`.
 -/
-partial def foldValuesM [Monad m] (f : σ → α → m σ) : (init : σ) → Trie α → m σ
+partial def foldValuesM [Monad m] (f : σ  α  m σ) : (init : σ)  Trie α  m σ
   | init, node vs children => do
     let s ← vs.foldlM (init := init) f
     children.foldlM (init := s) fun s (_, c) => c.foldValuesM (init := s) f
@@ -793,13 +793,13 @@ partial def foldValuesM [Monad m] (f : σ → α → m σ) : (init : σ) → Tri
 Fold the values stored in a `Trie`.
 -/
 @[inline]
-def foldValues (f : σ → α → σ) (init : σ) (t : Trie α) : σ :=
+def foldValues (f : σ  α  σ) (init : σ) (t : Trie α) : σ :=
   Id.run <| t.foldValuesM (init := init) f
 
 /--
 The number of values stored in a `Trie`.
 -/
-partial def size : Trie α → Nat
+partial def size : Trie α  Nat
   | Trie.node vs children =>
     children.foldl (init := vs.size) fun n (_, c) => n + size c
 
@@ -810,7 +810,7 @@ end Trie
 Monadically fold over the keys and values stored in a `DiscrTree`.
 -/
 @[inline]
-def foldM [Monad m] (f : σ → Array Key → α → m σ) (init : σ)
+def foldM [Monad m] (f : σ  Array Key  α  m σ) (init : σ)
     (t : DiscrTree α) : m σ :=
   t.root.foldlM (init := init) fun s k t => t.foldM #[k] (init := s) f
 
@@ -818,14 +818,14 @@ def foldM [Monad m] (f : σ → Array Key → α → m σ) (init : σ)
 Fold over the keys and values stored in a `DiscrTree`
 -/
 @[inline]
-def fold (f : σ → Array Key → α → σ) (init : σ) (t : DiscrTree α) : σ :=
+def fold (f : σ  Array Key  α  σ) (init : σ) (t : DiscrTree α) : σ :=
   Id.run <| t.foldM (init := init) fun s keys a => return f s keys a
 
 /--
 Monadically fold over the values stored in a `DiscrTree`.
 -/
 @[inline]
-def foldValuesM [Monad m] (f : σ → α → m σ) (init : σ) (t : DiscrTree α) :
+def foldValuesM [Monad m] (f : σ  α  m σ) (init : σ) (t : DiscrTree α) :
     m σ :=
   t.root.foldlM (init := init) fun s _ t => t.foldValuesM (init := s) f
 
@@ -833,14 +833,14 @@ def foldValuesM [Monad m] (f : σ → α → m σ) (init : σ) (t : DiscrTree α
 Fold over the values stored in a `DiscrTree`.
 -/
 @[inline]
-def foldValues (f : σ → α → σ) (init : σ) (t : DiscrTree α) : σ :=
+def foldValues (f : σ  α  σ) (init : σ) (t : DiscrTree α) : σ :=
   Id.run <| t.foldValuesM (init := init) f
 
 /--
 Check for the presence of a value satisfying a predicate.
 -/
 @[inline]
-def containsValueP (t : DiscrTree α) (f : α → Bool) : Bool :=
+def containsValueP (t : DiscrTree α) (f : α  Bool) : Bool :=
   t.foldValues (init := false) fun r a => r || f a
 
 /--
@@ -864,19 +864,19 @@ Get the number of values stored in a `DiscrTree`. O(n) in the size of the tree.
 def size (t : DiscrTree α) : Nat :=
   t.root.foldl (init := 0) fun n _ t => n + t.size
 
-variable {m : Type → Type} [Monad m]
+variable {m : Type  Type} [Monad m]
 
 /-- Apply a monadic function to the array of values at each node in a `DiscrTree`. -/
-partial def Trie.mapArraysM (t : DiscrTree.Trie α) (f : Array α → m (Array β)) :
+partial def Trie.mapArraysM (t : DiscrTree.Trie α) (f : Array α  m (Array β)) :
     m (DiscrTree.Trie β) :=
   match t with
   | .node vs children =>
     return .node (← f vs) (← children.mapM fun (k, t') => do pure (k, ← t'.mapArraysM f))
 
 /-- Apply a monadic function to the array of values at each node in a `DiscrTree`. -/
-def mapArraysM (d : DiscrTree α) (f : Array α → m (Array β)) : m (DiscrTree β) := do
+def mapArraysM (d : DiscrTree α) (f : Array α  m (Array β)) : m (DiscrTree β) := do
   pure { root := ← d.root.mapM (fun t => t.mapArraysM f) }
 
 /-- Apply a function to the array of values at each node in a `DiscrTree`. -/
-def mapArrays (d : DiscrTree α) (f : Array α → Array β) : DiscrTree β :=
+def mapArrays (d : DiscrTree α) (f : Array α  Array β) : DiscrTree β :=
   Id.run <| d.mapArraysM fun A => pure (f A)

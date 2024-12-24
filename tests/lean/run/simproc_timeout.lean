@@ -22,8 +22,8 @@ end Std.Data.Nat.Basic
 section Mathlib.Logic.Equiv.Defs
 
 structure Equiv (α : Sort _) (β : Sort _) where
-  protected toFun : α → β
-  protected invFun : β → α
+  protected toFun : α  β
+  protected invFun : β  α
 
 infixl:25 " ≃ " => Equiv
 
@@ -60,19 +60,19 @@ section Mathlib.Logic.Encodable.Basic
 open Nat
 
 class Encodable (α : Type _) where
-  encode : α → Nat
-  decode : Nat → Option α
+  encode : α  Nat
+  decode : Nat  Option α
   encodek : ∀ a, decode (encode a) = some a
 
 namespace Encodable
 
-def ofLeftInjection [Encodable α] (f : β → α) (finv : α → Option β)
+def ofLeftInjection [Encodable α] (f : β  α) (finv : α  Option β)
     (linv : ∀ b, finv (f b) = some b) : Encodable β :=
   ⟨fun b => encode (f b), fun n => (decode n).bind finv, fun b => sorry⟩
 
-def ofLeftInverse [Encodable α] (f : β → α) (finv : α → β) (linv : ∀ b, finv (f b) = b) :
+def ofLeftInverse [Encodable α] (f : β  α) (finv : α  β) (linv : ∀ b, finv (f b) = b) :
     Encodable β :=
-  ofLeftInjection f (some ∘ finv) sorry
+  ofLeftInjection f (some  finv) sorry
 
 def ofEquiv (α) [Encodable α] (e : β ≃ α) : Encodable β :=
   ofLeftInverse e.toFun e.invFun sorry
@@ -86,9 +86,9 @@ instance _root_.Option.encodable {α : Type _} [h : Encodable α] : Encodable (O
 
 section Sigma
 
-variable {γ : α → Type _} [Encodable α] [∀ a, Encodable (γ a)]
+variable {γ : α  Type _} [Encodable α] [∀ a, Encodable (γ a)]
 
-def encodeSigma : Sigma γ → Nat
+def encodeSigma : Sigma γ  Nat
   | ⟨a, b⟩ => pair (encode a) (encode b)
 
 def decodeSigma (n : Nat) : Option (Sigma γ) :=
@@ -115,7 +115,7 @@ namespace Denumerable
 
 def mk' {α} (e : α ≃ Nat) : Denumerable α where
   encode := e.toFun
-  decode := some ∘ e.invFun
+  decode := some  e.invFun
   encodek _ := sorry
 
 instance nat : Denumerable Nat := ⟨⟩
@@ -132,11 +132,11 @@ namespace Encodable
 
 variable [Encodable α]
 
-def encodeList : List α → Nat
+def encodeList : List α  Nat
   | [] => 0
   | a :: l => succ (pair (encode a) (encodeList l))
 
-def decodeList : Nat → Option (List α)
+def decodeList : Nat  Option (List α)
   | 0 => some []
   | succ v =>
     match unpair v, unpair_right_le v with
@@ -158,19 +158,19 @@ open Denumerable Encodable Function
 namespace Nat
 
 @[simp, reducible]
-def unpaired {α} (f : Nat → Nat → α) (n : Nat) : α :=
+def unpaired {α} (f : Nat  Nat  α) (n : Nat) : α :=
   f n.unpair.1 n.unpair.2
 
-protected inductive Primrec : (Nat → Nat) → Prop
+protected inductive Primrec : (Nat  Nat)  Prop
   | zero : Nat.Primrec fun _ => 0
   | protected succ : Nat.Primrec succ
   | left : Nat.Primrec fun n => n.unpair.1
   | right : Nat.Primrec fun n => n.unpair.2
-  | pair {f g} : Nat.Primrec f → Nat.Primrec g → Nat.Primrec fun n => pair (f n) (g n)
-  | comp {f g} : Nat.Primrec f → Nat.Primrec g → Nat.Primrec fun n => f (g n)
+  | pair {f g} : Nat.Primrec f  Nat.Primrec g  Nat.Primrec fun n => pair (f n) (g n)
+  | comp {f g} : Nat.Primrec f  Nat.Primrec g  Nat.Primrec fun n => f (g n)
   | prec {f g} :
-      Nat.Primrec f →
-        Nat.Primrec g →
+      Nat.Primrec f 
+        Nat.Primrec g 
           Nat.Primrec (unpaired fun z n => n.rec (f z) fun y IH => g <| pair z <| pair y IH)
 
 end Nat
@@ -186,7 +186,7 @@ instance option {α : Type _} [h : Primcodable α] : Primcodable (Option α) := 
 
 end Primcodable
 
-def Primrec {α β} [Primcodable α] [Primcodable β] (f : α → β) : Prop :=
+def Primrec {α β} [Primcodable α] [Primcodable β] (f : α  β) : Prop :=
   Nat.Primrec fun n => encode ((@decode α _ n).map f)
 
 namespace Primrec
@@ -197,7 +197,7 @@ variable [Primcodable α] [Primcodable β] [Primcodable σ]
 
 protected theorem encode : Primrec (@encode α _) := sorry
 
-theorem comp {f : β → σ} {g : α → β} (hf : Primrec f) (hg : Primrec g) : Primrec fun a => f (g a) :=
+theorem comp {f : β  σ} {g : α  β} (hf : Primrec f) (hg : Primrec g) : Primrec fun a => f (g a) :=
   sorry
 
 end Primrec
@@ -223,7 +223,7 @@ theorem snd {α β} [Primcodable α] [Primcodable β] : Primrec (@Prod.snd α β
 
 end Primrec
 
-def Primrec₂ {α β σ} [Primcodable α] [Primcodable β] [Primcodable σ] (f : α → β → σ) :=
+def Primrec₂ {α β σ} [Primcodable α] [Primcodable β] [Primcodable σ] (f : α  β  σ) :=
   Primrec fun p : α × β => f p.1 p.2
 
 section Comp
@@ -232,7 +232,7 @@ variable {α : Type _} {β : Type _} {γ : Type _} {σ : Type _}
 
 variable [Primcodable α] [Primcodable β] [Primcodable γ] [Primcodable σ]
 
-theorem Primrec₂.comp {f : β → γ → σ} {g : α → β} {h : α → γ} (hf : Primrec₂ f) (hg : Primrec g)
+theorem Primrec₂.comp {f : β  γ  σ} {g : α  β} {h : α  γ} (hf : Primrec₂ f) (hg : Primrec g)
     (hh : Primrec h) : Primrec fun a => f (g a) (h a) := sorry
 
 end Comp
@@ -243,7 +243,7 @@ variable {α : Type _} {β : Type _} {σ : Type _}
 
 variable [Primcodable α] [Primcodable β] [Primcodable σ]
 
-theorem option_bind {f : α → Option β} {g : α → β → Option σ} (hf : Primrec f) (hg : Primrec₂ g) :
+theorem option_bind {f : α  Option β} {g : α  β  Option σ} (hf : Primrec f) (hg : Primrec₂ g) :
     Primrec fun a => (f a).bind (g a) := sorry
 
 end Primrec
@@ -297,16 +297,16 @@ inductive Code : Type
   | succ : Code
   | left : Code
   | right : Code
-  | pair : Code → Code → Code
-  | comp : Code → Code → Code
-  | prec : Code → Code → Code
-  | rfind' : Code → Code
+  | pair : Code  Code  Code
+  | comp : Code  Code  Code
+  | prec : Code  Code  Code
+  | rfind' : Code  Code
 
 end Nat.Partrec
 
 namespace Nat.Partrec.Code
 
-def encodeCode : Code → Nat
+def encodeCode : Code  Nat
   | zero => 0
   | succ => 1
   | left => 2
@@ -316,7 +316,7 @@ def encodeCode : Code → Nat
   | prec cf cg => (2 * (2 * Nat.pair (encodeCode cf) (encodeCode cg)) + 1) + 4
   | rfind' cf => (2 * (2 * encodeCode cf + 1) + 1) + 4
 
-def ofNatCode : Nat → Code
+def ofNatCode : Nat  Code
   | 0 => zero
   | 1 => succ
   | 2 => left

@@ -35,31 +35,31 @@ match x with
 
 #print "---- inv"
 
-inductive Image {α β : Type} (f : α → β) : β → Type
+inductive Image {α β : Type} (f : α  β) : β  Type
 | mk (a : α) : Image f (f a)
 
-def mkImage {α β : Type} (f : α → β) (a : α) : Image f (f a) :=
+def mkImage {α β : Type} (f : α  β) (a : α) : Image f (f a) :=
 Image.mk a
 
-def inv {α β : Type} {f : α → β} {b : β} (t : Image f b) : α :=
+def inv {α β : Type} {f : α  β} {b : β} (t : Image f b) : α :=
 match b, t with
 | _, Image.mk a => a
 
 #eval inv (mkImage Nat.succ 10)
 
-theorem foo {p q} (h : p ∨ q) : q ∨ p :=
+theorem foo {p q} (h : p  q) : q  p :=
 match h with
 | Or.inl h => Or.inr h
 | Or.inr h => Or.inl h
 
-def f (x : Nat × Nat) : Bool × Bool × Bool → Nat :=
+def f (x : Nat × Nat) : Bool × Bool × Bool  Nat :=
 match x with
 | (a, b) => fun _ => a
 
 structure S :=
 (x y z : Nat := 0)
 
-def f1 : S → S :=
+def f1 : S  S :=
 fun { x := x, ..} => { y := x }
 
 theorem ex2 : f1 { x := 10 } = { y := 10 } :=
@@ -67,18 +67,18 @@ rfl
 
 universe u
 
-inductive Vec (α : Type u) : Nat → Type u
+inductive Vec (α : Type u) : Nat  Type u
 | nil : Vec α 0
 | cons {n} (head : α) (tail : Vec α n) : Vec α (n+1)
 
-inductive VecPred {α : Type u} (P : α → Prop) : {n : Nat} → Vec α n → Prop
+inductive VecPred {α : Type u} (P : α  Prop) : {n : Nat}  Vec α n  Prop
 | nil   : VecPred P Vec.nil
-| cons  {n : Nat} {head : α} {tail : Vec α n} : P head → VecPred P tail → VecPred P (Vec.cons head tail)
+| cons  {n : Nat} {head : α} {tail : Vec α n} : P head  VecPred P tail  VecPred P (Vec.cons head tail)
 
-theorem ex3 {α : Type u} (P : α → Prop) : {n : Nat} → (v : Vec α (n+1)) → VecPred P v → Exists P
+theorem ex3 {α : Type u} (P : α  Prop) : {n : Nat}  (v : Vec α (n+1))  VecPred P v  Exists P
 | _, Vec.cons head _, VecPred.cons h _ => ⟨head, h⟩
 
-theorem ex4 {α : Type u} (P : α → Prop) : {n : Nat} → (v : Vec α (n+1)) → VecPred P v → Exists P
+theorem ex4 {α : Type u} (P : α  Prop) : {n : Nat}  (v : Vec α (n+1))  VecPred P v  Exists P
 | _, Vec.cons head _, VecPred.cons h (w : VecPred P Vec.nil) => ⟨head, h⟩  -- ERROR
 
 axiom someNat : Nat
@@ -90,8 +90,8 @@ inductive Parity : Nat -> Type
 | even (n) : Parity (n + n)
 | odd  (n) : Parity (Nat.succ (n + n))
 
-axiom nDiv2 (n : Nat)     : n % 2 = 0 → n = n/2 + n/2
-axiom nDiv2Succ (n : Nat) : n % 2 ≠ 0 → n = Nat.succ (n/2 + n/2)
+axiom nDiv2 (n : Nat)     : n % 2 = 0  n = n/2 + n/2
+axiom nDiv2Succ (n : Nat) : n % 2 ≠ 0  n = Nat.succ (n/2 + n/2)
 
 def parity (n : Nat) : Parity n :=
 if h : n % 2 = 0 then
@@ -99,7 +99,7 @@ if h : n % 2 = 0 then
 else
   Eq.ndrec (Parity.odd (n/2)) (nDiv2Succ n h).symm
 
-partial def natToBin : (n : Nat) → List Bool
+partial def natToBin : (n : Nat)  List Bool
 | 0 => []
 | n => match n, parity n with
   | _, Parity.even j => false :: natToBin j
@@ -107,7 +107,7 @@ partial def natToBin : (n : Nat) → List Bool
 
 #eval natToBin 6
 
-partial def natToBin' : (n : Nat) → List Bool
+partial def natToBin' : (n : Nat)  List Bool
 | 0 => []
 | n => match parity n with
   | Parity.even j => false :: natToBin j
@@ -155,7 +155,7 @@ match parity n with
   | _          => 4
 
 -- underapplied matcher
-def g {α} : List α → Nat
+def g {α} : List α  Nat
   | [a] => 1
   | _   => 0
 

@@ -2,15 +2,15 @@ set_option linter.unusedVariables false
 
 inductive PList (α : Type) : Prop
 | nil
-| cons : α → PList α → PList α
+| cons : α  PList α  PList α
 
 infixr:67 " ::: " => PList.cons
 
-def map {α β} (f : α → β) : List α → List β
+def map {α β} (f : α  β) : List α  List β
 | []    => []
 | a::as => f a :: map f as
 
-def pmap {α β} (f : α → β) : PList α → PList β
+def pmap {α β} (f : α  β) : PList α  PList β
 | PList.nil => PList.nil
 | a:::as => f a ::: pmap f as
 
@@ -23,26 +23,26 @@ rfl
 theorem ex3 (a : Nat) : map Nat.succ [a] = [Nat.succ a] :=
 rfl
 
-theorem ex4 {α β} (f : α → β) (a : α) (as : List α) : map f (a::as) = (f a) :: map f as :=
+theorem ex4 {α β} (f : α  β) (a : α) (as : List α) : map f (a::as) = (f a) :: map f as :=
 rfl
 
-theorem ex5 {α β} (f : α → β) : map f [] = [] :=
+theorem ex5 {α β} (f : α  β) : map f [] = [] :=
 rfl
 
-def map2 {α β} (f : α → β) (as : List α) : List β :=
-let rec loop : List α → List β
+def map2 {α β} (f : α  β) (as : List α) : List β :=
+let rec loop : List α  List β
  | []    => []
  | a::as => f a :: loop as;
 loop as
 
-def pmap2 {α β} (f : α → β) (as : PList α) : PList β :=
-let rec loop : PList α → PList β
+def pmap2 {α β} (f : α  β) (as : PList α) : PList β :=
+let rec loop : PList α  PList β
  | PList.nil    => PList.nil
  | a:::as => f a ::: loop as;
 loop as
 
 
-theorem ex6 {α β} (f : α → β) (a : α) (as : List α) : map2 f (a::as) = (f a) :: map2 f as :=
+theorem ex6 {α β} (f : α  β) (a : α) (as : List α) : map2 f (a::as) = (f a) :: map2 f as :=
 rfl
 
 def foo (xs : List Nat) : List Nat :=
@@ -94,16 +94,16 @@ rfl
 
 inductive PNat : Prop
 | zero
-| succ : PNat → PNat
+| succ : PNat  PNat
 
-def f : Nat → Nat → Nat
+def f : Nat  Nat  Nat
  | 0, y   => y
  | x+1, y =>
    match f x y with
    | 0 => f x y
    | v => f x v + 1
 
-def pf : PNat → PNat → PNat
+def pf : PNat  PNat  PNat
  | PNat.zero, y   => y
  | PNat.succ x, y =>
    match pf x y with
@@ -126,14 +126,14 @@ def pg (xs : PList Nat) : True :=
     | PList.nil => True.intro
     | _ => pg ys
 
-def aux : Nat → Nat → Nat
+def aux : Nat  Nat  Nat
  | 0, y   => y
  | x+1, y =>
    match f x y with
    | 0 => f x y
    | v => f x v + 1
 
-def paux : PNat → PNat → PNat
+def paux : PNat  PNat  PNat
  | PNat.zero, y   => y
  | PNat.succ x, y =>
    match pf x y with
@@ -145,47 +145,47 @@ theorem ex (x y : Nat) : f x y = aux x y := by
   rfl
   rfl
 
-axiom F : Nat → Nat
+axiom F : Nat  Nat
 
 inductive is_nat : Nat -> Prop
 | Z : is_nat 0
-| S {n} : is_nat n → is_nat (F n)
+| S {n} : is_nat n  is_nat (F n)
 
 inductive is_nat_T : Nat -> Type
 | Z : is_nat_T 0
-| S {n} : is_nat_T n → is_nat_T (F n)
+| S {n} : is_nat_T n  is_nat_T (F n)
 
-axiom P : Nat → Prop
+axiom P : Nat  Prop
 axiom F0 : P 0
 axiom F1 : P (F 0)
-axiom FS {n : Nat} : P n → P (F (F n))
+axiom FS {n : Nat} : P n  P (F (F n))
 
-axiom T : Nat → Prop
+axiom T : Nat  Prop
 axiom TF0 : T 0
 axiom TF1 : T (F 0)
-axiom TFS {n : Nat} : T n → T (F (F n))
+axiom TFS {n : Nat} : T n  T (F (F n))
 
 -- set_option trace.Elab.definition.structural true in
-theorem «nested recursion» : ∀ {n}, is_nat n → P n
+theorem «nested recursion» : ∀ {n}, is_nat n  P n
 | _, is_nat.Z => F0
 | _, is_nat.S is_nat.Z => F1
 | _, is_nat.S (is_nat.S h) => FS («nested recursion» h)
 
 /-- forbidding this, because it shouldn't exist in the first place.
     We don't expect this kind of inconsistent inaccessible patterns. -/
--- theorem «nested recursion, inaccessible» : ∀ {n}, is_nat n → P n
+-- theorem «nested recursion, inaccessible» : ∀ {n}, is_nat n  P n
 -- | _, .(is_nat.Z) => F0
 -- | _, is_nat.S .(is_nat.Z) => F1
 -- | _, is_nat.S (is_nat.S h) => FS («nested recursion, inaccessible» h)
 
-theorem «reordered discriminants, type» : ∀ n, is_nat_T n → Nat → T n := fun n hn m =>
+theorem «reordered discriminants, type» : ∀ n, is_nat_T n  Nat  T n := fun n hn m =>
 match n, m, hn with
 | _, _, is_nat_T.Z => TF0
 | _, _, is_nat_T.S is_nat_T.Z => TF1
 | _, m, is_nat_T.S (is_nat_T.S h) => TFS («reordered discriminants, type» _ h m)
 
 
-theorem «reordered discriminants» : ∀ n, is_nat n → Nat → P n := fun n hn m =>
+theorem «reordered discriminants» : ∀ n, is_nat n  Nat  P n := fun n hn m =>
 match n, m, hn with
 | _, _, is_nat.Z => F0
 | _, _, is_nat.S is_nat.Z => F1

@@ -3,11 +3,11 @@ abbrev Elem := UInt32
 def badRand (seed : Elem) : Elem :=
 seed * 1664525 + 1013904223
 
-def mkRandomArray : Nat → Elem → Array Elem → Array Elem
+def mkRandomArray : Nat  Elem  Array Elem  Array Elem
 | 0,   seed, as => as
 | i+1, seed, as => mkRandomArray i (badRand seed) (as.push seed)
 
-partial def checkSortedAux (a : Array Elem) : Nat → IO Unit
+partial def checkSortedAux (a : Array Elem) : Nat  IO Unit
 | i =>
   if i < a.size - 1 then do
     unless (a.get! i <= a.get! (i+1)) do  throw (IO.userError "array is not sorted");
@@ -20,7 +20,7 @@ abbrev Idx := UInt32
 
 macro:max "↑" x:term:max : term => `(UInt32.toNat $x)
 
-@[specialize] private partial def partitionAux {α : Type} [Inhabited α] (lt : α → α → Bool) (hi : Idx) (pivot : α) : Array α → Idx → Idx → Idx × Array α
+@[specialize] private partial def partitionAux {α : Type} [Inhabited α] (lt : α  α  Bool) (hi : Idx) (pivot : α) : Array α  Idx  Idx  Idx × Array α
 | as, i, j =>
   if j < hi then
     if lt (as.get! ↑j) pivot then
@@ -33,7 +33,7 @@ macro:max "↑" x:term:max : term => `(UInt32.toNat $x)
     (i, as)
 
 set_option pp.all true
-@[inline] def partition {α : Type} [Inhabited α] (as : Array α) (lt : α → α → Bool) (lo hi : Idx) : Idx × Array α :=
+@[inline] def partition {α : Type} [Inhabited α] (as : Array α) (lt : α  α  Bool) (lo hi : Idx) : Idx × Array α :=
 let mid : Idx := (lo + hi) / 2;
 let as  := if lt (as.get! ↑mid) (as.get! ↑lo) then as.swapIfInBounds ↑lo ↑mid else as;
 let as  := if lt (as.get! ↑hi)  (as.get! ↑lo) then as.swapIfInBounds ↑lo ↑hi  else as;
@@ -41,7 +41,7 @@ let as  := if lt (as.get! ↑mid) (as.get! ↑hi) then as.swapIfInBounds ↑mid 
 let pivot := as.get! ↑hi;
 partitionAux lt hi pivot as lo lo
 
-@[specialize] partial def qsortAux {α : Type} [Inhabited α] (lt : α → α → Bool) : Array α → Idx → Idx → Array α
+@[specialize] partial def qsortAux {α : Type} [Inhabited α] (lt : α  α  Bool) : Array α  Idx  Idx  Array α
 | as, low, high =>
   if low < high then
     let p   := partition as lt low high;
@@ -52,7 +52,7 @@ partitionAux lt hi pivot as lo lo
     qsortAux lt as (mid+1) high
   else as
 
-@[inline] def qsort {α : Type} [Inhabited α] (as : Array α) (lt : α → α → Bool) : Array α :=
+@[inline] def qsort {α : Type} [Inhabited α] (as : Array α) (lt : α  α  Bool) : Array α :=
 qsortAux lt as 0 (UInt32.ofNat (as.size - 1))
 
 def main (xs : List String) : IO Unit :=

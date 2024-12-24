@@ -7,7 +7,7 @@ def mkMyArray (n : Nat) : MyArray :=
 n.fold (λ i s => s.push i) { PersistentArray . }
 -- n.fold (λ i s, s.push i) Array.empty
 
-def check (n : Nat) (p : Nat → Nat → Bool) (s : MyArray) : IO Unit :=
+def check (n : Nat) (p : Nat  Nat  Bool) (s : MyArray) : IO Unit :=
 n.mfor $ λ i => unless (p i (s.get i)) (throw (IO.userError ("failed at " ++ toString i ++ " " ++ toString (s.get i))))
 
 def inc1 (n : Nat) (s : MyArray) : MyArray :=
@@ -16,7 +16,7 @@ n.fold (λ i s => s.set i (s.get i + 1)) s
 def checkId (n : Nat) (s : MyArray) : IO Unit :=
 check n (fun a b => a == b) s
 
-def popTest (n : Nat) (p : Nat → Nat → Bool) (s : MyArray) : IO MyArray :=
+def popTest (n : Nat) (p : Nat  Nat  Bool) (s : MyArray) : IO MyArray :=
 n.mfold (λ i s => do
   -- IO.println i;
   check (n - i) p s;

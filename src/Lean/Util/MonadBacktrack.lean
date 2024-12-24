@@ -9,9 +9,9 @@ import Init.Control.Except
 namespace Lean
 
 /-- Similar to `MonadState`, but it retrieves/restores only the "backtrackable" part of the state -/
-class MonadBacktrack (s : outParam Type) (m : Type → Type) where
+class MonadBacktrack (s : outParam Type) (m : Type  Type) where
   saveState    : m s
-  restoreState : s → m Unit
+  restoreState : s  m Unit
 
 export MonadBacktrack (saveState restoreState)
 

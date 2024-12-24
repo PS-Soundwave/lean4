@@ -21,17 +21,17 @@ We claim it is "defensible" to say this sanity checker is a linter. If the sanit
 and performance may suffer at runtime.
 Here is an example of code that "abuses" dependent types:
 ```
-def Tuple (α : Type u) : Nat → Type u
+def Tuple (α : Type u) : Nat  Type u
   | 0   => PUnit
   | 1   => α
   | n+2 => α × Tuple α (n+1)
 
-def mkConstTuple (a : α) : (n : Nat) → Tuple α n
+def mkConstTuple (a : α) : (n : Nat)  Tuple α n
   | 0 => ⟨⟩
   | 1 => a
   | n+2 => (a, mkConstTuple a (n+1))
 
-def Tuple.map (f : α → β) (xs : Tuple α n) : Tuple β n :=
+def Tuple.map (f : α  β) (xs : Tuple α n) : Tuple β n :=
   match n with
   | 0 => ⟨⟩
   | 1 => f xs
@@ -119,7 +119,7 @@ where
 
 /--
 Return true if the LCNF types `a` and `b` are compatible.
-Remark: `a` and `b` can be type formers (e.g., `List`, or `fun (α : Type) => Nat → Nat × α`)
+Remark: `a` and `b` can be type formers (e.g., `List`, or `fun (α : Type) => Nat  Nat × α`)
 Remark: We may need to eta-expand type formers to establish whether they are compatible or not.
 For example, suppose we have
 ```

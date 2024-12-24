@@ -14,10 +14,10 @@ warning: declaration uses 'sorry'
 info: a b c : Bool
 p q : Prop
 left✝ : a = true
-right✝ : b = true ∨ c = true
+right✝ : b = true  c = true
 left : p
 right : q
-x✝ : b = false ∨ a = false
+x✝ : b = false  a = false
 ⊢ False
 -/
 #guard_msgs in
@@ -111,6 +111,6 @@ theorem ex3 (h : a₁ :: { x := a₂, y := a₃ : Point } :: as = b₁ :: { x :=
 def h (a : α) := a
 
 set_option trace.grind.pre true
-example (p : Prop) (a b c : Nat) : p → a = 0 → a = b → h a = h c → a = c ∧ c = a → a = b ∧ b = a → a ≠ c := by
+example (p : Prop) (a b c : Nat) : p  a = 0  a = b  h a = h c  a = c ∧ c = a  a = b ∧ b = a  a ≠ c := by
   grind_pre
   sorry

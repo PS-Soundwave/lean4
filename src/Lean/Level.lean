@@ -90,13 +90,13 @@ instance : Inhabited (LMVarIdMap α) where
 
 inductive Level where
   | zero   : Level
-  | succ   : Level → Level
-  | max    : Level → Level → Level
-  | imax   : Level → Level → Level
-  | param  : Name → Level
-  | mvar   : LMVarId → Level
+  | succ   : Level  Level
+  | max    : Level  Level  Level
+  | imax   : Level  Level  Level
+  | param  : Name  Level
+  | mvar   : LMVarId  Level
 with
-  @[computed_field] data : Level → Data
+  @[computed_field] data : Level  Data
     | .zero => mkData 2221 0 false false
     | .mvar mvarId => mkData (mixHash 2237 <| hash mvarId) 0 true false
     | .param name => mkData (mixHash 2239 <| hash name) 0 false true
@@ -125,8 +125,8 @@ def hasParam (u : Level) : Bool :=
   u.data.hasParam
 
 @[export lean_level_hash] def hashEx (u : Level) : UInt32 := hash u |>.toUInt32
-@[export lean_level_has_mvar] def hasMVarEx : Level → Bool := hasMVar
-@[export lean_level_has_param] def hasParamEx : Level → Bool := hasParam
+@[export lean_level_has_mvar] def hasMVarEx : Level  Bool := hasMVar
+@[export lean_level_has_param] def hasParamEx : Level  Bool := hasParam
 @[export lean_level_depth] def depthEx (u : Level) : UInt32 := u.data.depth
 
 end Level
@@ -151,51 +151,51 @@ def mkLevelIMax (u v : Level) :=
 
 def levelOne := mkLevelSucc levelZero
 
-@[export lean_level_mk_zero] def mkLevelZeroEx : Unit → Level := fun _ => levelZero
-@[export lean_level_mk_succ] def mkLevelSuccEx : Level → Level := mkLevelSucc
-@[export lean_level_mk_mvar] def mkLevelMVarEx : LMVarId → Level := mkLevelMVar
-@[export lean_level_mk_param] def mkLevelParamEx : Name → Level := mkLevelParam
-@[export lean_level_mk_max] def mkLevelMaxEx : Level → Level → Level := mkLevelMax
-@[export lean_level_mk_imax] def mkLevelIMaxEx : Level → Level → Level := mkLevelIMax
+@[export lean_level_mk_zero] def mkLevelZeroEx : Unit  Level := fun _ => levelZero
+@[export lean_level_mk_succ] def mkLevelSuccEx : Level  Level := mkLevelSucc
+@[export lean_level_mk_mvar] def mkLevelMVarEx : LMVarId  Level := mkLevelMVar
+@[export lean_level_mk_param] def mkLevelParamEx : Name  Level := mkLevelParam
+@[export lean_level_mk_max] def mkLevelMaxEx : Level  Level  Level := mkLevelMax
+@[export lean_level_mk_imax] def mkLevelIMaxEx : Level  Level  Level := mkLevelIMax
 
 namespace Level
 
-def isZero : Level → Bool
+def isZero : Level  Bool
   | zero   => true
   | _      => false
 
-def isSucc : Level → Bool
+def isSucc : Level  Bool
   | succ .. => true
   | _       => false
 
-def isMax : Level → Bool
+def isMax : Level  Bool
   | max .. => true
   | _      => false
 
-def isIMax : Level → Bool
+def isIMax : Level  Bool
   | imax .. => true
   | _       => false
 
-def isMaxIMax : Level → Bool
+def isMaxIMax : Level  Bool
   | max ..  => true
   | imax .. => true
   | _       => false
 
-def isParam : Level → Bool
+def isParam : Level  Bool
   | param .. => true
   | _        => false
 
-def isMVar : Level → Bool
+def isMVar : Level  Bool
   | mvar .. => true
   | _       => false
 
-def mvarId! : Level → LMVarId
+def mvarId! : Level  LMVarId
   | mvar mvarId => mvarId
   | _           => panic! "metavariable expected"
 
 /-- If result is true, then forall assignments `A` which assigns all parameters and metavariables occurring
     in `l`, `l[A] != zero` -/
-def isNeverZero : Level → Bool
+def isNeverZero : Level  Bool
   | zero         => false
   | param ..     => false
   | mvar ..      => false
@@ -203,33 +203,33 @@ def isNeverZero : Level → Bool
   | max l₁ l₂    => isNeverZero l₁ || isNeverZero l₂
   | imax _  l₂   => isNeverZero l₂
 
-def ofNat : Nat → Level
+def ofNat : Nat  Level
   | 0   => levelZero
   | n+1 => mkLevelSucc (ofNat n)
 
 instance instOfNat (n : Nat) : OfNat Level n where
   ofNat := ofNat n
 
-def addOffsetAux : Nat → Level → Level
+def addOffsetAux : Nat  Level  Level
   | 0,     u => u
   | (n+1), u => addOffsetAux n (mkLevelSucc u)
 
 def addOffset (u : Level) (n : Nat) : Level :=
   u.addOffsetAux n
 
-def isExplicit : Level → Bool
+def isExplicit : Level  Bool
   | zero     => true
   | succ u   => !u.hasMVar && !u.hasParam && isExplicit u
   | _        => false
 
-def getOffsetAux : Level → Nat → Nat
+def getOffsetAux : Level  Nat  Nat
   | succ u  , r => getOffsetAux u (r+1)
   | _,        r => r
 
 def getOffset (lvl : Level) : Nat :=
   getOffsetAux lvl 0
 
-def getLevelOffset : Level → Level
+def getLevelOffset : Level  Level
   | succ u   => getLevelOffset u
   | u        => u
 
@@ -244,13 +244,13 @@ protected opaque beq (a : @& Level) (b : @& Level) : Bool
 instance : BEq Level := ⟨Level.beq⟩
 
 /-- `occurs u l` return `true` iff `u` occurs in `l`. -/
-def occurs : Level → Level → Bool
+def occurs : Level  Level  Bool
   | u, v@(succ v₁  )     => u == v || occurs u v₁
   | u, v@(max v₁ v₂  )   => u == v || occurs u v₁ || occurs u v₂
   | u, v@(imax v₁ v₂  )  => u == v || occurs u v₁ || occurs u v₂
   | u, v                 => u == v
 
-def ctorToNat : Level → Nat
+def ctorToNat : Level  Nat
   | zero ..  => 0
   | param .. => 1
   | mvar ..  => 2
@@ -258,7 +258,7 @@ def ctorToNat : Level → Nat
   | max ..   => 4
   | imax ..  => 5
 
-def normLtAux : Level → Nat → Level → Nat → Bool
+def normLtAux : Level  Nat  Level  Nat  Bool
   | succ l₁, k₁, l₂, k₂ => normLtAux l₁ (k₁+1) l₂ k₂
   | l₁, k₁, succ l₂, k₂ => normLtAux l₁ k₁ l₂ (k₂+1)
   | l₁@(max l₁₁ l₁₂), k₁, l₂@(max l₂₁ l₂₂), k₂ =>
@@ -287,7 +287,7 @@ def normLtAux : Level → Nat → Level → Nat → Bool
 def normLt (l₁ l₂ : Level) : Bool :=
   normLtAux l₁ 0 l₂ 0
 
-private def isAlreadyNormalizedCheap : Level → Bool
+private def isAlreadyNormalizedCheap : Level  Bool
   | zero    => true
   | param _ => true
   | mvar _  => true
@@ -295,13 +295,13 @@ private def isAlreadyNormalizedCheap : Level → Bool
   | _       => false
 
 /- Auxiliary function used at `normalize` -/
-private def mkIMaxAux : Level → Level → Level
+private def mkIMaxAux : Level  Level  Level
   | _,    zero => zero
   | zero, u    => u
   | u₁,   u₂   => if u₁ == u₂ then u₁ else mkLevelIMax u₁ u₂
 
 /- Auxiliary function used at `normalize` -/
-@[specialize] private partial def getMaxArgsAux (normalize : Level → Level) : Level → Bool → Array Level → Array Level
+@[specialize] private partial def getMaxArgsAux (normalize : Level  Level) : Level  Bool  Array Level  Array Level
   | max l₁ l₂, alreadyNormalized, lvls => getMaxArgsAux normalize l₂ alreadyNormalized (getMaxArgsAux normalize l₁ alreadyNormalized lvls)
   | l,           false,             lvls => getMaxArgsAux normalize (normalize l) true lvls
   | l,           true,              lvls => lvls.push l
@@ -394,7 +394,7 @@ def isEquiv (u v : Level) : Bool :=
   u == v || u.normalize == v.normalize
 
 /-- Reduce (if possible) universe level by 1 -/
-def dec : Level → Option Level
+def dec : Level  Option Level
   | zero       => none
   | param _    => none
   | mvar _     => none
@@ -408,22 +408,22 @@ def dec : Level → Option Level
 /- Level to Format/Syntax -/
 namespace PP
 inductive Result where
-  | leaf      : Name → Result
-  | num       : Nat → Result
-  | offset    : Result → Nat → Result
-  | maxNode   : List Result → Result
-  | imaxNode  : List Result → Result
+  | leaf      : Name  Result
+  | num       : Nat  Result
+  | offset    : Result  Nat  Result
+  | maxNode   : List Result  Result
+  | imaxNode  : List Result  Result
 
-def Result.succ : Result → Result
+def Result.succ : Result  Result
   | Result.offset f k => Result.offset f (k+1)
   | Result.num k      => Result.num (k+1)
   | f                 => Result.offset f 1
 
-def Result.max : Result → Result → Result
+def Result.max : Result  Result  Result
   | f, Result.maxNode Fs => Result.maxNode (f::Fs)
   | f₁, f₂               => Result.maxNode [f₁, f₂]
 
-def Result.imax : Result → Result → Result
+def Result.imax : Result  Result  Result
   | f, Result.imaxNode Fs => Result.imaxNode (f::Fs)
   | f₁, f₂                => Result.imaxNode [f₁, f₂]
 
@@ -440,16 +440,16 @@ def toResult (l : Level) (mvars : Bool) : Result :=
     else
       Result.leaf `_
 
-private def parenIfFalse : Format → Bool → Format
+private def parenIfFalse : Format  Bool  Format
   | f, true  => f
   | f, false => f.paren
 
 mutual
-  private partial def Result.formatLst : List Result → Format
+  private partial def Result.formatLst : List Result  Format
     | []    => Format.nil
     | r::rs => Format.line ++ format r false ++ formatLst rs
 
-  partial def Result.format : Result → Bool → Format
+  partial def Result.format : Result  Bool  Format
     | Result.leaf n,         _ => Std.format n
     | Result.num k,          _ => toString k
     | Result.offset f 0,     r => format f r
@@ -490,7 +490,7 @@ instance : Quote Level `level where
 
 end Level
 
-@[inline] private def mkLevelMaxCore (u v : Level) (elseK : Unit → Level) : Level :=
+@[inline] private def mkLevelMaxCore (u v : Level) (elseK : Unit  Level) : Level :=
   let subsumes (u v : Level) : Bool :=
     if v.isExplicit && u.getOffset ≥ v.getOffset then true
     else match u with
@@ -513,7 +513,7 @@ def mkLevelMax' (u v : Level) : Level :=
 def simpLevelMax' (u v : Level) (d : Level) : Level :=
   mkLevelMaxCore u v fun _ => d
 
-@[inline] private def mkLevelIMaxCore (u v : Level) (elseK : Unit → Level) : Level :=
+@[inline] private def mkLevelIMaxCore (u v : Level) (elseK : Unit  Level) : Level :=
   if v.isNeverZero then mkLevelMax' u v
   else if v.isZero then v
   else if u.isZero then v
@@ -568,12 +568,12 @@ def updateIMax! (lvl : Level) (newLhs : Level) (newRhs : Level) : Level :=
   | imax _ _ => mkLevelIMax' newLhs newRhs
   | _        => panic! "imax level expected"
 
-def mkNaryMax : List Level → Level
+def mkNaryMax : List Level  Level
   | []    => levelZero
   | [u]   => u
   | u::us => mkLevelMax' u (mkNaryMax us)
 
-@[specialize] def substParams (u : Level) (s : Name → Option Level) : Level :=
+@[specialize] def substParams (u : Level) (s : Name  Option Level) : Level :=
   go u
 where
   go (u : Level) : Level :=
@@ -587,7 +587,7 @@ where
       | none    => u
     | u => u
 
-def getParamSubst : List Name → List Level → Name → Option Level
+def getParamSubst : List Name  List Level  Name  Option Level
   | p::ps, u::us, p' => if p == p' then some u else getParamSubst ps us p'
   | _,     _,     _  => none
 
@@ -631,7 +631,7 @@ def Level.collectMVars (u : Level) (s : LMVarIdSet := {}) : LMVarIdSet :=
   | mvar n   => s.insert n
   | _        => s
 
-def Level.find? (u : Level) (p : Level → Bool) : Option Level :=
+def Level.find? (u : Level) (p : Level  Bool) : Option Level :=
   let rec visit (u : Level) : Option Level :=
     if p u then
       return u
@@ -642,7 +642,7 @@ def Level.find? (u : Level) (p : Level → Bool) : Option Level :=
       | _          => failure
   visit u
 
-def Level.any (u : Level) (p : Level → Bool) : Bool :=
+def Level.any (u : Level) (p : Level  Bool) : Bool :=
   u.find? p |>.isSome
 
 end Lean

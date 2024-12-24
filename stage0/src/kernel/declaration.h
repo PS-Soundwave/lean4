@@ -15,7 +15,7 @@ namespace lean {
 inductive ReducibilityHints where
   | opaque  : ReducibilityHints
   | abbrev  : ReducibilityHints
-  | regular : UInt32 → ReducibilityHints
+  | regular : UInt32  ReducibilityHints
 
 Reducibility hints are used in the convertibility checker (aka is_def_eq predicate),
 whenever checking a constraint such as

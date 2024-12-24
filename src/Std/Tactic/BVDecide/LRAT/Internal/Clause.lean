@@ -32,46 +32,46 @@ Typeclass for clauses. An instance `[Clause α β]` indicates that `β` is the t
 variables of type `α`.
 -/
 class Clause (α : outParam (Type u)) (β : Type v) where
-  toList : β → CNF.Clause α
-  not_tautology : ∀ c : β, ∀ l : Literal α, l ∉ toList c ∨ Literal.negate l ∉ toList c
+  toList : β  CNF.Clause α
+  not_tautology : ∀ c : β, ∀ l : Literal α, l ∉ toList c  Literal.negate l ∉ toList c
   /-- Returns none if the given array contains complementary literals -/
-  ofArray : Array (Literal α) → Option β
+  ofArray : Array (Literal α)  Option β
   ofArray_eq :
-    ∀ arr : Array (Literal α), (∀ i : Fin arr.size, ∀ j : Fin arr.size, i.1 ≠ j.1 → arr[i] ≠ arr[j]) →
-      ∀ c : β, ofArray arr = some c → toList c = arr.toList
+    ∀ arr : Array (Literal α), (∀ i : Fin arr.size, ∀ j : Fin arr.size, i.1 ≠ j.1  arr[i] ≠ arr[j]) 
+      ∀ c : β, ofArray arr = some c  toList c = arr.toList
   empty : β
   empty_eq : toList empty = []
-  unit : Literal α → β
+  unit : Literal α  β
   unit_eq : ∀ l : Literal α, toList (unit l) = [l]
-  isUnit : β → Option (Literal α)
+  isUnit : β  Option (Literal α)
   isUnit_iff : ∀ c : β, ∀ l : Literal α, isUnit c = some l ↔ toList c = [l]
-  negate : β → CNF.Clause α
+  negate : β  CNF.Clause α
   negate_eq : ∀ c : β, negate c = (toList c).map Literal.negate
   /-- Returns none if the result is a tautology. -/
-  insert : β → Literal α → Option β
-  delete : β → Literal α → β
+  insert : β  Literal α  Option β
+  delete : β  Literal α  β
   delete_iff : ∀ c : β, ∀ l : Literal α, ∀ l' : Literal α,
     l' ∈ toList (delete c l) ↔ l' ≠ l ∧ l' ∈ toList c
-  contains : β → Literal α → Bool
+  contains : β  Literal α  Bool
   contains_iff : ∀ c : β, ∀ l : Literal α, contains c l ↔ l ∈ toList c
   /-- Reduces the clause with respect to the given assignment -/
-  reduce : β → Array Assignment → ReduceResult α
+  reduce : β  Array Assignment  ReduceResult α
 
 namespace Clause
 
 instance : Entails α (Literal α) where
   eval := fun p l => p l.1 = l.2
 
-instance (p : α → Bool) (l : Literal α) : Decidable (p ⊨ l) :=
+instance (p : α  Bool) (l : Literal α) : Decidable (p ⊨ l) :=
   inferInstanceAs (Decidable (p l.1 = l.2))
 
-def eval [Clause α β] (a : α → Bool) (c : β) : Bool :=
+def eval [Clause α β] (a : α  Bool) (c : β) : Bool :=
   (toList c).any fun (l : Literal α) => a ⊨ l
 
 instance [Clause α β] : Entails α β where
   eval a c := Clause.eval a c
 
-instance [Clause α β] (p : α → Bool) (c : β) : Decidable (p ⊨ c) :=
+instance [Clause α β] (p : α  Bool) (c : β) : Decidable (p ⊨ c) :=
   inferInstanceAs (Decidable (Clause.eval p c = true))
 
 instance [Clause α β] : Inhabited β where
@@ -96,7 +96,7 @@ that it was needed.
 -/
 @[ext] structure DefaultClause (numVarsSucc : Nat) where
   clause : CNF.Clause (PosFin numVarsSucc)
-  nodupkey : ∀ l : PosFin numVarsSucc, (l, true) ∉ clause ∨ (l, false) ∉ clause
+  nodupkey : ∀ l : PosFin numVarsSucc, (l, true) ∉ clause  (l, false) ∉ clause
   nodup : List.Nodup clause
   deriving BEq
 
@@ -108,7 +108,7 @@ namespace DefaultClause
 def toList (c : DefaultClause n) : CNF.Clause (PosFin n) := c.clause
 
 theorem not_tautology (c : DefaultClause n) (l : Literal (PosFin n)) :
-    l ∉ toList c ∨ ¬Literal.negate l ∈ toList c := by
+    l ∉ toList c  ¬Literal.negate l ∈ toList c := by
   simp only [toList, Literal.negate]
   have h := c.nodupkey l.1
   by_cases hl : l.2
@@ -131,7 +131,7 @@ theorem empty_eq : toList (empty : DefaultClause n) = [] := rfl
 
 def unit (l : Literal (PosFin n)) : DefaultClause n :=
   let clause := [l]
-  have nodupkey : ∀ (l : PosFin n), ¬(l, true) ∈ clause ∨ ¬(l, false) ∈ clause := by
+  have nodupkey : ∀ (l : PosFin n), ¬(l, true) ∈ clause  ¬(l, false) ∈ clause := by
     intro l'
     by_cases l.2
     · apply Or.inr
@@ -174,7 +174,7 @@ def insert (c : DefaultClause n) (l : Literal (PosFin n)) : Option (DefaultClaus
     some c
   else
     let clause := l :: c.clause
-    have nodupkey : ∀ (l : PosFin n), ¬(l, true) ∈ clause ∨ ¬(l, false) ∈ clause := by
+    have nodupkey : ∀ (l : PosFin n), ¬(l, true) ∈ clause  ¬(l, false) ∈ clause := by
       intro l'
       simp only [List.contains, Bool.not_eq_true] at heq1
       simp only [List.find?, List.mem_cons, not_or, clause]
@@ -218,14 +218,14 @@ def ofArray (ls : Array (Literal (PosFin n))) : Option (DefaultClause n) :=
   ls.foldr fold_fn (some empty)
 
 theorem ofArray_eq (arr : Array (Literal (PosFin n)))
-    (arrNodup : ∀ i : Fin arr.size, ∀ j : Fin arr.size, i.1 ≠ j.1 → arr[i] ≠ arr[j])
+    (arrNodup : ∀ i : Fin arr.size, ∀ j : Fin arr.size, i.1 ≠ j.1  arr[i] ≠ arr[j])
     (c : DefaultClause n) :
-    ofArray arr = some c → toList c = Array.toList arr := by
+    ofArray arr = some c  toList c = Array.toList arr := by
   intro h
   simp only [ofArray] at h
   rw [toList]
   let motive (idx : Nat) (acc : Option (DefaultClause n)) : Prop :=
-    ∃ idx_le_arr_size : idx ≤ arr.size, ∀ c' : DefaultClause n, acc = some c' →
+    ∃ idx_le_arr_size : idx ≤ arr.size, ∀ c' : DefaultClause n, acc = some c' 
       ∃ hsize : c'.clause.length = arr.size - idx, ∀ i : Fin c'.clause.length,
       have idx_in_bounds : idx + i.1 < arr.size := by
         omega
@@ -306,7 +306,7 @@ theorem ofArray_eq (arr : Array (Literal (PosFin n)))
 
 def delete (c : DefaultClause n) (l : Literal (PosFin n)) : DefaultClause n :=
   let clause := c.clause.erase l
-  let nodupkey : ∀ (l : PosFin n), ¬(l, true) ∈ clause ∨ ¬(l, false) ∈ clause := by
+  let nodupkey : ∀ (l : PosFin n), ¬(l, true) ∈ clause  ¬(l, false) ∈ clause := by
     intro l'
     simp only [clause]
     rcases c.nodupkey l' with ih | ih

@@ -18,7 +18,7 @@ inductive Value where
   | choice (vs : List Value)
   deriving Inhabited, Repr
 
-protected partial def Value.toFormat : Value → Format
+protected partial def Value.toFormat : Value  Format
   | Value.bot => "⊥"
   | Value.top => "⊤"
   | Value.ctor info vs =>
@@ -37,7 +37,7 @@ instance : ToString Value where
 
 namespace Value
 
-protected partial def beq : Value → Value → Bool
+protected partial def beq : Value  Value  Bool
   | bot, bot => true
   | top, top => true
   | ctor i₁ vs₁, ctor i₂ vs₂ => i₁ == i₂ && Array.isEqv vs₁ vs₂ Value.beq
@@ -49,7 +49,7 @@ protected partial def beq : Value → Value → Bool
 
 instance : BEq Value := ⟨Value.beq⟩
 
-partial def addChoice (merge : Value → Value → Value) : List Value → Value → List Value
+partial def addChoice (merge : Value  Value  Value) : List Value  Value  List Value
   | [], v => [v]
   | v₁@(ctor i₁ _) :: cs, v₂@(ctor i₂ _) =>
     if i₁ == i₂ then merge v₁ v₂ :: cs
@@ -69,14 +69,14 @@ partial def merge (v₁ v₂ : Value) : Value :=
   | choice vs, v => choice <| addChoice merge vs v
   | v, choice vs => choice <| addChoice merge vs v
 
-protected partial def format : Value → Format
+protected partial def format : Value  Format
   | top => "top"
   | bot => "bot"
   | choice vs => format "@" ++ @List.format _ ⟨Value.format⟩ vs
   | ctor i vs => format "#" ++ if vs.isEmpty then format i.name else Format.paren (format i.name ++ @formatArray _ ⟨Value.format⟩ vs)
 
 instance : ToFormat Value := ⟨Value.format⟩
-instance : ToString Value := ⟨Format.pretty ∘ Value.format⟩
+instance : ToString Value := ⟨Format.pretty  Value.format⟩
 
 /--
   In `truncate`, we approximate a value as `top` if depth > `truncateMaxDepth`.
@@ -191,12 +191,12 @@ def resetVarAssignment (x : VarId) : M Unit := do
 def resetParamAssignment (y : Param) : M Unit :=
   resetVarAssignment y.x
 
-partial def projValue : Value → Nat → Value
+partial def projValue : Value  Nat  Value
   | ctor _ vs, i => vs.getD i bot
   | choice vs, i => vs.foldl (fun r v => merge r (projValue v i)) bot
   | v, _         => v
 
-def interpExpr : Expr → M Value
+def interpExpr : Expr  M Value
   | Expr.ctor i ys => return ctor i (← ys.mapM fun y => findArgValue y)
   | Expr.proj i x  => return projValue (← findVarValue x) i
   | Expr.fap fid _  => do
@@ -210,7 +210,7 @@ def interpExpr : Expr → M Value
       | none     => pure top
   | _ => pure top
 
-partial def containsCtor : Value → CtorInfo → Bool
+partial def containsCtor : Value  CtorInfo  Bool
   | top,       _ => true
   | ctor i _,  j => i == j
   | choice vs, j => vs.any fun v => containsCtor v j
@@ -237,7 +237,7 @@ def updateJPParamsAssignment (ys : Array Param) (xs : Array Arg) : M Bool := do
       modify fun s => { s with assignments := s.assignments.modify currFnIdx fun a => a.insert y.x newVal }
       pure true
 
-private partial def resetNestedJPParams : FnBody → M Unit
+private partial def resetNestedJPParams : FnBody  M Unit
   | FnBody.jdecl _ ys _ k => do
     ys.forM resetParamAssignment
     /- Remark we don't need to reset the parameters of joint-points
@@ -249,7 +249,7 @@ private partial def resetNestedJPParams : FnBody → M Unit
       | Alt.default b => resetNestedJPParams b
   | e => do unless e.isTerminal do resetNestedJPParams e.body
 
-partial def interpFnBody : FnBody → M Unit
+partial def interpFnBody : FnBody  M Unit
   | FnBody.vdecl x _ e b => do
     let v ← interpExpr e
     updateVarAssignment x v
@@ -299,7 +299,7 @@ partial def inferMain : M Unit := do
   let modified ← inferStep
   if modified then inferMain else pure ()
 
-partial def elimDeadAux (assignment : Assignment) : FnBody → FnBody
+partial def elimDeadAux (assignment : Assignment) : FnBody  FnBody
   | FnBody.vdecl x t e b  => FnBody.vdecl x t e (elimDeadAux assignment b)
   | FnBody.jdecl j ys v b => FnBody.jdecl j ys (elimDeadAux assignment v) (elimDeadAux assignment b)
   | FnBody.case tid x xType alts =>

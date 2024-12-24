@@ -16,7 +16,7 @@ inductive ReducibilityStatus where
   | reducible | semireducible | irreducible
   deriving Inhabited, Repr, BEq
 
-def ReducibilityStatus.toAttrString : ReducibilityStatus → String
+def ReducibilityStatus.toAttrString : ReducibilityStatus  String
   | .reducible => "[reducible]"
   | .irreducible => "[irreducible]"
   | .semireducible => "[semireducible]"

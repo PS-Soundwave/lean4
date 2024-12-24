@@ -247,13 +247,13 @@ instance : Nonempty MethodsRef := MethodsRefPointed.property
 
 abbrev SimpM := ReaderT MethodsRef $ ReaderT Context $ StateRefT State MetaM
 
-@[inline] def withIncDischargeDepth : SimpM α → SimpM α :=
+@[inline] def withIncDischargeDepth : SimpM α  SimpM α :=
   withTheReader Context (fun ctx => { ctx with dischargeDepth := ctx.dischargeDepth + 1 })
 
-@[inline] def withSimpTheorems (s : SimpTheoremsArray) : SimpM α → SimpM α :=
+@[inline] def withSimpTheorems (s : SimpTheoremsArray) : SimpM α  SimpM α :=
   withTheReader Context (fun ctx => { ctx with simpTheorems := s })
 
-@[inline] def withInDSimp : SimpM α → SimpM α :=
+@[inline] def withInDSimp : SimpM α  SimpM α :=
   withTheReader Context (fun ctx => { ctx with inDSimp := true })
 
 /--
@@ -277,7 +277,7 @@ opaque simp (e : Expr) : SimpM Result
 @[extern "lean_dsimp"]
 opaque dsimp (e : Expr) : SimpM Expr
 
-@[inline] def modifyDiag (f : Diagnostics → Diagnostics) : SimpM Unit := do
+@[inline] def modifyDiag (f : Diagnostics  Diagnostics) : SimpM Unit := do
   if (← isDiagnosticsEnabled) then
     modify fun { cache, congrCache, usedTheorems, numSteps, diag } => { cache, congrCache, usedTheorems, numSteps, diag := f diag }
 
@@ -311,14 +311,14 @@ inductive Step where
 A simplification procedure. Recall that we have `pre` and `post` procedures.
 See `Step`.
 -/
-abbrev Simproc := Expr → SimpM Step
+abbrev Simproc := Expr  SimpM Step
 
 abbrev DStep := TransformStep
 
 /--
 Similar to `Simproc`, but resulting expression should be definitionally equal to the input one.
 -/
-abbrev DSimproc := Expr → SimpM DStep
+abbrev DSimproc := Expr  SimpM DStep
 
 def _root_.Lean.TransformStep.toStep (s : TransformStep) : Step :=
   match s with
@@ -397,7 +397,7 @@ structure Methods where
   post       : Simproc  := fun e => return .done { expr := e }
   dpre       : DSimproc := fun _ => return .continue
   dpost      : DSimproc := fun e => return .done e
-  discharge? : Expr → SimpM (Option Expr) := fun _ => return none
+  discharge? : Expr  SimpM (Option Expr) := fun _ => return none
   /--
   `wellBehavedDischarge` must **not** be set to `true` IF `discharge?`
   access local declarations with index >= `Context.lctxInitIndices` when
@@ -465,7 +465,7 @@ Save current cache, reset it, execute `x`, and then restore original cache.
   modify fun s => { s with cache := {} }
   try x finally modify fun s => { s with cache := cacheSaved }
 
-@[inline] def withDischarger (discharge? : Expr → SimpM (Option Expr)) (wellBehavedDischarge : Bool) (x : SimpM α) : SimpM α :=
+@[inline] def withDischarger (discharge? : Expr  SimpM (Option Expr)) (wellBehavedDischarge : Bool) (x : SimpM α) : SimpM α :=
   withFreshCache <|
   withReader (fun r => { MethodsRef.toMethods r with discharge?, wellBehavedDischarge }.toMethodsRef) x
 

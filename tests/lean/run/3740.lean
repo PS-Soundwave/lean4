@@ -8,6 +8,6 @@ structure BVBit where
   deriving BEq
 
 inductive Foo where
-  | foo : (w : Nat) → Fin w → Foo
-  | bar : (w : Nat) → List (Fin w) → Foo
+  | foo : (w : Nat)  Fin w  Foo
+  | bar : (w : Nat)  List (Fin w)  Foo
   deriving BEq

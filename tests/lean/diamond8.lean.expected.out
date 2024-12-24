@@ -5,9 +5,9 @@ parents:
   Semiring.toMonoidWithZero : MonoidWithZero R
   Semiring.toOne : One R
 fields:
-  Add.add : R → R → R
+  Add.add : R  R  R
   Zero.zero : R
-  Mul.mul : R → R → R
+  Mul.mul : R  R  R
   One.one : R
   Monoid.mul_one : ∀ (m : R), m * 1 = m
 constructor:

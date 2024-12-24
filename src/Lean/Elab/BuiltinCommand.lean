@@ -34,7 +34,7 @@ private def addScope (isNewNamespace : Bool) (isNoncomputable : Bool) (header : 
   if isNewNamespace then
     activateScoped newNamespace
 
-private def addScopes (isNewNamespace : Bool) (isNoncomputable : Bool) : Name → CommandElabM Unit
+private def addScopes (isNewNamespace : Bool) (isNoncomputable : Bool) : Name  CommandElabM Unit
   | .anonymous => pure ()
   | .str p header => do
     addScopes isNewNamespace isNoncomputable p
@@ -55,12 +55,12 @@ private def popScopes (numScopes : Nat) : CommandElabM Unit :=
   for _ in [0:numScopes] do
     popScope
 
-private def checkAnonymousScope : List Scope → Option Name
+private def checkAnonymousScope : List Scope  Option Name
   | { header := "", .. } :: _ => none
   | { header := h, .. }  :: _ => some <| .mkSimple h
   | _                         => some .anonymous -- should not happen
 
-private def checkEndHeader : Name → List Scope → Option Name
+private def checkEndHeader : Name  List Scope  Option Name
   | .anonymous, _ => none
   | .str p s, { header := h, .. } :: scopes =>
     if h == s then
@@ -150,7 +150,7 @@ private partial def elabChoiceAux (cmds : Array Syntax) (i : Nat) : CommandElabM
 
 open Lean.Parser.Term
 
-private def typelessBinder? : Syntax → Option (Array (TSyntax [`ident, `Lean.Parser.Term.hole]) × Bool)
+private def typelessBinder? : Syntax  Option (Array (TSyntax [`ident, `Lean.Parser.Term.hole]) × Bool)
   | `(bracketedBinderF|($ids*)) => some (ids, true)
   | `(bracketedBinderF|{$ids*}) => some (ids, false)
   | _                          => none
@@ -236,7 +236,7 @@ private def replaceBinderAnnotation (binder : TSyntax ``Parser.Term.bracketedBin
       Term.elabBinders binders fun _ => pure ()
     -- Remark: if we want to produce error messages when variables shadow existing ones, here is the place to do it.
     for binder in binders do
-      let varUIds ← (← getBracketedBinderIds binder) |>.mapM (withFreshMacroScope ∘ MonadQuotation.addMacroScope)
+      let varUIds ← (← getBracketedBinderIds binder) |>.mapM (withFreshMacroScope  MonadQuotation.addMacroScope)
       modifyScope fun scope => { scope with varDecls := scope.varDecls.push binder, varUIds := scope.varUIds ++ varUIds }
   | _ => throwUnsupportedSyntax
 
@@ -474,7 +474,7 @@ where
         (lines, simple) ← flush lines simple
         let ns := decl.getPrefix
         let «from» := Name.mkSimple decl.getString!
-        lines := lines.push <| ← `(command| open $(mkIdent ns) renaming $(mkIdent «from») → $(mkIdent id))
+        lines := lines.push <| ← `(command| open $(mkIdent ns) renaming $(mkIdent «from»)  $(mkIdent id))
       | .simple ns ex =>
         if ex == [] then
           simple := simple.push ns

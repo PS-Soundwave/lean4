@@ -10,7 +10,7 @@ abbreviation M (α : Type) := EState String ufData α
 def capacity : M Nat :=
 do d ← get; pure d.size
 
-def findEntryAux : Nat → Node → M nodeData
+def findEntryAux : Nat  Node  M nodeData
 | 0     n := throw "out of fuel"
 | (i+1) n :=
   do s ← get;
@@ -46,7 +46,7 @@ do r₁ ← findEntry n₁;
      else s.set r₂.find { find := r₁.find }
 
 
-def mkNodes : Nat → M Unit
+def mkNodes : Nat  M Unit
 | 0     := pure ()
 | (n+1) := mk *> mkNodes n
 
@@ -54,7 +54,7 @@ def checkEq (n₁ n₂ : Node) : M Unit :=
 do r₁ ← find n₁; r₂ ← find n₂;
    unless (r₁ = r₂) $ throw "nodes are not equal"
 
-def mergePackAux : Nat → Nat → Nat → M Unit
+def mergePackAux : Nat  Nat  Nat  M Unit
 | 0     _ _ := pure ()
 | (i+1) n d :=
   do c ← capacity;
@@ -65,7 +65,7 @@ def mergePackAux : Nat → Nat → Nat → M Unit
 def mergePack (d : Nat) : M Unit :=
 do c ← capacity; mergePackAux c 0 d
 
-def numEqsAux : Nat → Node → Nat → M Nat
+def numEqsAux : Nat  Node  Nat  M Nat
 | 0     _ r := pure r
 | (i+1) n r :=
   do c ← capacity;

@@ -8,7 +8,7 @@ inductive Code where
 
 abbrev Alt := AltCore Code
 
-def AltCore.getCode : Alt → Code
+def AltCore.getCode : Alt  Code
   | .default c => c
   | .alt _ c => c
 
@@ -20,7 +20,7 @@ def AltCore.update (alt : Alt) (c : Code) : Alt :=
 example (alt : Alt) : Code :=
   alt.getCode
 
-def Alt.getCode' : Alt → Code
+def Alt.getCode' : Alt  Code
   | .default c => c
   | .alt _ c => c
 

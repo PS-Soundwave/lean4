@@ -47,7 +47,7 @@ def floatRoundtrip (x : Float) : CoreM Unit := do
     -- [note] NaN ≠ NaN
     return ()
   if y != x then
-    throwError "failure {x} → {j} → {y}"
+    throwError "failure {x}  {j}  {y}"
   return ()
 
 #eval floatRoundtrip 0.0

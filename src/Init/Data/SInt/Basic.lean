@@ -116,7 +116,7 @@ def Int8.shiftLeft (a b : Int8) : Int8 := ⟨⟨a.toBitVec <<< (b.toBitVec.smod 
 @[extern "lean_int8_shift_right"]
 def Int8.shiftRight (a b : Int8) : Int8 := ⟨⟨BitVec.sshiftRight' a.toBitVec (b.toBitVec.smod 8)⟩⟩
 @[extern "lean_int8_complement"]
-def Int8.complement (a : Int8) : Int8 := ⟨⟨~~~a.toBitVec⟩⟩
+def Int8.complement (a : Int8) : Int8 := ⟨⟨a.toBitVec⟩⟩
 
 @[extern "lean_int8_dec_eq"]
 def Int8.decEq (a b : Int8) : Decidable (a = b) :=
@@ -220,7 +220,7 @@ def Int16.shiftLeft (a b : Int16) : Int16 := ⟨⟨a.toBitVec <<< (b.toBitVec.sm
 @[extern "lean_int16_shift_right"]
 def Int16.shiftRight (a b : Int16) : Int16 := ⟨⟨BitVec.sshiftRight' a.toBitVec (b.toBitVec.smod 16)⟩⟩
 @[extern "lean_int16_complement"]
-def Int16.complement (a : Int16) : Int16 := ⟨⟨~~~a.toBitVec⟩⟩
+def Int16.complement (a : Int16) : Int16 := ⟨⟨a.toBitVec⟩⟩
 
 @[extern "lean_int16_dec_eq"]
 def Int16.decEq (a b : Int16) : Decidable (a = b) :=
@@ -328,7 +328,7 @@ def Int32.shiftLeft (a b : Int32) : Int32 := ⟨⟨a.toBitVec <<< (b.toBitVec.sm
 @[extern "lean_int32_shift_right"]
 def Int32.shiftRight (a b : Int32) : Int32 := ⟨⟨BitVec.sshiftRight' a.toBitVec (b.toBitVec.smod 32)⟩⟩
 @[extern "lean_int32_complement"]
-def Int32.complement (a : Int32) : Int32 := ⟨⟨~~~a.toBitVec⟩⟩
+def Int32.complement (a : Int32) : Int32 := ⟨⟨a.toBitVec⟩⟩
 
 @[extern "lean_int32_dec_eq"]
 def Int32.decEq (a b : Int32) : Decidable (a = b) :=
@@ -440,7 +440,7 @@ def Int64.shiftLeft (a b : Int64) : Int64 := ⟨⟨a.toBitVec <<< (b.toBitVec.sm
 @[extern "lean_int64_shift_right"]
 def Int64.shiftRight (a b : Int64) : Int64 := ⟨⟨BitVec.sshiftRight' a.toBitVec (b.toBitVec.smod 64)⟩⟩
 @[extern "lean_int64_complement"]
-def Int64.complement (a : Int64) : Int64 := ⟨⟨~~~a.toBitVec⟩⟩
+def Int64.complement (a : Int64) : Int64 := ⟨⟨a.toBitVec⟩⟩
 
 @[extern "lean_int64_dec_eq"]
 def Int64.decEq (a b : Int64) : Decidable (a = b) :=
@@ -554,7 +554,7 @@ def ISize.shiftLeft (a b : ISize) : ISize := ⟨⟨a.toBitVec <<< (b.toBitVec.sm
 @[extern "lean_isize_shift_right"]
 def ISize.shiftRight (a b : ISize) : ISize := ⟨⟨BitVec.sshiftRight' a.toBitVec (b.toBitVec.smod System.Platform.numBits)⟩⟩
 @[extern "lean_isize_complement"]
-def ISize.complement (a : ISize) : ISize := ⟨⟨~~~a.toBitVec⟩⟩
+def ISize.complement (a : ISize) : ISize := ⟨⟨a.toBitVec⟩⟩
 
 @[extern "lean_isize_dec_eq"]
 def ISize.decEq (a b : ISize) : Decidable (a = b) :=

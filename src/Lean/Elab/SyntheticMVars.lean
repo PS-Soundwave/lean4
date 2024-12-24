@@ -315,7 +315,7 @@ inductive PostponeBehavior where
   | «partial»
   deriving Inhabited, Repr, BEq
 
-def PostponeBehavior.ofBool : Bool → PostponeBehavior
+def PostponeBehavior.ofBool : Bool  PostponeBehavior
   | true  => .yes
   | false => .no
 

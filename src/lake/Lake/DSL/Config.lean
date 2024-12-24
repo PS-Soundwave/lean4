@@ -20,7 +20,7 @@ opaque dummyDir : System.FilePath
 A dummy default constant for `get_config` to make it type check
 outside Lakefile elaboration (e.g., when editing).
 -/
-opaque dummyGetConfig? : Name → Option String
+opaque dummyGetConfig? : Name  Option String
 
 /--
 A macro that expands to the path of package's directory

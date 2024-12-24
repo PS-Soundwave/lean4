@@ -21,11 +21,11 @@ def g (x : Nat) : Bool :=
   | some _  => false
 
 
-abbrev TupleNTyp : Nat → Type 1
+abbrev TupleNTyp : Nat  Type 1
   | 0 => Type
-  | n + 1 => Type → (TupleNTyp n)
+  | n + 1 => Type  (TupleNTyp n)
 
-noncomputable abbrev TupleN : (n : Fin 1) → TupleNTyp n.val
+noncomputable abbrev TupleN : (n : Fin 1)  TupleNTyp n.val
   | 0 => Unit × Unit
 
 set_option pp.proofs true

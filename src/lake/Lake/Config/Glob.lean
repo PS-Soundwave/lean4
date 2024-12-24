@@ -15,11 +15,11 @@ namespace Lake
 /-- A specification of a set of module names. -/
 inductive Glob
   /-- Selects just the specified module name. -/
-  | one : Name → Glob
+  | one : Name  Glob
   /-- Selects all submodules of the specified module, but not the module itself. -/
-  | submodules : Name → Glob
+  | submodules : Name  Glob
   /-- Selects the specified module and all submodules. -/
-  | andSubmodules : Name → Glob
+  | andSubmodules : Name  Glob
 deriving Inhabited, Repr, DecidableEq
 
 instance : Coe Name Glob := ⟨Glob.one⟩
@@ -35,20 +35,20 @@ scoped macro:max n:name noWs ".+" : term =>
 
 namespace Glob
 
-protected def toString : Glob → String
+protected def toString : Glob  String
 | .one n => n.toString
 | .submodules n => n.toString ++ ".+"
 | .andSubmodules n => n.toString ++ ".*"
 
 instance : ToString Glob := ⟨Glob.toString⟩
 
-def «matches» (m : Name) : (self : Glob) → Bool
+def «matches» (m : Name) : (self : Glob)  Bool
 | one n => n == m
 | submodules n => n.isPrefixOf m && n != m
 | andSubmodules n => n.isPrefixOf m
 
 @[inline] nonrec def forEachModuleIn [Monad m] [MonadLiftT IO m]
-(dir : FilePath) (f : Name → m PUnit) : (self : Glob) → m PUnit
+(dir : FilePath) (f : Name  m PUnit) : (self : Glob)  m PUnit
 | one n => f n
 | submodules n =>
   Lean.forEachModuleInDir (Lean.modToFilePath dir n "") (f <| n ++ ·)

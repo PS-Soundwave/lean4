@@ -1,8 +1,8 @@
-example {α β : Type} {f : α × β → β → β} (h : ∀ p : α × β, f p p.2 = p.2)
+example {α β : Type} {f : α × β  β  β} (h : ∀ p : α × β, f p p.2 = p.2)
   (a : α) (b : β) : f (a, b) b = b := by
   simp [h] -- should not fail
 
-example {α β : Type} {f : α × β → β → β}
+example {α β : Type} {f : α × β  β  β}
   (a : α) (b : β) (h : f (a,b) (a,b).2 = (a,b).2) : f (a, b) b = b := by
   simp [h] -- should not fail
 

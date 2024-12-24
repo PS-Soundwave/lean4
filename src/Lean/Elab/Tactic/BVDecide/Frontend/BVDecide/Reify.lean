@@ -243,7 +243,7 @@ where
     | some exp => return some exp
     | none => ReifiedBVExpr.bitVecAtom x false
 
-  shiftConstLikeReflection (distance : Nat) (innerExpr : Expr) (shiftOp : Nat → BVUnOp)
+  shiftConstLikeReflection (distance : Nat) (innerExpr : Expr) (shiftOp : Nat  BVUnOp)
       (shiftOpName : Name) (congrThm : Name) :
       LemmaM (Option ReifiedBVExpr) := do
     let some inner ← goOrAtom innerExpr | return none
@@ -261,20 +261,20 @@ where
     let proof := unaryCongrProof inner innerExpr congrProof
     return some ⟨inner.width, bvExpr, proof, expr⟩
 
-  rotateReflection (distanceExpr : Expr) (innerExpr : Expr) (rotateOp : Nat → BVUnOp)
+  rotateReflection (distanceExpr : Expr) (innerExpr : Expr) (rotateOp : Nat  BVUnOp)
       (rotateOpName : Name) (congrThm : Name) :
       LemmaM (Option ReifiedBVExpr) := do
     let some distance ← getNatValue? distanceExpr | return none
     shiftConstLikeReflection distance innerExpr rotateOp rotateOpName congrThm
 
-  shiftConstReflection (β : Expr) (distanceExpr : Expr) (innerExpr : Expr) (shiftOp : Nat → BVUnOp)
+  shiftConstReflection (β : Expr) (distanceExpr : Expr) (innerExpr : Expr) (shiftOp : Nat  BVUnOp)
       (shiftOpName : Name) (congrThm : Name) :
       LemmaM (Option ReifiedBVExpr) := do
     let some distance ← ReifiedBVExpr.getNatOrBvValue? β distanceExpr | return none
     shiftConstLikeReflection distance innerExpr shiftOp shiftOpName congrThm
 
   shiftReflection (distanceExpr : Expr) (innerExpr : Expr)
-      (shiftOp : {m n : Nat} → BVExpr m → BVExpr n → BVExpr m) (shiftOpName : Name)
+      (shiftOp : {m n : Nat}  BVExpr m  BVExpr n  BVExpr m) (shiftOpName : Name)
       (congrThm : Name) :
       LemmaM (Option ReifiedBVExpr) := do
     let some inner ← goOrAtom innerExpr | return none

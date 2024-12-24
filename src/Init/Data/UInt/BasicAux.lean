@@ -64,12 +64,12 @@ def UInt16.toUInt32 (a : UInt16) : UInt32 := ⟨⟨a.toNat, Nat.lt_trans a.toBit
 instance UInt32.instOfNat : OfNat UInt32 n := ⟨UInt32.ofNat n⟩
 
 theorem UInt32.ofNat'_lt_of_lt {n m : Nat} (h1 : n < UInt32.size) (h2 : m < UInt32.size) :
-     n < m → UInt32.ofNat' n h1 < UInt32.ofNat m := by
+     n < m  UInt32.ofNat' n h1 < UInt32.ofNat m := by
   simp only [(· < ·), BitVec.toNat, ofNat', BitVec.ofNatLt, ofNat, BitVec.ofNat, Fin.ofNat',
     Nat.mod_eq_of_lt h2, imp_self]
 
 theorem UInt32.lt_ofNat'_of_lt {n m : Nat} (h1 : n < UInt32.size) (h2 : m < UInt32.size) :
-     m < n → UInt32.ofNat m < UInt32.ofNat' n h1  := by
+     m < n  UInt32.ofNat m < UInt32.ofNat' n h1  := by
   simp only [(· < ·), BitVec.toNat, ofNat', BitVec.ofNatLt, ofNat, BitVec.ofNat, Fin.ofNat',
     Nat.mod_eq_of_lt h2, imp_self]
 

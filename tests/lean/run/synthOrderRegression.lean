@@ -2,7 +2,7 @@
 -- fix: modify projection instance binder info
 
 class Foo (α : Type) [Add α] where
-   bla : [Mul α] → BEq α
+   bla : [Mul α]  BEq α
 
 attribute [instance] Foo.bla
 

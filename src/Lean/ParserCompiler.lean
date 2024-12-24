@@ -128,7 +128,7 @@ partial def compileParserExpr (e : Expr) : MetaM Expr := do
 end
 
 variable {α} (ctx : Context α) (builtin : Bool) in
-def compileEmbeddedParsers : ParserDescr → MetaM Unit
+def compileEmbeddedParsers : ParserDescr  MetaM Unit
   | ParserDescr.const _                => pure ()
   | ParserDescr.unary _ d              => compileEmbeddedParsers d
   | ParserDescr.binary _ d₁ d₂         => compileEmbeddedParsers d₁ *> compileEmbeddedParsers d₂

@@ -32,7 +32,7 @@ inductive I2 where
 
 inductive I2' (_ : Nat) where
   | a
-/-- info: I2' : Nat → Type -/
+/-- info: I2' : Nat  Type -/
 #guard_msgs in #check I2'
 
 /-!
@@ -65,9 +65,9 @@ end
 /-!
 Type parameter (promoted from index), still Prop.
 -/
-inductive D : Nat → Sort _ where
+inductive D : Nat  Sort _ where
   | a (h : n = n) : D n
-/-- info: D : Nat → Prop -/
+/-- info: D : Nat  Prop -/
 #guard_msgs in #check D
 
 /-!
@@ -105,7 +105,7 @@ class inductive Decidable' (p : Prop) where
 /-!
 Verify: `WellFounded` is a `Prop`.
 -/
-inductive WellFounded' {α : Sort u} (r : α → α → Prop) where
+inductive WellFounded' {α : Sort u} (r : α  α  Prop) where
   | intro (h : ∀ a, Acc r a) : WellFounded' r
-/-- info: WellFounded'.{u} {α : Sort u} (r : α → α → Prop) : Prop -/
+/-- info: WellFounded'.{u} {α : Sort u} (r : α  α  Prop) : Prop -/
 #guard_msgs in #check WellFounded'

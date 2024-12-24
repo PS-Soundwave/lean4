@@ -189,7 +189,7 @@ deriving Repr, DecidableEq
 
 instance : Inhabited InitTemplate := ⟨.std⟩
 
-def InitTemplate.ofString? : String → Option InitTemplate
+def InitTemplate.ofString? : String  Option InitTemplate
 | "std" => some .std
 | "exe" => some .exe
 | "lib" => some .lib
@@ -199,7 +199,7 @@ def InitTemplate.ofString? : String → Option InitTemplate
 def escapeIdent (id : String) : String :=
   Lean.idBeginEscape.toString ++ id ++ Lean.idEndEscape.toString
 
-def escapeName! : Name → String
+def escapeName! : Name  String
 | .anonymous        => unreachable!
 | .str .anonymous s => escapeIdent s
 | .str n s          => escapeName! n ++ "." ++ escapeIdent s

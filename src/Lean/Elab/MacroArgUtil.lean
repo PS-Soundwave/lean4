@@ -44,7 +44,7 @@ where
     pure (stx, pat)
   mkSplicePat (kind : SyntaxNodeKind) (stx : TSyntax `stx) (id : Term) (suffix : String) : CommandElabM Term :=
     return ⟨mkNullNode #[mkAntiquotSuffixSpliceNode kind (← mkAntiquotNode stx id) suffix]⟩
-  mkAntiquotNode : TSyntax `stx → Term → CommandElabM Term
+  mkAntiquotNode : TSyntax `stx  Term  CommandElabM Term
     | `(stx| $id:ident$[:$_]?), term => do
       match (← liftTermElabM do Elab.Term.elabParserName? id) with
         | some (.parser n _) =>

@@ -1,4 +1,4 @@
-def foo : Nat → Nat
+def foo : Nat  Nat
   | 0 => 2
   | n + 1 => foo n
 

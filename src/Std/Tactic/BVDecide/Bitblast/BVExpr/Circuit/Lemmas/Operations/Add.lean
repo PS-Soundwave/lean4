@@ -24,7 +24,7 @@ variable [Hashable α] [DecidableEq α]
 namespace blastAdd
 
 @[simp]
-theorem denote_mkFullAdderOut (assign : α → Bool) (aig : AIG α) (input : FullAdderInput aig) :
+theorem denote_mkFullAdderOut (assign : α  Bool) (aig : AIG α) (input : FullAdderInput aig) :
     ⟦mkFullAdderOut aig input, assign⟧
       =
     ((⟦aig, input.lhs, assign⟧ ^^ ⟦aig, input.rhs, assign⟧) ^^ ⟦aig, input.cin, assign⟧)
@@ -34,7 +34,7 @@ theorem denote_mkFullAdderOut (assign : α → Bool) (aig : AIG α) (input : Ful
   rw [LawfulOperator.denote_mem_prefix (f := mkXorCached)]
 
 @[simp]
-theorem denote_mkFullAdderCarry (assign : α → Bool) (aig : AIG α) (input : FullAdderInput aig) :
+theorem denote_mkFullAdderCarry (assign : α  Bool) (aig : AIG α) (input : FullAdderInput aig) :
     ⟦mkFullAdderCarry aig input, assign⟧
       =
       ((⟦aig, input.lhs, assign⟧ ^^ ⟦aig, input.rhs, assign⟧) && ⟦aig, input.cin, assign⟧ ||
@@ -135,14 +135,14 @@ theorem atLeastTwo_eq_halfAdder (lhsBit rhsBit carry : Bool) :
   decide
 
 theorem go_denote_eq (aig : AIG α) (curr : Nat) (hcurr : curr ≤ w) (cin : Ref aig)
-    (s : AIG.RefVec aig curr) (lhs rhs : AIG.RefVec aig w) (assign : α → Bool)
+    (s : AIG.RefVec aig curr) (lhs rhs : AIG.RefVec aig w) (assign : α  Bool)
     (lhsExpr rhsExpr : BitVec w)
     (hleft : ∀ (idx : Nat) (hidx : idx < w), ⟦aig, lhs.get idx hidx, assign⟧ = lhsExpr.getLsbD idx)
     (hright : ∀ (idx : Nat) (hidx : idx < w), ⟦aig, rhs.get idx hidx, assign⟧ = rhsExpr.getLsbD idx)
     (hcin : ⟦aig, cin, assign⟧ = BitVec.carry curr lhsExpr rhsExpr false) :
     ∀ (idx : Nat) (hidx1 : idx < w),
         curr ≤ idx
-          →
+          
         ⟦
           (go aig lhs rhs curr hcurr cin s).aig,
           (go aig lhs rhs curr hcurr cin s).vec.get idx hidx1,
@@ -202,7 +202,7 @@ termination_by w - curr
 
 end blastAdd
 
-theorem denote_blastAdd (aig : AIG α) (lhs rhs : BitVec w) (assign : α → Bool)
+theorem denote_blastAdd (aig : AIG α) (lhs rhs : BitVec w) (assign : α  Bool)
       (input : BinaryRefVec aig w)
       (hleft : ∀ (idx : Nat) (hidx : idx < w), ⟦aig, input.lhs.get idx hidx, assign⟧ = lhs.getLsbD idx)
       (hright : ∀ (idx : Nat) (hidx : idx < w), ⟦aig, input.rhs.get idx hidx, assign⟧ = rhs.getLsbD idx) :

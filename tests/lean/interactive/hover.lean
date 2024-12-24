@@ -170,7 +170,7 @@ def foo.bar : Nat := 1
 
 end Bar
 
-example : Nat → Nat → Nat :=
+example : Nat  Nat  Nat :=
   fun x y =>
     --^ textDocument/hover
   --v textDocument/definition
@@ -180,7 +180,7 @@ example : Nat → Nat → Nat :=
            -- textDocument/definition -- removed because the result is platform-dependent
 set_option linter.unusedVariables false in
           --^ textDocument/hover
-example : Nat → Nat → Nat := by
+example : Nat  Nat  Nat := by
   intro x y
       --^ textDocument/hover
       --v textDocument/definition
@@ -213,26 +213,26 @@ macro "my_intro" x:(ident <|> "_") : tactic =>
   | `($x:ident) => `(tactic| intro $x:ident)
   | _ => `(tactic| intro _%$x)
 
-example : α → α := by intro x; assumption
+example : α  α := by intro x; assumption
                           --^ textDocument/hover
-example : α → α := by intro _; assumption
+example : α  α := by intro _; assumption
                           --^ textDocument/hover
-example : α → α := by my_intro x; assumption
+example : α  α := by my_intro x; assumption
                              --^ textDocument/hover
                     --v textDocument/hover
-example : α → α := by my_intro _; assumption
+example : α  α := by my_intro _; assumption
                              --^ textDocument/hover
 
 /-- my_intro term -/
 def my_intro : Nat := 1
 
                     --v textDocument/hover
-example : α → α := by my_intro _; assumption
+example : α  α := by my_intro _; assumption
 
 attribute [simp] my_intro
                --^ textDocument/hover
 
-example : Nat → True := by
+example : Nat  True := by
   intro x
       --^ textDocument/hover
   cases x with
@@ -242,7 +242,7 @@ example : Nat → True := by
   | succ x => trivial
        --^ textDocument/hover
 
-example : Nat → True := by
+example : Nat  True := by
   intro x
       --^ textDocument/hover
   induction x with
@@ -253,7 +253,7 @@ example : Nat → True := by
   | succ _ ih => exact ih
          --^ textDocument/hover
 
-example : Nat → Nat
+example : Nat  Nat
     --v textDocument/hover
   | .zero => .zero
              --^ textDocument/hover
@@ -295,7 +295,7 @@ open List (cons)
 open List hiding map
                 --^ textDocument/hover
                         --v textDocument/hover
-open List renaming zip → zip'
+open List renaming zip  zip'
                  --^ textDocument/hover
 
 end Foo

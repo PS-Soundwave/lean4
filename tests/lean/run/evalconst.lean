@@ -16,7 +16,7 @@ def f (x : Nat) := x + 1
 
 unsafe def tst2 : CoreM Unit := do
 let env ← getEnv
-let f ←  IO.ofExcept $ env.evalConst (Nat → Nat) {} `f
+let f ←  IO.ofExcept $ env.evalConst (Nat  Nat) {} `f
 IO.println $ (f 10)
 
 /-- info: 11 -/

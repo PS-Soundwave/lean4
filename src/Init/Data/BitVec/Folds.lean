@@ -21,12 +21,12 @@ in `v` (e.g., `getLsb v i = b_i`).
 
 Theorems involving `iunfoldr` can be eliminated using `iunfoldr_replace` below.
 -/
-def iunfoldr (f : Fin w -> α → α × Bool) (s : α) : α × BitVec w :=
+def iunfoldr (f : Fin w -> α  α × Bool) (s : α) : α × BitVec w :=
   Fin.hIterate (fun i => α × BitVec i) (s, nil) fun i q =>
     (fun p => ⟨p.fst, cons p.snd q.snd⟩) (f i q.fst)
 
 theorem iunfoldr.fst_eq
-    {f : Fin w → α → α × Bool} (state : Nat → α) (s : α)
+    {f : Fin w  α  α × Bool} (state : Nat  α) (s : α)
     (init : s = state 0)
     (ind : ∀(i : Fin w), (f i (state i.val)).fst = state (i.val+1)) :
     (iunfoldr f s).fst = state w := by
@@ -39,7 +39,7 @@ theorem iunfoldr.fst_eq
     simp_all [ind i]
 
 private theorem iunfoldr.eq_test
-    {f : Fin w → α → α × Bool} (state : Nat → α) (value : BitVec w) (a : α)
+    {f : Fin w  α  α × Bool} (state : Nat  α) (value : BitVec w) (a : α)
     (init : state 0 = a)
     (step : ∀(i : Fin w), f i (state i.val) = (state (i.val+1), value.getLsbD i.val)) :
     iunfoldr f a = (state w, BitVec.truncate w value) := by
@@ -50,14 +50,14 @@ private theorem iunfoldr.eq_test
     intro i
     simp_all [setWidth_succ]
 
-theorem iunfoldr_getLsbD' {f : Fin w → α → α × Bool} (state : Nat → α)
+theorem iunfoldr_getLsbD' {f : Fin w  α  α × Bool} (state : Nat  α)
     (ind : ∀(i : Fin w), (f i (state i.val)).fst = state (i.val+1)) :
   (∀ i : Fin w, getLsbD (iunfoldr f (state 0)).snd i.val = (f i (state i.val)).snd)
   ∧ (iunfoldr f (state 0)).fst = state w := by
   unfold iunfoldr
   simp
   apply Fin.hIterate_elim
-        (fun j (p : α × BitVec j) => (hj : j ≤ w) →
+        (fun j (p : α × BitVec j) => (hj : j ≤ w) 
          (∀ i : Fin j,  getLsbD p.snd i.val = (f ⟨i.val, Nat.lt_of_lt_of_le i.isLt hj⟩ (state i.val)).snd)
           ∧ p.fst = state j)
   case hj => simp
@@ -90,7 +90,7 @@ theorem iunfoldr_getLsbD' {f : Fin w → α → α × Bool} (state : Nat → α)
       rw [← ind j, ← (ih hj2).2]
 
 
-theorem iunfoldr_getLsbD {f : Fin w → α → α × Bool} (state : Nat → α) (i : Fin w)
+theorem iunfoldr_getLsbD {f : Fin w  α  α × Bool} (state : Nat  α) (i : Fin w)
     (ind : ∀(i : Fin w), (f i (state i.val)).fst = state (i.val+1)) :
   getLsbD (iunfoldr f (state 0)).snd i.val = (f i (state i.val)).snd := by
   exact (iunfoldr_getLsbD' state ind).1 i
@@ -99,14 +99,14 @@ theorem iunfoldr_getLsbD {f : Fin w → α → α × Bool} (state : Nat → α) 
 Correctness theorem for `iunfoldr`.
 -/
 theorem iunfoldr_replace
-    {f : Fin w → α → α × Bool} (state : Nat → α) (value : BitVec w) (a : α)
+    {f : Fin w  α  α × Bool} (state : Nat  α) (value : BitVec w) (a : α)
     (init : state 0 = a)
     (step : ∀(i : Fin w), f i (state i.val) = (state (i.val+1), value.getLsbD i.val)) :
     iunfoldr f a = (state w, value) := by
   simp [iunfoldr.eq_test state value a init step]
 
 theorem iunfoldr_replace_snd
-  {f : Fin w → α → α × Bool} (state : Nat → α) (value : BitVec w) (a : α)
+  {f : Fin w  α  α × Bool} (state : Nat  α) (value : BitVec w) (a : α)
     (init : state 0 = a)
     (step : ∀(i : Fin w), f i (state i.val) = (state (i.val+1), value.getLsbD i.val)) :
     (iunfoldr f a).snd = value := by

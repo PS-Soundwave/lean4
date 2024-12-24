@@ -16,7 +16,7 @@ namespace Lean.Compiler.LCNF
 We used to have a type compatibility relation `≃` for LCNF types.
 It treated erased types/values as wildcards. Examples:
 - `List Nat ≃ List ◾`
-- `(List ◾ → List ◾) ≃ (List Nat → List Bool)`
+- `(List ◾  List ◾) ≃ (List Nat  List Bool)`
 
 We used this relation to sanity check compiler passes, and detect
 buggy transformations that broke type compatibility. For example,
@@ -32,7 +32,7 @@ the code generator.
 
 Here is an example of transformation that would require the insertion of a cast operation.
 ```
-def foo (g : List A → List A) (a : List B) :=
+def foo (g : List A  List A) (a : List B) :=
   fun f (x : List ◾) :=
     let _x.1 := g x
     ...
@@ -43,7 +43,7 @@ The code above would not trigger any type compatibility issue, but
 by inlining `f` without adding cast operations, we would get the
 following type incorrect code.
 ```
-def foo (g : List A → List A) (a : List B) :=
+def foo (g : List A  List A) (a : List B) :=
 let _x.2 := g a -- Type error
 ...
 ```
@@ -52,13 +52,13 @@ We have considered using a reflexive and transitive subtype relation `≺`.
 - `A ≺ A`
 - `(Nat × Nat) ≺ (Nat × ◾) ≺ (◾ × ◾) ≺ ◾`
 - `List Nat ≺ List ◾ ⊀ List String`
-- `(List ◾ → List Nat) ≺ (List Bool → List ◾)`
+- `(List ◾  List Nat) ≺ (List Bool  List ◾)`
 Note that `A ≺ B` implies `A ≃ B`
 
 The subtype relation has better properties, but also has problems.
 First, when converting to LCNF we would have to add more casts. Example:
 the function takes a `List ◾`, but the value has type `◾`.
-Moreover, recall that `(List Nat → List Nat) ⊀ (◾ → ◾)` forcing us
+Moreover, recall that `(List Nat  List Nat) ⊀ (◾  ◾)` forcing us
 to add many casts operations when moving to the mono phase where
 we erase type parameters.
 

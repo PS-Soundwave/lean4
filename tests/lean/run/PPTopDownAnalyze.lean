@@ -74,11 +74,11 @@ set_option pp.proofs true
 #testDelab @Nat.brecOn (fun x => Nat) 0 (fun x ih => x)
   expecting Nat.brecOn (motive := fun x => Nat) 0 fun x ih => x
 
-#testDelab @Nat.brecOn (fun x => Nat → Nat) 0 (fun x ih => fun y => y + x)
-  expecting Nat.brecOn (motive := fun x => Nat → Nat) 0 fun x ih y => y + x
+#testDelab @Nat.brecOn (fun x => Nat  Nat) 0 (fun x ih => fun y => y + x)
+  expecting Nat.brecOn (motive := fun x => Nat  Nat) 0 fun x ih y => y + x
 
-#testDelab @Nat.brecOn (fun x => Nat → Nat) 0 (fun x ih => fun y => y + x) 0
-  expecting Nat.brecOn (motive := fun x => Nat → Nat) 0 (fun x ih y => y + x) 0
+#testDelab @Nat.brecOn (fun x => Nat  Nat) 0 (fun x ih => fun y => y + x) 0
+  expecting Nat.brecOn (motive := fun x => Nat  Nat) 0 (fun x ih y => y + x) 0
 
 #testDelab let xs := #[]; xs.push (5 : Nat)
   expecting let xs : Array Nat := #[]; xs.push 5
@@ -104,12 +104,12 @@ def fPoly2 {α : Type u} {β : Type v} (x : α) : α := x
 #testDelab @fPoly2 _ (Type 3) Nat.zero
   expecting fPoly2 (β := Type 3) Nat.zero
 
-def fPolyInst {α : Type u} [Add α] : α → α → α := Add.add
+def fPolyInst {α : Type u} [Add α] : α  α  α := Add.add
 
 #testDelab @fPolyInst Nat ⟨Nat.add⟩
   expecting fPolyInst
 
-def fPolyNotInst {α : Type u} (inst : Add α) : α → α → α := Add.add
+def fPolyNotInst {α : Type u} (inst : Add α) : α  α  α := Add.add
 
 #testDelab @fPolyNotInst Nat ⟨Nat.add⟩
   expecting fPolyNotInst { add := Nat.add }
@@ -123,7 +123,7 @@ def fPolyNotInst {α : Type u} (inst : Add α) : α → α → α := Add.add
 #testDelab (fun {α : Type} (x : α) => x) Nat.zero
   expecting (fun {α : Type} (x : α) => x) Nat.zero
 
-#testDelab ((@Add.mk Nat Nat.add).1 : Nat → Nat → Nat)
+#testDelab ((@Add.mk Nat Nat.add).1 : Nat  Nat  Nat)
   expecting Add.add
 
 class Foo (α : Type v) where foo : α
@@ -136,9 +136,9 @@ instance : Foo Bool := ⟨true⟩
 #testDelab @Foo.foo Bool ⟨false⟩
   expecting Foo.foo (self := { foo := false })
 
-axiom wild {α : Type u} {f : α → Type v} {x : α} [_inst_1 : Foo (f x)] : Nat
+axiom wild {α : Type u} {f : α  Type v} {x : α} [_inst_1 : Foo (f x)] : Nat
 
-abbrev nat2bool : Nat → Type := fun _ => Bool
+abbrev nat2bool : Nat  Type := fun _ => Bool
 
 #testDelab @wild Nat nat2bool Nat.zero ⟨false⟩
   expecting wild (f := nat2bool) (x := Nat.zero) (_inst_1 := { foo := false })
@@ -151,7 +151,7 @@ def takesFooUnnamed {Impl : Type} (Expl : Type) [Foo Nat] (x : Impl) (y : Expl) 
 #testDelab @takesFooUnnamed _ Nat (Foo.mk 7) false 5
   expecting @takesFooUnnamed _ _ { foo := 7 } false 5
 
-#testDelab (fun {α : Type u} (x : α) => x : ∀ {α : Type u}, α → α)
+#testDelab (fun {α : Type u} (x : α) => x : ∀ {α : Type u}, α  α)
   expecting fun {α} x => x
 
 #testDelab (fun {α : Type} (x : α) => x) Nat.zero
@@ -183,15 +183,15 @@ namespace Z1.Z2
 
 end Z1.Z2
 
-#testDelab fun {σ : Type u} {m : Type u → Type v} [Monad m] {α : Type u} (f : σ → α × σ) (s : σ) => pure (f := m) (f s)
+#testDelab fun {σ : Type u} {m : Type u  Type v} [Monad m] {α : Type u} (f : σ  α × σ) (s : σ) => pure (f := m) (f s)
   expecting fun {σ} {m} [Monad m] {α} f s => pure (f s)
 
 set_option pp.analyze.trustSubst false in
-#testDelab (fun (x y z : Nat) (hxy : x = y) (hyz : x = z) => hxy ▸ hyz : ∀ (x y z : Nat), x = y → x = z → y = z)
+#testDelab (fun (x y z : Nat) (hxy : x = y) (hyz : x = z) => hxy ▸ hyz : ∀ (x y z : Nat), x = y  x = z  y = z)
   expecting fun x y z hxy hyz => Eq.rec (motive := fun x_1 h => x_1 = z) hyz hxy
 
 set_option pp.analyze.trustSubst true in
-#testDelab (fun (x y z : Nat) (hxy : x = y) (hyz : x = z) => hxy ▸ hyz : ∀ (x y z : Nat), x = y → x = z → y = z)
+#testDelab (fun (x y z : Nat) (hxy : x = y) (hyz : x = z) => hxy ▸ hyz : ∀ (x y z : Nat), x = y  x = z  y = z)
   expecting fun x y z hxy hyz => hxy ▸ hyz
 
 set_option pp.analyze.trustId true in
@@ -234,7 +234,7 @@ set_option pp.analyze.typeAscriptions false in
 #testDelab (fun (x : Unit) => @id (ReaderT Bool IO Bool) (do read : ReaderT Bool IO Bool)) ()
   expecting (fun (x : Unit) => id read) ()
 
-instance : CoeFun Bool (fun b => Bool → Bool) := { coe := fun b x => b && x }
+instance : CoeFun Bool (fun b => Bool  Bool) := { coe := fun b x => b && x }
 
 #testDelab fun (xs : List Nat) => xs ≠ xs
   expecting fun xs => xs ≠ xs
@@ -283,7 +283,7 @@ end proofs
     let ctxCore ← readThe Core.Context
     pure ctxCore.currNamespace
 
-structure SubtypeLike1 {α : Sort u} (p : α → Prop) where
+structure SubtypeLike1 {α : Sort u} (p : α  Prop) where
 
 #testDelab SubtypeLike1 fun (x : Nat) => x < 10
   expecting SubtypeLike1 fun (x : Nat) => x < 10
@@ -295,12 +295,12 @@ structure SubtypeLike1 {α : Sort u} (p : α → Prop) where
 #testDelab SubtypeLike1 fun (x : Nat) => Nat.succ x = x
   expecting SubtypeLike1 fun (x : Nat) => x.succ = x
 
-structure SubtypeLike3 {α β γ : Sort u} (p : α → β → γ → Prop) where
+structure SubtypeLike3 {α β γ : Sort u} (p : α  β  γ  Prop) where
 
 #testDelab SubtypeLike3 fun (x y z : Nat) => x + y < z
   expecting SubtypeLike3 fun (x y z : Nat) => x + y < z
 
-structure SubtypeLike3Double {α β γ : Sort u} (p₁ : α → β → Prop) (p₂ : β → γ → Prop) where
+structure SubtypeLike3Double {α β γ : Sort u} (p₁ : α  β  Prop) (p₂ : β  γ  Prop) where
 
 #testDelab SubtypeLike3Double (fun (x y : Nat) => x = y) (fun (y z : Nat) => y = z)
   expecting SubtypeLike3Double (fun (x y : Nat) => x = y) fun y (z : Nat) => y = z
@@ -311,7 +311,7 @@ def takesStricts ⦃α : Type⦄ {β : Type} ⦃γ : Type⦄ : Unit := ()
 #testDelab @takesStricts Unit Unit expecting takesStricts (α := Unit) (β := Unit)
 #testDelab @takesStricts Unit Unit Unit expecting takesStricts (α := Unit) (β := Unit) (γ := Unit)
 
-def takesStrictMotive ⦃motive : Nat → Type⦄ {n : Nat} (x : motive n) : motive n := x
+def takesStrictMotive ⦃motive : Nat  Type⦄ {n : Nat} (x : motive n) : motive n := x
 #testDelab takesStrictMotive expecting takesStrictMotive
 #testDelab @takesStrictMotive (fun x => Unit) 0 expecting takesStrictMotive (motive := fun x => Unit) (n := 0)
 #testDelab @takesStrictMotive (fun x => Unit) 0 () expecting takesStrictMotive (motive := fun x => Unit) (n := 0) ()
@@ -325,8 +325,8 @@ def arrayMkInjEqSnippet :=
 def typeAs (α : Type u) (a : α) := ()
 
 set_option pp.analyze.explicitHoles false in
-#testDelab ∀ {α : Sort u} {β : α → Sort v} {f₁ f₂ : (x : α) → β x}, (∀ (x : α), f₁ x = f₂ _) → f₁ = f₂
-  expecting ∀ {α : Sort u} {β : α → Sort v} {f₁ f₂ : (x : α) → β x}, (∀ (x : α), f₁ x = f₂ x) → f₁ = f₂
+#testDelab ∀ {α : Sort u} {β : α  Sort v} {f₁ f₂ : (x : α)  β x}, (∀ (x : α), f₁ x = f₂ _)  f₁ = f₂
+  expecting ∀ {α : Sort u} {β : α  Sort v} {f₁ f₂ : (x : α)  β x}, (∀ (x : α), f₁ x = f₂ x)  f₁ = f₂
 
 /- TODO(kmill) 2024-11-10 fix the following test
 set_option pp.analyze.trustSubtypeMk true in

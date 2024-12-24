@@ -9,7 +9,7 @@ import Lean.Compiler.IR.Basic
 namespace Lean
 namespace IR
 
-private def formatArg : Arg → Format
+private def formatArg : Arg  Format
   | Arg.var id     => format id
   | Arg.irrelevant => "◾"
 
@@ -18,13 +18,13 @@ instance : ToFormat Arg := ⟨formatArg⟩
 def formatArray {α : Type} [ToFormat α] (args : Array α) : Format :=
   args.foldl (fun r a => r ++ " " ++ format a) Format.nil
 
-private def formatLitVal : LitVal → Format
+private def formatLitVal : LitVal  Format
   | LitVal.num v => format v
   | LitVal.str v => format (repr v)
 
 instance : ToFormat LitVal := ⟨formatLitVal⟩
 
-private def formatCtorInfo : CtorInfo → Format
+private def formatCtorInfo : CtorInfo  Format
   | { name := name, cidx := cidx, usize := usize, ssize := ssize, .. } => Id.run do
     let mut r := f!"ctor_{cidx}"
     if usize > 0 || ssize > 0 then
@@ -35,7 +35,7 @@ private def formatCtorInfo : CtorInfo → Format
 
 instance : ToFormat CtorInfo := ⟨formatCtorInfo⟩
 
-private def formatExpr : Expr → Format
+private def formatExpr : Expr  Format
   | Expr.ctor i ys      => format i ++ formatArray ys
   | Expr.reset n x      => "reset[" ++ format n ++ "] " ++ format x
   | Expr.reuse x i u ys => "reuse" ++ (if u then "!" else "") ++ " " ++ format x ++ " in " ++ format i ++ formatArray ys
@@ -53,7 +53,7 @@ private def formatExpr : Expr → Format
 instance : ToFormat Expr := ⟨formatExpr⟩
 instance : ToString Expr := ⟨fun e => Format.pretty (format e)⟩
 
-private partial def formatIRType : IRType → Format
+private partial def formatIRType : IRType  Format
   | IRType.float        => "float"
   | IRType.float32      => "float32"
   | IRType.uint8        => "u8"
@@ -72,21 +72,21 @@ private partial def formatIRType : IRType → Format
     "union " ++ Format.bracket "{" (Format.joinSep  tys.toList ", ") "}"
 
 instance : ToFormat IRType := ⟨formatIRType⟩
-instance : ToString IRType := ⟨toString ∘ format⟩
+instance : ToString IRType := ⟨toString  format⟩
 
-private def formatParam : Param → Format
+private def formatParam : Param  Format
   | { x := name, borrow := b, ty := ty } => "(" ++ format name ++ " : " ++ (if b then "@& " else "") ++ format ty ++ ")"
 
 instance : ToFormat Param := ⟨formatParam⟩
 
-def formatAlt (fmt : FnBody → Format) (indent : Nat) : Alt → Format
-  | Alt.ctor i b  => format i.name ++ " →" ++ Format.nest indent (Format.line ++ fmt b)
-  | Alt.default b => "default →" ++ Format.nest indent (Format.line ++ fmt b)
+def formatAlt (fmt : FnBody  Format) (indent : Nat) : Alt  Format
+  | Alt.ctor i b  => format i.name ++ " " ++ Format.nest indent (Format.line ++ fmt b)
+  | Alt.default b => "default " ++ Format.nest indent (Format.line ++ fmt b)
 
 def formatParams (ps : Array Param) : Format :=
   formatArray ps
 
-def formatFnBodyHead : FnBody → Format
+def formatFnBodyHead : FnBody  Format
   | FnBody.vdecl x ty e _      => "let " ++ format x ++ " : " ++ format ty ++ " := " ++ format e
   | FnBody.jdecl j xs _ _      => format j ++ formatParams xs ++ " := ..."
   | FnBody.set x i y _         => "set " ++ format x ++ "[" ++ format i ++ "] := " ++ format y
@@ -107,7 +107,7 @@ private def formatFnBodyHead' (fn : FnBody) : String :=
   formatFnBodyHead fn |>.pretty
 
 partial def formatFnBody (fnBody : FnBody) (indent : Nat := 2) : Format :=
-  let rec loop : FnBody → Format
+  let rec loop : FnBody  Format
     | FnBody.vdecl x ty e b      => "let " ++ format x ++ " : " ++ format ty ++ " := " ++ format e ++ ";" ++ Format.line ++ loop b
     | FnBody.jdecl j xs v b      => format j ++ formatParams xs ++ " :=" ++ Format.nest indent (Format.line ++ loop v) ++ ";" ++ Format.line ++ loop b
     | FnBody.set x i y b         => "set " ++ format x ++ "[" ++ format i ++ "] := " ++ format y ++ ";" ++ Format.line ++ loop b

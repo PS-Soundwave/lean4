@@ -1,7 +1,7 @@
 inductive Foo where
   | a | b | c
 
-def f : Foo → Nat
+def f : Foo  Nat
   | Foo.a => 10
   | Foo.b => 20
   | Foo.c => 35

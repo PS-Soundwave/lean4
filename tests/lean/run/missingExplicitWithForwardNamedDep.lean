@@ -20,14 +20,14 @@ def valOf2 (α β : Type) [s : Foo α β] : Nat :=
 
 def f (x y z : Nat) := x + y + z
 
-/-- info: fun x y => f x y 10 : Nat → Nat → Nat -/
+/-- info: fun x y => f x y 10 : Nat  Nat  Nat -/
 #guard_msgs in
 #check f (z := 10)
 
 def g {α : Type} (a b : α) := b
-/-- info: fun a => g a 10 : Nat → Nat -/
+/-- info: fun a => g a 10 : Nat  Nat -/
 #guard_msgs in #check g (b := 10)
 
 def h (α : Type) (a b : α) := b
-/-- info: fun a => h Bool a true : Bool → Bool -/
+/-- info: fun a => h Bool a true : Bool  Bool -/
 #guard_msgs in #check h (b := true)

@@ -18,8 +18,8 @@ info: { name := "Joe",
 #eval { name := "Joe", val := List.iota 40, flag := true, inv := by decide : Foo }
 
 inductive Tree (α : Type) where
-  | node : List (Tree α) → Bool → Tree α
-  | leaf : α → Tree α
+  | node : List (Tree α)  Bool  Tree α
+  | leaf : α  Tree α
   deriving Repr
 
 /--
@@ -50,13 +50,13 @@ inductive StructureLikeInductive where
 namespace Foo
 mutual
 inductive Tree (α : Type u) where
-  | node : TreeList α → Tree α
-  | leaf : α → Tree α
+  | node : TreeList α  Tree α
+  | leaf : α  Tree α
   deriving Repr
 
 inductive TreeList (α : Type u) where
   | nil : TreeList α
-  | cons : Tree α → TreeList α → TreeList α
+  | cons : Tree α  TreeList α  TreeList α
   deriving Repr
 end
 
@@ -76,7 +76,7 @@ Check that types and proofs are erased for both `inductive` and `structure`.
 -/
 
 inductive test1 : Type 1 where
-  | wrap : Type → 2 < 3 → test1
+  | wrap : Type  2 < 3  test1
   deriving Repr
 
 structure test2 : Type 1 where
@@ -104,8 +104,8 @@ inductive Promote : (loc : Int) -> (state : Nat) -> Type where
 Promoted indices that are types are represented as `_`.
 -/
 
-inductive Promote2 : Type → Type where
-  | mk : (α : Type) → Promote2 α
+inductive Promote2 : Type  Type where
+  | mk : (α : Type)  Promote2 α
   deriving Repr
 
 /-- info: Promote2.mk _ -/

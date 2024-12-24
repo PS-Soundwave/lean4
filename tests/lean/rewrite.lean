@@ -44,22 +44,22 @@ refine Eq.trans h ?hole;
 apply Eq.symm;
 assumption
 
-theorem ex6 (p q r : Prop) (h₁ : q → r) (h₂ : p ↔ q) (h₃ : p) : r := by
+theorem ex6 (p q r : Prop) (h₁ : q  r) (h₂ : p ↔ q) (h₃ : p) : r := by
 rw [←h₂] at h₁;
 exact h₁ h₃
 
-theorem ex7 (p q r : Prop) (h₁ : q → r) (h₂ : p ↔ q) (h₃ : p) : r := by
+theorem ex7 (p q r : Prop) (h₁ : q  r) (h₂ : p ↔ q) (h₃ : p) : r := by
 rw [h₂] at h₃;
 exact h₁ h₃
 
-example (α : Type) (p : Prop) (a b c : α) (h : p → a = b) : a = c := by
+example (α : Type) (p : Prop) (a b c : α) (h : p  a = b) : a = c := by
   rw [h _]  -- should manifest goal `⊢ p`, like `rw [h]` would
 
 /-!
 Testing the `occs` configuration argument.
 -/
 
-variable (f : Nat → Nat) (w : ∀ n, f n = 0)
+variable (f : Nat  Nat) (w : ∀ n, f n = 0)
 
 example : [f 1, f 2, f 1, f 2] = [0, 0, 0, 0] := by
   rw (config := {occs := .pos [2]}) [w]

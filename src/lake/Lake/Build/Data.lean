@@ -78,7 +78,7 @@ A mapping between a build key and its associated build data in the store.
 It is a simple type function composed of the separate open type families for
 modules facets, package facets, Lake target facets, and custom targets.
 -/
-abbrev BuildData : BuildKey → Type
+abbrev BuildData : BuildKey  Type
 | .moduleFacet _ f => ModuleData f
 | .packageFacet _ f => PackageData f
 | .targetFacet _ _ f => TargetData f

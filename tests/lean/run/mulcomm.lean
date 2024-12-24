@@ -1,5 +1,5 @@
 class MulComm (α : Type u) [Mul α] : Prop where
-    mulComm : {a b : α} → a * b = b * a
+    mulComm : {a b : α}  a * b = b * a
 
 instance : Mul Bool where
   mul := and

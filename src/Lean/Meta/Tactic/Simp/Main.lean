@@ -216,7 +216,7 @@ private partial def reduce (e : Expr) : SimpM Expr := withIncRecDepth do
 instance : Inhabited (SimpM α) where
   default := fun _ _ _ => default
 
-partial def lambdaTelescopeDSimp (e : Expr) (k : Array Expr → Expr → SimpM α) : SimpM α := do
+partial def lambdaTelescopeDSimp (e : Expr) (k : Array Expr  Expr  SimpM α) : SimpM α := do
   go #[] e
 where
   go (xs : Array Expr) (e : Expr) : SimpM α := do
@@ -324,8 +324,8 @@ def simpArrow (e : Expr) : SimpM Result := do
         /-
           We use the default reducibility setting at `mkImpDepCongrCtx` and `mkImpCongrCtx` because they use the theorems
           ```lean
-          @implies_dep_congr_ctx : ∀ {p₁ p₂ q₁ : Prop}, p₁ = p₂ → ∀ {q₂ : p₂ → Prop}, (∀ (h : p₂), q₁ = q₂ h) → (p₁ → q₁) = ∀ (h : p₂), q₂ h
-          @implies_congr_ctx : ∀ {p₁ p₂ q₁ q₂ : Prop}, p₁ = p₂ → (p₂ → q₁ = q₂) → (p₁ → q₁) = (p₂ → q₂)
+          @implies_dep_congr_ctx : ∀ {p₁ p₂ q₁ : Prop}, p₁ = p₂  ∀ {q₂ : p₂  Prop}, (∀ (h : p₂), q₁ = q₂ h)  (p₁  q₁) = ∀ (h : p₂), q₂ h
+          @implies_congr_ctx : ∀ {p₁ p₂ q₁ q₂ : Prop}, p₁ = p₂  (p₂  q₁ = q₂)  (p₁  q₁) = (p₂  q₂)
           ```
           And the proofs may be from `rfl` theorems which are now omitted. Moreover, we cannot establish that the two
           terms are definitionally equal using `withReducible`.
@@ -355,7 +355,7 @@ def simpForall (e : Expr) : SimpM Result := withParent e do
       if let some h₁ := rd.proof? then
         /- Using
         ```
-        theorem forall_prop_domain_congr {p₁ p₂ : Prop} {q₁ : p₁ → Prop} {q₂ : p₂ → Prop}
+        theorem forall_prop_domain_congr {p₁ p₂ : Prop} {q₁ : p₁  Prop} {q₂ : p₂  Prop}
             (h₁ : p₁ = p₂)
             (h₂ : ∀ a : p₂, q₁ (h₁.substr a) = q₂ a)
             : (∀ a : p₁, q₁ a) = (∀ a : p₂, q₂ a)
@@ -427,7 +427,7 @@ private def dsimpReduce : DSimproc := fun e => do
   if eNew != e then return .visit eNew else return .done e
 
 /-- Helper `dsimproc` for `doNotVisitOfNat` and `doNotVisitOfScientific` -/
-private def doNotVisit (pred : Expr → Bool) (declName : Name) : DSimproc := fun e => do
+private def doNotVisit (pred : Expr  Bool) (declName : Name) : DSimproc := fun e => do
   if pred e then
     if (← readThe Simp.Context).isDeclToUnfold declName then
       return .continue e
@@ -509,10 +509,10 @@ def processCongrHypothesis (h : Expr) : SimpM Bool := do
           for non-trivial user-provided theorems.
           Example:
           ```
-          @[congr] theorem image_congr {f g : α → β} {s : Set α} (h : ∀ a, mem a s → f a = g a) : image f s = image g s :=
+          @[congr] theorem image_congr {f g : α  β} {s : Set α} (h : ∀ a, mem a s  f a = g a) : image f s = image g s :=
           ...
 
-          example {Γ: Set Nat}: (image (Nat.succ ∘ Nat.succ) Γ) = (image (fun a => a.succ.succ) Γ) := by
+          example {Γ: Set Nat}: (image (Nat.succ  Nat.succ) Γ) = (image (fun a => a.succ.succ) Γ) := by
             simp only [Function.comp_apply]
           ```
           `Function.comp_apply` is a `rfl` theorem, but `dsimp` will not apply it because the composition

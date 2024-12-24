@@ -18,7 +18,7 @@ structure C extends B where
 /-- info: { x := 1 + 10, y := 1 + 10 + 2, z := 1 } : C -/
 #guard_msgs in #check { z := 1 : C }
 /-! Make sure `z` is parsed as an abbreviation: -/
-/-- info: fun z => { x := z + 10, y := z + 10 + 2, z := z } : Nat → C -/
+/-- info: fun z => { x := z + 10, y := z + 10 + 2, z := z } : Nat  C -/
 #guard_msgs in #check fun z : Nat => { z : C }
 
 def test1 : B where
@@ -111,7 +111,7 @@ end Ex4
 Binders example
 -/
 structure PosFun where
-  f : Nat → Nat
+  f : Nat  Nat
   pos : ∀ n, 0 < f n
 
 def p : PosFun :=
@@ -144,10 +144,10 @@ namespace Ex5
 
 structure A (α : Type) (β : Type) where
   x : α
-  f : β → β
+  f : β  β
   z : α
 
-/-- info: fun z => { x := 1, f := fun n => n + 1, z := z } : Int → A Int Int -/
+/-- info: fun z => { x := 1, f := fun n => n + 1, z := z } : Int  A Int Int -/
 #guard_msgs in #check fun z => { x : Int := 1, f n : Int := n + 1, z : A _ _ }
 
 def test1 (z : Int) : A Int Int where

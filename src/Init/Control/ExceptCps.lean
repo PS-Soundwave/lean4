@@ -10,7 +10,7 @@ import Init.Control.Lawful.Basic
 The Exception monad transformer using CPS style.
 -/
 
-def ExceptCpsT (ε : Type u) (m : Type u → Type v) (α : Type u) := (β : Type u) → (α → m β) → (ε → m β) → m β
+def ExceptCpsT (ε : Type u) (m : Type u  Type v) (α : Type u) := (β : Type u)  (α  m β)  (ε  m β)  m β
 
 namespace ExceptCpsT
 
@@ -20,7 +20,7 @@ def run {ε α : Type u} [Monad m] (x : ExceptCpsT ε m α) : m (Except ε α) :
 
 set_option linter.unusedVariables false in  -- `s` unused
 @[always_inline, inline]
-def runK {ε α : Type u} (x : ExceptCpsT ε m α) (s : ε) (ok : α → m β) (error : ε → m β) : m β :=
+def runK {ε α : Type u} (x : ExceptCpsT ε m α) (s : ε) (ok : α  m β) (error : ε  m β) : m β :=
   x _ ok error
 
 @[always_inline, inline]
@@ -56,9 +56,9 @@ instance [Inhabited ε] : Inhabited (ExceptCpsT ε m α) where
 
 @[simp] theorem run_throw [Monad m] : run (throw e : ExceptCpsT ε m β) = pure (Except.error e) := rfl
 
-@[simp] theorem run_bind_lift [Monad m] (x : m α) (f : α → ExceptCpsT ε m β) : run (ExceptCpsT.lift x >>= f : ExceptCpsT ε m β) = x >>= fun a => run (f a) := rfl
+@[simp] theorem run_bind_lift [Monad m] (x : m α) (f : α  ExceptCpsT ε m β) : run (ExceptCpsT.lift x >>= f : ExceptCpsT ε m β) = x >>= fun a => run (f a) := rfl
 
-@[simp] theorem run_bind_throw [Monad m] (e : ε) (f : α → ExceptCpsT ε m β) : run (throw e >>= f : ExceptCpsT ε m β) = run (throw e) := rfl
+@[simp] theorem run_bind_throw [Monad m] (e : ε) (f : α  ExceptCpsT ε m β) : run (throw e >>= f : ExceptCpsT ε m β) = run (throw e) := rfl
 
 @[simp] theorem runCatch_pure [Monad m] : runCatch (pure x : ExceptCpsT α m α) = pure x := rfl
 
@@ -67,8 +67,8 @@ instance [Inhabited ε] : Inhabited (ExceptCpsT ε m α) where
 
 @[simp] theorem runCatch_throw [Monad m] : runCatch (throw a : ExceptCpsT α m α) = pure a := rfl
 
-@[simp] theorem runCatch_bind_lift [Monad m] (x : m α) (f : α → ExceptCpsT β m β) : runCatch (ExceptCpsT.lift x >>= f : ExceptCpsT β m β) = x >>= fun a => runCatch (f a) := rfl
+@[simp] theorem runCatch_bind_lift [Monad m] (x : m α) (f : α  ExceptCpsT β m β) : runCatch (ExceptCpsT.lift x >>= f : ExceptCpsT β m β) = x >>= fun a => runCatch (f a) := rfl
 
-@[simp] theorem runCatch_bind_throw [Monad m] (e : β) (f : α → ExceptCpsT β m β) : runCatch (throw e >>= f : ExceptCpsT β m β) = pure e := rfl
+@[simp] theorem runCatch_bind_throw [Monad m] (e : β) (f : α  ExceptCpsT β m β) : runCatch (throw e >>= f : ExceptCpsT β m β) = pure e := rfl
 
 end ExceptCpsT

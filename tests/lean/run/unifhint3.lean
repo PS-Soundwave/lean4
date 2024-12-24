@@ -4,20 +4,20 @@ universe u
 
 structure Monoid where
   α    : Type u
-  op   : α → α → α
+  op   : α  α  α
   unit : α
 
 structure Group where
   α    : Type u
-  op   : α → α → α
+  op   : α  α  α
   unit : α
-  inv : α → α
+  inv : α  α
 
 structure Ring where
   α    : Type u
-  mul  : α → α → α
-  add  : α → α → α
-  neg  : α → α
+  mul  : α  α  α
+  add  : α  α  α
+  neg  : α  α
   one  : α
   zero : α
 

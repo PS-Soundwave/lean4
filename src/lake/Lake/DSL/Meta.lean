@@ -25,7 +25,7 @@ single command (e.g., `meta if`).
 -/
 syntax cmdDo := ("do" many1Indent(command)) <|> command
 
-def expandCmdDo : TSyntax ``cmdDo → Array Command
+def expandCmdDo : TSyntax ``cmdDo  Array Command
 | `(cmdDo|do $cmds*) => cmds
 | `(cmdDo|$cmd:command) => #[cmd]
 | _ => #[]

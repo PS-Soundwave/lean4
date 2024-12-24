@@ -68,7 +68,7 @@ inductive MessageOrdering
 - No specification: check everything.
 - With a specification: interpret the spec, and if nothing applies pass it through. -/
 def parseGuardMsgsSpec (spec? : Option (TSyntax ``guardMsgsSpec)) :
-    CommandElabM (WhitespaceMode × MessageOrdering × (Message → SpecResult)) := do
+    CommandElabM (WhitespaceMode × MessageOrdering × (Message  SpecResult)) := do
   let elts ←
     if let some spec := spec? then
       match spec with
@@ -78,8 +78,8 @@ def parseGuardMsgsSpec (spec? : Option (TSyntax ``guardMsgsSpec)) :
       pure #[]
   let mut whitespace : WhitespaceMode := .normalized
   let mut ordering : MessageOrdering := .exact
-  let mut p? : Option (Message → SpecResult) := none
-  let pushP (s : MessageSeverity) (drop : Bool) (p? : Option (Message → SpecResult))
+  let mut p? : Option (Message  SpecResult) := none
+  let pushP (s : MessageSeverity) (drop : Bool) (p? : Option (Message  SpecResult))
       (msg : Message) : SpecResult :=
     let p := p?.getD fun _ => .passthrough
     if msg.severity == s then if drop then .drop else .check

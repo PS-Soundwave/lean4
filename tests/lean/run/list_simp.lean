@@ -10,10 +10,10 @@ variable (l l₁ l₂ l₃ : List α)
 variable (L₁ L₂ : List (List α))
 
 variable {β : Type _}
-variable {f g : α → β}
+variable {f g : α  β}
 
 variable {γ : Type _}
-variable {f' : β → γ}
+variable {f' : β  γ}
 
 variable (m n : Nat)
 
@@ -91,7 +91,7 @@ variable (w : l ≠ []) in
 #check_simp getLast (l.map f) (by simpa) ~> f (getLast l (by simpa))
 
 #check_simp (l₁ ++ l₂).map f ~> l₁.map f ++ l₂.map f
-#check_simp (l.map f).map f' ~> l.map (f' ∘ f)
+#check_simp (l.map f).map f' ~> l.map (f'  f)
 #check_simp (concat l x).map f ~> map f l ++ [f x]
 
 variable (L : List (List α)) in
@@ -108,8 +108,8 @@ variable (L : List (List α)) in
 
 #check_simp l.dropLast.map f ~> (l.map f).dropLast
 
-variable (p : β → Bool) in
-#check_simp (l.map f).find? p ~> (l.find? (p ∘ f)).map f
+variable (p : β  Bool) in
+#check_simp (l.map f).find? p ~> (l.find? (p  f)).map f
 
 /-! ### filter -/
 
@@ -178,7 +178,7 @@ variable (w : replicate n x ≠ []) in
 #check_simp replicate 3 x = replicate 7 x ~> False
 #check_simp replicate 3 x = replicate 3 y ~> x = y
 #check_simp replicate 3 "1" = replicate 3 "1" ~> True
-#check_simp replicate n x = replicate m y ~> n = m ∧ (n = 0 ∨ x = y)
+#check_simp replicate n x = replicate m y ~> n = m ∧ (n = 0  x = y)
 
 -- append
 
@@ -272,9 +272,9 @@ variable [BEq α] [LawfulBEq α] in
 #check_simp (replicate (n+1) x).find? (fun _ => true) ~> some x
 #check_simp (replicate (n+1) x).find? (fun _ => false) ~> none
 
-variable {p : α → Bool} (w : p x) in
+variable {p : α  Bool} (w : p x) in
 #check_tactic (replicate (n+1) x).find? p ~> some x by simp [w]
-variable {p : α → Bool} (w : ¬ p x) in
+variable {p : α  Bool} (w : ¬ p x) in
 #check_tactic (replicate (n+1) x).find? p ~> none by simp [w]
 
 variable (h : 0 < n) in
@@ -282,9 +282,9 @@ variable (h : 0 < n) in
 variable (h : 0 < n) in
 #check_tactic (replicate n x).find? (fun _ => false) ~> none by simp [h]
 
-variable {p : α → Bool} (w : p x) (h : 0 < n) in
+variable {p : α  Bool} (w : p x) (h : 0 < n) in
 #check_tactic (replicate n x).find? p ~> some x by simp [w, h]
-variable {p : α → Bool} (w : ¬ p x) (h : 0 < n) in
+variable {p : α  Bool} (w : ¬ p x) (h : 0 < n) in
 #check_tactic (replicate n x).find? p ~> none by simp [w, h]
 
 -- findSome?
@@ -292,9 +292,9 @@ variable {p : α → Bool} (w : ¬ p x) (h : 0 < n) in
 #check_simp (replicate (n+1) x).findSome? (fun x => some x) ~> some x
 #check_simp (replicate (n+1) x).findSome? (fun _ => (none : Option β)) ~> none
 
-variable {f : α → Option β} (w : (f x).isSome) in
+variable {f : α  Option β} (w : (f x).isSome) in
 #check_tactic (replicate (n+1) x).findSome? f ~> f x by simp [w]
-variable {f : α → Option β} (w : (f x).isNone) in
+variable {f : α  Option β} (w : (f x).isNone) in
 #check_tactic (replicate (n+1) x).findSome? f ~> none by simp_all [w]
 
 variable (h : 0 < n) in
@@ -302,9 +302,9 @@ variable (h : 0 < n) in
 variable (h : 0 < n) in
 #check_tactic (replicate n x).findSome? (fun _ => (none : Option β)) ~> none by simp [h]
 
-variable {f : α → Option β} (w : (f x).isSome) (h : 0 < n) in
+variable {f : α  Option β} (w : (f x).isSome) (h : 0 < n) in
 #check_tactic (replicate n x).findSome? f ~> f x by simp [w, h]
-variable {f : α → Option β} (w : (f x).isNone) (h : 0 < n) in
+variable {f : α  Option β} (w : (f x).isNone) (h : 0 < n) in
 #check_tactic (replicate n x).findSome? f ~> none by simp_all [w, h]
 
 -- lookup
@@ -326,7 +326,7 @@ variable (h : n ≤ m) in
 
 -- zipWith
 section
-variable (f : α → α → α)
+variable (f : α  α  α)
 
 #check_simp zipWith f (replicate n x) (replicate n y) ~> replicate n (f x y)
 #check_simp zipWith f (replicate n x) (replicate m y) ~> replicate (min n m) (f x y)
@@ -356,10 +356,10 @@ end
 
 /-! ### reverse -/
 
-variable (p : α → Bool) in
+variable (p : α  Bool) in
 #check_simp (l.reverse.filter p) ~> (l.filter p).reverse
 
-variable (f : α → Option β) in
+variable (f : α  Option β) in
 #check_simp (l.reverse.filterMap f) ~> (l.filterMap f).reverse
 
 #check_simp l.reverse.head? ~> l.getLast?
@@ -401,12 +401,12 @@ variable [BEq α] in
 
 /-! ### Pairwise -/
 section Pairwise
-variable (R : α → α → Prop)
+variable (R : α  α  Prop)
 #check_simp Pairwise R [] ~> True
-#check_simp Pairwise R (x :: l) ~> (∀ (a' : α), a' ∈ l → R x a') ∧ Pairwise R l
+#check_simp Pairwise R (x :: l) ~> (∀ (a' : α), a' ∈ l  R x a') ∧ Pairwise R l
 #check_simp Pairwise R [x, y, z] ~> (R x y ∧ R x z) ∧ R y z
 
-#check_simp Pairwise R (replicate n x) ~> n ≤ 1 ∨ R x x
+#check_simp Pairwise R (replicate n x) ~> n ≤ 1  R x x
 #check_simp Pairwise R (replicate 1 x) ~> True
 #check_simp Pairwise R (replicate (n+2) x) ~> R x x
 #check_simp Pairwise (· < ·) (replicate 2 m) ~> False
@@ -462,9 +462,9 @@ end Pairwise
 
 /-! ## ofFn -/
 
-example (f : Fin 3 → Nat) : List.ofFn f = [f 0, f 1, f 2] := rfl
+example (f : Fin 3  Nat) : List.ofFn f = [f 0, f 1, f 2] := rfl
 -- Out of place, but lets check that `Fin.foldl` is semireducible too.
-example (f : Fin 3 → Nat) : Fin.foldl 3 (fun acc i => f i :: acc) [] = [f 2, f 1, f 0] := rfl
+example (f : Fin 3  Nat) : Fin.foldl 3 (fun acc i => f i :: acc) [] = [f 2, f 1, f 0] := rfl
 
 /-! ## Monadic operations -/
 attribute [local simp] Id.run in

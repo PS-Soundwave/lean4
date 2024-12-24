@@ -17,7 +17,7 @@ def foo (α : Type) [Inhabited α] (x : α := default) : α := x
 /-!
 Check that optional value omission is aware of unfolding.
 -/
-def Ty := (x : Nat := 1) → Fin (x + 1)
+def Ty := (x : Nat := 1)  Fin (x + 1)
 
 def f (y : Nat := 2) : Ty := fun x => 0
 
@@ -34,7 +34,7 @@ Check that overapplied projections pretty print using projection notation.
 -/
 
 structure Foo where
-  f : Nat → Nat
+  f : Nat  Nat
 
 /-- info: ∀ (x : Foo), x.f 1 = 0 : Prop -/
 #guard_msgs in #check ∀ (x : Foo), x.f 1 = 0
@@ -52,11 +52,11 @@ info: (let_fun f := id;
 /-!
 Overapplied `OfNat.ofNat`
 -/
-instance : OfNat (Nat → Nat) 1 where
+instance : OfNat (Nat  Nat) 1 where
   ofNat := id
 
 /-- info: 1 2 : Nat -/
-#guard_msgs in #check (1 : Nat → Nat) 2
+#guard_msgs in #check (1 : Nat  Nat) 2
 
 /-!
 Overapplied `dite`
@@ -76,7 +76,7 @@ def g (a : Nat) (b := 1) (c := 2) (d := 3) := a + b + c + d
 #guard_msgs in #check g 0
 
 -- Both the `start` and `stop` arguments are omitted.
-/-- info: fun a => Array.foldl (fun x y => x + y) 0 a : Array Nat → Nat -/
+/-- info: fun a => Array.foldl (fun x y => x + y) 0 a : Array Nat  Nat -/
 #guard_msgs in #check fun (a : Array Nat) => a.foldl (fun x y => x + y) 0
 
 

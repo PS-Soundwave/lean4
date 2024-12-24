@@ -391,13 +391,13 @@ already exists, Lake will error.
 Translation is lossy. It does not preserve comments or formatting and
 non-declarative configuration will be discarded."
 
-def helpScript : (cmd : String) → String
+def helpScript : (cmd : String)  String
 | "list"                => helpScriptList
 | "run"                 => helpScriptRun
 | "doc"                 => helpScriptDoc
 | _                     => helpScriptCli
 
-def help : (cmd : String) → String
+def help : (cmd : String)  String
 | "new"                 => helpNew
 | "init"                => helpInit
 | "build"               => helpBuild

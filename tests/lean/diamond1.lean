@@ -1,17 +1,17 @@
 structure Bar (α : Type) where
   a : α
-  b : Nat → α
+  b : Nat  α
 
 structure Baz (α : Type) where
-  a : α → α
-  c : Bool → α
+  a : α  α
+  c : Bool  α
   d : Nat
 
 set_option structureDiamondWarning false in
 structure Foo (α : Type) extends Bar α, Baz α -- Error: parent field type mismatch
 
 set_option structureDiamondWarning false in
-structure Foo (α : Type) extends Bar (α → α), Baz α
+structure Foo (α : Type) extends Bar (α  α), Baz α
 
 #print Foo
 
@@ -24,4 +24,4 @@ def f (x : Nat) : Foo Nat :=
 #print f
 
 set_option structureDiamondWarning true in
-structure Foo' (α : Type) extends Bar (α → α), Baz α -- Warning: parent field duplication
+structure Foo' (α : Type) extends Bar (α  α), Baz α -- Warning: parent field duplication

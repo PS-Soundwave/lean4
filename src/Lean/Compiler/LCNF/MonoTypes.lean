@@ -68,7 +68,7 @@ Convert a LCNF type from the base phase to the mono phase.
 LCNF types in the mono phase do not have dependencies,
 and universe levels have been erased.
 
-The type contains only `→` and constants.
+The type contains only `` and constants.
 -/
 partial def toMonoType (type : Expr) : CoreM Expr := do
   let type := type.headBeta

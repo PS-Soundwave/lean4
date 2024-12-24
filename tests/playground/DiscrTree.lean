@@ -5,25 +5,25 @@ def List.insert {α} [BEq α] (as : List α) (a : α) : List α :=
 if as.contains a then as else a::as
 
 inductive Term
-| var : Nat → Term
-| app : String → Array Term → Term
+| var : Nat  Term
+| app : String  Array Term  Term
 
 instance : Inhabited Term := ⟨Term.var 0⟩
 
 inductive Key
 | var : Key
-| sym : String → Nat → Key
+| sym : String  Nat  Key
 
 instance : Inhabited Key := ⟨Key.var⟩
 
-def Key.beq : Key → Key → Bool
+def Key.beq : Key  Key  Bool
 | Key.var,       Key.var       => true
 | Key.sym k₁ a₁, Key.sym k₂ a₂ => k₁ == k₂ && a₁ == a₂
 | _,             _             => false
 
 instance : BEq Key := ⟨Key.beq⟩
 
-def Key.lt : Key → Key → Bool
+def Key.lt : Key  Key  Bool
 | Key.var,       Key.var       => false
 | Key.var,       _             => true
 | Key.sym k₁ a₁, Key.sym k₂ a₂ => k₁ < k₂ || (k₁ == k₂ && a₁ < a₂)
@@ -31,17 +31,17 @@ def Key.lt : Key → Key → Bool
 
 instance : Less Key := ⟨fun k₁ k₂ => k₁.lt k₂⟩
 
-def Key.format : Key → Format
+def Key.format : Key  Format
 | Key.var     => "*"
 | Key.sym k a => if a > 0 then k ++ "." ++ fmt a else k
 
 instance : HasFormat Key := ⟨Key.format⟩
 
-def Term.key : Term → Key
+def Term.key : Term  Key
 | Term.var _    => Key.var
 | Term.app f as => Key.sym f as.size
 
-def Term.args : Term → Array Term
+def Term.args : Term  Array Term
 | Term.var _    => #[]
 | Term.app f as => as
 
@@ -56,14 +56,14 @@ node [] #[]
 
 instance {α} : Inhabited (Trie α) := ⟨empty⟩
 
-partial def appendTodoAux (as : Array Term) : Nat → Array Term → Array Term
+partial def appendTodoAux (as : Array Term) : Nat  Array Term  Array Term
 | 0,   todo => todo
 | i+1, todo => appendTodoAux i (todo.push (as.get! i))
 
 def appendTodo (todo : Array Term) (as : Array Term) : Array Term :=
 appendTodoAux as as.size todo
 
-partial def createNodes {α} (v : α) : Array Term → Trie α
+partial def createNodes {α} (v : α) : Array Term  Trie α
 | todo =>
   if todo.isEmpty then node [v] #[]
   else
@@ -71,7 +71,7 @@ partial def createNodes {α} (v : α) : Array Term → Trie α
     let todo := todo.pop;
     node [] #[(t.key, createNodes (appendTodo todo t.args))]
 
-partial def insertAux {α} [BEq α] (v : α) : Array Term → Trie α → Trie α
+partial def insertAux {α} [BEq α] (v : α) : Array Term  Trie α  Trie α
 | todo, node vs cs =>
   if todo.isEmpty then node (vs.insert v) cs
   else
@@ -91,12 +91,12 @@ let todo : Array Term := Array.mkEmpty 32;
 let todo := todo.push k;
 insertAux v todo d
 
-partial def format {α} [HasFormat α] : Trie α → Format
+partial def format {α} [HasFormat α] : Trie α  Format
 | node vs cs => Format.group $ Format.paren $ "node" ++ (if vs.isEmpty then Format.nil else " " ++ fmt vs) ++ Format.join (cs.toList.map $ fun ⟨k, c⟩ => Format.line ++ Format.paren (fmt k ++ " => " ++ format c))
 
 instance {α} [HasFormat α] : HasFormat (Trie α) := ⟨format⟩
 
-@[specialize] partial def foldMatchAux {α β} {m : Type → Type} [Monad m] (f : β → α → m β) : Array Term → Trie α → β → m β
+@[specialize] partial def foldMatchAux {α β} {m : Type  Type} [Monad m] (f : β  α  m β) : Array Term  Trie α  β  m β
 | todo, node vs cs, b =>
   if todo.isEmpty then vs.foldlM f b
   else if cs.isEmpty then pure b
@@ -115,7 +115,7 @@ instance {α} [HasFormat α] : HasFormat (Trie α) := ⟨format⟩
         let todo := appendTodo todo t.args;
         foldMatchAux todo c.2 b
 
-@[specialize] def foldMatch {α β} {m : Type → Type} [Monad m] (d : Trie α) (k : Term) (f : β → α → m β) (b : β) : m β :=
+@[specialize] def foldMatch {α β} {m : Type  Type} [Monad m] (d : Trie α) (k : Term) (f : β  α  m β) (b : β) : m β :=
 let todo : Array Term := Array.mkEmpty 32;
 let todo := todo.push k;
 foldMatchAux f todo d b
@@ -124,7 +124,7 @@ foldMatchAux f todo d b
 def getMatch {α} (d : Trie α) (k : Term) : Array α :=
 Id.run $ d.foldMatch k (fun (r : Array α) v => pure $ r.push v) #[]
 
-@[specialize] partial def foldUnifyAux {α β} {m : Type → Type} [Monad m] (f : β → α → m β) : Nat → Array Term → Trie α → β → m β
+@[specialize] partial def foldUnifyAux {α β} {m : Type  Type} [Monad m] (f : β  α  m β) : Nat  Array Term  Trie α  β  m β
 | skip+1, todo, node vs cs, b =>
   if cs.isEmpty then pure b
   else
@@ -158,7 +158,7 @@ Id.run $ d.foldMatch k (fun (r : Array α) v => pure $ r.push v) #[]
         let todo := appendTodo todo t.args;
         foldUnifyAux 0 todo c.2 b
 
-@[specialize] def foldUnify {α β} {m : Type → Type} [Monad m] (d : Trie α) (k : Term) (f : β → α → m β) (b : β) : m β :=
+@[specialize] def foldUnify {α β} {m : Type  Type} [Monad m] (d : Trie α) (k : Term) (f : β  α  m β) (b : β) : m β :=
 let todo : Array Term := Array.mkEmpty 32;
 let todo := todo.push k;
 foldUnifyAux f 0 todo d b

@@ -1,6 +1,6 @@
 structure S where
   carrier : Type
-  mul : carrier → carrier → carrier
+  mul : carrier  carrier  carrier
 
 def Nat.S : S where
   carrier := Nat

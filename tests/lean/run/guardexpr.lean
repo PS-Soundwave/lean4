@@ -48,7 +48,7 @@ end
 #guard 2 == 1 + 1
 #guard 2 = 1 + 1
 
-instance (p : Bool → Prop) [DecidablePred p] : Decidable (∀ b, p b) :=
+instance (p : Bool  Prop) [DecidablePred p] : Decidable (∀ b, p b) :=
   if h : p false ∧ p true then
     isTrue (by { intro b; cases h; cases b <;> assumption })
   else

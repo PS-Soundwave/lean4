@@ -10,7 +10,7 @@ open System
 
 namespace Lake
 
-def JobAction.verb (failed : Bool) : JobAction → String
+def JobAction.verb (failed : Bool) : JobAction  String
 | .unknown => if failed then "Running" else "Ran"
 | .replay => if failed then "Replaying" else "Replayed"
 | .fetch => if failed then "Fetching" else "Fetched"
@@ -29,7 +29,7 @@ def JobState.merge (a b : JobState) : JobState where
   action := a.action.merge b.action
   trace := mixTrace a.trace b.trace
 
-@[inline] def JobState.modifyLog (f : Log → Log) (s : JobState) :=
+@[inline] def JobState.modifyLog (f : Log  Log) (s : JobState) :=
   {s with log := f s.log}
 
 /-- Add log entries to the beginning of the job's log. -/
@@ -132,12 +132,12 @@ instance [Inhabited α] : Inhabited (Job α) := ⟨pure default⟩
   if job.caption.isEmpty then {job with caption} else job
 
 @[inline] def mapResult
-  (f : JobResult α → JobResult β) (self : Job α)
+  (f : JobResult α  JobResult β) (self : Job α)
   (prio := Task.Priority.default) (sync := false)
 : Job β := {self with task := self.task.map f prio sync}
 
 @[inline] def mapOk
-  (f : α → JobState → JobResult β) (self : Job α)
+  (f : α  JobState  JobResult β) (self : Job α)
   (prio := Task.Priority.default) (sync := false)
 : Job β :=
   self.mapResult (prio := prio) (sync := sync) fun
@@ -145,11 +145,11 @@ instance [Inhabited α] : Inhabited (Job α) := ⟨pure default⟩
     | .error e s => .error e s
 
 @[inline] def bindTask [Monad m]
-  (f : JobTask α → m (JobTask β)) (self : Job α)
+  (f : JobTask α  m (JobTask β)) (self : Job α)
 : m (Job β) := return {self with task := ← f self.task}
 
 @[inline] protected def map
-  (f : α → β) (self : Job α)
+  (f : α  β) (self : Job α)
   (prio := Task.Priority.default) (sync := false)
 : Job β := self.mapResult (·.map f) prio sync
 
@@ -193,7 +193,7 @@ Logs the job's log and throws if there was an error.
 
 /-- Apply `f` asynchronously to the job's output. -/
 protected def mapM
-  (self : Job α) (f : α → JobM β)
+  (self : Job α) (f : α  JobM β)
   (prio := Task.Priority.default) (sync := false)
 : SpawnM (Job β) :=
   fun ctx trace => do
@@ -206,7 +206,7 @@ protected def mapM
 
 @[deprecated Job.mapM (since := "2024-12-06")]
 protected abbrev bindSync
-  (self : Job α) (f : α → JobM β)
+  (self : Job α) (f : α  JobM β)
   (prio := Task.Priority.default) (sync := false)
 : SpawnM (Job β) := self.mapM f prio sync
 
@@ -215,7 +215,7 @@ Apply `f` asynchronously to the job's output
 and asynchronously await the resulting job.
 -/
 def bindM
-  (self : Job α) (f : α → JobM (Job β))
+  (self : Job α) (f : α  JobM (Job β))
   (prio := Task.Priority.default) (sync := false)
 : SpawnM (Job β) :=
   fun ctx trace => do
@@ -233,7 +233,7 @@ def bindM
 
 @[deprecated bindM (since := "2024-12-06")]
 protected abbrev bindAsync
-  (self : Job α) (f : α → SpawnM (Job β))
+  (self : Job α) (f : α  SpawnM (Job β))
   (prio := Task.Priority.default) (sync := false)
 : SpawnM (Job β) := self.bindM (fun a => f a) prio sync
 
@@ -242,7 +242,7 @@ protected abbrev bindAsync
 results of `a` and `b`. The job `c` errors if either `a` or `b` error.
 -/
 @[inline] def zipResultWith
-  (f : JobResult α → JobResult β → JobResult γ) (self : Job α) (other : Job β)
+  (f : JobResult α  JobResult β  JobResult γ) (self : Job α) (other : Job β)
   (prio := Task.Priority.default) (sync := true)
 : Job γ := Job.ofTask $
   self.task.bind (prio := prio) (sync := true) fun rx =>
@@ -254,7 +254,7 @@ results of `a` and `b`. The job `c` errors if either `a` or `b` error.
 results of `a` and `b`. The job `c` errors if either `a` or `b` error.
 -/
 @[inline] def zipWith
-  (f : α → β → γ) (self : Job α) (other : Job β)
+  (f : α  β  γ) (self : Job α) (other : Job β)
   (prio := Task.Priority.default) (sync := true)
 : Job γ :=
   self.zipResultWith (other := other) (prio := prio) (sync := sync) fun
@@ -317,21 +317,21 @@ protected abbrev pure (a : α) : BuildJob α :=
 instance : Pure BuildJob := ⟨Job.pure⟩
 
 @[deprecated Job.map (since := "2024-12-06")]
-protected abbrev map (f : α → β) (self : BuildJob α) : BuildJob β :=
+protected abbrev map (f : α  β) (self : BuildJob α) : BuildJob β :=
   self.toJob.map f
 
 instance : Functor BuildJob where
   map := Job.map
 
 @[inline, deprecated "Removed without replacement." (since := "2024-12-06")]
-def mapWithTrace (f : α → BuildTrace → β × BuildTrace) (self : BuildJob α) : BuildJob β :=
+def mapWithTrace (f : α  BuildTrace  β × BuildTrace) (self : BuildJob α) : BuildJob β :=
   self.toJob.mapOk fun a s =>
     let (b, trace) := f a s.trace
     .ok b {s with trace}
 
 @[inline, deprecated Job.mapM (since := "2024-12-06")]
 protected def bindSync
-  (self : BuildJob α) (f : α → BuildTrace → JobM (β × BuildTrace))
+  (self : BuildJob α) (f : α  BuildTrace  JobM (β × BuildTrace))
   (prio : Task.Priority := .default) (sync := false)
 : SpawnM (Job β) :=
   self.toJob.mapM (prio := prio) (sync := sync) fun a => do
@@ -341,7 +341,7 @@ protected def bindSync
 
 @[inline, deprecated Job.bindM (since := "2024-12-06")]
 protected def bindAsync
-  (self : BuildJob α) (f : α → BuildTrace → SpawnM (Job β))
+  (self : BuildJob α) (f : α  BuildTrace  SpawnM (Job β))
   (prio : Task.Priority := .default) (sync := false)
  : SpawnM (Job β)  :=
   self.toJob.bindM (prio := prio) (sync := sync) fun a => do
@@ -369,7 +369,7 @@ abbrev mixArray (jobs : Array (BuildJob α)) : Id (BuildJob Unit) :=
 
 @[deprecated Job.zipWith (since := "2024-12-06")]
 abbrev zipWith
-  (f : α → β → γ) (self : BuildJob α) (other : BuildJob β)
+  (f : α  β  γ) (self : BuildJob α) (other : BuildJob β)
 : BuildJob γ :=
   self.toJob.zipWith f other.toJob
 

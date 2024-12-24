@@ -16,7 +16,7 @@ instance coeToNat : CoeOut (Fin n) Nat :=
 /--
 From the empty type `Fin 0`, any desired result `α` can be derived. This is similar to `Empty.elim`.
 -/
-def elim0.{u} {α : Sort u} : Fin 0 → α
+def elim0.{u} {α : Sort u} : Fin 0  α
   | ⟨_, h⟩ => absurd h (not_lt_zero _)
 
 /--
@@ -31,7 +31,7 @@ This differs from addition, which wraps around:
 (2 : Fin 3) + 1 = (0 : Fin 3)
 ```
 -/
-def succ : Fin n → Fin (n + 1)
+def succ : Fin n  Fin (n + 1)
   | ⟨i, h⟩ => ⟨i+1, Nat.succ_lt_succ h⟩
 
 variable {n : Nat}
@@ -51,22 +51,22 @@ Returns `a` modulo `n + 1` as a `Fin n.succ`.
 protected def ofNat {n : Nat} (a : Nat) : Fin (n + 1) :=
   ⟨a % (n+1), Nat.mod_lt _ (Nat.zero_lt_succ _)⟩
 
-private theorem mlt {b : Nat} : {a : Nat} → a < n → b % n < n
+private theorem mlt {b : Nat} : {a : Nat}  a < n  b % n < n
   | 0,   h => Nat.mod_lt _ h
   | _+1, h =>
     have : n > 0 := Nat.lt_trans (Nat.zero_lt_succ _) h;
     Nat.mod_lt _ this
 
 /-- Addition modulo `n` -/
-protected def add : Fin n → Fin n → Fin n
+protected def add : Fin n  Fin n  Fin n
   | ⟨a, h⟩, ⟨b, _⟩ => ⟨(a + b) % n, mlt h⟩
 
 /-- Multiplication modulo `n` -/
-protected def mul : Fin n → Fin n → Fin n
+protected def mul : Fin n  Fin n  Fin n
   | ⟨a, h⟩, ⟨b, _⟩ => ⟨(a * b) % n, mlt h⟩
 
 /-- Subtraction modulo `n` -/
-protected def sub : Fin n → Fin n → Fin n
+protected def sub : Fin n  Fin n  Fin n
   /-
   The definition of `Fin.sub` has been updated to improve performance.
   The right-hand-side of the following `match` was originally
@@ -92,28 +92,28 @@ we are trying to minimize the number of Nat theorems
 needed to bootstrap Lean.
 -/
 
-protected def mod : Fin n → Fin n → Fin n
+protected def mod : Fin n  Fin n  Fin n
   | ⟨a, h⟩, ⟨b, _⟩ => ⟨a % b,  Nat.lt_of_le_of_lt (Nat.mod_le _ _) h⟩
 
-protected def div : Fin n → Fin n → Fin n
+protected def div : Fin n  Fin n  Fin n
   | ⟨a, h⟩, ⟨b, _⟩ => ⟨a / b, Nat.lt_of_le_of_lt (Nat.div_le_self _ _) h⟩
 
-def modn : Fin n → Nat → Fin n
+def modn : Fin n  Nat  Fin n
   | ⟨a, h⟩, m => ⟨a % m, Nat.lt_of_le_of_lt (Nat.mod_le _ _) h⟩
 
-def land : Fin n → Fin n → Fin n
+def land : Fin n  Fin n  Fin n
   | ⟨a, h⟩, ⟨b, _⟩ => ⟨(Nat.land a b) % n, mlt h⟩
 
-def lor : Fin n → Fin n → Fin n
+def lor : Fin n  Fin n  Fin n
   | ⟨a, h⟩, ⟨b, _⟩ => ⟨(Nat.lor a b) % n, mlt h⟩
 
-def xor : Fin n → Fin n → Fin n
+def xor : Fin n  Fin n  Fin n
   | ⟨a, h⟩, ⟨b, _⟩ => ⟨(Nat.xor a b) % n, mlt h⟩
 
-def shiftLeft : Fin n → Fin n → Fin n
+def shiftLeft : Fin n  Fin n  Fin n
   | ⟨a, h⟩, ⟨b, _⟩ => ⟨(a <<< b) % n, mlt h⟩
 
-def shiftRight : Fin n → Fin n → Fin n
+def shiftRight : Fin n  Fin n  Fin n
   | ⟨a, h⟩, ⟨b, _⟩ => ⟨(a >>> b) % n, mlt h⟩
 
 instance : Add (Fin n) where
@@ -156,7 +156,7 @@ theorem ne_of_val_ne {i j : Fin n} (h : val i ≠ val j) : i ≠ j :=
 theorem val_ne_of_ne {i j : Fin n} (h : i ≠ j) : val i ≠ val j :=
   fun h' => absurd (eq_of_val_eq h') h
 
-theorem modn_lt : ∀ {m : Nat} (i : Fin n), m > 0 → (modn i m).val < m
+theorem modn_lt : ∀ {m : Nat} (i : Fin n), m > 0  (modn i m).val < m
   | _, ⟨_, _⟩, hp =>  by simp [modn]; apply Nat.mod_lt; assumption
 
 theorem val_lt_of_le (i : Fin b) (h : b ≤ n) : i.val < n :=
@@ -179,11 +179,11 @@ protected theorem pos (i : Fin n) : 0 < n :=
 @[inline] protected def cast (eq : n = m) (i : Fin n) : Fin m := ⟨i, eq ▸ i.2⟩
 
 /-- `castAdd m i` embeds `i : Fin n` in `Fin (n+m)`. See also `Fin.natAdd` and `Fin.addNat`. -/
-@[inline] def castAdd (m) : Fin n → Fin (n + m) :=
+@[inline] def castAdd (m) : Fin n  Fin (n + m) :=
   castLE <| Nat.le_add_right n m
 
 /-- `castSucc i` embeds `i : Fin n` in `Fin (n+1)`. -/
-@[inline] def castSucc : Fin n → Fin (n + 1) := castAdd 1
+@[inline] def castSucc : Fin n  Fin (n + 1) := castAdd 1
 
 /-- `addNat m i` adds `m` to `i`, generalizes `Fin.succ`. -/
 def addNat (i : Fin n) (m) : Fin (n + m) := ⟨i + m, Nat.add_lt_add_right i.2 _⟩
@@ -215,7 +215,7 @@ theorem val_add_one_le_of_lt {n : Nat} {a b : Fin n} (h : a < b) : (a : Nat) + 1
 
 theorem val_add_one_le_of_gt {n : Nat} {a b : Fin n} (h : a > b) : (b : Nat) + 1 ≤ (a : Nat) := h
 
-theorem exists_iff {p : Fin n → Prop} : (Exists fun i => p i) ↔ Exists fun i => Exists fun h => p ⟨i, h⟩ :=
+theorem exists_iff {p : Fin n  Prop} : (Exists fun i => p i) ↔ Exists fun i => Exists fun h => p ⟨i, h⟩ :=
   ⟨fun ⟨⟨i, hi⟩, hpi⟩ => ⟨i, hi, hpi⟩, fun ⟨i, hi, hpi⟩ => ⟨⟨i, hi⟩, hpi⟩⟩
 
 end Fin

@@ -55127,7 +55127,7 @@ static lean_object* _init_l___private_Lean_Elab_App_0__Lean_Elab_Term_resolveDot
 _start:
 {
 lean_object* x_1; 
-x_1 = lean_mk_string_unchecked("invalid dotted identifier notation, expected type is not of the form (... → C ...) where C is a constant", 106, 104);
+x_1 = lean_mk_string_unchecked("invalid dotted identifier notation, expected type is not of the form (...  C ...) where C is a constant", 106, 104);
 return x_1;
 }
 }

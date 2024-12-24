@@ -8,7 +8,7 @@ import Lean.Meta.Tactic.Util
 
 namespace Lean.Meta
 
-@[inline] private partial def introNImp {σ} (mvarId : MVarId) (n : Nat) (mkName : LocalContext → Name → Bool → σ → MetaM (Name × σ)) (s : σ)
+@[inline] private partial def introNImp {σ} (mvarId : MVarId) (n : Nat) (mkName : LocalContext  Name  Bool  σ  MetaM (Name × σ)) (s : σ)
     : MetaM (Array FVarId × MVarId) := mvarId.withContext do
   mvarId.checkNotAssigned `introN
   let mvarType ← mvarId.getType
@@ -98,7 +98,7 @@ def mkFreshBinderNameForTactic (binderName : Name) : MetaM Name := do
   mkFreshBinderNameForTacticCore (← getLCtx) binderName (tactic.hygienic.get (← getOptions))
 
 private def mkAuxNameImp (preserveBinderNames : Bool) (hygienic : Bool) (useNamesForExplicitOnly : Bool)
-    (lctx : LocalContext) (binderName : Name) (isExplicit : Bool) : List Name → MetaM (Name × List Name)
+    (lctx : LocalContext) (binderName : Name) (isExplicit : Bool) : List Name  MetaM (Name × List Name)
   | []         => mkAuxNameWithoutGivenName []
   | n :: rest  => do
     if useNamesForExplicitOnly && !isExplicit then
@@ -168,7 +168,7 @@ abbrev _root_.Lean.MVarId.intro1P (mvarId : MVarId) : MetaM (FVarId × MVarId) :
 Calculate the number of new hypotheses that would be created by `intros`,
 i.e. the number of binders which can be introduced without unfolding definitions.
 -/
-partial def getIntrosSize : Expr → Nat
+partial def getIntrosSize : Expr  Nat
   | .forallE _ _ b _ => getIntrosSize b + 1
   | .letE _ _ _ b _  => getIntrosSize b + 1
   | .mdata _ b       => getIntrosSize b

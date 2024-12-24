@@ -387,27 +387,27 @@ def buildPrologueAlloca (builder : LLVM.Builder llvmctx) (ty : LLVM.LLVMType llv
 
 
 def buildWhile_ (builder : LLVM.Builder llvmctx) (name : String)
-    (condcodegen : LLVM.Builder llvmctx → M llvmctx (LLVM.Value llvmctx))
-    (bodycodegen : LLVM.Builder llvmctx → M llvmctx Unit) : M llvmctx Unit := do
+    (condcodegen : LLVM.Builder llvmctx  M llvmctx (LLVM.Value llvmctx))
+    (bodycodegen : LLVM.Builder llvmctx  M llvmctx Unit) : M llvmctx Unit := do
   let fn ← builderGetInsertionFn builder
 
   let nameHeader := name ++ "header"
   let nameBody := name ++ "body"
   let nameMerge := name ++ "merge"
 
-  -- cur → header
+  -- cur  header
   let headerbb ← LLVM.appendBasicBlockInContext llvmctx fn nameHeader
   let _ ← LLVM.buildBr builder headerbb
 
   let bodybb ← LLVM.appendBasicBlockInContext llvmctx fn nameBody
   let mergebb ← LLVM.appendBasicBlockInContext llvmctx fn nameMerge
 
-  -- header → {body, merge}
+  -- header  {body, merge}
   LLVM.positionBuilderAtEnd builder headerbb
   let cond ← condcodegen builder
   let _ ← LLVM.buildCondBr builder cond bodybb mergebb
 
-  -- body → header
+  -- body  header
   LLVM.positionBuilderAtEnd builder bodybb
   bodycodegen builder
   let _ ← LLVM.buildBr builder headerbb
@@ -418,7 +418,7 @@ def buildWhile_ (builder : LLVM.Builder llvmctx) (name : String)
 -- build an if, and position the builder at the merge basic block after execution.
 -- The '_' denotes that we return Unit on each branch.
 def buildIfThen_ (builder : LLVM.Builder llvmctx) (name : String) (brval : LLVM.Value llvmctx)
-    (thencodegen : LLVM.Builder llvmctx → M llvmctx ShouldForwardControlFlow) : M llvmctx Unit := do
+    (thencodegen : LLVM.Builder llvmctx  M llvmctx ShouldForwardControlFlow) : M llvmctx Unit := do
   let fn ← builderGetInsertionFn builder
 
   let nameThen := name ++ "Then"
@@ -442,8 +442,8 @@ def buildIfThen_ (builder : LLVM.Builder llvmctx) (name : String) (brval : LLVM.
   LLVM.positionBuilderAtEnd builder mergebb
 
 def buildIfThenElse_ (builder : LLVM.Builder llvmctx)  (name : String) (brval : LLVM.Value llvmctx)
-    (thencodegen : LLVM.Builder llvmctx → M llvmctx ShouldForwardControlFlow)
-    (elsecodegen : LLVM.Builder llvmctx → M llvmctx ShouldForwardControlFlow) : M llvmctx Unit := do
+    (thencodegen : LLVM.Builder llvmctx  M llvmctx ShouldForwardControlFlow)
+    (elsecodegen : LLVM.Builder llvmctx  M llvmctx ShouldForwardControlFlow) : M llvmctx Unit := do
   let fn ← LLVM.getBasicBlockParent (← LLVM.getInsertBlock builder)
   let thenbb ← LLVM.appendBasicBlockInContext llvmctx fn (name ++ "Then")
   let elsebb ← LLVM.appendBasicBlockInContext llvmctx fn (name ++ "Else")

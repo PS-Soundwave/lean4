@@ -12,10 +12,10 @@ def g {α β : Sort u} (a : α) (b : β) : α := a
 def h (a : α) (b : β) : α := a
 
 #check g
--- ?m.1 → ?m.2 → ?m.1
+-- ?m.1  ?m.2  ?m.1
 #check @g
--- {α β : Sort u} → α → β → α
+-- {α β : Sort u}  α  β  α
 #check @h
--- {α : Sort u_1} → {β : Sort u_2} → α → β → α
+-- {α : Sort u_1}  {β : Sort u_2}  α  β  α
 #check g (α := Nat) (β := String)
--- Nat → String → Nat
+-- Nat  String  Nat

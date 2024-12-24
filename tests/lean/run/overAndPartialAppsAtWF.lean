@@ -1,5 +1,5 @@
 @[specialize]
-def isEqvAux (a b : Array α) (hsz : a.size = b.size) (p : α → α → Bool) (i : Nat) : Bool :=
+def isEqvAux (a b : Array α) (hsz : a.size = b.size) (p : α  α  Bool) (i : Nat) : Bool :=
   if h : i < a.size then
      have : i < b.size := hsz ▸ h
      p a[i] b[i] && isEqvAux a b hsz p (i+1)
@@ -22,7 +22,7 @@ theorem eq_of_isEqvAux [DecidableEq α] (a b : Array α) (hsz : a.size = b.size)
     exact absurd (Nat.lt_of_lt_of_le high low) (Nat.lt_irrefl j)
 termination_by _ _ _ => a.size - i
 
-@[simp] def f (x y : Nat) : Nat → Nat :=
+@[simp] def f (x y : Nat) : Nat  Nat :=
   if h : x > 0 then
     fun z => f (x - 1) (y + 1) z + 1
   else

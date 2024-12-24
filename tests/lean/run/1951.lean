@@ -1,4 +1,4 @@
-class FunLike (F : Type _) (A : outParam (Type _)) (B : outParam (A → Type _)) where toFun : F → ∀ a, B a
+class FunLike (F : Type _) (A : outParam (Type _)) (B : outParam (A  Type _)) where toFun : F  ∀ a, B a
 instance [FunLike F A B] : CoeFun F fun _ => ∀ a, B a where coe := FunLike.toFun
 class One (M) where one : M
 instance [One M] : OfNat M (nat_lit 1) where ofNat := One.one

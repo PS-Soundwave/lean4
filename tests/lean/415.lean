@@ -13,13 +13,13 @@ def g (p : Point) : Nat :=
   p.x + p.y
 
 def Set (α : Type u) : Type u :=
-  α → Prop
+  α  Prop
 
 def Set.empty : Set α :=
   fun a => False
 
 def Set.insert (s : Set α) (a : α) : Set α :=
-  fun x => x = a ∨ s a
+  fun x => x = a  s a
 
 syntax (name := finSet) "{" term,* "}" : term
 

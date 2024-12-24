@@ -39,10 +39,10 @@ that can be encoded with 63 bits (31 bits on 32-bits architectures).
 -/
 inductive Int : Type where
   /-- A natural number is an integer (`0` to `∞`). -/
-  | ofNat   : Nat → Int
+  | ofNat   : Nat  Int
   /-- The negation of the successor of a natural number is an integer
     (`-1` to `-∞`). -/
-  | negSucc : Nat → Int
+  | negSucc : Nat  Int
 
 attribute [extern "lean_nat_to_int"] Int.ofNat
 attribute [extern "lean_int_neg_succ_of_nat"] Int.negSucc
@@ -77,7 +77,7 @@ protected theorem zero_ne_one : (0 : Int) ≠ 1 := nofun
 theorem ofNat_two : ((2 : Nat) : Int) = 2 := rfl
 
 /-- Negation of a natural number. -/
-def negOfNat : Nat → Int
+def negOfNat : Nat  Int
   | 0      => 0
   | succ m => negSucc m
 
@@ -166,7 +166,7 @@ instance : Sub Int where
   sub := Int.sub
 
 /-- A proof that an `Int` is non-negative. -/
-inductive NonNeg : Int → Prop where
+inductive NonNeg : Int  Prop where
   /-- Sole constructor, proving that `ofNat n` is positive. -/
   | mk (n : Nat) : NonNeg (ofNat n)
 
@@ -270,7 +270,7 @@ def natAbs (m : @& Int) : Nat :=
 Returns the "sign" of the integer as another integer: `1` for positive numbers,
 `-1` for negative numbers, and `0` for `0`.
 -/
-def sign : Int → Int
+def sign : Int  Int
   | Int.ofNat (succ _) => 1
   | Int.ofNat 0 => 0
   | -[_+1]      => -1
@@ -286,7 +286,7 @@ def sign : Int → Int
   #eval (-7 : Int).toNat -- 0
   ```
 -/
-def toNat : Int → Nat
+def toNat : Int  Nat
   | ofNat n   => n
   | negSucc _ => 0
 
@@ -294,7 +294,7 @@ def toNat : Int → Nat
 * If `n : Nat`, then `int.toNat' n = some n`
 * If `n : Int` is negative, then `int.toNat' n = none`.
 -/
-def toNat' : Int → Option Nat
+def toNat' : Int  Option Nat
   | (n : Nat) => some n
   | -[_+1] => none
 
@@ -318,7 +318,7 @@ instance : Dvd Int where
   #eval (-7 : Int) ^ 3 -- -343
   ```
 -/
-protected def pow (m : Int) : Nat → Int
+protected def pow (m : Int) : Nat  Int
   | 0      => 1
   | succ n => Int.pow m n * m
 
@@ -336,12 +336,12 @@ instance : Max Int := maxOfLe
 end Int
 
 /--
-The canonical homomorphism `Int → R`.
+The canonical homomorphism `Int  R`.
 In most use cases `R` will have a ring structure and this will be a ring homomorphism.
 -/
 class IntCast (R : Type u) where
-  /-- The canonical map `Int → R`. -/
-  protected intCast : Int → R
+  /-- The canonical map `Int  R`. -/
+  protected intCast : Int  R
 
 instance : IntCast Int where intCast n := n
 
@@ -350,7 +350,7 @@ Apply the canonical homomorphism from `Int` to a type `R` from an `IntCast R` in
 
 In Mathlib there will be such a homomorphism whenever `R` is an additive group with a `1`.
 -/
-@[coe, reducible, match_pattern] protected def Int.cast {R : Type u} [IntCast R] : Int → R :=
+@[coe, reducible, match_pattern] protected def Int.cast {R : Type u} [IntCast R] : Int  R :=
   IntCast.intCast
 
 -- see the notes about coercions into arbitrary types in the module doc-string

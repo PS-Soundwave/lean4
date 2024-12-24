@@ -5,7 +5,7 @@ def f (x y z : Nat) : Nat :=
   | _, _, 5 => y
   | _, _, _ => 1
 
-example (x y z : Nat) : x ≠ 5 → y ≠ 5 → z ≠ 5 → f x y z = 1 := by
+example (x y z : Nat) : x ≠ 5  y ≠ 5  z ≠ 5  f x y z = 1 := by
   intros
   simp (config := { iota := false }) [f]
   split
@@ -14,7 +14,7 @@ example (x y z : Nat) : x ≠ 5 → y ≠ 5 → z ≠ 5 → f x y z = 1 := by
   · contradiction
   · rfl
 
-example (x y z : Nat) : f x y z = y ∨ f x y z = 1 := by
+example (x y z : Nat) : f x y z = y  f x y z = 1 := by
   intros
   simp [f]
   split
@@ -23,7 +23,7 @@ example (x y z : Nat) : f x y z = y ∨ f x y z = 1 := by
   · exact Or.inl rfl
   · exact Or.inr rfl
 
-example (x y z : Nat) : f x y z = y ∨ f x y z = 1 := by
+example (x y z : Nat) : f x y z = y  f x y z = 1 := by
   intros
   simp [f]
   split <;> (first | apply Or.inl rfl | apply Or.inr rfl)

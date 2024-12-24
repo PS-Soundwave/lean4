@@ -2,18 +2,18 @@ inductive Expr where
   | var (i : Nat)
   | op  (lhs rhs : Expr)
 
-def List.getIdx : List α → Nat → α → α
+def List.getIdx : List α  Nat  α  α
   | [],    i,   u => u
   | a::as, 0,   u => a
   | a::as, i+1, u => getIdx as i u
 
 structure Context (α : Type u) where
-  op    : α → α → α
+  op    : α  α  α
   unit  : α
-  assoc : (a b c : α) → op (op a b) c = op a (op b c)
+  assoc : (a b c : α)  op (op a b) c = op a (op b c)
   vars  : List α
 
-def Expr.denote (ctx : Context α) : Expr → α
+def Expr.denote (ctx : Context α) : Expr  α
   | Expr.op a b => ctx.op (denote ctx a) (denote ctx b)
   | Expr.var i  => ctx.vars.getIdx i ctx.unit
 
@@ -23,7 +23,7 @@ theorem Expr.denote_op (ctx : Context α) (a b : Expr) : denote ctx (Expr.op a b
 theorem Expr.denote_var (ctx : Context α) (i : Nat) : denote ctx (Expr.var i) = ctx.vars.getIdx i ctx.unit :=
   rfl
 
-def Expr.concat : Expr → Expr → Expr
+def Expr.concat : Expr  Expr  Expr
   | Expr.op a b, c => Expr.op a (concat b c)
   | Expr.var i, c  => Expr.op (Expr.var i) c
 
@@ -38,7 +38,7 @@ theorem Expr.denote_concat (ctx : Context α) (a b : Expr) : denote ctx (concat 
   | var i => rfl
   | op _ _ _ ih => rw [concat_op, denote_op, ih, denote_op, denote_op, denote_op, ctx.assoc]
 
-def Expr.flat : Expr → Expr
+def Expr.flat : Expr  Expr
   | Expr.op a b => concat (flat a) (flat b)
   | Expr.var i  => Expr.var i
 

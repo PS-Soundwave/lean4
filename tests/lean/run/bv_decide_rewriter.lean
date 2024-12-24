@@ -11,10 +11,10 @@ example (z : BitVec 64) : True := by
   exact True.intro
 
 example :
-  ¬ (0 ≤ 0 + 16#64 ∧ 0 ≤ 0 + 16#64 ∧ (0 + 16#64 ≤ 0 ∨ 0 ≥ 0 + 16#64 ∨ 16#64 = 0 ∨ 16#64 = 0)) := by
+  ¬ (0 ≤ 0 + 16#64 ∧ 0 ≤ 0 + 16#64 ∧ (0 + 16#64 ≤ 0  0 ≥ 0 + 16#64  16#64 = 0  16#64 = 0)) := by
   bv_normalize
 
-example (x y z : BitVec 8) (h1 : x = z → False) (h2 : x = y) (h3 : y = z) : False := by
+example (x y z : BitVec 8) (h1 : x = z  False) (h2 : x = y) (h3 : y = z) : False := by
   bv_decide
 
 def mem_subset (a1 a2 b1 b2 : BitVec 64) : Bool :=
@@ -36,16 +36,16 @@ example {x : BitVec 0} : x.getLsbD i = false := by bv_normalize
 example {x : BitVec 16} {b : Bool} : (x.concat b).getLsbD 0 = b := by bv_normalize
 example {x : BitVec 16} : 1 * x = x := by bv_normalize
 example {x : BitVec 16} : x * 1 = x := by bv_normalize
-example {x : BitVec 16} : ~~~(~~~x) = x := by bv_normalize
+example {x : BitVec 16} : (x) = x := by bv_normalize
 example {x : BitVec 16} : x &&& 0 = 0 := by bv_normalize
 example {x : BitVec 16} : 0 &&& x = 0 := by bv_normalize
 example {x : BitVec 16} : (-1#16) &&& x = x := by bv_normalize
 example {x : BitVec 16} : x &&& (-1#16) = x := by bv_normalize
 example {x : BitVec 16} : x &&& x = x := by bv_normalize
-example {x : BitVec 16} : x &&& ~~~x = 0 := by bv_normalize
-example {x : BitVec 16} : ~~~x &&& x = 0 := by bv_normalize
-example {x : BitVec 16} : x + ~~~x = -1 := by bv_normalize
-example {x : BitVec 16} : ~~~x + x = -1 := by bv_normalize
+example {x : BitVec 16} : x &&& x = 0 := by bv_normalize
+example {x : BitVec 16} : x &&& x = 0 := by bv_normalize
+example {x : BitVec 16} : x + x = -1 := by bv_normalize
+example {x : BitVec 16} : x + x = -1 := by bv_normalize
 example {x : BitVec 16} : x + (-x) = 0 := by bv_normalize
 example {x : BitVec 16} : (-x) + x = 0 := by bv_normalize
 example {x : BitVec 16} : x + x = x * 2 := by bv_normalize
@@ -69,11 +69,11 @@ example {x y : BitVec 1} : x + y = x ^^^ y := by bv_normalize
 example {x y : BitVec 1} : x * y = x &&& y := by bv_normalize
 example {x : BitVec 16} : x / 0 = 0 := by bv_normalize
 example {x : BitVec 16} : x % 0 = x := by bv_normalize
-example {x : BitVec 16} : ~~~(-x) = x + (-1#16) := by bv_normalize
-example {x : BitVec 16} : ~~~(~~~x + 1#16) = x + (-1#16) := by bv_normalize
-example {x : BitVec 16} : ~~~(x + 1#16) = ~~~x + (-1#16) := by bv_normalize
-example {x : BitVec 16} : ~~~(1#16 + ~~~x) = x + (-1#16) := by bv_normalize
-example {x : BitVec 16} : ~~~(1#16 + x) = ~~~x + (-1#16) := by bv_normalize
+example {x : BitVec 16} : (-x) = x + (-1#16) := by bv_normalize
+example {x : BitVec 16} : (x + 1#16) = x + (-1#16) := by bv_normalize
+example {x : BitVec 16} : (x + 1#16) = x + (-1#16) := by bv_normalize
+example {x : BitVec 16} : (1#16 + x) = x + (-1#16) := by bv_normalize
+example {x : BitVec 16} : (1#16 + x) = x + (-1#16) := by bv_normalize
 example {x : BitVec 16} : (10 + x) + 2 = 12 + x := by bv_normalize
 example {x : BitVec 16} : (x + 10) + 2 = 12 + x := by bv_normalize
 example {x : BitVec 16} : 2 + (x + 10) = 12 + x := by bv_normalize
@@ -91,7 +91,7 @@ section
 example (x y : BitVec 256) : x * y = y * x := by
   bv_decide (config := { acNf := true })
 
-example {x y z : BitVec 64} : ~~~(x &&& (y * z)) = (~~~x ||| ~~~(z * y)) := by
+example {x y z : BitVec 64} : (x &&& (y * z)) = (x ||| (z * y)) := by
   bv_decide (config := { acNf := true })
 
 end

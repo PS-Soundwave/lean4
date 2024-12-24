@@ -1,6 +1,6 @@
 theorem not_mem_nil (a : Nat) : ¬ a ∈ [] := fun x => nomatch x
 
-example (R : Nat → Prop) : (∀ (a' : Nat), a' ∈ [] → R a') := by
+example (R : Nat  Prop) : (∀ (a' : Nat), a' ∈ []  R a') := by
   simp only [forall_prop_of_false (not_mem_nil _)]
   exact fun _ => True.intro
 

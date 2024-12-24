@@ -17,16 +17,16 @@ inductive CtorInfo where
   | /-- Natural numbers are morally constructor applications -/
     natVal (n : Nat)
 
-def CtorInfo.getName : CtorInfo → Name
+def CtorInfo.getName : CtorInfo  Name
   | .ctor val _ => val.name
   | .natVal 0   => ``Nat.zero
   | .natVal _   => ``Nat.succ
 
-def CtorInfo.getNumParams : CtorInfo → Nat
+def CtorInfo.getNumParams : CtorInfo  Nat
   | .ctor val _ => val.numParams
   | .natVal _ => 0
 
-def CtorInfo.getNumFields : CtorInfo → Nat
+def CtorInfo.getNumFields : CtorInfo  Nat
   | .ctor val _ => val.numFields
   | .natVal 0   => 0
   | .natVal _   => 1
@@ -101,7 +101,7 @@ where
       let ctorInfo := .ctor ctorVal (mkArray ctorVal.numParams Arg.erased ++ fieldArgs)
       return { ctx with discrCtorMap := ctx.discrCtorMap.insert discr ctorInfo }
 
-@[inline, inherit_doc withDiscrCtorImp] def withDiscrCtor [MonadFunctorT DiscrM m] (discr : FVarId) (ctorName : Name) (ctorFields : Array Param) : m α → m α :=
+@[inline, inherit_doc withDiscrCtorImp] def withDiscrCtor [MonadFunctorT DiscrM m] (discr : FVarId) (ctorName : Name) (ctorFields : Array Param) : m α  m α :=
   monadMap (m := DiscrM) <| withDiscrCtorImp discr ctorName ctorFields
 
 def simpCtorDiscrCore? (e : Expr) : DiscrM (Option FVarId) := do

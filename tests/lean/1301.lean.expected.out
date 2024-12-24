@@ -5,5 +5,5 @@ a : True
 a' : True ∧ True
 1301.lean:9:25-9:29: error: elaboration function for 'termTerm' has not been implemented
   term
-def b : Nat → Nat :=
+def b : Nat  Nat :=
 sorry

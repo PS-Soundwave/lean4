@@ -51,11 +51,11 @@ if x > 0 then Bla.g (x-1) * 2 else 1
 end Bla
 
 
-def S (σ : Type) (m : Type → Type) (α : Type) :=
-σ → m (α × σ)
+def S (σ : Type) (m : Type  Type) (α : Type) :=
+σ  m (α × σ)
 
 namespace S
-variable {σ : Type} {m : Type → Type} [Monad m] {α : Type}
+variable {σ : Type} {m : Type  Type} [Monad m] {α : Type}
 
 protected def pure (a : α) : S σ m α :=
 fun s => pure (a, s) -- This `pure` is the top-level one. The `pure` being defined here is called `S.pure`.

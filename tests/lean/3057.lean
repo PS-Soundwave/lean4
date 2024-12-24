@@ -5,12 +5,12 @@ Fixes `#3057`
 
 mutual
   inductive Tree : Type :=
-    | node : ListTree → Tree
+    | node : ListTree  Tree
     deriving Repr, DecidableEq, BEq, Hashable, Ord
 
   inductive ListTree : Type :=
     | nil : ListTree
-    | cons : Tree → ListTree → ListTree
+    | cons : Tree  ListTree  ListTree
     deriving Repr, DecidableEq, BEq, Hashable, Ord
 end
 

@@ -17,7 +17,7 @@ Authors: Kim Morrison
   repeat exact 42
 
 /-- info: Try this: fun {X} => X -/
-#guard_msgs in example : {_a : Nat} → Nat :=
+#guard_msgs in example : {_a : Nat}  Nat :=
   show_term by
     intro X
     exact X

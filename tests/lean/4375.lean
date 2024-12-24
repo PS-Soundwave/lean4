@@ -1,4 +1,4 @@
-example: Nat → Nat :=
+example: Nat  Nat :=
   let a : Nat := Nat.zero
   fun (_ : Nat) =>
     let b : Nat := Nat.zero

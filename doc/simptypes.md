@@ -41,25 +41,25 @@ and ``a × b`` denotes the type of pairs consisting of an element of ``a``
 paired with an element of ``b``, also known as the *Cartesian product*.
 Note that `×` is a Unicode symbol. We believe that judicious use of Unicode improves legibility,
 and all modern editors have great support for it. In the Lean standard library, we often use
-Greek letters to denote types, and the Unicode symbol `→` as a more compact version of `->`.
+Greek letters to denote types, and the Unicode symbol `` as a more compact version of `->`.
 
 ```lean
 constant m : Nat
 constant n : Nat
 
-constant f  : Nat → Nat         -- type the arrow as "\to" or "\r"
+constant f  : Nat  Nat         -- type the arrow as "\to" or "\r"
 constant f' : Nat -> Nat        -- alternative ASCII notation
 constant p  : Nat × Nat         -- type the product as "\times"
 constant q  : Prod Nat Nat      -- alternative notation
-constant g  : Nat → Nat → Nat
-constant g' : Nat → (Nat → Nat) -- has the same type as g!
-constant h  : Nat × Nat → Nat
-constant F  : (Nat → Nat) → Nat -- a "functional"
+constant g  : Nat  Nat  Nat
+constant g' : Nat  (Nat  Nat) -- has the same type as g!
+constant h  : Nat × Nat  Nat
+constant F  : (Nat  Nat)  Nat -- a "functional"
 
-#check f            -- Nat → Nat
+#check f            -- Nat  Nat
 #check f n          -- Nat
 #check g m n        -- Nat
-#check g m          -- Nat → Nat
+#check g m          -- Nat  Nat
 #check (m, n)       -- Nat × Nat
 #check p.1          -- Nat
 #check p.2          -- Nat
@@ -70,21 +70,21 @@ constant F  : (Nat → Nat) → Nat -- a "functional"
 
 Once again, you should try some examples on your own.
 
-Let us dispense with some basic syntax. You can enter the unicode arrow ``→`` by typing ``\to`` or ``\r``.
-You can also use the ASCII alternative ``->``, so the expressions ``Nat -> Nat`` and ``Nat → Nat`` mean the same thing.
+Let us dispense with some basic syntax. You can enter the unicode arrow ```` by typing ``\to`` or ``\r``.
+You can also use the ASCII alternative ``->``, so the expressions ``Nat -> Nat`` and ``Nat  Nat`` mean the same thing.
 Both expressions denote the type of functions that take a natural number as input and return a natural number as output.
 The unicode symbol ``×`` for the Cartesian product is entered as ``\times``.
 We will generally use lower-case Greek letters like ``α``, ``β``, and ``γ`` to range over types.
 You can enter these particular ones with ``\a``, ``\b``, and ``\g``.
 
 There are a few more things to notice here. First, the application of a function ``f`` to a value ``x`` is denoted ``f x``.
-Second, when writing type expressions, arrows associate to the *right*; for example, the type of ``g`` is ``Nat → (Nat → Nat)``.
+Second, when writing type expressions, arrows associate to the *right*; for example, the type of ``g`` is ``Nat  (Nat  Nat)``.
 Thus we can view ``g`` as a function that takes natural numbers and returns another function that takes a natural number and
 returns a natural number.
 In type theory, this is generally more convenient than writing ``g`` as a function that takes a pair of natural numbers as input
 and returns a natural number as output. For example, it allows us to "partially apply" the function ``g``.
-The example above shows that ``g m`` has type ``Nat → Nat``, that is, the function that "waits" for a second argument, ``n``,
-and then returns ``g m n``. Taking a function ``h`` of type ``Nat × Nat → Nat`` and "redefining" it to look like ``g`` is a process
+The example above shows that ``g m`` has type ``Nat  Nat``, that is, the function that "waits" for a second argument, ``n``,
+and then returns ``g m n``. Taking a function ``h`` of type ``Nat × Nat  Nat`` and "redefining" it to look like ``g`` is a process
 known as *currying*, something we will come back to below.
 
 By now you may also have guessed that, in Lean, ``(m, n)`` denotes the ordered pair of ``m`` and ``n``,

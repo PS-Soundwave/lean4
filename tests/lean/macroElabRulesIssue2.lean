@@ -17,6 +17,6 @@ elab_rules : tactic
 macro_rules
 | `(ℕ) => `(Nat)
 
-example : ∀ b : ℕ, ∀ a : Nat, a ≥ 2 → a / a = 1 := by
+example : ∀ b : ℕ, ∀ a : Nat, a ≥ 2  a / a = 1 := by
   Fix₁ b
   Fix₁ a < 2  -- should produce `Failed at elab_rules`

@@ -46,11 +46,11 @@ namespace MainM
 instance : MonadExit MainM := ⟨MainM.exit⟩
 
 /-- Try this and catch exits. -/
-@[inline] protected def tryCatchExit (f : ExitCode → MainM α) (self : MainM α) : MainM α :=
+@[inline] protected def tryCatchExit (f : ExitCode  MainM α) (self : MainM α) : MainM α :=
   self.toEIO.tryCatch f
 
 /-- Try this and catch error codes (i.e., non-zero exits). -/
-@[inline] protected def tryCatchError (f : ExitCode → MainM α) (self : MainM α) : MainM α :=
+@[inline] protected def tryCatchError (f : ExitCode  MainM α) (self : MainM α) : MainM α :=
   self.tryCatchExit fun rc => if rc = 0 then exit 0 else f rc
 
 /-- Exit with a generic error code (i.e., 1). -/
@@ -58,7 +58,7 @@ instance : MonadExit MainM := ⟨MainM.exit⟩
   exit 1
 
 /-- If this exits with an error code (i.e., not 0), perform other. -/
-@[inline] protected def orElse (self : MainM α) (other : Unit → MainM α) : MainM α :=
+@[inline] protected def orElse (self : MainM α) (other : Unit  MainM α) : MainM α :=
   self.tryCatchExit fun rc => if rc = 0 then exit 0 else other ()
 
 instance : Alternative MainM where

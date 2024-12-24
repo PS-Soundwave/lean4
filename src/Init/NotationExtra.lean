@@ -71,7 +71,7 @@ macro_rules
   | `($[$doc?:docComment]? $kind:attrKind unif_hint $(n)? $bs* where $[$cs₁ ≟ $cs₂]* |- $t₁ ≟ $t₂) => do
     let mut body ← `($t₁ = $t₂)
     for (c₁, c₂) in cs₁.zip cs₂ |>.reverse do
-      body ← `($c₁ = $c₂ → $body)
+      body ← `($c₁ = $c₂  $body)
     let hint : Ident ← `(hint)
     `($[$doc?:docComment]? @[$kind unification_hint] def $(n.getD hint) $bs* : Sort _ := $body)
 end Lean

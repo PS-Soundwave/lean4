@@ -23,7 +23,7 @@ structure CustomAnd (a b : Prop) : Prop where
   ha : a
   hb : b
 
-example : p ∨ (q ∧ r) → CustomAnd (p ∨ q) (p ∨ r) := by
+example : p  (q ∧ r)  CustomAnd (p  q) (p  r) := by
   intro h
   cases h with
   | inl hp => apply CustomAnd. (Or.intro_left q hp) (Or.intro_left r hp)

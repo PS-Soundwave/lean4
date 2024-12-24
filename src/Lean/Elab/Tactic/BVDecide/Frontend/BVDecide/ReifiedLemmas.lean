@@ -18,8 +18,8 @@ open Lean.Meta
 
 /--
 This function adds the two lemmas:
-- `discrExpr = true → atomExpr = lhsExpr`
-- `discrExpr = false → atomExpr = rhsExpr`
+- `discrExpr = true  atomExpr = lhsExpr`
+- `discrExpr = false  atomExpr = rhsExpr`
 It assumes that `discrExpr`, `lhsExpr` and `rhsExpr` are the expressions corresponding to `discr`,
 `lhs` and `rhs`. Furthermore it assumes that `atomExpr` is of the form
 `if discrExpr = true then lhsExpr else rhsExpr`.

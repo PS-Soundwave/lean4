@@ -1,4 +1,4 @@
-instance {ι : Type u} {α : ι → Type v} [∀ i, LE (α i)] : LE (∀ i, α i) where
+instance {ι : Type u} {α : ι  Type v} [∀ i, LE (α i)] : LE (∀ i, α i) where
   le x y := ∀ i, x i ≤ y i
 
 class Top (α : Type u) where
@@ -13,16 +13,16 @@ notation "⊥" => Bot.bot
 
 class Preorder (α : Type u) extends LE α, LT α where
   le_refl : ∀ a : α, a ≤ a
-  le_trans : ∀ a b c : α, a ≤ b → b ≤ c → a ≤ c
+  le_trans : ∀ a b c : α, a ≤ b  b ≤ c  a ≤ c
   lt := λ a b => a ≤ b ∧ ¬ b ≤ a
   lt_iff_le_not_le : ∀ a b : α, a < b ↔ (a ≤ b ∧ ¬ b ≤ a)
 
 class PartialOrder (α : Type u) extends Preorder α :=
-(le_antisymm : ∀ a b : α, a ≤ b → b ≤ a → a = b)
+(le_antisymm : ∀ a b : α, a ≤ b  b ≤ a  a = b)
 
-def Set (α : Type u) := α → Prop
+def Set (α : Type u) := α  Prop
 
-def setOf {α : Type u} (p : α → Prop) : Set α :=
+def setOf {α : Type u} (p : α  Prop) : Set α :=
 p
 
 namespace Set
@@ -33,16 +33,16 @@ s a
 instance : Membership α (Set α) :=
 ⟨Set.Mem⟩
 
-def range (f : ι → α) : Set α :=
+def range (f : ι  α) : Set α :=
   setOf (λ x => ∃ y, f y = x)
 
 end Set
 
 class InfSet (α : Type _) where
-  infₛ : Set α → α
+  infₛ : Set α  α
 
 class SupSet (α : Type _) where
-  supₛ : Set α → α
+  supₛ : Set α  α
 
 export SupSet (supₛ)
 
@@ -50,17 +50,17 @@ export InfSet (infₛ)
 
 open Set
 
-def supᵢ {α : Type _} [SupSet α] {ι} (s : ι → α) : α :=
+def supᵢ {α : Type _} [SupSet α] {ι} (s : ι  α) : α :=
   supₛ (range s)
 
-def infᵢ {α : Type _} [InfSet α] {ι} (s : ι → α) : α :=
+def infᵢ {α : Type _} [InfSet α] {ι} (s : ι  α) : α :=
   infₛ (range s)
 
 class HasSup (α : Type u) where
-  sup : α → α → α
+  sup : α  α  α
 
 class HasInf (α : Type u) where
-  inf : α → α → α
+  inf : α  α  α
 
 @[inherit_doc]
 infixl:68 " ⊔ " => HasSup.sup
@@ -71,22 +71,22 @@ infixl:69 " ⊓ " => HasInf.inf
 class SemilatticeSup (α : Type u) extends HasSup α, PartialOrder α where
   protected le_sup_left : ∀ a b : α, a ≤ a ⊔ b
   protected le_sup_right : ∀ a b : α, b ≤ a ⊔ b
-  protected sup_le : ∀ a b c : α, a ≤ c → b ≤ c → a ⊔ b ≤ c
+  protected sup_le : ∀ a b c : α, a ≤ c  b ≤ c  a ⊔ b ≤ c
 
 class SemilatticeInf (α : Type u) extends HasInf α, PartialOrder α where
   protected inf_le_left : ∀ a b : α, a ⊓ b ≤ a
   protected inf_le_right : ∀ a b : α, a ⊓ b ≤ b
-  protected le_inf : ∀ a b c : α, a ≤ b → a ≤ c → a ≤ b ⊓ c
+  protected le_inf : ∀ a b c : α, a ≤ b  a ≤ c  a ≤ b ⊓ c
 
 class Lattice (α : Type u) extends SemilatticeSup α, SemilatticeInf α
 
 class CompleteSemilatticeInf (α : Type _) extends PartialOrder α, InfSet α where
-  infₛ_le : ∀ s, ∀ a, a ∈ s → infₛ s ≤ a
-  le_infₛ : ∀ s a, (∀ b, b ∈ s → a ≤ b) → a ≤ infₛ s
+  infₛ_le : ∀ s, ∀ a, a ∈ s  infₛ s ≤ a
+  le_infₛ : ∀ s a, (∀ b, b ∈ s  a ≤ b)  a ≤ infₛ s
 
 class CompleteSemilatticeSup (α : Type _) extends PartialOrder α, SupSet α where
-  le_supₛ : ∀ s, ∀ a, a ∈ s → a ≤ supₛ s
-  supₛ_le : ∀ s a, (∀ b, b ∈ s → b ≤ a) → supₛ s ≤ a
+  le_supₛ : ∀ s, ∀ a, a ∈ s  a ≤ supₛ s
+  supₛ_le : ∀ s a, (∀ b, b ∈ s  b ≤ a)  supₛ s ≤ a
 
 class CompleteLattice (α : Type _) extends Lattice α, CompleteSemilatticeSup α,
   CompleteSemilatticeInf α, Top α, Bot α where
@@ -122,7 +122,7 @@ instance(priority := 100) CompleteLattice.toBoundedOrder  {α : Type _} [h : Com
 
 namespace Pi
 
-variable {ι : Type _} {α' : ι → Type _}
+variable {ι : Type _} {α' : ι  Type _}
 
 instance [∀ i, Bot (α' i)] : Bot (∀ i, α' i) :=
   ⟨fun _ => ⊥⟩
@@ -130,16 +130,16 @@ instance [∀ i, Bot (α' i)] : Bot (∀ i, α' i) :=
 instance [∀ i, Top (α' i)] : Top (∀ i, α' i) :=
   ⟨fun _ => ⊤⟩
 
-protected instance LE {ι : Type u} {α : ι → Type v} [∀ i, LE (α i)] : LE (∀ i, α i) where
+protected instance LE {ι : Type u} {α : ι  Type v} [∀ i, LE (α i)] : LE (∀ i, α i) where
   le x y := ∀ i, x i ≤ y i
 
-instance Preorder {ι : Type u} {α : ι → Type v} [∀ i, Preorder (α i)] : Preorder (∀ i, α i) :=
+instance Preorder {ι : Type u} {α : ι  Type v} [∀ i, Preorder (α i)] : Preorder (∀ i, α i) :=
   { Pi.LE with
   le_refl := sorry
   le_trans := sorry
   lt_iff_le_not_le := sorry }
 
-instance PartialOrder {ι : Type u} {α : ι → Type v} [∀ i, PartialOrder (α i)] :
+instance PartialOrder {ι : Type u} {α : ι  Type v} [∀ i, PartialOrder (α i)] :
     PartialOrder (∀ i, α i) :=
   { Pi.Preorder with
   le_antisymm := sorry }
@@ -166,13 +166,13 @@ instance orderBot [∀ i, LE (α' i)] [∀ i, OrderBot (α' i)] : OrderBot (∀ 
 instance boundedOrder [∀ i, LE (α' i)] [∀ i, BoundedOrder (α' i)] : BoundedOrder (∀ i, α' i) :=
 { Pi.orderTop, Pi.orderBot with }
 
-instance SupSet {α : Type _} {β : α → Type _} [∀ i, SupSet (β i)] : SupSet (∀ i, β i) :=
+instance SupSet {α : Type _} {β : α  Type _} [∀ i, SupSet (β i)] : SupSet (∀ i, β i) :=
   ⟨fun s i => supᵢ (λ (f : {f : ∀ i, β i // f ∈ s}) => f.1 i)⟩
 
-instance InfSet {α : Type _} {β : α → Type _} [∀ i, InfSet (β i)] : InfSet (∀ i, β i) :=
+instance InfSet {α : Type _} {β : α  Type _} [∀ i, InfSet (β i)] : InfSet (∀ i, β i) :=
   ⟨fun s i => infᵢ (λ (f : {f : ∀ i, β i // f ∈ s}) => f.1 i)⟩
 
-instance completeLattice {α : Type _} {β : α → Type _} [∀ i, CompleteLattice (β i)] :
+instance completeLattice {α : Type _} {β : α  Type _} [∀ i, CompleteLattice (β i)] :
     CompleteLattice (∀ i, β i) :=
   { Pi.boundedOrder, Pi.lattice with
     le_supₛ := sorry
@@ -181,23 +181,23 @@ instance completeLattice {α : Type _} {β : α → Type _} [∀ i, CompleteLatt
     le_infₛ := sorry
   }
 
-instance frame {ι : Type _} {π : ι → Type _} [∀ i, Frame (π i)] : Frame (∀ i, π i) :=
+instance frame {ι : Type _} {π : ι  Type _} [∀ i, Frame (π i)] : Frame (∀ i, π i) :=
   { Pi.completeLattice with }
 
-instance coframe {ι : Type _} {π : ι → Type _} [∀ i, Coframe (π i)] : Coframe (∀ i, π i) :=
+instance coframe {ι : Type _} {π : ι  Type _} [∀ i, Coframe (π i)] : Coframe (∀ i, π i) :=
   { Pi.completeLattice with infᵢ_sup_le_sup_infₛ := sorry }
 
 end Pi
 
 -- very quick (instantaneous) in Lean 4
-instance Pi.completeDistribLattice' {ι : Type _} {π : ι → Type _}
+instance Pi.completeDistribLattice' {ι : Type _} {π : ι  Type _}
     [∀ i, CompleteDistribLattice (π i)] : CompleteDistribLattice (∀ i, π i) :=
 CompleteDistribLattice.mk (Pi.coframe.infᵢ_sup_le_sup_infₛ)
 
 -- User: takes around 2 seconds wall clock time on my PC (but very quick in Lean 3)
 set_option maxHeartbeats 400 -- make sure it stays fast
 set_option synthInstance.maxHeartbeats 400
-instance Pi.completeDistribLattice'' {ι : Type _} {π : ι → Type _}
+instance Pi.completeDistribLattice'' {ι : Type _} {π : ι  Type _}
     [∀ i, CompleteDistribLattice (π i)] : CompleteDistribLattice (∀ i, π i) :=
   { Pi.frame, Pi.coframe with }
 -- quick Lean 3 version:

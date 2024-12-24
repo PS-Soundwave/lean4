@@ -16,14 +16,14 @@ def f2 (a : Int) (b c : Nat) : Int :=
   (b - c) + a
 
 /--
-info: def f1 : Int → Nat → Nat → Int :=
+info: def f1 : Int  Nat  Nat  Int :=
 fun a b c => a + (↑b - ↑c)
 -/
 #guard_msgs in
 #print f1
 
 /--
-info: def f2 : Int → Nat → Nat → Int :=
+info: def f2 : Int  Nat  Nat  Int :=
 fun a b c => ↑b - ↑c + a
 -/
 #guard_msgs in

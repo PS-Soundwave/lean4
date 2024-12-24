@@ -2601,7 +2601,7 @@ static lean_object* _init_l_Lean_IR_formatAlt___closed__1() {
 _start:
 {
 lean_object* x_1; 
-x_1 = lean_mk_string_unchecked(" →", 4, 2);
+x_1 = lean_mk_string_unchecked(" ", 4, 2);
 return x_1;
 }
 }
@@ -2619,7 +2619,7 @@ static lean_object* _init_l_Lean_IR_formatAlt___closed__3() {
 _start:
 {
 lean_object* x_1; 
-x_1 = lean_mk_string_unchecked("default →", 11, 9);
+x_1 = lean_mk_string_unchecked("default ", 11, 9);
 return x_1;
 }
 }

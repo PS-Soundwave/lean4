@@ -15,7 +15,7 @@ by
   trace_state
   simp_arith
 
-@[simp] def boo : Nat → Nat
+@[simp] def boo : Nat  Nat
   | a => 2 * a
 
 /--

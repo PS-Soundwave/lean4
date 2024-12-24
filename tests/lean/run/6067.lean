@@ -4,7 +4,7 @@ inductive Impl where
 
 namespace Impl
 
-inductive Balanced : Impl → Prop where
+inductive Balanced : Impl  Prop where
   | leaf : Balanced leaf
 
 @[inline]

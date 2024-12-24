@@ -25,7 +25,7 @@ def empty : RefVec aig 0 where
 def cast' {aig1 aig2 : AIG α} (s : RefVec aig1 len)
     (h :
       (∀ {i : Nat} (h : i < len), s.refs[i]'(by have := s.hlen; omega) < aig1.decls.size)
-        → ∀ {i : Nat} (h : i < len), s.refs[i]'(by have := s.hlen; omega) < aig2.decls.size) :
+         ∀ {i : Nat} (h : i < len), s.refs[i]'(by have := s.hlen; omega) < aig2.decls.size) :
     RefVec aig2 len :=
   { s with
     hrefs := by

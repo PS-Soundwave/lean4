@@ -40,7 +40,7 @@ structure ElimInfo where
 
 /-- Given the type `t` of an alternative, determines the number of parameters
 (.forall and .let)-bound, and whether the conclusion is a `motive`-application.  -/
-def altArity (motive : Expr) (n : Nat) : Expr → Nat × Bool
+def altArity (motive : Expr) (n : Nat) : Expr  Nat × Bool
   | .forallE _ _ b _ => altArity motive (n+1) b
   | .letE _ _ _ b _ => altArity motive (n+1) b
   | conclusion => (n, conclusion.getAppFn == motive)

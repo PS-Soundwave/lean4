@@ -1,6 +1,6 @@
 namespace Ex1
-  class FunLike (F : Sort _) (β : outParam <| Nat → Sort _) where
-    coe : F → ∀ a, β a
+  class FunLike (F : Sort _) (β : outParam <| Nat  Sort _) where
+    coe : F  ∀ a, β a
 
   inductive Secret
   def Wrapper := Secret
@@ -10,7 +10,7 @@ namespace Ex1
   instance (priority := 100) {F β} [FunLike F β] :
     CoeFun F fun _ => ∀ a : Nat, β a where coe := FunLike.coe
 
-  #check Bla.z ∘ id
+  #check Bla.z  id
 end Ex1
 
 
@@ -19,5 +19,5 @@ structure Secret
 def Wrapper := Secret
 def f (a : Nat) : (fun _ => Wrapper) a := ⟨⟩
 
-#check f ∘ id
+#check f  id
 end Ex2

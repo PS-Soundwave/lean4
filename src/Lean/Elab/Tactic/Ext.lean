@@ -37,7 +37,7 @@ If it is `false`, then the behind-the-scenes encoding of inherited fields
 is visible in the extensionality lemma.
 -/
 def withExtHyps (struct : Name) (flat : Bool)
-    (k : Array Expr → (x y : Expr) → Array (Name × Expr) → MetaM α) : MetaM α := do
+    (k : Array Expr  (x y : Expr)  Array (Name × Expr)  MetaM α) : MetaM α := do
   unless isStructure (← getEnv) struct do throwError "not a structure: {struct}"
   let structC ← mkConstWithLevelParams struct
   forallTelescope (← inferType structC) fun params _ => do
@@ -58,7 +58,7 @@ def withExtHyps (struct : Name) (flat : Bool)
 
 /--
 Creates the type of the extensionality theorem for the given structure,
-returning `∀ {x y : Struct}, x.1 = y.1 → x.2 = y.2 → x = y`, for example.
+returning `∀ {x y : Struct}, x.1 = y.1  x.2 = y.2  x = y`, for example.
 -/
 def mkExtType (structName : Name) (flat : Bool) : MetaM Expr := withLCtx {} {} do
   withExtHyps structName flat fun params x y hyps => do
@@ -305,7 +305,7 @@ Postprocessor for `withExt` which runs `rintro` with the given patterns when the
 pi type.
 -/
 def tryIntros [Monad m] [MonadLiftT TermElabM m] (g : MVarId) (pats : List (TSyntax `rcasesPat))
-    (k : MVarId → List (TSyntax `rcasesPat) → m Nat) : m Nat := do
+    (k : MVarId  List (TSyntax `rcasesPat)  m Nat) : m Nat := do
   match pats with
   | [] => k (← (g.intros : TermElabM _)).2 []
   | p::ps =>
@@ -321,7 +321,7 @@ Applies a single extensionality theorem, using `pats` to introduce variables in 
 Runs continuation `k` on each subgoal.
 -/
 def withExt1 [Monad m] [MonadLiftT TermElabM m] (g : MVarId) (pats : List (TSyntax `rcasesPat))
-    (k : MVarId → List (TSyntax `rcasesPat) → m Nat) : m Nat := do
+    (k : MVarId  List (TSyntax `rcasesPat)  m Nat) : m Nat := do
   let mut n := 0
   for g in ← (applyExtTheoremAt g : TermElabM _) do
     n := n.max (← tryIntros g pats k)
@@ -332,7 +332,7 @@ Applies extensionality theorems recursively, using `pats` to introduce variables
 Runs continuation `k` on each subgoal.
 -/
 def withExtN [Monad m] [MonadLiftT TermElabM m] [MonadExcept Exception m]
-    (g : MVarId) (pats : List (TSyntax `rcasesPat)) (k : MVarId → List (TSyntax `rcasesPat) → m Nat)
+    (g : MVarId) (pats : List (TSyntax `rcasesPat)) (k : MVarId  List (TSyntax `rcasesPat)  m Nat)
     (depth := 100) (failIfUnchanged := true) : m Nat :=
   match depth with
   | 0 => k g pats

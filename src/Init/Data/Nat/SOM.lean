@@ -18,7 +18,7 @@ inductive Expr where
   | mul (a b : Expr)
   deriving Inhabited
 
-def Expr.denote (ctx : Context) : Expr → Nat
+def Expr.denote (ctx : Context) : Expr  Nat
   | num n   => n
   | var v   => v.denote ctx
   | add a b => Nat.add (a.denote ctx) (b.denote ctx)
@@ -26,7 +26,7 @@ def Expr.denote (ctx : Context) : Expr → Nat
 
 abbrev Mon := List Var
 
-def Mon.denote (ctx : Context) : Mon → Nat
+def Mon.denote (ctx : Context) : Mon  Nat
   | [] => 1
   | v::vs => Nat.mul (v.denote ctx) (denote ctx vs)
 
@@ -50,7 +50,7 @@ where
 
 abbrev Poly := List (Nat × Mon)
 
-def Poly.denote (ctx : Context) : Poly → Nat
+def Poly.denote (ctx : Context) : Poly  Nat
   | [] => 0
   | (k, m) :: p => Nat.add (Nat.mul k (m.denote ctx)) (denote ctx p)
 
@@ -95,7 +95,7 @@ where
     | [] => acc
     | (k, m) :: p₁ => go p₁ (acc.add (p₂.mulMon k m))
 
-def Expr.toPoly : Expr → Poly
+def Expr.toPoly : Expr  Poly
   | num k   => bif k == 0 then [] else [(k, [])]
   | var v   => [(1, [v])]
   | add a b => a.toPoly.add b.toPoly

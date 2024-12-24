@@ -12,10 +12,10 @@ namespace Lean.Meta.Linear.Nat
 To prevent the kernel from accidentially reducing the atoms in the equation while typechecking,
 we abstract over them.
 -/
-def withAbstractAtoms (atoms : Array Expr) (k : Array Expr → MetaM (Option (Expr × Expr))) :
+def withAbstractAtoms (atoms : Array Expr) (k : Array Expr  MetaM (Option (Expr × Expr))) :
     MetaM (Option (Expr × Expr)) := do
   let atoms := atoms
-  let decls : Array (Name × (Array Expr → MetaM Expr)) ← atoms.mapM fun _ => do
+  let decls : Array (Name × (Array Expr  MetaM Expr)) ← atoms.mapM fun _ => do
     return ((← mkFreshUserName `x), fun _ => pure (mkConst ``Nat))
   withLocalDeclsD decls fun ctxt => do
     let some (r, p) ← k ctxt | return none

@@ -21,7 +21,7 @@ In Lean 4, one can easily create new notation that abbreviates commonly used idi
 
 ```lean
 # namespace ex1
-def Prod.str : Nat × Nat → String :=
+def Prod.str : Nat × Nat  String :=
   fun (a, b) => "(" ++ toString a ++ ", " ++ toString b ++ ")"
 
 structure Point where
@@ -29,10 +29,10 @@ structure Point where
   y : Nat
   z : Nat
 
-def Point.addX : Point → Point → Nat :=
+def Point.addX : Point  Point  Nat :=
   fun { x := a, .. } { x := b, .. } =>  a+b
 
-def Sum.str : Option Nat → String :=
+def Sum.str : Option Nat  String :=
   fun
     | some a => "some " ++ toString a
     | none   => "none"
@@ -48,7 +48,7 @@ for consuming implicit arguments. We are still exploring this feature and analyz
 here is the example in the link above using Lean 4 implicit lambdas.
 
 ```lean
-# variable (ρ : Type) (m : Type → Type) [Monad m]
+# variable (ρ : Type) (m : Type  Type) [Monad m]
 instance : Monad (ReaderT ρ m) where
   pure := ReaderT.pure
   bind := ReaderT.bind
@@ -59,26 +59,26 @@ Here are few examples
 
 ```lean
 # namespace ex2
-def id1 : {α : Type} → α → α :=
+def id1 : {α : Type}  α  α :=
   fun x => x
 
-def listId : List ({α : Type} → α → α) :=
+def listId : List ({α : Type}  α  α) :=
   (fun x => x) :: []
 
 -- In this example, implicit lambda introduction has been disabled because
 -- we use `@` before `fun`
-def id2 : {α : Type} → α → α :=
+def id2 : {α : Type}  α  α :=
   @fun α (x : α) => id1 x
 
-def id3 : {α : Type} → α → α :=
+def id3 : {α : Type}  α  α :=
   @fun α x => id1 x
 
-def id4 : {α : Type} → α → α :=
+def id4 : {α : Type}  α  α :=
   fun x => id1 x
 
 -- In this example, implicit lambda introduction has been disabled
 -- because we used the binder annotation `{...}`
-def id5 : {α : Type} → α → α :=
+def id5 : {α : Type}  α  α :=
   fun {α} x => id1 x
 # end ex2
 ```
@@ -132,7 +132,7 @@ def sum (xs : List Nat) :=
 #eval sum [1, 2, 3, 4]
 -- 10
 
-example {a b : Nat} {p : Nat → Nat → Nat → Prop} (h₁ : p a b b) (h₂ : b = a)
+example {a b : Nat} {p : Nat  Nat  Nat  Prop} (h₁ : p a b b) (h₂ : b = a)
     : p a a b :=
   Eq.subst (motive := fun x => p a x b) h₂ h₁
 ```
@@ -181,18 +181,18 @@ inductive Term where
   | add    (fn : Term) (arg : Term)
   | lambda (name : String) (type : Term) (body : Term)
 
-def getBinderName : Term → Option String
+def getBinderName : Term  Option String
   | Term.lambda (name := n) .. => some n
   | _ => none
 
-def getBinderType : Term → Option Term
+def getBinderType : Term  Option Term
   | Term.lambda (type := t) .. => some t
   | _ => none
 ```
 Ellipsis are also useful when explicit argument can be automatically inferred by Lean, and we want
 to avoid a sequence of `_`s.
 ```lean
-example (f : Nat → Nat) (a b c : Nat) : f (a + b + c) = f (a + (b + c)) :=
+example (f : Nat  Nat) (a b c : Nat) : f (a + b + c) = f (a + (b + c)) :=
   congrArg f (Nat.add_assoc ..)
 ```
 
@@ -200,9 +200,9 @@ In Lean 4, writing `f(x)` in place of `f x` is no longer allowed, you must use w
 
 ## Dependent function types
 
-Given `α : Type` and `β : α → Type`, `(x : α) → β x` denotes the type of functions `f` with the property that,
+Given `α : Type` and `β : α  Type`, `(x : α)  β x` denotes the type of functions `f` with the property that,
 for each `a : α`, `f a` is an element of `β a`. In other words, the type of the value returned by `f` depends on its input.
-We say `(x : α) → β x` is a dependent function type. In Lean 3, we write the dependent function type `(x : α) → β x` using
+We say `(x : α)  β x` is a dependent function type. In Lean 3, we write the dependent function type `(x : α)  β x` using
 one of the following three equivalent notations:
 `forall x : α, β x` or `∀ x : α, β x` or `Π x : α, β x`.
 The first two were intended to be used for writing propositions, and the latter for writing code.
@@ -210,15 +210,15 @@ Although the notation `Π x : α, β x` has historical significance, we have rem
 it is awkward to use and often confuses new users. We can still write `forall x : α, β x` and `∀ x : α, β x`.
 
 ```lean
-#check forall (α : Type), α → α
-#check ∀ (α : Type), α → α
-#check ∀ α : Type, α → α
-#check ∀ α, α → α
-#check (α : Type) → α → α
-#check {α : Type} → (a : Array α) → (i : Nat) → i < a.size → α
-#check {α : Type} → [ToString α] → α → String
-#check forall {α : Type} (a : Array α) (i : Nat), i < a.size → α
-#check {α β : Type} → α → β → α × β
+#check forall (α : Type), α  α
+#check ∀ (α : Type), α  α
+#check ∀ α : Type, α  α
+#check ∀ α, α  α
+#check (α : Type)  α  α
+#check {α : Type}  (a : Array α)  (i : Nat)  i < a.size  α
+#check {α : Type}  [ToString α]  α  String
+#check forall {α : Type} (a : Array α) (i : Nat), i < a.size  α
+#check {α β : Type}  α  β  α × β
 ```
 
 ## The `meta` keyword
@@ -226,7 +226,7 @@ it is awkward to use and often confuses new users. We can still write `forall x 
 In Lean 3, the keyword `meta` is used to mark definitions that can use primitives implemented in C/C++.
 These metadefinitions can also call themselves recursively, relaxing the termination
 restriction imposed by ordinary type theory. Metadefinitions may also use unsafe primitives such as
-`eval_expr (α : Type u) [reflected α] : expr → tactic α`, or primitives that break referential transparency
+`eval_expr (α : Type u) [reflected α] : expr  tactic α`, or primitives that break referential transparency
 `tactic.unsafe_run_io`.
 
 The keyword `meta` has been currently removed from Lean 4. However, we may re-introduce it in the future,
@@ -259,7 +259,7 @@ We use `@[extern]` with definitions when we want to provide a reference implemen
 that can be used for reasoning. When we write a definition such as
 ```lean
 @[extern "lean_nat_add"]
-def add : Nat → Nat → Nat
+def add : Nat  Nat  Nat
   | a, Nat.zero   => a
   | a, Nat.succ b => Nat.succ (add a b)
 ```
@@ -274,7 +274,7 @@ unsafe def unsound : False :=
   unsound
 
 #check @unsafeCast
--- {α : Type _} → {β : Type _} → α → β
+-- {α : Type _}  {β : Type _}  α  β
 
 unsafe def nat2String (x : Nat) : String :=
   unsafeCast x
@@ -301,11 +301,11 @@ ensures the reference implementation `k 0` is correct. For more information, see
 "Sealing Pointer-Based Optimizations Behind Pure Functions".
 ```lean
 unsafe
-def withPtrUnsafe {α β : Type} (a : α) (k : USize → β) (h : ∀ u, k u = k 0) : β :=
+def withPtrUnsafe {α β : Type} (a : α) (k : USize  β) (h : ∀ u, k u = k 0) : β :=
   k (ptrAddrUnsafe a)
 
 @[implemented_by withPtrUnsafe]
-def withPtr {α β : Type} (a : α) (k : USize → β) (h : ∀ u, k u = k 0) : β :=
+def withPtr {α β : Type} (a : α) (k : USize  β) (h : ∀ u, k u = k 0) : β :=
   k 0
 ```
 
@@ -349,7 +349,7 @@ These are changes to the library which may trip up Lean 3 users:
 Coding style changes have also been made:
 
 - Term constants and variables are now `lowerCamelCase` rather than `snake_case`
-- Type constants are now `UpperCamelCase`, eg `Nat`, `List`. Type variables are still lower case greek letters. Functors are still lower case latin `(m : Type → Type) [Monad m]`.
+- Type constants are now `UpperCamelCase`, eg `Nat`, `List`. Type variables are still lower case greek letters. Functors are still lower case latin `(m : Type  Type) [Monad m]`.
 - When defining typeclasses, prefer not to use "has". Eg `ToString` or `Add` instead of `HasToString` or `HasAdd`.
 - Prefer `return` to `pure` in monad expressions.
 - Pipes `<|` are preferred to dollars `$` for function application.
@@ -363,7 +363,7 @@ Coding style changes have also been made:
     x : Nat
     y : Nat
 
-  def Point.addX : Point → Point → Nat :=
+  def Point.addX : Point  Point  Nat :=
     fun { x := a, .. } { x := b, .. } => a + b
   ```
 - In structures and typeclass definitions, prefer `where` to `:=` and don't surround fields with parentheses. (Shown in `Point` above)

@@ -2,7 +2,7 @@ inductive Nested
 | nest (a : Array Nested) : Nested
 
 class OfUnit (α : Type) where
-  ofUnit : Unit → Except String α
+  ofUnit : Unit  Except String α
 
 instance myArrayInst [OfUnit α] : OfUnit (Array α) where
   ofUnit _ := Except.error ""

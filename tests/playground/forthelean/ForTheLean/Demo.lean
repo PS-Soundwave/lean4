@@ -69,7 +69,7 @@ macro_rules
 | `(Signature. $x:var is $words:wlexem* $y:var is an atom.) =>
   let words := words.toList.map Syntax.getId;
   let desc := mkNameSimple $ "_".intercalate $ words.map toString;
-  `(axiom $(mkIdent desc):ident : type_of $(x.getArg 0) → type_of $(y.getArg 0) → Prop)
+  `(axiom $(mkIdent desc):ident : type_of $(x.getArg 0)  type_of $(y.getArg 0)  Prop)
 -- }}}
 
 Signature. x is greater than y is an atom.

@@ -60,7 +60,7 @@ open BitVec
 
 -- Bitwise operations
 
-#guard ~~~0b1010#4 = 0b0101#4
+#guard 0b1010#4 = 0b0101#4
 #guard 0b1010#4 &&& 0b0110#4 = 0b0010#4
 #guard 0b1010#4 ||| 0b0110#4 = 0b1110#4
 #guard 0b1010#4 ^^^ 0b0110#4 = 0b1100#4

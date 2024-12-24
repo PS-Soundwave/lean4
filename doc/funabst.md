@@ -6,13 +6,13 @@ Conversely, if we have ``p : Nat × Nat``, then
 we have ``p.1 : Nat`` and ``p.2 : Nat``.
 This gives us a way of "using" a pair, by extracting its two components.
 
-We already know how to "use" a function ``f : α → β``, namely,
+We already know how to "use" a function ``f : α  β``, namely,
 we can apply it to an element ``a : α`` to obtain ``f a : β``.
 But how do we create a function from another expression?
 
 The companion to application is a process known as "lambda abstraction."
 Suppose that giving a variable ``x : α`` we can construct an expression ``t : β``.
-Then the expression ``fun (x : α) => t``, or, equivalently, ``λ (x : α) => t``, is an object of type ``α → β``.
+Then the expression ``fun (x : α) => t``, or, equivalently, ``λ (x : α) => t``, is an object of type ``α  β``.
 Think of this as the function from ``α`` to ``β`` which maps any value ``x`` to the value ``t``,
 which may depend on ``x``.
 
@@ -26,12 +26,12 @@ which may depend on ``x``.
 Here are some more examples:
 
 ```lean
-constant f : Nat → Nat
-constant h : Nat → Bool → Nat
+constant f : Nat  Nat
+constant h : Nat  Bool  Nat
 
-#check fun x : Nat => fun y : Bool => h (f x) y   -- Nat → Bool → Nat
-#check fun (x : Nat) (y : Bool) => h (f x) y      -- Nat → Bool → Nat
-#check fun x y => h (f x) y                       -- Nat → Bool → Nat
+#check fun x : Nat => fun y : Bool => h (f x) y   -- Nat  Bool  Nat
+#check fun (x : Nat) (y : Bool) => h (f x) y      -- Nat  Bool  Nat
+#check fun x y => h (f x) y                       -- Nat  Bool  Nat
 ```
 
 Lean interprets the final three examples as the same expression; in the last expression,
@@ -40,14 +40,14 @@ Lean infers the type of ``x`` and ``y`` from the types of ``f`` and ``h``.
 Some mathematically common examples of operations of functions can be described in terms of lambda abstraction:
 
 ```lean
-constant f : Nat → String
-constant g : String → Bool
+constant f : Nat  String
+constant g : String  Bool
 constant b : Bool
 
-#check fun x : Nat => x        -- Nat → Nat
-#check fun x : Nat => b        -- Nat → Bool
-#check fun x : Nat => g (f x)  -- Nat → Bool
-#check fun x => g (f x)        -- Nat → Bool
+#check fun x : Nat => x        -- Nat  Nat
+#check fun x : Nat => b        -- Nat  Bool
+#check fun x : Nat => g (f x)  -- Nat  Bool
+#check fun x => g (f x)        -- Nat  Bool
 ```
 
 Think about what these expressions mean. The expression ``fun x : Nat => x`` denotes the identity function on ``Nat``,
@@ -59,31 +59,31 @@ So, for example, we can write ``fun x => g (f x)`` instead of ``fun x : Nat => g
 We can abstract over the constants `f` and `g` in the previous definitions:
 
 ```lean
-#check fun (g : String → Bool) (f : Nat → String) (x : Nat) => g (f x)
--- (String → Bool) → (Nat → String) → Nat → Bool
+#check fun (g : String  Bool) (f : Nat  String) (x : Nat) => g (f x)
+-- (String  Bool)  (Nat  String)  Nat  Bool
 ```
 
 We can also abstract over types:
 
 ```lean
-#check fun (α β γ : Type) (g : β → γ) (f : α → β) (x : α) => g (f x)
+#check fun (α β γ : Type) (g : β  γ) (f : α  β) (x : α) => g (f x)
 ```
-The last expression, for example, denotes the function that takes three types, ``α``, ``β``, and ``γ``, and two functions, ``g : β → γ`` and ``f : α → β``, and returns the composition of ``g`` and ``f``. (Making sense of the type of this function requires an understanding of dependent products, which we will explain below.) Within a lambda expression ``fun x : α => t``, the variable ``x`` is a "bound variable": it is really a placeholder, whose "scope" does not extend beyond ``t``.
+The last expression, for example, denotes the function that takes three types, ``α``, ``β``, and ``γ``, and two functions, ``g : β  γ`` and ``f : α  β``, and returns the composition of ``g`` and ``f``. (Making sense of the type of this function requires an understanding of dependent products, which we will explain below.) Within a lambda expression ``fun x : α => t``, the variable ``x`` is a "bound variable": it is really a placeholder, whose "scope" does not extend beyond ``t``.
 For example, the variable ``b`` in the expression ``fun (b : β) (x : α) => b`` has nothing to do with the constant ``b`` declared earlier.
 In fact, the expression denotes the same function as ``fun (u : β) (z : α), u``. Formally, the expressions that are the same up to a renaming of bound variables are called *alpha equivalent*, and are considered "the same." Lean recognizes this equivalence.
 
-Notice that applying a term ``t : α → β`` to a term ``s : α`` yields an expression ``t s : β``.
+Notice that applying a term ``t : α  β`` to a term ``s : α`` yields an expression ``t s : β``.
 Returning to the previous example and renaming bound variables for clarity, notice the types of the following expressions:
 
 ```lean
 #check (fun x : Nat => x) 1     -- Nat
 #check (fun x : Nat => true) 1  -- Bool
 
-constant f : Nat → String
-constant g : String → Bool
+constant f : Nat  String
+constant g : String  Bool
 
 #check
-  (fun (α β γ : Type) (g : β → γ) (f : α → β) (x : α) => g (f x)) Nat String Bool g f 0
+  (fun (α β γ : Type) (g : β  γ) (f : α  β) (x : α) => g (f x)) Nat String Bool g f 0
   -- Bool
 ```
 
@@ -94,11 +94,11 @@ In fact, more should be true: applying the expression ``(fun x : Nat => x)`` to 
 #reduce (fun x : Nat => x) 1     -- 1
 #reduce (fun x : Nat => true) 1  -- true
 
-constant f : Nat → String
-constant g : String → Bool
+constant f : Nat  String
+constant g : String  Bool
 
 #reduce
-  (fun (α β γ : Type) (g : β → γ) (f : α → β) (x : α) => g (f x)) Nat String Bool g f 0
+  (fun (α β γ : Type) (g : β  γ) (f : α  β) (x : α) => g (f x)) Nat String Bool g f 0
   -- g (f 0)
 ```
 

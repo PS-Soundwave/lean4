@@ -26,7 +26,7 @@ structure InlineCandidateInfo where
   recursive : Bool := false
 
 /-- The arity (aka number of parameters) of the function to be inlined. -/
-def InlineCandidateInfo.arity : InlineCandidateInfo → Nat
+def InlineCandidateInfo.arity : InlineCandidateInfo  Nat
   | { params, .. } => params.size
 
 /--

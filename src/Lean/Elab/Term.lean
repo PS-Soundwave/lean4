@@ -56,7 +56,7 @@ inductive SyntheticMVarKind where
     If `f?` is provided, then throws an application type mismatch error.
   -/
   | coe (header? : Option String) (expectedType : Expr) (e : Expr) (f? : Option Expr)
-      (mkErrorMsg? : Option (MVarId → Expr → Expr → MetaM MessageData))
+      (mkErrorMsg? : Option (MVarId  Expr  Expr  MetaM MessageData))
   /-- Use tactic to synthesize value for metavariable. -/
   | tactic (tacticCode : Syntax) (ctx : SavedContext) (kind : TacticMVarKind)
   /-- Metavariable represents a hole whose elaboration has been postponed. -/
@@ -286,10 +286,10 @@ structure Context where
     We use this predicate to disallow `f` to be considered an auto implicit name in a definition such
     as
     ```
-    def f : f → Bool := fun _ => true
+    def f : f  Bool := fun _ => true
     ```
   -/
-  autoBoundImplicitForbidden : Name → Bool := fun _ => false
+  autoBoundImplicitForbidden : Name  Bool := fun _ => false
   /-- Map from user name to internal unique name -/
   sectionVars        : NameMap Name    := {}
   /-- Map from internal name to fvar -/
@@ -332,7 +332,7 @@ structure Context where
   checkDeprecated : Bool := true
 
 abbrev TermElabM := ReaderT Context $ StateRefT State MetaM
-abbrev TermElab  := Syntax → Option Expr → TermElabM Expr
+abbrev TermElab  := Syntax  Option Expr  TermElabM Expr
 
 /-
 Make the compiler generate specialized `pure`/`bind` so we do not have to optimize through the
@@ -424,8 +424,8 @@ For any tactic that participates in reuse, `withNarrowedTacticReuse` should be a
 tactic's syntax and `act` should be used to do recursive tactic evaluation of nested parts.
 -/
 def withNarrowedTacticReuse [Monad m] [MonadWithReaderOf Core.Context m]
-    [MonadWithReaderOf Context m] [MonadOptions m] (split : Syntax → Syntax × Syntax)
-    (act : Syntax → m α) (stx : Syntax) : m α := do
+    [MonadWithReaderOf Context m] [MonadOptions m] (split : Syntax  Syntax × Syntax)
+    (act : Syntax  m α) (stx : Syntax) : m α := do
   let (outer, inner) := split stx
   let opts ← getOptions
   withTheReader Term.Context (fun ctx => { ctx with tacSnap? := ctx.tacSnap?.map fun tacSnap =>
@@ -447,7 +447,7 @@ necessarily shifted by changes at `argIdx`) so it must be ensured that the resul
 depend on them (i.e. they should not be inspected beforehand).
 -/
 def withNarrowedArgTacticReuse [Monad m] [MonadWithReaderOf Core.Context m] [MonadWithReaderOf Context m]
-    [MonadOptions m] (argIdx : Nat) (act : Syntax → m α) (stx : Syntax) : m α :=
+    [MonadOptions m] (argIdx : Nat) (act : Syntax  m α) (stx : Syntax) : m α :=
   withNarrowedTacticReuse (fun stx => (mkNullNode stx.getArgs[:argIdx], stx[argIdx])) act stx
 
 /--
@@ -478,7 +478,7 @@ def withoutTacticReuse [Monad m] [MonadWithReaderOf Context m] [MonadOptions m]
   }) act
 
 @[inherit_doc Core.wrapAsync]
-def wrapAsync (act : Unit → TermElabM α) : TermElabM (EIO Exception α) := do
+def wrapAsync (act : Unit  TermElabM α) : TermElabM (EIO Exception α) := do
   let ctx ← read
   let st ← get
   let metaCtx ← readThe Meta.Context
@@ -487,7 +487,7 @@ def wrapAsync (act : Unit → TermElabM α) : TermElabM (EIO Exception α) := do
     act () |>.run ctx |>.run' st |>.run' metaCtx metaSt
 
 @[inherit_doc Core.wrapAsyncAsSnapshot]
-def wrapAsyncAsSnapshot (act : Unit → TermElabM Unit)
+def wrapAsyncAsSnapshot (act : Unit  TermElabM Unit)
     (desc : String := by exact decl_name%.toString) :
     TermElabM (BaseIO Language.SnapshotTree) := do
   let ctx ← read
@@ -589,11 +589,11 @@ inductive LVal where
   `ref` is the syntax object representing the field. `fullRef` includes the LHS. -/
   | fieldName (ref : Syntax) (name : String) (suffix? : Option Name) (fullRef : Syntax)
 
-def LVal.getRef : LVal → Syntax
+def LVal.getRef : LVal  Syntax
   | .fieldIdx ref _    => ref
   | .fieldName ref ..  => ref
 
-def LVal.isFieldName : LVal → Bool
+def LVal.isFieldName : LVal  Bool
   | .fieldName .. => true
   | _ => false
 
@@ -630,7 +630,7 @@ def withLevelNames (levelNames : List Name) (x : TermElabM α) : TermElabM α :=
   Declare an auxiliary local declaration `shortDeclName : type` for elaborating recursive declaration `declName`,
   update the mapping `auxDeclToFullName`, and then execute `k`.
 -/
-def withAuxDecl (shortDeclName : Name) (type : Expr) (declName : Name) (k : Expr → TermElabM α) : TermElabM α :=
+def withAuxDecl (shortDeclName : Name) (type : Expr) (declName : Name) (k : Expr  TermElabM α) : TermElabM α :=
   withLocalDecl shortDeclName .default (kind := .auxDecl) type fun x =>
     withReader (fun ctx => { ctx with auxDeclToFullName := ctx.auxDeclToFullName.insert x.fvarId! declName }) do
       k x
@@ -642,7 +642,7 @@ def withoutErrToSorryImp (x : TermElabM α) : TermElabM α :=
   Execute `x` without converting errors (i.e., exceptions) to `sorry` applications.
   Recall that when `errToSorry = true`, the method `elabTerm` catches exceptions and converts them into `sorry` applications.
 -/
-def withoutErrToSorry [MonadFunctorT TermElabM m] : m α → m α :=
+def withoutErrToSorry [MonadFunctorT TermElabM m] : m α  m α :=
   monadMap (m := TermElabM) withoutErrToSorryImp
 
 def withoutHeedElabAsElimImp (x : TermElabM α) : TermElabM α :=
@@ -653,7 +653,7 @@ def withoutHeedElabAsElimImp (x : TermElabM α) : TermElabM α :=
   no expected type (so `elabAppArgs` would fail), but expect that the user wants
   to use such constants.
 -/
-def withoutHeedElabAsElim [MonadFunctorT TermElabM m] : m α → m α :=
+def withoutHeedElabAsElim [MonadFunctorT TermElabM m] : m α  m α :=
   monadMap (m := TermElabM) withoutHeedElabAsElimImp
 
 /--
@@ -714,7 +714,7 @@ def throwErrorIfErrors : TermElabM Unit := do
   if (← MonadLog.hasErrors) then
     throwError "Error(s)"
 
-def traceAtCmdPos (cls : Name) (msg : Unit → MessageData) : TermElabM Unit :=
+def traceAtCmdPos (cls : Name) (msg : Unit  MessageData) : TermElabM Unit :=
   withRef Syntax.missing <| trace cls msg
 
 def ppGoal (mvarId : MVarId) : TermElabM Format :=
@@ -909,7 +909,7 @@ def mkExplicitBinder (ident : Syntax) (type : Syntax) : Syntax :=
 /--
   Convert unassigned universe level metavariables into parameters.
   The new parameter names are fresh names of the form `u_i` with regard to `ctx.levelNames`, which is updated with the new names. -/
-def levelMVarToParam (e : Expr) (except : LMVarId → Bool := fun _ => false) : TermElabM Expr := do
+def levelMVarToParam (e : Expr) (except : LMVarId  Bool := fun _ => false) : TermElabM Expr := do
   let levelNames ← getLevelNames
   let r := (← getMCtx).levelMVarToParam (fun n => levelNames.elem n) except e `u 1
   -- Recall that the most recent universe is the first element of the field `levelNames`.
@@ -1099,8 +1099,8 @@ def synthesizeInstMVarCore (instMVar : MVarId) (maxResultSize? : Option Nat := n
       throwError "failed to synthesize{indentExpr type}{extraErrorMsg}{useDiagnosticMsg}"
 
 def mkCoe (expectedType : Expr) (e : Expr) (f? : Option Expr := none) (errorMsgHeader? : Option String := none)
-    (mkErrorMsg? : Option (MVarId → (expectedType e : Expr) → MetaM MessageData) := none)
-    (mkImmedErrorMsg? : Option ((errorMsg? : Option MessageData) → (expectedType e : Expr) → MetaM MessageData) := none) : TermElabM Expr := do
+    (mkErrorMsg? : Option (MVarId  (expectedType e : Expr)  MetaM MessageData) := none)
+    (mkImmedErrorMsg? : Option ((errorMsg? : Option MessageData)  (expectedType e : Expr)  MetaM MessageData) := none) : TermElabM Expr := do
   withTraceNode `Elab.coe (fun _ => return m!"adding coercion for {e} : {← inferType e} =?= {expectedType}") do
   try
     withoutMacroStackAtErr do
@@ -1124,8 +1124,8 @@ def mkCoe (expectedType : Expr) (e : Expr) (f? : Option Expr := none) (errorMsgH
         throwTypeMismatchError errorMsgHeader? expectedType (← inferType e) e f?
 
 def mkCoeWithErrorMsgs (expectedType : Expr) (e : Expr)
-    (mkImmedErrorMsg : (errorMsg? : Option MessageData) → (expectedType e : Expr) → MetaM MessageData)
-    (mkErrorMsg : MVarId → (expectedType e : Expr) → MetaM MessageData) : TermElabM Expr := do
+    (mkImmedErrorMsg : (errorMsg? : Option MessageData)  (expectedType e : Expr)  MetaM MessageData)
+    (mkErrorMsg : MVarId  (expectedType e : Expr)  MetaM MessageData) : TermElabM Expr := do
   mkCoe expectedType e (mkImmedErrorMsg? := mkImmedErrorMsg) (mkErrorMsg? := mkErrorMsg)
 
 /--
@@ -1142,8 +1142,8 @@ def ensureHasType (expectedType? : Option Expr) (e : Expr)
     mkCoe expectedType e f? errorMsgHeader?
 
 def ensureHasTypeWithErrorMsgs (expectedType? : Option Expr) (e : Expr)
-    (mkImmedErrorMsg : (errorMsg? : Option MessageData) → (expectedType e : Expr) → MetaM MessageData)
-    (mkErrorMsg : MVarId → (expectedType e : Expr) → MetaM MessageData) : TermElabM Expr := do
+    (mkImmedErrorMsg : (errorMsg? : Option MessageData)  (expectedType e : Expr)  MetaM MessageData)
+    (mkErrorMsg : MVarId  (expectedType e : Expr)  MetaM MessageData) : TermElabM Expr := do
   let some expectedType := expectedType? | return e
   if (← isDefEq (← inferType e) expectedType) then
     return e
@@ -1211,7 +1211,7 @@ def tryPostponeIfHasMVars (expectedType? : Option Expr) (msg : String) : TermEla
     throwError "{msg}, expected type contains metavariables{indentD expectedType?}"
   return expectedType
 
-def withExpectedType (expectedType? : Option Expr) (x : Expr → TermElabM Expr) : TermElabM Expr := do
+def withExpectedType (expectedType? : Option Expr) (x : Expr  TermElabM Expr) : TermElabM Expr := do
   tryPostponeIfNoneOrMVar expectedType?
   let some expectedType ← pure expectedType?
     | throwError "expected type must be known"
@@ -1362,7 +1362,7 @@ def addTermInfo' (stx : Syntax) (e : Expr) (expectedType? : Option Expr := none)
   discard <| addTermInfo stx e expectedType? lctx? elaborator isBinder
 
 def withInfoContext' (stx : Syntax) (x : TermElabM Expr)
-    (mkInfo : Expr → TermElabM (Sum Info MVarId)) (mkInfoOnError : TermElabM Info) :
+    (mkInfo : Expr  TermElabM (Sum Info MVarId)) (mkInfoOnError : TermElabM Info) :
     TermElabM Expr := do
   if (← read).inPattern then
     let e ← x
@@ -1381,7 +1381,7 @@ def mkBodyInfo (stx : Syntax) (value? : Option Expr) : Info :=
   .ofCustomInfo { stx, value := .mk { value? : BodyInfo } }
 
 /-- Extracts a `BodyInfo` custom info. -/
-def getBodyInfo? : Info → Option BodyInfo
+def getBodyInfo? : Info  Option BodyInfo
   | .ofCustomInfo { value, .. } => value.get? BodyInfo
   | _ => none
 
@@ -1406,7 +1406,7 @@ def postponeElabTerm (stx : Syntax) (expectedType? : Option Expr) : TermElabM Ex
   Helper function for `elabTerm` that tries the registered elaboration functions for `stxNode` kind until it finds one that supports the syntax or
   an error is found. -/
 private def elabUsingElabFnsAux (s : SavedState) (stx : Syntax) (expectedType? : Option Expr) (catchExPostpone : Bool)
-    : List (KeyedDeclsAttribute.AttributeEntry TermElab) → TermElabM Expr
+    : List (KeyedDeclsAttribute.AttributeEntry TermElab)  TermElabM Expr
   | []                => do throwError "unexpected syntax{indentD stx}"
   | (elabFn::elabFns) =>
     try
@@ -1481,7 +1481,7 @@ private def isLambdaWithImplicit (stx : Syntax) : Bool :=
   | `(fun $binders* => $_) => binders.raw.any fun b => b.isOfKind ``Lean.Parser.Term.implicitBinder || b.isOfKind `Lean.Parser.Term.instBinder
   | _                      => false
 
-private partial def dropTermParens : Syntax → Syntax := fun stx =>
+private partial def dropTermParens : Syntax  Syntax := fun stx =>
   match stx with
   | `(($stx)) => dropTermParens stx
   | _         => stx
@@ -1537,19 +1537,19 @@ def resolveLocalName (n : Name) : TermElabM (Option (Expr × List String)) := do
   ```
     mutual
       inductive Foo
-      | somefoo : Foo | bar : Bar → Foo → Foo
+      | somefoo : Foo | bar : Bar  Foo  Foo
       inductive Bar
-      | somebar : Bar| foobar : Foo → Bar → Bar
+      | somebar : Bar| foobar : Foo  Bar  Bar
     end
 
     mutual
-      private def Foo.toString : Foo → String
+      private def Foo.toString : Foo  String
         | Foo.somefoo => go 2 ++ toString.go 2 ++ Foo.toString.go 2
         | Foo.bar b f => toString f ++ Bar.toString b
       where
         go (x : Nat) := s!"foo {x}"
 
-      private def _root_.Ex2.Bar.toString : Bar → String
+      private def _root_.Ex2.Bar.toString : Bar  String
         | Bar.somebar => "bar"
         | Bar.foobar f b => Foo.toString f ++ Bar.toString b
     end
@@ -1639,7 +1639,7 @@ def resolveLocalName (n : Name) : TermElabM (Option (Expr × List String)) := do
   Without this workaround, we would not be able to elaborate an example such as
   ```
   def foo.aux := 1
-  def foo : Nat → Nat
+  def foo : Nat  Nat
     | n => foo.aux -- should not be interpreted as `(foo).aux`
   ```
   See test `aStructPerfIssue.lean` for another example.
@@ -1699,10 +1699,10 @@ inductive UseImplicitLambdaResult where
   | postpone
 
 /--
-  Return normalized expected type if it is of the form `{a : α} → β` or `[a : α] → β` and
+  Return normalized expected type if it is of the form `{a : α}  β` or `[a : α]  β` and
   `blockImplicitLambda stx` is not true, else return `none`.
 
-  Remark: implicit lambdas are not triggered by the strict implicit binder annotation `{{a : α}} → β`
+  Remark: implicit lambdas are not triggered by the strict implicit binder annotation `{{a : α}}  β`
 -/
 private def useImplicitLambda (stx : Syntax) (expectedType? : Option Expr) : TermElabM UseImplicitLambdaResult := do
   if blockImplicitLambda stx then
@@ -1726,9 +1726,9 @@ private def useImplicitLambda (stx : Syntax) (expectedType? : Option Expr) : Ter
       example (x) : foo2mk x = foo2mk x := rfl
       ```
       The example about would fail without this special case.
-      The expected type would be `(a : α✝) → a = a`, where `α✝` is a new free variable introduced by the implicit lambda.
-      Now, let `?m` be the type of `x`. Then, the constraint `?m =?= (a : α✝) → a = a` cannot be solved using the
-      assignment `?m := (a : α✝) → a = a` since `α✝` is not in the scope of `?m`.
+      The expected type would be `(a : α✝)  a = a`, where `α✝` is a new free variable introduced by the implicit lambda.
+      Now, let `?m` be the type of `x`. Then, the constraint `?m =?= (a : α✝)  a = a` cannot be solved using the
+      assignment `?m := (a : α✝)  a = a` since `α✝` is not in the scope of `?m`.
 
       Note that, this workaround does not prevent the following example from failing.
       ```
@@ -1784,7 +1784,7 @@ where
       elabImplicitLambdaAux stx catchExPostpone type fvars
 
 /-- Main loop for `elabTerm` -/
-private partial def elabTermAux (expectedType? : Option Expr) (catchExPostpone : Bool) (implicitLambda : Bool) : Syntax → TermElabM Expr
+private partial def elabTermAux (expectedType? : Option Expr) (catchExPostpone : Bool) (implicitLambda : Bool) : Syntax  TermElabM Expr
   | .missing => mkSyntheticSorryFor expectedType?
   | stx => withFreshMacroScope <| withIncRecDepth do
     withTraceNode `Elab.step (fun _ => return m!"expected type: {expectedType?}, term\n{stx}")
@@ -1876,7 +1876,7 @@ def commitIfNoErrors? (x : TermElabM α) : TermElabM (Option α) := do
     return none
 
 /-- Adapt a syntax transformation to a regular, term-producing elaborator. -/
-def adaptExpander (exp : Syntax → TermElabM Syntax) : TermElab := fun stx expectedType? => do
+def adaptExpander (exp : Syntax  TermElabM Syntax) : TermElab := fun stx expectedType? => do
   let stx' ← exp stx
   withMacroExpansion stx stx' <| elabTerm stx' expectedType?
 
@@ -1943,13 +1943,13 @@ partial def withAutoBoundImplicit (k : TermElabM α) : TermElabM α := do
 def withoutAutoBoundImplicit (k : TermElabM α) : TermElabM α := do
   withReader (fun ctx => { ctx with autoBoundImplicit := false, autoBoundImplicits := {} }) k
 
-partial def withAutoBoundImplicitForbiddenPred (p : Name → Bool) (x : TermElabM α) : TermElabM α := do
+partial def withAutoBoundImplicitForbiddenPred (p : Name  Bool) (x : TermElabM α) : TermElabM α := do
   withReader (fun ctx => { ctx with autoBoundImplicitForbidden := fun n => p n || ctx.autoBoundImplicitForbidden n }) x
 
 /--
   Collect unassigned metavariables in `type` that are not already in `init` and not satisfying `except`.
 -/
-partial def collectUnassignedMVars (type : Expr) (init : Array Expr := #[]) (except : MVarId → Bool := fun _ => false)
+partial def collectUnassignedMVars (type : Expr) (init : Array Expr := #[]) (except : MVarId  Bool := fun _ => false)
     : TermElabM (Array Expr) := do
   let mvarIds ← getMVars type
   if mvarIds.isEmpty then
@@ -2008,7 +2008,7 @@ where
   The type `type` is modified during the process if type depends on `xs`.
   We use this method to simplify the conversion of code using `autoBoundImplicitsOld` to `autoBoundImplicits`.
 -/
-def addAutoBoundImplicits' (xs : Array Expr) (type : Expr) (k : Array Expr → Expr → TermElabM α) : TermElabM α := do
+def addAutoBoundImplicits' (xs : Array Expr) (type : Expr) (k : Array Expr  Expr  TermElabM α) : TermElabM α := do
   let xs ← addAutoBoundImplicits xs
   if xs.all (·.isFVar) then
     k xs type
@@ -2055,7 +2055,7 @@ def checkDeprecated (ref : Syntax) (e : Expr) : TermElabM Unit := do
   if let .const declName _ := e.getAppFn then
     withRef ref do checkDeprecatedCore declName
 
-@[inline] def withoutCheckDeprecated [MonadWithReaderOf Context m] : m α → m α :=
+@[inline] def withoutCheckDeprecated [MonadWithReaderOf Context m] : m α  m α :=
   withTheReader Context (fun ctx => { ctx with checkDeprecated := false })
 
 private def mkConsts (candidates : List (Name × List String)) (explicitLevels : List Level) : TermElabM (List (Expr × List String)) := do

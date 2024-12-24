@@ -35,7 +35,7 @@ example (x y : Nat) : x + y = y + x := by apply?
 
 /-- info: Try this: exact fun a => Nat.add_le_add_right a k -/
 #guard_msgs in
-example (n m k : Nat) : n ≤ m → n + k ≤ m + k := by apply?
+example (n m k : Nat) : n ≤ m  n + k ≤ m + k := by apply?
 
 /-- info: Try this: exact Nat.mul_dvd_mul_left a w -/
 #guard_msgs in
@@ -61,16 +61,16 @@ example (P : Prop) (p : P) : P := by apply?
 example (P : Prop) (p : P) (np : ¬P) : false := by apply?
 /-- info: Try this: exact h x rfl -/
 #guard_msgs in
-example (X : Type) (P : Prop) (x : X) (h : ∀ x : X, x = x → P) : P := by apply?
+example (X : Type) (P : Prop) (x : X) (h : ∀ x : X, x = x  P) : P := by apply?
 
 -- Could be any number of results (`fun x => x`, `id`, etc)
 #guard_msgs (drop info) in
-example (α : Prop) : α → α := by apply?
+example (α : Prop) : α  α := by apply?
 
 -- Note: these examples no longer work after we turned off lemmas with discrimination key `#[*]`.
--- example (p : Prop) : (¬¬p) → p := by apply? -- says: `exact not_not.mp`
+-- example (p : Prop) : (¬¬p)  p := by apply? -- says: `exact not_not.mp`
 -- example (a b : Prop) (h : a ∧ b) : a := by apply? -- says: `exact h.left`
--- example (P Q : Prop) : (¬ Q → ¬ P) → (P → Q) := by apply? -- say: `exact Function.mtr`
+-- example (P Q : Prop) : (¬ Q  ¬ P)  (P  Q) := by apply? -- say: `exact Function.mtr`
 
 /-- info: Try this: exact Nat.add_comm a b -/
 #guard_msgs in
@@ -128,8 +128,8 @@ example (a : Nat) (h : a < 0) : False := by apply?
 
 -- An inductive type hides the constructor's arguments enough
 -- so that `apply?` doesn't accidentally close the goal.
-inductive P : Nat → Prop
-  | gt_in_head {n : Nat} : n < 0 → P n
+inductive P : Nat  Prop
+  | gt_in_head {n : Nat} : n < 0  P n
 
 -- This lemma with `>` as its head symbol should also be found for goals with head symbol `<`.
 theorem lemma_with_gt_in_head (a : Nat) (h : P a) : 0 > a := by cases h; assumption
@@ -159,8 +159,8 @@ end synonym
 example : ∀ P : Prop, ¬(P ↔ ¬P) := by apply?
 
 -- Copy of P for testing purposes.
-inductive Q : Nat → Prop
-  | gt_in_head {n : Nat} : n < 0 → Q n
+inductive Q : Nat  Prop
+  | gt_in_head {n : Nat} : n < 0  Q n
 
 theorem p_iff_q (i : Nat) : P i ↔ Q i :=
   Iff.intro (fun ⟨i⟩ => Q.gt_in_head i) (fun ⟨i⟩ => P.gt_in_head i)
@@ -181,10 +181,10 @@ example {a b c : Nat} (h₁ : a ∣ c) (h₂ : a ∣ b + c) : a ∣ b := by appl
 
 -- Note: these examples no longer work after we turned off lemmas with discrimination key `#[*]`.
 -- example {α : Sort u} (h : Empty) : α := by apply? -- says `exact Empty.elim h`
--- example (f : A → C) (g : B → C) : (A ⊕ B) → C := by apply? -- says `exact Sum.elim f g`
+-- example (f : A  C) (g : B  C) : (A ⊕ B)  C := by apply? -- says `exact Sum.elim f g`
 -- example (n : Nat) (r : ℚ) : ℚ := by apply? using n, r -- exact nsmulRec n r
 
-opaque f : Nat → Nat
+opaque f : Nat  Nat
 axiom F (a b : Nat) : f a ≤ f b ↔ a ≤ b
 
 /-- info: Try this: exact (F a b).mpr h -/
@@ -201,7 +201,7 @@ example (P _Q : List Nat) (h : Nat) : List Nat := by apply? using h, P
 
 -- Could be any number of results
 #guard_msgs (drop info) in
-example (l : List α) (f : α → β ⊕ γ) : List β × List γ := by
+example (l : List α) (f : α  β ⊕ γ) : List β × List γ := by
   apply? using f -- partitionMap f l
 
 -- Could be any number of results (`Nat.mul n m`, `Nat.add n m`, etc)
@@ -225,7 +225,7 @@ theorem Bool_eq_iff2 {A B : Bool} : (A = B) = (A ↔ B) := by
 -- Disabled for Std
 --/-- info: Try this: exact surjective_quot_mk r -/
 --#guard_msgs in
---example {r : α → α → Prop} : Function.Surjective (Quot.mk r) := by exact?
+--example {r : α  α  Prop} : Function.Surjective (Quot.mk r) := by exact?
 
 -- Example from https://leanprover.zulipchat.com/#narrow/stream/287929-mathlib4/topic/library_search.20failing.20to.20apply.20symm
 -- Disabled for Std
@@ -241,7 +241,7 @@ theorem Bool_eq_iff2 {A B : Bool} : (A = B) = (A ↔ B) := by
 
 -- https://leanprover.zulipchat.com/#narrow/stream/287929-mathlib4/topic/apply.3F.20failure/near/402534407
 -- Disabled for Std
---example (P Q : Prop) (h : P → Q) (h' : ¬Q) : ¬P := by
+--example (P Q : Prop) (h : P  Q) (h' : ¬Q) : ¬P := by
 --  exact? says exact mt h h'
 
 -- Removed until we come up with a way of handling nonspecific lemmas

@@ -67,19 +67,19 @@ structure Modifiers where
   attrs           : Array Attribute := #[]
   deriving Inhabited
 
-def Modifiers.isPrivate : Modifiers → Bool
+def Modifiers.isPrivate : Modifiers  Bool
   | { visibility := .private, .. } => true
   | _                              => false
 
-def Modifiers.isProtected : Modifiers → Bool
+def Modifiers.isProtected : Modifiers  Bool
   | { visibility := .protected, .. } => true
   | _                                => false
 
-def Modifiers.isPartial : Modifiers → Bool
+def Modifiers.isPartial : Modifiers  Bool
   | { recKind := .partial, .. } => true
   | _                           => false
 
-def Modifiers.isNonrec : Modifiers → Bool
+def Modifiers.isNonrec : Modifiers  Bool
   | { recKind := .nonrec, .. } => true
   | _                          => false
 
@@ -88,7 +88,7 @@ def Modifiers.addAttr (modifiers : Modifiers) (attr : Attribute) : Modifiers :=
   { modifiers with attrs := modifiers.attrs.push attr }
 
 /-- Filters attributes using `p` -/
-def Modifiers.filterAttrs (modifiers : Modifiers) (p : Attribute → Bool) : Modifiers :=
+def Modifiers.filterAttrs (modifiers : Modifiers) (p : Attribute  Bool) : Modifiers :=
   { modifiers with attrs := modifiers.attrs.filter p }
 
 instance : ToFormat Modifiers := ⟨fun m =>
@@ -106,7 +106,7 @@ instance : ToFormat Modifiers := ⟨fun m =>
     ++ m.attrs.toList.map (fun attr => format attr)
   Format.bracket "{" (Format.joinSep components ("," ++ Format.line)) "}"⟩
 
-instance : ToString Modifiers := ⟨toString ∘ format⟩
+instance : ToString Modifiers := ⟨toString  format⟩
 
 /--
 Retrieve doc string from `stx` of the form `(docComment)?`.

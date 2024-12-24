@@ -36,7 +36,7 @@ instance [CommMonoid α] : MulComm α where
   mul_comm := CommSemigroup.mul_comm
 
 class Inv (α : Type u) where
-  inv : α → α
+  inv : α  α
 
 postfix:max "⁻¹" => Inv.inv
 

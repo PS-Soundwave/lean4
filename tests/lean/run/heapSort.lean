@@ -5,14 +5,14 @@ Authors: Mario Carneiro
 -/
 
 /-- A max-heap data structure. -/
-structure BinaryHeap (α) (lt : α → α → Bool) where
+structure BinaryHeap (α) (lt : α  α  Bool) where
   arr : Array α
 
 namespace BinaryHeap
 
 /-- Core operation for binary heaps, expressed directly on arrays.
 Given an array which is a max-heap, push item `i` down to restore the max-heap property. -/
-def heapifyDown (lt : α → α → Bool) (a : Array α) (i : Fin a.size) :
+def heapifyDown (lt : α  α  Bool) (a : Array α) (i : Fin a.size) :
   {a' : Array α // a'.size = a.size} :=
   let left := 2 * i.1 + 1
   let right := left + 1
@@ -35,13 +35,13 @@ def heapifyDown (lt : α → α → Bool) (a : Array α) (i : Fin a.size) :
 termination_by a.size - i
 decreasing_by assumption
 
-@[simp] theorem size_heapifyDown (lt : α → α → Bool) (a : Array α) (i : Fin a.size) :
+@[simp] theorem size_heapifyDown (lt : α  α  Bool) (a : Array α) (i : Fin a.size) :
   (heapifyDown lt a i).1.size = a.size := (heapifyDown lt a i).2
 
 /-- Core operation for binary heaps, expressed directly on arrays.
 Construct a heap from an unsorted array, by heapifying all the elements. -/
-def mkHeap (lt : α → α → Bool) (a : Array α) : {a' : Array α // a'.size = a.size} :=
-  let rec loop : (i : Nat) → (a : Array α) → i ≤ a.size → {a' : Array α // a'.size = a.size}
+def mkHeap (lt : α  α  Bool) (a : Array α) : {a' : Array α // a'.size = a.size} :=
+  let rec loop : (i : Nat)  (a : Array α)  i ≤ a.size  {a' : Array α // a'.size = a.size}
   | 0, a, _ => ⟨a, rfl⟩
   | i+1, a, h =>
     let h := Nat.lt_of_succ_le h
@@ -50,12 +50,12 @@ def mkHeap (lt : α → α → Bool) (a : Array α) : {a' : Array α // a'.size 
     ⟨a₂, h₂.trans a'.2⟩
   loop (a.size / 2) a sorry
 
-@[simp] theorem size_mkHeap (lt : α → α → Bool) (a : Array α) (i : Fin a.size) :
+@[simp] theorem size_mkHeap (lt : α  α  Bool) (a : Array α) (i : Fin a.size) :
   (mkHeap lt a).1.size = a.size := (mkHeap lt a).2
 
 /-- Core operation for binary heaps, expressed directly on arrays.
 Given an array which is a max-heap, push item `i` up to restore the max-heap property. -/
-def heapifyUp (lt : α → α → Bool) (a : Array α) (i : Fin a.size) :
+def heapifyUp (lt : α  α  Bool) (a : Array α) (i : Fin a.size) :
   {a' : Array α // a'.size = a.size} :=
 if i0 : i.1 = 0 then ⟨a, rfl⟩ else
   have : (i.1 - 1) / 2 < i := sorry
@@ -68,7 +68,7 @@ if i0 : i.1 = 0 then ⟨a, rfl⟩ else
 termination_by i.1
 decreasing_by assumption
 
-@[simp] theorem size_heapifyUp (lt : α → α → Bool) (a : Array α) (i : Fin a.size) :
+@[simp] theorem size_heapifyUp (lt : α  α  Bool) (a : Array α) (i : Fin a.size) :
   (heapifyUp lt a i).1.size = a.size := (heapifyUp lt a i).2
 
 /-- `O(1)`. Build a new empty heap. -/
@@ -155,11 +155,11 @@ def increaseKey {lt} (self : BinaryHeap α lt) (i : Fin self.size) (x : α) : Bi
 end BinaryHeap
 
 /-- `O(n)`. Convert an unsorted array to a `BinaryHeap`. -/
-def Array.toBinaryHeap (lt : α → α → Bool) (a : Array α) : BinaryHeap α lt where
+def Array.toBinaryHeap (lt : α  α  Bool) (a : Array α) : BinaryHeap α lt where
   arr := BinaryHeap.mkHeap lt a
 
 /-- `O(n log n)`. Sort an array using a `BinaryHeap`. -/
-@[specialize] def Array.heapSort (a : Array α) (lt : α → α → Bool) : Array α :=
+@[specialize] def Array.heapSort (a : Array α) (lt : α  α  Bool) : Array α :=
   let gt y x := lt x y
   let rec loop (a : BinaryHeap α gt) (out : Array α) : Array α :=
     match e:a.max with

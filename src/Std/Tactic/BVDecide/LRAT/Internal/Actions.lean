@@ -31,7 +31,7 @@ formula. So to avoid imposing awkward constraints on the `Clause` interface, and
 predicate to indicate that the pivot provided by the `addRat` action is indeed in the provided
 clause.
 -/
-def WellFormedAction [Clause α β] : Action β α → Prop
+def WellFormedAction [Clause α β] : Action β α  Prop
   -- Note that `Limplies α p c` is equivalent to `p ∈ toList c` by `limplies_iff_mem` in CNF.lean
   | .addRat _ c p _ _ => Limplies α p c
   | _ => True
@@ -61,7 +61,7 @@ This function returns an `Option` type so that `none` can be returned if convert
 `IntAction` to `DefaultClauseAction` fails. This can occur if any of the literals in the `IntAction`
 are 0 or ≥ n.
 -/
-def intActionToDefaultClauseAction (n : Nat) : IntAction → Option (DefaultClauseAction n)
+def intActionToDefaultClauseAction (n : Nat) : IntAction  Option (DefaultClauseAction n)
   | .addEmpty cId rupHints => some <| .addEmpty cId rupHints
   | .addRup cId c rupHints => do
     let c : Array (Option (Literal (PosFin n))) :=

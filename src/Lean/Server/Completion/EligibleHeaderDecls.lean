@@ -36,7 +36,7 @@ def getEligibleHeaderDecls (env : Environment) : IO EligibleHeaderDecls := do
 
 /-- Iterate over all declarations that are allowed in completion results. -/
 def forEligibleDeclsM [Monad m] [MonadEnv m] [MonadLiftT (ST IO.RealWorld) m]
-    [MonadLiftT IO m] (f : Name → ConstantInfo → m PUnit) : m PUnit := do
+    [MonadLiftT IO m] (f : Name  ConstantInfo  m PUnit) : m PUnit := do
   let env ← getEnv
   (← getEligibleHeaderDecls env).forM f
   -- map₂ are exactly the local decls

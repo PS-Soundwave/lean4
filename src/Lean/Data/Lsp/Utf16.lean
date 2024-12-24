@@ -29,7 +29,7 @@ private def csize16 (c : Char) : Nat :=
 def utf16Length (s : String) : Nat :=
   s.foldr (fun c acc => csize16 c + acc) 0
 
-private def codepointPosToUtf16PosFromAux (s : String) : Nat → Pos → Nat → Nat
+private def codepointPosToUtf16PosFromAux (s : String) : Nat  Pos  Nat  Nat
   | 0,    _,       utf16pos => utf16pos
   | cp+1, utf8pos, utf16pos => codepointPosToUtf16PosFromAux s cp (s.next utf8pos) (utf16pos + csize16 (s.get utf8pos))
 
@@ -42,7 +42,7 @@ def codepointPosToUtf16PosFrom (s : String) (n : Nat) (off : Pos) : Nat :=
 def codepointPosToUtf16Pos (s : String) (pos : Nat) : Nat :=
   codepointPosToUtf16PosFrom s pos 0
 
-private partial def utf16PosToCodepointPosFromAux (s : String) : Nat → Pos → Nat → Nat
+private partial def utf16PosToCodepointPosFromAux (s : String) : Nat  Pos  Nat  Nat
   | 0,        _,       cp => cp
   | utf16pos, utf8pos, cp => utf16PosToCodepointPosFromAux s (utf16pos - csize16 (s.get utf8pos)) (s.next utf8pos) (cp + 1)
 
@@ -55,7 +55,7 @@ def utf16PosToCodepointPos (s : String) (pos : Nat) : Nat :=
   utf16PosToCodepointPosFrom s pos 0
 
 /-- Starting at `utf8pos`, finds the UTF-8 offset of the `p`-th codepoint. -/
-def codepointPosToUtf8PosFrom (s : String) : String.Pos → Nat → String.Pos
+def codepointPosToUtf8PosFrom (s : String) : String.Pos  Nat  String.Pos
   | utf8pos, 0 => utf8pos
   | utf8pos, p+1 => codepointPosToUtf8PosFrom s (s.next utf8pos) p
 
@@ -79,7 +79,7 @@ def lspPosToUtf8Pos (text : FileMap) (pos : Lsp.Position) : String.Pos :=
   let chr := text.source.utf16PosToCodepointPosFrom pos.character lineStartPos
   text.source.codepointPosToUtf8PosFrom lineStartPos chr
 
-def leanPosToLspPos (text : FileMap) : Lean.Position → Lsp.Position
+def leanPosToLspPos (text : FileMap) : Lean.Position  Lsp.Position
   | ⟨line, col⟩ =>
     ⟨line - 1, text.source.codepointPosToUtf16PosFrom col (lineStartPos text (line - 1))⟩
 

@@ -1,4 +1,4 @@
-ex1 (heq : foo = bar) (P : Nat → Prop) (h : P foo) : P bar
+ex1 (heq : foo = bar) (P : Nat  Prop) (h : P foo) : P bar
 substFails.lean:6:67-6:74: error: invalid `▸` notation, expected result type of cast is 
   P 4
 however, the equality 
@@ -19,7 +19,7 @@ however, the equality
 of type 
   foo = bar
 does not contain the expected result type on either the left or the right hand side
-ex7 (heq : bar = foo) (P : Nat → Prop) (h : P foo) : P bar
+ex7 (heq : bar = foo) (P : Nat  Prop) (h : P foo) : P bar
 substFails.lean:14:67-14:74: error: invalid `▸` notation, expected result type of cast is 
   P 4
 however, the equality 

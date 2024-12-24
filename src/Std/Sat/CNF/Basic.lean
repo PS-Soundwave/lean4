@@ -30,34 +30,34 @@ namespace CNF
 /--
 Evaluating a `Clause` with respect to an assignment `a`.
 -/
-def Clause.eval (a : α → Bool) (c : Clause α) : Bool := c.any fun (i, n) => a i == n
+def Clause.eval (a : α  Bool) (c : Clause α) : Bool := c.any fun (i, n) => a i == n
 
-@[simp] theorem Clause.eval_nil (a : α → Bool) : Clause.eval a [] = false := rfl
-@[simp] theorem Clause.eval_cons (a : α → Bool) :
+@[simp] theorem Clause.eval_nil (a : α  Bool) : Clause.eval a [] = false := rfl
+@[simp] theorem Clause.eval_cons (a : α  Bool) :
     Clause.eval a (i :: c) = (a i.1 == i.2 || Clause.eval a c) := rfl
 
 /--
 Evaluating a `CNF` formula with respect to an assignment `a`.
 -/
-def eval (a : α → Bool) (f : CNF α) : Bool := f.all fun c => c.eval a
+def eval (a : α  Bool) (f : CNF α) : Bool := f.all fun c => c.eval a
 
-@[simp] theorem eval_nil (a : α → Bool) : eval a [] = true := rfl
-@[simp] theorem eval_cons (a : α → Bool) : eval a (c :: f) = (c.eval a && eval a f) := rfl
+@[simp] theorem eval_nil (a : α  Bool) : eval a [] = true := rfl
+@[simp] theorem eval_cons (a : α  Bool) : eval a (c :: f) = (c.eval a && eval a f) := rfl
 
-@[simp] theorem eval_append (a : α → Bool) (f1 f2 : CNF α) :
+@[simp] theorem eval_append (a : α  Bool) (f1 f2 : CNF α) :
     eval a (f1 ++ f2) = (eval a f1 && eval a f2) := List.all_append
 
-def Sat (a : α → Bool) (f : CNF α) : Prop := eval a f = true
+def Sat (a : α  Bool) (f : CNF α) : Prop := eval a f = true
 def Unsat (f : CNF α) : Prop := ∀ a, eval a f = false
 
-theorem sat_def (a : α → Bool) (f : CNF α) : Sat a f ↔ (eval a f = true) := by rfl
+theorem sat_def (a : α  Bool) (f : CNF α) : Sat a f ↔ (eval a f = true) := by rfl
 theorem unsat_def (f : CNF α) : Unsat f ↔ (∀ a, eval a f = false) := by rfl
 
 
 @[simp] theorem not_unsat_nil : ¬Unsat ([] : CNF α) :=
   fun h => by simp [unsat_def] at h
 
-@[simp] theorem sat_nil {assign : α → Bool} : Sat assign ([] : CNF α) := by
+@[simp] theorem sat_nil {assign : α  Bool} : Sat assign ([] : CNF α) := by
   simp [sat_def]
 
 @[simp] theorem unsat_nil_cons {g : CNF α} : Unsat ([] :: g) := by
@@ -68,13 +68,13 @@ namespace Clause
 /--
 Variable `v` occurs in `Clause` `c`.
 -/
-def Mem (v : α) (c : Clause α) : Prop := (v, false) ∈ c ∨ (v, true) ∈ c
+def Mem (v : α) (c : Clause α) : Prop := (v, false) ∈ c  (v, true) ∈ c
 
 instance {v : α} {c : Clause α} [DecidableEq α] : Decidable (Mem v c) :=
-  inferInstanceAs <| Decidable (_ ∨ _)
+  inferInstanceAs <| Decidable (_  _)
 
 @[simp] theorem not_mem_nil {v : α} : ¬Mem v ([] : Clause α) := by simp [Mem]
-@[simp] theorem mem_cons {v : α} : Mem v (l :: c : Clause α) ↔ (v = l.1 ∨ Mem v c) := by
+@[simp] theorem mem_cons {v : α} : Mem v (l :: c : Clause α) ↔ (v = l.1  Mem v c) := by
   rcases l with ⟨b, (_|_)⟩
   · simp [Mem, or_assoc]
   · simp [Mem]
@@ -85,7 +85,7 @@ theorem mem_of (h : (v, p) ∈ c) : Mem v c := by
   · left; exact h
   · right; exact h
 
-theorem eval_congr (a1 a2 : α → Bool) (c : Clause α) (hw : ∀ i, Mem i c → a1 i = a2 i) :
+theorem eval_congr (a1 a2 : α  Bool) (c : Clause α) (hw : ∀ i, Mem i c  a1 i = a2 i) :
     eval a1 c = eval a2 c := by
   induction c
   case nil => rfl
@@ -155,13 +155,13 @@ instance {f : CNF α} [DecidableEq α] : Decidable (∃ v, Mem v f) :=
 
 theorem not_mem_nil {v : α} : ¬Mem v ([] : CNF α) := by simp [Mem]
 @[local simp] theorem mem_cons {v : α} {c} {f : CNF α} :
-    Mem v (c :: f : CNF α) ↔ (Clause.Mem v c ∨ Mem v f) := by simp [Mem]
+    Mem v (c :: f : CNF α) ↔ (Clause.Mem v c  Mem v f) := by simp [Mem]
 
 theorem mem_of (h : c ∈ f) (w : Clause.Mem v c) : Mem v f := by
   apply Exists.intro c
   constructor <;> assumption
 
-@[simp] theorem mem_append {v : α} {f1 f2 : CNF α} : Mem v (f1 ++ f2) ↔ Mem v f1 ∨ Mem v f2 := by
+@[simp] theorem mem_append {v : α} {f1 f2 : CNF α} : Mem v (f1 ++ f2) ↔ Mem v f1  Mem v f2 := by
   simp [Mem, List.mem_append]
   constructor
   · rintro ⟨c, (mf1 | mf2), mc⟩
@@ -173,7 +173,7 @@ theorem mem_of (h : c ∈ f) (w : Clause.Mem v c) : Mem v f := by
     · exact ⟨c, Or.inl mf1, mc⟩
     · exact ⟨c, Or.inr mf2, mc⟩
 
-theorem eval_congr (a1 a2 : α → Bool) (f : CNF α) (hw : ∀ v, Mem v f → a1 v = a2 v) :
+theorem eval_congr (a1 a2 : α  Bool) (f : CNF α) (hw : ∀ v, Mem v f  a1 v = a2 v) :
     eval a1 f = eval a2 f := by
   induction f
   case nil => rfl

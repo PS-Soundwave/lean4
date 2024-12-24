@@ -28,10 +28,10 @@ deriving Inhabited
 end
 
 mutual
-private partial def eToString : Element → String
+private partial def eToString : Element  String
 | Element.Element n a c => s!"<{n}{a}>{c.map cToString |>.foldl (· ++ ·) ""}</{n}>"
 
-private partial def cToString : Content → String
+private partial def cToString : Content  String
 | Content.Element e => eToString e
 | Content.Comment c => s!"<!--{c}-->"
 | Content.Character c => c

@@ -25,7 +25,7 @@ size measure using the `termination_by` argument on the function definition.
 class SizeOf (α : Sort u) where
   /-- The "size" of an element, a natural number which decreases on fields of
   each inductive type. -/
-  sizeOf : α → Nat
+  sizeOf : α  Nat
 
 export SizeOf (sizeOf)
 
@@ -38,7 +38,7 @@ From now on, the inductive compiler will automatically generate `SizeOf` instanc
 Every type `α` has a default `SizeOf` instance that just returns `0`
 for every element of `α`.
 -/
-protected def default.sizeOf (α : Sort u) : α → Nat
+protected def default.sizeOf (α : Sort u) : α  Nat
   | _ => 0
 
 /--
@@ -55,10 +55,10 @@ instance : SizeOf Nat where
 
 @[simp] theorem sizeOf_nat (n : Nat) : sizeOf n = n := rfl
 
-instance [SizeOf α] : SizeOf (Unit → α) where
+instance [SizeOf α] : SizeOf (Unit  α) where
   sizeOf f := sizeOf (f ())
 
-@[simp] theorem sizeOf_thunk [SizeOf α] (f : Unit → α) : sizeOf f = sizeOf (f ()) :=
+@[simp] theorem sizeOf_thunk [SizeOf α] (f : Unit  α) : sizeOf f = sizeOf (f ()) :=
   rfl
 
 deriving instance SizeOf for PUnit
@@ -96,7 +96,7 @@ namespace Lean
 We manually define the `Lean.Name` instance because we use
 an opaque function for computing the hashcode field.
 -/
-protected noncomputable def Name.sizeOf : Name → Nat
+protected noncomputable def Name.sizeOf : Name  Nat
   | anonymous => 1
   | str p s   => 1 + Name.sizeOf p + sizeOf s
   | num p n   => 1 + Name.sizeOf p + sizeOf n

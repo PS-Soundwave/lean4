@@ -1,34 +1,34 @@
-inductive HList {α : Type v} (β : α → Type u) : List α → Type (max u v)
+inductive HList {α : Type v} (β : α  Type u) : List α  Type (max u v)
   | nil  : HList β []
-  | cons : β i → HList β is → HList β (i::is)
+  | cons : β i  HList β is  HList β (i::is)
 
 infix:67 " :: " => HList.cons
 
-inductive Member : α → List α → Type _
+inductive Member : α  List α  Type _
   | head : Member a (a::as)
-  | tail : Member a bs → Member a (b::bs)
+  | tail : Member a bs  Member a (b::bs)
 
-def HList.get : HList β is → Member i is → β i
+def HList.get : HList β is  Member i is  β i
   | a::as, .head => a
   | a::as, .tail h => as.get h
 
 inductive Ty where
   | nat
-  | fn : Ty → Ty → Ty
+  | fn : Ty  Ty  Ty
 
-abbrev Ty.denote : Ty → Type
+abbrev Ty.denote : Ty  Type
   | nat    => Nat
-  | fn a b => a.denote → b.denote
+  | fn a b => a.denote  b.denote
 
-inductive Term : List Ty → Ty → Type
-  | var   : Member ty ctx → Term ctx ty
-  | const : Nat → Term ctx .nat
-  | plus  : Term ctx .nat → Term ctx .nat → Term ctx .nat
-  | app   : Term ctx (.fn dom ran) → Term ctx dom → Term ctx ran
-  | lam   : Term (dom :: ctx) ran → Term ctx (.fn dom ran)
-  | «let» : Term ctx ty₁ → Term (ty₁ :: ctx) ty₂ → Term ctx ty₂
+inductive Term : List Ty  Ty  Type
+  | var   : Member ty ctx  Term ctx ty
+  | const : Nat  Term ctx .nat
+  | plus  : Term ctx .nat  Term ctx .nat  Term ctx .nat
+  | app   : Term ctx (.fn dom ran)  Term ctx dom  Term ctx ran
+  | lam   : Term (dom :: ctx) ran  Term ctx (.fn dom ran)
+  | «let» : Term ctx ty₁  Term (ty₁ :: ctx) ty₂  Term ctx ty₂
 
-@[simp] def Term.denote : Term ctx ty → HList Ty.denote ctx → ty.denote
+@[simp] def Term.denote : Term ctx ty  HList Ty.denote ctx  ty.denote
   | var h,     env => env.get h
   | const n,   _   => n
   | plus a b,  env => a.denote env + b.denote env
@@ -36,7 +36,7 @@ inductive Term : List Ty → Ty → Type
   | lam b,     env => fun x => b.denote (x :: env)
   | «let» a b, env => b.denote (a.denote env :: env)
 
-@[simp] def Term.constFold : Term ctx ty → Term ctx ty
+@[simp] def Term.constFold : Term ctx ty  Term ctx ty
   | const n   => const n
   | var h     => var h
   | app f a   => app f.constFold a.constFold

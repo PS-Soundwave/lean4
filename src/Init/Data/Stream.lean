@@ -12,10 +12,10 @@ Remark: we considered using the following alternative design
 ```
 structure Stream (α : Type u) where
   stream : Type u
-  next? : stream → Option (α × stream)
+  next? : stream  Option (α × stream)
 
 class ToStream (collection : Type u) (value : outParam (Type v)) where
-  toStream : collection → Stream value
+  toStream : collection  Stream value
 ```
 where `Stream` is not a class, and its state is encapsulated.
 The key problem is that the type `Stream α` "lives" in a universe higher than `α`.
@@ -41,14 +41,14 @@ This is a problem because we want to use `Stream`s in monadic code.
   ```
 -/
 class ToStream (collection : Type u) (stream : outParam (Type u)) : Type u where
-  toStream : collection → stream
+  toStream : collection  stream
 
 export ToStream (toStream)
 
 class Stream (stream : Type u) (value : outParam (Type v)) : Type (max u v) where
-  next? : stream → Option (value × stream)
+  next? : stream  Option (value × stream)
 
-protected partial def Stream.forIn [Stream ρ α] [Monad m] (s : ρ) (b : β) (f : α → β → m (ForInStep β)) : m β := do
+protected partial def Stream.forIn [Stream ρ α] [Monad m] (s : ρ) (b : β) (f : α  β  m (ForInStep β)) : m β := do
   let _ : Inhabited (m β) := ⟨pure b⟩
   let rec visit (s : ρ) (b : β) : m β := do
     match Stream.next? s with

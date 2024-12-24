@@ -104,14 +104,14 @@ attribute [trace_add] foo
 
 /-- info: trace_add attribute added to TraceAdd.structural -/
 #guard_msgs in
-@[trace_add] def structural : Nat → Nat
+@[trace_add] def structural : Nat  Nat
   | 0 => 0
   | n+1 => structural n+1
 termination_by structural n => n
 
 /-- info: trace_add attribute added to TraceAdd.wf -/
 #guard_msgs in
-@[trace_add] def wf : Nat → Nat
+@[trace_add] def wf : Nat  Nat
   | 0 => 0
   | n+1 => wf n+1
 termination_by n => n
@@ -123,11 +123,11 @@ info: trace_add attribute added to TraceAdd.mutual_structural_2
 -/
 #guard_msgs in
 mutual
-@[trace_add] def mutual_structural_1 : Nat → Nat
+@[trace_add] def mutual_structural_1 : Nat  Nat
   | 0 => 0
   | n+1 => mutual_structural_2 n+1
 termination_by structural n => n
-@[trace_add] def mutual_structural_2 : Nat → Nat
+@[trace_add] def mutual_structural_2 : Nat  Nat
   | 0 => 0
   | n+1 => mutual_structural_1 n+1
 termination_by structural n => n
@@ -142,11 +142,11 @@ info: trace_add attribute added to TraceAdd.mutual_wf_2
 -/
 #guard_msgs in
 mutual
-@[trace_add] def mutual_wf_1 : Nat → Nat
+@[trace_add] def mutual_wf_1 : Nat  Nat
   | 0 => 0
   | n+1 => mutual_wf_2 n+1
 termination_by n => n
-@[trace_add] def mutual_wf_2 : Nat → Nat
+@[trace_add] def mutual_wf_2 : Nat  Nat
   | 0 => 0
   | n+1 => mutual_wf_1 n+1
 termination_by n => n

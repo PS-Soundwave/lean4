@@ -1,6 +1,6 @@
 import Lean
 
-def f : Nat → Bool
+def f : Nat  Bool
   | 0 => true
   | n + 1 => (match n with
     | 0 => true

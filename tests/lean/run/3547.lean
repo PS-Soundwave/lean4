@@ -1,4 +1,4 @@
-def foo : Nat → Nat
+def foo : Nat  Nat
   | 0 => 0
   | n+1 => foo n
 decreasing_by decreasing_tactic

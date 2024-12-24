@@ -82,7 +82,7 @@ structure WorkerContext where
   stickyDiagnosticsRef : IO.Ref (Array InteractiveDiagnostic)
   hLog                 : FS.Stream
   initParams           : InitializeParams
-  processor            : Parser.InputContext → BaseIO Lean.Language.Lean.InitialSnapshot
+  processor            : Parser.InputContext  BaseIO Lean.Language.Lean.InitialSnapshot
   clientHasWidgets     : Bool
   /--
   Options defined on the worker cmdline (i.e. not including options from `setup-file`), used for
@@ -100,11 +100,11 @@ section Elab
     let param := { version := m.version, references }
     return { method, param }
 
-  private def mkIleanInfoUpdateNotification : DocumentMeta → Array Elab.InfoTree →
+  private def mkIleanInfoUpdateNotification : DocumentMeta  Array Elab.InfoTree 
       BaseIO (JsonRpc.Notification Lsp.LeanIleanInfoParams) :=
     mkIleanInfoNotification "$/lean/ileanInfoUpdate"
 
-  private def mkIleanInfoFinalNotification : DocumentMeta → Array Elab.InfoTree →
+  private def mkIleanInfoFinalNotification : DocumentMeta  Array Elab.InfoTree 
       BaseIO (JsonRpc.Notification Lsp.LeanIleanInfoParams) :=
     mkIleanInfoNotification "$/lean/ileanInfoFinal"
 
@@ -227,7 +227,7 @@ This option can only be set on the command line, not in the lakefile or via `set
       goSeq st node.children.toList
 
     goSeq (st : ReportSnapshotsState) :
-        List (SnapshotTask SnapshotTree) → BaseIO (Task ReportSnapshotsState)
+        List (SnapshotTask SnapshotTree)  BaseIO (Task ReportSnapshotsState)
       | [] => return .pure st
       | t::ts => do
         let mut st := st
@@ -427,7 +427,7 @@ section ServerRequests
 end ServerRequests
 
 section Updates
-  def updatePendingRequests (map : PendingRequestMap → PendingRequestMap) : WorkerM Unit := do
+  def updatePendingRequests (map : PendingRequestMap  PendingRequestMap) : WorkerM Unit := do
     modify fun st => { st with pendingRequests := map st.pendingRequests }
 
   /-- Given the new document, updates editable doc state. -/
@@ -522,7 +522,7 @@ section MessageHandling
     | Except.error inner => throwServerError s!"Got param with wrong structure: {params.compress}\n{inner}"
 
   def handleNotification (method : String) (params : Json) : WorkerM Unit := do
-    let handle := fun paramType [FromJson paramType] (handler : paramType → WorkerM Unit) =>
+    let handle := fun paramType [FromJson paramType] (handler : paramType  WorkerM Unit) =>
       parseParams paramType params >>= handler
     match method with
     | "textDocument/didChange" => handle DidChangeTextDocumentParams handleDidChange
@@ -559,7 +559,7 @@ section MessageHandling
           r.end.line + 1
       params.lineRange?.all fun ⟨s, e⟩ =>
         -- does [s,e) intersect [diagStartLine,diagEndLine)?
-        s ≤ diagStartLine ∧ diagStartLine < e ∨
+        s ≤ diagStartLine ∧ diagStartLine < e 
         diagStartLine ≤ s ∧ s < diagEndLine
 
   def handleImportCompletionRequest (id : RequestID) (params : CompletionParams)

@@ -43,7 +43,7 @@ Examples:
 * `"L∃∀N".length = 4`
 -/
 @[extern "lean_string_length"]
-def length : (@& String) → Nat
+def length : (@& String)  Nat
   | ⟨s⟩ => s.length
 
 /--
@@ -55,7 +55,7 @@ if the string is not shared.
 Example: `"abc".push 'd' = "abcd"`
 -/
 @[extern "lean_string_push"]
-def push : String → Char → String
+def push : String  Char  String
   | ⟨s⟩, c => ⟨s ++ [c]⟩
 
 /--
@@ -67,7 +67,7 @@ if the string is not shared.
 Example: `"abc".append "def" = "abcdef"`
 -/
 @[extern "lean_string_append"]
-def append : String → (@& String) → String
+def append : String  (@& String)  String
   | ⟨a⟩, ⟨b⟩ => ⟨a ++ b⟩
 
 /--
@@ -88,11 +88,11 @@ and `p` lies on a UTF-8 character boundary. This has an O(1) implementation in t
 def Pos.isValid (s : @&String) (p : @& Pos) : Bool :=
   go s.data 0
 where
-  go : List Char → Pos → Bool
+  go : List Char  Pos  Bool
   | [],    i => i = p
   | c::cs, i => if i = p then true else go cs (i + c)
 
-def utf8GetAux : List Char → Pos → Pos → Char
+def utf8GetAux : List Char  Pos  Pos  Char
   | [],    _, _ => default
   | c::cs, i, p => if i = p then c else utf8GetAux cs (i + c) p
 
@@ -114,7 +114,7 @@ def get (s : @& String) (p : @& Pos) : Char :=
   match s with
   | ⟨s⟩ => utf8GetAux s 0 p
 
-def utf8GetAux? : List Char → Pos → Pos → Option Char
+def utf8GetAux? : List Char  Pos  Pos  Option Char
   | [],    _, _ => none
   | c::cs, i, p => if i = p then c else utf8GetAux? cs (i + c) p
 
@@ -129,7 +129,7 @@ Positions can also be invalid if a byte index points into the middle of a multi-
 character. For example, `"L∃∀N".get? ⟨2⟩ = none`
 -/
 @[extern "lean_string_utf8_get_opt"]
-def get? : (@& String) → (@& Pos) → Option Char
+def get? : (@& String)  (@& Pos)  Option Char
   | ⟨s⟩, p => utf8GetAux? s 0 p
 
 /--
@@ -148,7 +148,7 @@ def get! (s : @& String) (p : @& Pos) : Char :=
   match s with
   | ⟨s⟩ => utf8GetAux s 0 p
 
-def utf8SetAux (c' : Char) : List Char → Pos → Pos → List Char
+def utf8SetAux (c' : Char) : List Char  Pos  Pos  List Char
   | [],    _, _ => []
   | c::cs, i, p =>
     if i = p then (c'::cs) else c::(utf8SetAux c' cs (i + c) p)
@@ -169,7 +169,7 @@ Because `'∃'` is a multi-byte character, the byte index `2` in `L∃∀N` is a
 so `"L∃∀N".set ⟨2⟩ 'X' = "L∃∀N"`.
 -/
 @[extern "lean_string_utf8_set"]
-def set : String → (@& Pos) → Char → String
+def set : String  (@& Pos)  Char  String
   | ⟨s⟩, i, c => ⟨utf8SetAux c s 0 i⟩
 
 /--
@@ -180,7 +180,7 @@ Examples:
 * `abc.modify ⟨1⟩ Char.toUpper = "aBc"`
 * `abc.modify ⟨3⟩ Char.toUpper = "abc"`
 -/
-def modify (s : String) (i : Pos) (f : Char → Char) : String :=
+def modify (s : String) (i : Pos) (f : Char  Char) : String :=
   s.set i <| f <| s.get i
 
 /--
@@ -201,7 +201,7 @@ def next (s : @& String) (p : @& Pos) : Pos :=
   let c := get s p
   p + c
 
-def utf8PrevAux : List Char → Pos → Pos → Pos
+def utf8PrevAux : List Char  Pos  Pos  Pos
   | [],    _, _ => 0
   | c::cs, i, p =>
     let i' := i + c
@@ -218,7 +218,7 @@ Given `def abc := "abc"` and `def lean := "L∃∀N"`,
 * `"L∃∀N".prev ⟨3⟩` is unspecified, since byte 3 occurs in the middle of the multi-byte character `'∃'`.
 -/
 @[extern "lean_string_utf8_prev"]
-def prev : (@& String) → (@& Pos) → Pos
+def prev : (@& String)  (@& Pos)  Pos
   | ⟨s⟩, p => if p = 0 then 0 else utf8PrevAux s 0 p
 
 /--
@@ -254,7 +254,7 @@ Given `def abc := "abc"` and `def lean := "L∃∀N"`,
 Because `"L∃∀N"` contains multi-byte characters, `lean.next (lean.next 0)` is not equal to `abc.next (abc.next 0)`.
 -/
 @[extern "lean_string_utf8_at_end"]
-def atEnd : (@& String) → (@& Pos) → Bool
+def atEnd : (@& String)  (@& Pos)  Bool
   | s, p => p.byteIdx ≥ utf8ByteSize s
 
 /--
@@ -318,13 +318,13 @@ theorem _root_.Char.utf8Size_le_four (c : Char) : c.utf8Size ≤ 4 := by
 
 @[simp] theorem pos_add_char (p : Pos) (c : Char) : (p + c).byteIdx = p.byteIdx + c.utf8Size := rfl
 
-protected theorem Pos.ne_zero_of_lt : {a b : Pos} → a < b → b ≠ 0
+protected theorem Pos.ne_zero_of_lt : {a b : Pos}  a < b  b ≠ 0
   | _, _, hlt, rfl => Nat.not_lt_zero _ hlt
 
 theorem lt_next (s : String) (i : Pos) : i.1 < (s.next i).1 :=
   Nat.add_lt_add_left (Char.utf8Size_pos _) _
 
-theorem utf8PrevAux_lt_of_pos : ∀ (cs : List Char) (i p : Pos), p ≠ 0 →
+theorem utf8PrevAux_lt_of_pos : ∀ (cs : List Char) (i p : Pos), p ≠ 0 
     (utf8PrevAux cs i p).1 < p.1
   | [], _, _, h =>
     Nat.lt_of_le_of_lt (Nat.zero_le _)
@@ -381,7 +381,7 @@ Examples:
 @[inline] def revPosOf (s : String) (c : Char) : Option Pos :=
   revPosOfAux s c s.endPos
 
-def findAux (s : String) (p : Char → Bool) (stopPos : Pos) (pos : Pos) : Pos :=
+def findAux (s : String) (p : Char  Bool) (stopPos : Pos) (pos : Pos) : Pos :=
   if h : pos < stopPos then
     if p (s.get pos) then pos
     else
@@ -390,10 +390,10 @@ def findAux (s : String) (p : Char → Bool) (stopPos : Pos) (pos : Pos) : Pos :
   else pos
 termination_by stopPos.1 - pos.1
 
-@[inline] def find (s : String) (p : Char → Bool) : Pos :=
+@[inline] def find (s : String) (p : Char  Bool) : Pos :=
   findAux s p s.endPos 0
 
-def revFindAux (s : String) (p : Char → Bool) (pos : Pos) : Option Pos :=
+def revFindAux (s : String) (p : Char  Bool) (pos : Pos) : Option Pos :=
   if h : pos = 0 then none
   else
     have := prev_lt_of_pos s pos h
@@ -402,7 +402,7 @@ def revFindAux (s : String) (p : Char → Bool) (pos : Pos) : Option Pos :=
     else revFindAux s p pos
 termination_by pos.1
 
-@[inline] def revFind (s : String) (p : Char → Bool) : Option Pos :=
+@[inline] def revFind (s : String) (p : Char  Bool) : Option Pos :=
   revFindAux s p s.endPos
 
 abbrev Pos.min (p₁ p₂ : Pos) : Pos :=
@@ -422,19 +422,19 @@ def firstDiffPos (a b : String) : Pos :=
   loop 0
 
 @[extern "lean_string_utf8_extract"]
-def extract : (@& String) → (@& Pos) → (@& Pos) → String
+def extract : (@& String)  (@& Pos)  (@& Pos)  String
   | ⟨s⟩, b, e => if b.byteIdx ≥ e.byteIdx then "" else ⟨go₁ s 0 b e⟩
 where
-  go₁ : List Char → Pos → Pos → Pos → List Char
+  go₁ : List Char  Pos  Pos  Pos  List Char
     | [],        _, _, _ => []
     | s@(c::cs), i, b, e => if i = b then go₂ s i e else go₁ cs (i + c) b e
 
-  go₂ : List Char → Pos → Pos → List Char
+  go₂ : List Char  Pos  Pos  List Char
     | [],    _, _ => []
     | c::cs, i, e => if i = e then [] else c :: go₂ cs (i + c) e
 
 
-@[specialize] def splitAux (s : String) (p : Char → Bool) (b : Pos) (i : Pos) (r : List String) : List String :=
+@[specialize] def splitAux (s : String) (p : Char  Bool) (b : Pos) (i : Pos) (r : List String) : List String :=
   if h : s.atEnd i then
     let r := (s.extract b i)::r
     r.reverse
@@ -447,7 +447,7 @@ where
       splitAux s p b (s.next i) r
 termination_by s.endPos.1 - i.1
 
-@[specialize] def split (s : String) (p : Char → Bool) : List String :=
+@[specialize] def split (s : String) (p : Char  Bool) : List String :=
   splitAux s p 0 0 []
 
 /--
@@ -528,10 +528,10 @@ instance : Append String := ⟨String.append⟩
 @[inline] def singleton (c : Char) : String :=
   "".push c
 
-def intercalate (s : String) : List String → String
+def intercalate (s : String) : List String  String
   | []      => ""
   | a :: as => go a s as
-where go (acc : String) (s : String) : List String → String
+where go (acc : String) (s : String) : List String  String
   | a :: as => go (acc ++ s ++ a) s as
   | []      => acc
 
@@ -580,7 +580,7 @@ namespace Iterator
 def toString := Iterator.s
 
 /-- Number of bytes remaining in the iterator. -/
-@[inline] def remainingBytes : Iterator → Nat
+@[inline] def remainingBytes : Iterator  Nat
   | ⟨s, i⟩ => s.endPos.byteIdx - i.byteIdx
 
 @[inline, inherit_doc Iterator.i]
@@ -589,32 +589,32 @@ def pos := Iterator.i
 /-- The character at the current position.
 
 On an invalid position, returns `(default : Char)`. -/
-@[inline] def curr : Iterator → Char
+@[inline] def curr : Iterator  Char
   | ⟨s, i⟩ => get s i
 
 /-- Moves the iterator's position forward by one character, unconditionally.
 
 It is only valid to call this function if the iterator is not at the end of the string, *i.e.*
 `Iterator.atEnd` is `false`; otherwise, the resulting iterator will be invalid. -/
-@[inline] def next : Iterator → Iterator
+@[inline] def next : Iterator  Iterator
   | ⟨s, i⟩ => ⟨s, s.next i⟩
 
 /-- Decreases the iterator's position.
 
 If the position is zero, this function is the identity. -/
-@[inline] def prev : Iterator → Iterator
+@[inline] def prev : Iterator  Iterator
   | ⟨s, i⟩ => ⟨s, s.prev i⟩
 
 /-- True if the iterator is past the string's last character. -/
-@[inline] def atEnd : Iterator → Bool
+@[inline] def atEnd : Iterator  Bool
   | ⟨s, i⟩ => i.byteIdx ≥ s.endPos.byteIdx
 
 /-- True if the iterator is not past the string's last character. -/
-@[inline] def hasNext : Iterator → Bool
+@[inline] def hasNext : Iterator  Bool
   | ⟨s, i⟩ => i.byteIdx < s.endPos.byteIdx
 
 /-- True if the position is not zero. -/
-@[inline] def hasPrev : Iterator → Bool
+@[inline] def hasPrev : Iterator  Bool
   | ⟨_, i⟩ => i.byteIdx > 0
 
 @[inline] def curr' (it : Iterator) (h : it.hasNext) : Char :=
@@ -630,20 +630,20 @@ If the position is zero, this function is the identity. -/
 Does nothing if the iterator is at the end of the string. If the iterator contains the only
 reference to its string, this function will mutate the string in-place instead of allocating a new
 one. -/
-@[inline] def setCurr : Iterator → Char → Iterator
+@[inline] def setCurr : Iterator  Char  Iterator
   | ⟨s, i⟩, c => ⟨s.set i c, i⟩
 
 /-- Moves the iterator's position to the end of the string.
 
 Note that `i.toEnd.atEnd` is always `true`. -/
-@[inline] def toEnd : Iterator → Iterator
+@[inline] def toEnd : Iterator  Iterator
   | ⟨s, _⟩ => ⟨s, s.endPos⟩
 
 /-- Extracts the substring between the positions of two iterators.
 
 Returns the empty string if the iterators are for different strings, or if the position of the first
 iterator is past the position of the second iterator. -/
-@[inline] def extract : Iterator → Iterator → String
+@[inline] def extract : Iterator  Iterator  String
   | ⟨s₁, b⟩, ⟨s₂, e⟩ =>
     if s₁ ≠ s₂ || b > e then ""
     else s₁.extract b e
@@ -652,23 +652,23 @@ iterator is past the position of the second iterator. -/
 
 The resulting iterator is only valid if the number of characters to skip is less than or equal to
 the number of characters left in the iterator. -/
-def forward : Iterator → Nat → Iterator
+def forward : Iterator  Nat  Iterator
   | it, 0   => it
   | it, n+1 => forward it.next n
 
 /-- The remaining characters in an iterator, as a string. -/
-@[inline] def remainingToString : Iterator → String
+@[inline] def remainingToString : Iterator  String
   | ⟨s, i⟩ => s.extract i s.endPos
 
 @[inherit_doc forward]
-def nextn : Iterator → Nat → Iterator
+def nextn : Iterator  Nat  Iterator
   | it, 0   => it
   | it, i+1 => nextn it.next i
 
 /-- Moves the iterator's position several characters back.
 
 If asked to go back more characters than available, stops at the beginning of the string. -/
-def prevn : Iterator → Nat → Iterator
+def prevn : Iterator  Nat  Iterator
   | it, 0   => it
   | it, i+1 => prevn it.prev i
 end Iterator
@@ -685,17 +685,17 @@ termination_by s.endPos.1 - i.1
 @[inline] def offsetOfPos (s : String) (pos : Pos) : Nat :=
   offsetOfPosAux s pos 0 0
 
-@[specialize] def foldlAux {α : Type u} (f : α → Char → α) (s : String) (stopPos : Pos) (i : Pos) (a : α) : α :=
+@[specialize] def foldlAux {α : Type u} (f : α  Char  α) (s : String) (stopPos : Pos) (i : Pos) (a : α) : α :=
   if h : i < stopPos then
     have := Nat.sub_lt_sub_left h (lt_next s i)
     foldlAux f s stopPos (s.next i) (f a (s.get i))
   else a
 termination_by stopPos.1 - i.1
 
-@[inline] def foldl {α : Type u} (f : α → Char → α) (init : α) (s : String) : α :=
+@[inline] def foldl {α : Type u} (f : α  Char  α) (init : α) (s : String) : α :=
   foldlAux f s s.endPos 0 init
 
-@[specialize] def foldrAux {α : Type u} (f : Char → α → α) (a : α) (s : String) (i begPos : Pos) : α :=
+@[specialize] def foldrAux {α : Type u} (f : Char  α  α) (a : α) (s : String) (i begPos : Pos) : α :=
   if h : begPos < i then
     have := String.prev_lt_of_pos s i <| mt (congrArg String.Pos.byteIdx) <|
       Ne.symm <| Nat.ne_of_lt <| Nat.lt_of_le_of_lt (Nat.zero_le _) h
@@ -705,10 +705,10 @@ termination_by stopPos.1 - i.1
   else a
 termination_by i.1
 
-@[inline] def foldr {α : Type u} (f : Char → α → α) (init : α) (s : String) : α :=
+@[inline] def foldr {α : Type u} (f : Char  α  α) (init : α) (s : String) : α :=
   foldrAux f init s s.endPos 0
 
-@[specialize] def anyAux (s : String) (stopPos : Pos) (p : Char → Bool) (i : Pos) : Bool :=
+@[specialize] def anyAux (s : String) (stopPos : Pos) (p : Char  Bool) (i : Pos) : Bool :=
   if h : i < stopPos then
     if p (s.get i) then true
     else
@@ -717,16 +717,16 @@ termination_by i.1
   else false
 termination_by stopPos.1 - i.1
 
-@[inline] def any (s : String) (p : Char → Bool) : Bool :=
+@[inline] def any (s : String) (p : Char  Bool) : Bool :=
   anyAux s s.endPos p 0
 
-@[inline] def all (s : String) (p : Char → Bool) : Bool :=
+@[inline] def all (s : String) (p : Char  Bool) : Bool :=
   !s.any (fun c => !p c)
 
 @[inline] def contains (s : String) (c : Char) : Bool :=
 s.any (fun a => a == c)
 
-theorem utf8SetAux_of_gt (c' : Char) : ∀ (cs : List Char) {i p : Pos}, i > p → utf8SetAux c' cs i p = cs
+theorem utf8SetAux_of_gt (c' : Char) : ∀ (cs : List Char) {i p : Pos}, i > p  utf8SetAux c' cs i p = cs
   | [],    _, _, _ => rfl
   | c::cs, i, p, h => by
     rw [utf8SetAux, if_neg (mt (congrArg (·.1)) (Ne.symm <| Nat.ne_of_lt h)), utf8SetAux_of_gt c' cs]
@@ -738,7 +738,7 @@ theorem set_next_add (s : String) (i : Pos) (c : Char) (b₁ b₂)
   simp [next, get, set, endPos, utf8ByteSize] at h ⊢
   rw [Nat.add_comm i.1, Nat.add_assoc] at h ⊢
   let rec foo : ∀ cs a b₁ b₂,
-    (utf8GetAux cs a i).utf8Size + b₁ = utf8ByteSize.go cs + b₂ →
+    (utf8GetAux cs a i).utf8Size + b₁ = utf8ByteSize.go cs + b₂ 
     (utf8GetAux (utf8SetAux c cs a i) a i).utf8Size + b₁ = utf8ByteSize.go (utf8SetAux c cs a i) + b₂
   | [], _, _, _, h => h
   | c'::cs, a, b₁, b₂, h => by
@@ -767,7 +767,7 @@ theorem mapAux_lemma (s : String) (i : Pos) (c : Char) (h : ¬s.atEnd i) :
       have : ((s.set i c).next i).1 = _ := set_next_add _ _ c 0 k.succ e.symm
       exact Nat.sub_eq_zero_of_le (this ▸ Nat.le_add_right ..))
 
-@[specialize] def mapAux (f : Char → Char) (i : Pos) (s : String) : String :=
+@[specialize] def mapAux (f : Char  Char) (i : Pos) (s : String) : String :=
   if h : s.atEnd i then s
   else
     let c := f (s.get i)
@@ -776,7 +776,7 @@ theorem mapAux_lemma (s : String) (i : Pos) (c : Char) (h : ¬s.atEnd i) :
     mapAux f (s.next i) s
 termination_by s.endPos.1 - i.1
 
-@[inline] def map (f : Char → Char) (s : String) : String :=
+@[inline] def map (f : Char  Char) (s : String) : String :=
   mapAux f 0 s
 
 @[inline] def isNat (s : String) : Bool :=
@@ -841,19 +841,19 @@ namespace Substring
 @[inline] def isEmpty (ss : Substring) : Bool :=
   ss.bsize == 0
 
-@[inline] def toString : Substring → String
+@[inline] def toString : Substring  String
   | ⟨s, b, e⟩ => s.extract b e
 
-@[inline] def toIterator : Substring → String.Iterator
+@[inline] def toIterator : Substring  String.Iterator
   | ⟨s, b, _⟩ => ⟨s, b⟩
 
 /-- Return the codepoint at the given offset into the substring. -/
-@[inline] def get : Substring → String.Pos → Char
+@[inline] def get : Substring  String.Pos  Char
   | ⟨s, b, _⟩, p => s.get (b+p)
 
 /-- Given an offset of a codepoint into the substring,
 return the offset there of the next codepoint. -/
-@[inline] def next : Substring → String.Pos → String.Pos
+@[inline] def next : Substring  String.Pos  String.Pos
   | ⟨s, b, e⟩, p =>
     let absP := b+p
     if absP = e then p else { byteIdx := (s.next absP).byteIdx - b.byteIdx }
@@ -869,16 +869,16 @@ theorem lt_next (s : Substring) (i : String.Pos) (h : i.1 < s.bsize) :
 
 /-- Given an offset of a codepoint into the substring,
 return the offset there of the previous codepoint. -/
-@[inline] def prev : Substring → String.Pos → String.Pos
+@[inline] def prev : Substring  String.Pos  String.Pos
   | ⟨s, b, _⟩, p =>
     let absP := b+p
     if absP = b then p else { byteIdx := (s.prev absP).byteIdx - b.byteIdx }
 
-def nextn : Substring → Nat → String.Pos → String.Pos
+def nextn : Substring  Nat  String.Pos  String.Pos
   | _,  0,   p => p
   | ss, i+1, p => ss.nextn i (ss.next p)
 
-def prevn : Substring → Nat → String.Pos → String.Pos
+def prevn : Substring  Nat  String.Pos  String.Pos
   | _,  0,   p => p
   | ss, i+1, p => ss.prevn i (ss.prev p)
 
@@ -891,22 +891,22 @@ or `s.bsize` if `c` doesn't occur. -/
   match s with
   | ⟨s, b, e⟩ => { byteIdx := (String.posOfAux s c e b).byteIdx - b.byteIdx }
 
-@[inline] def drop : Substring → Nat → Substring
+@[inline] def drop : Substring  Nat  Substring
   | ss@⟨s, b, e⟩, n => ⟨s, b + ss.nextn n 0, e⟩
 
-@[inline] def dropRight : Substring → Nat → Substring
+@[inline] def dropRight : Substring  Nat  Substring
   | ss@⟨s, b, _⟩, n => ⟨s, b, b + ss.prevn n ⟨ss.bsize⟩⟩
 
-@[inline] def take : Substring → Nat → Substring
+@[inline] def take : Substring  Nat  Substring
   | ss@⟨s, b, _⟩, n => ⟨s, b, b + ss.nextn n 0⟩
 
-@[inline] def takeRight : Substring → Nat → Substring
+@[inline] def takeRight : Substring  Nat  Substring
   | ss@⟨s, b, e⟩, n => ⟨s, b + ss.prevn n ⟨ss.bsize⟩, e⟩
 
-@[inline] def atEnd : Substring → String.Pos → Bool
+@[inline] def atEnd : Substring  String.Pos  Bool
   | ⟨_, b, e⟩, p => b + p == e
 
-@[inline] def extract : Substring → String.Pos → String.Pos → Substring
+@[inline] def extract : Substring  String.Pos  String.Pos  Substring
   | ⟨s, b, e⟩, b', e' => if b' ≥ e' then ⟨"", 0, 0⟩ else ⟨s, e.min (b+b'), e.min (b+e')⟩
 
 def splitOn (s : Substring) (sep : String := " ") : List Substring :=
@@ -934,25 +934,25 @@ def splitOn (s : Substring) (sep : String := " ") : List Substring :=
       termination_by s.bsize - i.1
     loop 0 0 0 []
 
-@[inline] def foldl {α : Type u} (f : α → Char → α) (init : α) (s : Substring) : α :=
+@[inline] def foldl {α : Type u} (f : α  Char  α) (init : α) (s : Substring) : α :=
   match s with
   | ⟨s, b, e⟩ => String.foldlAux f s e b init
 
-@[inline] def foldr {α : Type u} (f : Char → α → α) (init : α) (s : Substring) : α :=
+@[inline] def foldr {α : Type u} (f : Char  α  α) (init : α) (s : Substring) : α :=
   match s with
   | ⟨s, b, e⟩ => String.foldrAux f init s e b
 
-@[inline] def any (s : Substring) (p : Char → Bool) : Bool :=
+@[inline] def any (s : Substring) (p : Char  Bool) : Bool :=
   match s with
   | ⟨s, b, e⟩ => String.anyAux s e p b
 
-@[inline] def all (s : Substring) (p : Char → Bool) : Bool :=
+@[inline] def all (s : Substring) (p : Char  Bool) : Bool :=
   !s.any (fun c => !p c)
 
 @[inline] def contains (s : Substring) (c : Char) : Bool :=
   s.any (fun a => a == c)
 
-@[specialize] def takeWhileAux (s : String) (stopPos : String.Pos) (p : Char → Bool) (i : String.Pos) : String.Pos :=
+@[specialize] def takeWhileAux (s : String) (stopPos : String.Pos) (p : Char  Bool) (i : String.Pos) : String.Pos :=
   if h : i < stopPos then
     if p (s.get i) then
       have := Nat.sub_lt_sub_left h (String.lt_next s i)
@@ -961,17 +961,17 @@ def splitOn (s : Substring) (sep : String := " ") : List Substring :=
   else i
 termination_by stopPos.1 - i.1
 
-@[inline] def takeWhile : Substring → (Char → Bool) → Substring
+@[inline] def takeWhile : Substring  (Char  Bool)  Substring
   | ⟨s, b, e⟩, p =>
     let e := takeWhileAux s e p b;
     ⟨s, b, e⟩
 
-@[inline] def dropWhile : Substring → (Char → Bool) → Substring
+@[inline] def dropWhile : Substring  (Char  Bool)  Substring
   | ⟨s, b, e⟩, p =>
     let b := takeWhileAux s e p b;
     ⟨s, b, e⟩
 
-@[specialize] def takeRightWhileAux (s : String) (begPos : String.Pos) (p : Char → Bool) (i : String.Pos) : String.Pos :=
+@[specialize] def takeRightWhileAux (s : String) (begPos : String.Pos) (p : Char  Bool) (i : String.Pos) : String.Pos :=
   if h : begPos < i then
     have := String.prev_lt_of_pos s i <| mt (congrArg String.Pos.byteIdx) <|
       Ne.symm <| Nat.ne_of_lt <| Nat.lt_of_le_of_lt (Nat.zero_le _) h
@@ -982,12 +982,12 @@ termination_by stopPos.1 - i.1
   else i
 termination_by i.1
 
-@[inline] def takeRightWhile : Substring → (Char → Bool) → Substring
+@[inline] def takeRightWhile : Substring  (Char  Bool)  Substring
   | ⟨s, b, e⟩, p =>
     let b := takeRightWhileAux s b p e
     ⟨s, b, e⟩
 
-@[inline] def dropRightWhile : Substring → (Char → Bool) → Substring
+@[inline] def dropRightWhile : Substring  (Char  Bool)  Substring
   | ⟨s, b, e⟩, p =>
     let e := takeRightWhileAux s b p e
     ⟨s, b, e⟩
@@ -998,7 +998,7 @@ termination_by i.1
 @[inline] def trimRight (s : Substring) : Substring :=
   s.dropRightWhile Char.isWhitespace
 
-@[inline] def trim : Substring → Substring
+@[inline] def trim : Substring  Substring
   | ⟨s, b, e⟩ =>
     let b := takeWhileAux s e Char.isWhitespace b
     let e := takeRightWhileAux s b Char.isWhitespace e
@@ -1098,16 +1098,16 @@ namespace String
 @[inline] def takeRight (s : String) (n : Nat) : String :=
   (s.toSubstring.takeRight n).toString
 
-@[inline] def takeWhile (s : String) (p : Char → Bool) : String :=
+@[inline] def takeWhile (s : String) (p : Char  Bool) : String :=
   (s.toSubstring.takeWhile p).toString
 
-@[inline] def dropWhile (s : String) (p : Char → Bool) : String :=
+@[inline] def dropWhile (s : String) (p : Char  Bool) : String :=
   (s.toSubstring.dropWhile p).toString
 
-@[inline] def takeRightWhile (s : String) (p : Char → Bool) : String :=
+@[inline] def takeRightWhile (s : String) (p : Char  Bool) : String :=
   (s.toSubstring.takeRightWhile p).toString
 
-@[inline] def dropRightWhile (s : String) (p : Char → Bool) : String :=
+@[inline] def dropRightWhile (s : String) (p : Char  Bool) : String :=
   (s.toSubstring.dropRightWhile p).toString
 
 @[inline] def startsWith (s pre : String) : Bool :=
@@ -1125,10 +1125,10 @@ namespace String
 @[inline] def trim (s : String) : String :=
   s.toSubstring.trim.toString
 
-@[inline] def nextWhile (s : String) (p : Char → Bool) (i : String.Pos) : String.Pos :=
+@[inline] def nextWhile (s : String) (p : Char  Bool) (i : String.Pos) : String.Pos :=
   Substring.takeWhileAux s s.endPos p i
 
-@[inline] def nextUntil (s : String) (p : Char → Bool) (i : String.Pos) : String.Pos :=
+@[inline] def nextUntil (s : String) (p : Char  Bool) (i : String.Pos) : String.Pos :=
   nextWhile s (fun c => !p c) i
 
 @[inline] def toUpper (s : String) : String :=

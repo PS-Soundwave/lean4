@@ -43,14 +43,14 @@ inductive Origin where
   deriving Inhabited, Repr
 
 /-- A unique identifier corresponding to the origin. -/
-def Origin.key : Origin → Name
+def Origin.key : Origin  Name
   | .decl declName _ _ => declName
   | .fvar fvarId => fvarId.name
   | .stx id _ => id
   | .other name => name
 
 /-- The origin corresponding to the converse direction (`← thm` vs. `thm`) -/
-def Origin.converse : Origin → Option Origin
+def Origin.converse : Origin  Option Origin
   | .decl declName phase inv => some (.decl declName phase (not inv))
   | _ => none
 
@@ -69,7 +69,7 @@ instance : Hashable Origin where
    | .decl declName _ false => mixHash (hash declName) 13
    | a => hash a.key
 
-def Origin.lt : Origin → Origin → Bool
+def Origin.lt : Origin  Origin  Bool
   | .decl declName₁ _ inv₁, .decl declName₂ _ inv₂ =>
     Name.lt declName₁ declName₂ || (declName₁ == declName₂ && !inv₁ && inv₂)
   | .decl .., _ => false
@@ -86,7 +86,7 @@ instance (a b : Origin) : Decidable (a < b) :=
 Note: we want to use iota reduction when indexing instances. Otherwise,
 we cannot use simp theorems such as
 ```
-@[simp] theorem liftOn_mk (a : α) (f : α → γ) (h : ∀ a₁ a₂, r a₁ a₂ → f a₁ = f a₂) :
+@[simp] theorem liftOn_mk (a : α) (f : α  γ) (h : ∀ a₁ a₂, r a₁ a₂  f a₁ = f a₂) :
     Quot.liftOn (Quot.mk r a) f h = f a := rfl
 ```
 If we use `iota`, then the lhs is reduced to `f a`.
@@ -168,7 +168,7 @@ instance : ToFormat SimpTheorem where
     let prio := f!":{s.priority}"
     name ++ prio ++ perm
 
-def ppOrigin [Monad m] [MonadEnv m] [MonadError m] : Origin → m MessageData
+def ppOrigin [Monad m] [MonadEnv m] [MonadError m] : Origin  m MessageData
   | .decl n post inv => do
     let r := MessageData.ofConst (← mkConstWithLevelParams n)
     match post, inv with
@@ -214,7 +214,7 @@ def simpGlobalConfig : ConfigWithKey :=
     transparency := .reducible
   : Config }.toConfigWithKey
 
-@[inline] def withSimpGlobalConfig : MetaM α → MetaM α :=
+@[inline] def withSimpGlobalConfig : MetaM α  MetaM α :=
   withConfigWithKey simpGlobalConfig
 
 partial def SimpTheorems.eraseCore (d : SimpTheorems) (thmId : Origin) : SimpTheorems :=
@@ -293,7 +293,7 @@ def SimpTheorems.erase [Monad m] [MonadLog m] [AddMessageContext m] [MonadOption
   logWarning m!"'{thmId.key}' does not have [simp] attribute"
   return d
 
-private partial def isPerm : Expr → Expr → MetaM Bool
+private partial def isPerm : Expr  Expr  MetaM Bool
   | .app f₁ a₁, .app f₂ a₂ => isPerm f₁ f₂ <&&> isPerm a₁ a₂
   | .mdata _ s, t => isPerm s t
   | s, .mdata _ t => isPerm s t
@@ -417,9 +417,9 @@ private def mkSimpTheoremsFromConst (declName : Name) (post : Bool) (inv : Bool)
       return #[← mkSimpTheoremCore origin (mkConst declName us) #[] (mkConst declName) post prio (noIndexAtArgs := false)]
 
 inductive SimpEntry where
-  | thm      : SimpTheorem → SimpEntry
-  | toUnfold : Name → SimpEntry
-  | toUnfoldThms : Name → Array Name → SimpEntry
+  | thm      : SimpTheorem  SimpEntry
+  | toUnfold : Name  SimpEntry
+  | toUnfoldThms : Name  Array Name  SimpEntry
   deriving Inhabited
 
 abbrev SimpExtension := SimpleScopedEnvExtension SimpEntry SimpTheorems

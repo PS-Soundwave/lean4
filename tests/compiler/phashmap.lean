@@ -5,7 +5,7 @@ open Lean Std Lean.PersistentHashMap
 
 abbrev Map := PersistentHashMap Nat Nat
 
-partial def formatMap : Node Nat Nat → Format
+partial def formatMap : Node Nat Nat  Format
 | Node.collision keys vals _   => Format.sbracket $
   keys.size.fold
     (fun i _ fmt =>

@@ -19,7 +19,7 @@ namespace Parser
 namespace Command
 
 /-- Skip input until the next character that satisfies the predicate, then skip whitespace -/
-private def skipUntil (pred : Char → Bool) : Parser where
+private def skipUntil (pred : Char  Bool) : Parser where
   fn :=
     andthenFn
       (takeUntilFn pred)
@@ -451,7 +451,7 @@ structure Pair (α : Type u) (β : Type v) : Type (max u v) where
   b : β
 
 #check Pair.{v, w}
--- Pair : Type v → Type w → Type (max v w)
+-- Pair : Type v  Type w  Type (max v w)
 ```
 -/
 @[builtin_command_parser] def «universe»     := leading_parser
@@ -570,7 +570,7 @@ end Evening.Sky
 def openHiding       := leading_parser
   ppSpace >> atomic (ident >> " hiding") >> many1 (ppSpace >> checkColGt >> ident)
 def openRenamingItem := leading_parser
-  ident >> unicodeSymbol " → " " -> " >> checkColGt >> ident
+  ident >> unicodeSymbol "  " " -> " >> checkColGt >> ident
 def openRenaming     := leading_parser
   ppSpace >> atomic (ident >> " renaming ") >> sepBy1 openRenamingItem ", "
 def openOnly         := leading_parser
@@ -605,7 +605,7 @@ The `open` command can be used in a few different ways:
 
   This works even if `def1` and `def2` are `protected`.
 
-* `open Some.Namespace.Path renaming def1 → def1', def2 → def2'` same as `open Some.Namespace.Path
+* `open Some.Namespace.Path renaming def1  def1', def2  def2'` same as `open Some.Namespace.Path
   (def1 def2)` but `def1`/`def2`'s names are changed to `def1'`/`def2'`.
 
   This works even if `def1` and `def2` are `protected`.
@@ -627,8 +627,8 @@ The `open` command can be used in a few different ways:
 /-- SKI combinators https://en.wikipedia.org/wiki/SKI_combinator_calculus -/
 namespace Combinator.Calculus
   def I (a : α) : α := a
-  def K (a : α) : β → α := fun _ => a
-  def S (x : α → β → γ) (y : α → β) (z : α) : γ := x z (y z)
+  def K (a : α) : β  α := fun _ => a
+  def S (x : α  β  γ) (y : α  β) (z : α) : γ := x z (y z)
 end Combinator.Calculus
 
 section
@@ -656,8 +656,8 @@ end
 section
   open Combinator.Calculus
     renaming
-      I → identity,
-      K → konstant
+      I  identity,
+      K  konstant
 
   #check identity
   #check konstant

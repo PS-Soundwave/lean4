@@ -56,21 +56,21 @@ inductive BazInductive
 #eval test BazInductive ⟨#[default, default]⟩
 
 inductive FooInductive (α : Type) where
-  | a : α → WithRpcRef FooRef → FooInductive α
-  | b : (n : Nat) → (a : α) → (m : Nat) → FooInductive α
+  | a : α  WithRpcRef FooRef  FooInductive α
+  | b : (n : Nat)  (a : α)  (m : Nat)  FooInductive α
   deriving RpcEncodable, Inhabited
 
 #eval test (FooInductive BazInductive) (.a default default)
 #eval test (FooInductive BazInductive) (.b 42 default default)
 
 inductive FooNested (α : Type) where
-  | a : α → Array (FooNested α) → FooNested α
+  | a : α  Array (FooNested α)  FooNested α
   deriving RpcEncodable, Inhabited
 
 #eval test (FooNested BazInductive) (.a default #[default])
 
 inductive FooParam (n : Nat) where
-  | a : Nat → FooParam n
+  | a : Nat  FooParam n
   deriving RpcEncodable, Inhabited
 
 #eval test (FooParam 10) (.a 42)

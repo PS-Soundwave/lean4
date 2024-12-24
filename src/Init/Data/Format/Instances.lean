@@ -11,9 +11,9 @@ import Init.Data.ToString.Basic
 open Std
 
 instance (priority := low) [ToString α] : ToFormat α :=
-  ⟨Std.Format.text ∘ toString⟩
+  ⟨Std.Format.text  toString⟩
 
-def List.format [ToFormat α] : List α → Format
+def List.format [ToFormat α] : List α  Format
   | [] => "[]"
   | xs => Format.sbracket <| Format.joinSep xs ("," ++ Format.line)
 
@@ -23,7 +23,7 @@ instance [ToFormat α] : ToFormat (List α) where
 instance [ToFormat α] : ToFormat (Array α) where
   format a := "#" ++ format a.toList
 
-def Option.format {α : Type u} [ToFormat α] : Option α → Format
+def Option.format {α : Type u} [ToFormat α] : Option α  Format
   | none   => "none"
   | some a => "some " ++ Std.format a
 

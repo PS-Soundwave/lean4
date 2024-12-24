@@ -32,7 +32,7 @@ def ppCategory (cat : Name) (stx : Syntax) : CoreM Format := do
 
 def ppTerm (stx : Term) : CoreM Format := ppCategory `term stx
 
-def ppUsing (e : Expr) (delab : Expr → MetaM Term) : MetaM Format := do
+def ppUsing (e : Expr) (delab : Expr  MetaM Term) : MetaM Format := do
   let lctx := (← getLCtx).sanitizeNames.run' { options := (← getOptions) }
   Meta.withLCtx lctx #[] do
     ppTerm (← delab e)
@@ -98,7 +98,7 @@ def ppSignature (c : Name) : MetaM FormatWithInfos := do
     let (stx, infos) ← delabCore e (delab := delabConstWithSignature)
     return ⟨← ppTerm ⟨stx⟩, infos⟩  -- HACK: not a term
 
-private partial def noContext : MessageData → MessageData
+private partial def noContext : MessageData  MessageData
   | MessageData.withContext _   msg => noContext msg
   | MessageData.withNamingContext ctx msg => MessageData.withNamingContext ctx (noContext msg)
   | MessageData.nest n msg => MessageData.nest n (noContext msg)

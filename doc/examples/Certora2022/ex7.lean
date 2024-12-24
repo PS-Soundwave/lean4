@@ -14,10 +14,10 @@ example : fib (n+2) = fib (n+1) + fib n := rfl
 
 #print fib
 /-
-def fib : Nat → Nat :=
+def fib : Nat  Nat :=
 fun n =>
   Nat.brecOn n fun n f =>
-    (match (motive := (n : Nat) → Nat.below n → Nat) n with
+    (match (motive := (n : Nat)  Nat.below n  Nat) n with
       | 0 => fun x => 1
       | 1 => fun x => 1
       | Nat.succ (Nat.succ n) => fun x => x.fst.fst + x.fst.snd.fst.fst)

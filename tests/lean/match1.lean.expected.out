@@ -21,31 +21,31 @@ constructor expected
 [false, true, true]
 match1.lean:136:7-136:22: error: invalid match-expression, type of pattern variable 'a' contains metavariables
   ?m
-fun x => ?m : ?m × ?m → ?m
+fun x => ?m : ?m × ?m  ?m
 fun x =>
   match x with
-  | (a, b) => a + b : Nat × Nat → Nat
+  | (a, b) => a + b : Nat × Nat  Nat
 fun x =>
   match x with
-  | (a, b) => a && b : Bool × Bool → Bool
+  | (a, b) => a && b : Bool × Bool  Bool
 fun x =>
   match x with
-  | (a, b) => a + b : Nat × Nat → Nat
+  | (a, b) => a + b : Nat × Nat  Nat
 fun x x_1 =>
   match x, x_1 with
   | some a, some b => some (a + b)
-  | x, x_2 => none : Option Nat → Option Nat → Option Nat
+  | x, x_2 => none : Option Nat  Option Nat  Option Nat
 fun x =>
-  (match (motive := Nat → Nat → Nat) x with
+  (match (motive := Nat  Nat  Nat) x with
     | 0 => id
     | x.succ => id)
-    x : Nat → Nat
+    x : Nat  Nat
 fun x =>
   match x with
   | #[1, 2] => 2
   | #[] => 0
   | #[3, 4, 5] => 3
-  | x => 4 : Array Nat → Nat
-g.match_1.{u_1, u_2} {α : Type u_1} (motive : List α → Sort u_2) (x✝ : List α) (h_1 : (a : α) → motive [a])
-  (h_2 : (x : List α) → motive x) : motive x✝
-fun e => nomatch e : Empty → False
+  | x => 4 : Array Nat  Nat
+g.match_1.{u_1, u_2} {α : Type u_1} (motive : List α  Sort u_2) (x✝ : List α) (h_1 : (a : α)  motive [a])
+  (h_2 : (x : List α)  motive x) : motive x✝
+fun e => nomatch e : Empty  False

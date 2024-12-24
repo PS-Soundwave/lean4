@@ -1,8 +1,8 @@
-@[reducible] protected def A.b : A → Nat :=
+@[reducible] protected def A.b : A  Nat :=
 fun self => self.2
-@[reducible] private def A.c : A → Nat :=
+@[reducible] private def A.c : A  Nat :=
 fun self => self.3
-@[reducible] private def C.d : C → Nat :=
+@[reducible] private def C.d : C  Nat :=
 fun self => self.2
-@[reducible] protected def C.e : C → Nat :=
+@[reducible] protected def C.e : C  Nat :=
 fun self => self.3

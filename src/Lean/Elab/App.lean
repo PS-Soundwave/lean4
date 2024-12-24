@@ -108,8 +108,8 @@ structure Context where
     instance : GetElem (Array α) Nat α where
       getElem xs i := xs.get ⟨i, sorry⟩
 
-    opaque f : Option Bool → Bool
-    opaque g : Bool → Bool
+    opaque f : Option Bool  Bool
+    opaque g : Bool  Bool
 
     def bad (xs : Array Bool) : Bool :=
       let x := getElem xs 0
@@ -259,7 +259,7 @@ private def fTypeHasOptAutoParams : M Bool := do
    Auxiliary function for retrieving the resulting type of a function application.
    See `propagateExpectedType`.
    Remark: `(explicit : Bool) == true` when `@` modifier is used. -/
-private partial def getForallBody (explicit : Bool) : Nat → List NamedArg → Expr → Option Expr
+private partial def getForallBody (explicit : Bool) : Nat  List NamedArg  Expr  Option Expr
   | i, namedArgs, type@(.forallE n d b bi) =>
     match findBinderName? namedArgs n with
     | some _ => getForallBody explicit i (Term.eraseNamedArg namedArgs n) b
@@ -288,8 +288,8 @@ private def shouldPropagateExpectedTypeFor (nextArg : Arg) : Bool :=
   Auxiliary method for propagating the expected type. We call it as soon as we find the first explicit
   argument. The goal is to propagate the expected type in applications of functions such as
   ```lean
-  Add.add {α : Type u} : α → α → α
-  List.cons {α : Type u} : α → List α → List α
+  Add.add {α : Type u} : α  α  α
+  List.cons {α : Type u} : α  List α  List α
   ```
   This is particularly useful when there applicable coercions. For example,
   assume we have a coercion from `Nat` to `Int`, and we have
@@ -341,8 +341,8 @@ private def propagateExpectedType (arg : Arg) : M Unit := do
            ```
            They would all fail for the same reason. So, let's focus on the first one.
            We would elaborate `s.2` with `expectedType == Prop`.
-           Before we elaborate `s`, this method would be invoked, and `s.fType` is `?α × ?β → ?β` and after
-           propagation we would have `?α × Prop → Prop`. Then, when we would try to elaborate `s`, and
+           Before we elaborate `s`, this method would be invoked, and `s.fType` is `?α × ?β  ?β` and after
+           propagation we would have `?α × Prop  Prop`. Then, when we would try to elaborate `s`, and
            get a type error because `?α × Prop` cannot be unified with `Nat × Bool`.
            Most users would have a hard time trying to understand why these examples failed.
 
@@ -454,12 +454,12 @@ private def nextArgHole? : M (Option Syntax) := do
   ```
   And the current value of `fType` is
   ```
-  {Cont : Type u_1} → {Idx : Type u_2} → {Elem : Type u_3} → [self : Get Cont Idx Elem] → Cont → Idx → Elem
+  {Cont : Type u_1}  {Idx : Type u_2}  {Elem : Type u_3}  [self : Get Cont Idx Elem]  Cont  Idx  Elem
   ```
   then the result returned by this method is `false` since `Cont` is not the output param of any local instance.
   Now assume `fType` is
   ```
-  {Elem : Type u_3} → [self : Get Cont Idx Elem] → Cont → Idx → Elem
+  {Elem : Type u_3}  [self : Get Cont Idx Elem]  Cont  Idx  Elem
   ```
   then, the method returns `true` because `Elem` is an output parameter for the local instance `[self : Get Cont Idx Elem]`.
 
@@ -546,7 +546,7 @@ mutual
     main
 
   /--
-  Process a `fType` of the form `(x : A) → B x`.
+  Process a `fType` of the form `(x : A)  B x`.
   This method assume `fType` is a function type.
   -/
   private partial def processExplicitArg (argName : Name) : M Expr := do
@@ -563,17 +563,17 @@ mutual
         class Approx {α : Type} (a : α) (X : Type) : Type where
           val : X
         ```
-        the type of `Approx.val` is `{α : Type} → (a : α) → {X : Type} → [self : Approx a X] → X`.
+        the type of `Approx.val` is `{α : Type}  (a : α)  {X : Type}  [self : Approx a X]  X`.
         Note that the parameter `a` is explicit since there is no way to infer it from the expected
         type or from the types of other explicit parameters.
         Being a parameter of the class, `a` is determined by the type of `self`.
 
         Consider
         ```
-        variable {α β X Y : Type} {f' : α → β} {x' : α} [f : Approx f' (X → Y)]
+        variable {α β X Y : Type} {f' : α  β} {x' : α} [f : Approx f' (X  Y)]
         ```
         Recall that `f.val` is, to first approximation, sugar for `Approx.val (self := f)`.
-        Without further refinement, this would expand to `fun f'' : α → β => Approx.val f'' f`,
+        Without further refinement, this would expand to `fun f'' : α  β => Approx.val f'' f`,
         which is a type error, since `f''` must be defeq to `f'`.
         Furthermore, with projection notation, users expect all structure parameters
         to be uniformly implicit; after all, they are determined by `self`.
@@ -663,7 +663,7 @@ mutual
           finalize
 
   /--
-    Process a `fType` of the form `{x : A} → B x`.
+    Process a `fType` of the form `{x : A}  B x`.
     This method assume `fType` is a function type -/
   private partial def processImplicitArg (argName : Name) : M Expr := do
     if (← read).explicit then
@@ -672,7 +672,7 @@ mutual
       addImplicitArg argName
 
   /--
-    Process a `fType` of the form `{{x : A}} → B x`.
+    Process a `fType` of the form `{{x : A}}  B x`.
     This method assume `fType` is a function type -/
   private partial def processStrictImplicitArg (argName : Name) : M Expr := do
     if (← read).explicit then
@@ -683,7 +683,7 @@ mutual
       finalize
 
   /--
-  Process a `fType` of the form `[x : A] → B x`.
+  Process a `fType` of the form `[x : A]  B x`.
   This method assume `fType` is a function type.
   -/
   private partial def processInstImplicitArg (argName : Name) : M Expr := do
@@ -774,13 +774,13 @@ structure ElabElimInfo where
   For example, in the following theorem the argument `h : a = b`
   should be elaborated eagerly because it contains `b`, which occurs in `motive b`.
   ```
-  theorem Eq.subst' {α} {motive : α → Prop} {a b : α} (h : a = b) : motive a → motive b
+  theorem Eq.subst' {α} {motive : α  Prop} {a b : α} (h : a = b) : motive a  motive b
   ```
   For another example, the term `isEmptyElim (α := α)` is an underapplied eliminator, and it needs
   argument `α` to be elaborated eagerly to create a type-correct motive.
   ```
-  def isEmptyElim [IsEmpty α] {p : α → Sort _} (a : α) : p a := ...
-  example {α : Type _} [IsEmpty α] : id (α → False) := isEmptyElim (α := α)
+  def isEmptyElim [IsEmpty α] {p : α  Sort _} (a : α) : p a := ...
+  example {α : Type _} [IsEmpty α] : id (α  False) := isEmptyElim (α := α)
   ```
   -/
   majorsPos : Array Nat := #[]
@@ -1057,7 +1057,7 @@ Elaborate a `f`-application using `namedArgs` and `args` as the arguments.
 - `resultIsOutParamSupport` is used to control whether special support is used when processing applications of functions that return
    output parameter of some local instance. Example:
    ```
-   GetElem.getElem : {Cont : Type u_1} → {Idx : Type u_2} → {elem : Type u_3} → {dom : cont → idx → Prop} → [self : GetElem cont idx elem dom] → (xs : cont) → (i : idx) → dom xs i → elem
+   GetElem.getElem : {Cont : Type u_1}  {Idx : Type u_2}  {elem : Type u_3}  {dom : cont  idx  Prop}  [self : GetElem cont idx elem dom]  (xs : cont)  (i : idx)  dom xs i  elem
    ```
    The result type `elem` is the output parameter of the local instance `self`.
    When this parameter is set to `true`, we execute `synthesizeSyntheticMVarsUsingDefault`. For additional details, see comment at
@@ -1232,7 +1232,7 @@ private def resolveLValAux (e : Expr) (eType : Expr) (lval : LVal) : TermElabM L
   | _, _ => throwInvalidFieldNotation e eType
 
 /-- whnfCore + implicit consumption.
-   Example: given `e` with `eType := {α : Type} → (fun β => List β) α `, it produces `(e ?m, List ?m)` where `?m` is fresh metavariable. -/
+   Example: given `e` with `eType := {α : Type}  (fun β => List β) α `, it produces `(e ?m, List ?m)` where `?m` is fresh metavariable. -/
 private partial def consumeImplicits (stx : Syntax) (e eType : Expr) (hasArgs : Bool) : TermElabM (Expr × Expr) := do
   let eType ← whnfCore eType
   match eType with
@@ -1373,7 +1373,7 @@ private def addProjTermInfo
 
 private def elabAppLValsAux (namedArgs : Array NamedArg) (args : Array Arg) (expectedType? : Option Expr) (explicit ellipsis : Bool)
     (f : Expr) (lvals : List LVal) : TermElabM Expr :=
-  let rec loop : Expr → List LVal → TermElabM Expr
+  let rec loop : Expr  List LVal  TermElabM Expr
   | f, []          => elabAppArgs f namedArgs args expectedType? explicit ellipsis
   | f, lval::lvals => do
     if let LVal.fieldName (ref := ref) .. := lval then
@@ -1468,7 +1468,7 @@ where
       | field :: fields => .mkStr (go fields) field.getId.toString
     go fields.reverse
 
-  toLVals : List Syntax → (first : Bool) → List LVal
+  toLVals : List Syntax  (first : Bool)  List LVal
     | [],            _     => []
     | field::fields, true  => .fieldName field field.getId.getString! (toName (field::fields)) fIdent :: toLVals fields false
     | field::fields, false => .fieldName field field.getId.getString! none fIdent :: toLVals fields false
@@ -1482,7 +1482,7 @@ private partial def resolveDotName (id : Syntax) (expectedType? : Option Expr) :
     go resultType expectedType #[]
 where
   /-- A weak version of forallTelescopeReducing that only uses whnfCore, to avoid unfolding definitions except by `unfoldDefinition?` below. -/
-  withForallBody {α} (type : Expr) (k : Expr → TermElabM α) : TermElabM α :=
+  withForallBody {α} (type : Expr) (k : Expr  TermElabM α) : TermElabM α :=
     forallTelescope type fun _ body => do
       let body ← whnfCore body
       if body.isForall then
@@ -1495,7 +1495,7 @@ where
     try
       tryPostponeIfMVar resultTypeFn
       let .const declName .. := resultTypeFn.cleanupAnnotations
-        | throwError "invalid dotted identifier notation, expected type is not of the form (... → C ...) where C is a constant{indentExpr expectedType}"
+        | throwError "invalid dotted identifier notation, expected type is not of the form (...  C ...) where C is a constant{indentExpr expectedType}"
       let idNew := declName ++ id.getId.eraseMacroScopes
       unless (← getEnv).contains idNew do
         throwError "invalid dotted identifier notation, unknown identifier `{idNew}` from expected type{indentExpr expectedType}"

@@ -10,10 +10,10 @@ inductive S (δ: Class) where
 end
 
 mutual
-partial def str_T: T δ → String
+partial def str_T: T δ  String
 | .mk ss => "\n".intercalate (ss.map str_S)
 
-partial def str_S: S δ → String
+partial def str_S: S δ  String
 | .mk ts => "\n".intercalate (ts.map str_T)
 end
 

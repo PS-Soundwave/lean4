@@ -9,5 +9,5 @@ theorem id_map_is_right_neutral₂ {A : Type} (map : A -> A) :
 sorry
 
 theorem id_map_is_right_neutral₃ {A : Type} (map : A -> A) :
-  my_eq (map ∘ map) map :=
+  my_eq (map  map) map :=
 sorry

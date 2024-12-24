@@ -28,12 +28,12 @@ macro_rules
 theorem ite_id [Decidable c] {α} (t : α) : (if c then t else t) = t := by split <;> rfl
 
 /-- A function applied to a `dite` is a `dite` of that function applied to each of the branches. -/
-theorem apply_dite (f : α → β) (P : Prop) [Decidable P] (x : P → α) (y : ¬P → α) :
+theorem apply_dite (f : α  β) (P : Prop) [Decidable P] (x : P  α) (y : ¬P  α) :
     f (dite P x y) = dite P (fun h => f (x h)) (fun h => f (y h)) := by
   by_cases h : P <;> simp [h]
 
 /-- A function applied to a `ite` is a `ite` of that function applied to each of the branches. -/
-theorem apply_ite (f : α → β) (P : Prop) [Decidable P] (x y : α) :
+theorem apply_ite (f : α  β) (P : Prop) [Decidable P] (x y : α) :
     f (ite P x y) = ite P (f x) (f y) :=
   apply_dite f P (fun _ => x) (fun _ => y)
 
@@ -52,11 +52,11 @@ theorem ite_some_none_eq_some [Decidable P] :
   split <;> simp_all
 
 @[deprecated "Use `dite_eq_right_iff" (since := "2024-09-18")]
-theorem dite_some_none_eq_none [Decidable P] {x : P → α} :
+theorem dite_some_none_eq_none [Decidable P] {x : P  α} :
     (if h : P then some (x h) else none) = none ↔ ¬P := by
   simp
 
 @[deprecated "Use `Option.dite_none_right_eq_some`" (since := "2024-09-18")]
-theorem dite_some_none_eq_some [Decidable P] {x : P → α} {y : α} :
+theorem dite_some_none_eq_some [Decidable P] {x : P  α} {y : α} :
     (if h : P then some (x h) else none) = some y ↔ ∃ h : P, x h = y := by
   by_cases h : P <;> simp [h]

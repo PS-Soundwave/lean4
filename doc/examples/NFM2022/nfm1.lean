@@ -16,7 +16,5 @@ def double (x : Int) := 2*x
 #eval double 3
 -- 6
 #check double
--- Int → Int
+-- Int  Int
 example : double 4 = 8 := rfl
-
-

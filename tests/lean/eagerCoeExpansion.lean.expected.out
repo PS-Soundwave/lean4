@@ -1,8 +1,8 @@
-def h : BV 32 → Array Bool :=
+def h : BV 32  Array Bool :=
 fun x => (fun x => g (f x).val) x
-def r : Nat → Prop :=
+def r : Nat  Prop :=
 fun a => if (a == 0) = true then (a != 1) = true else (a != 2) = true
-def r : Nat → Prop :=
+def r : Nat  Prop :=
 fun (a : Nat) =>
   @ite.{1} Prop
     (@Eq.{1} Bool

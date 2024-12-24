@@ -92,7 +92,7 @@ If `e` is of the form `Expr.const declName us`, executes `k info us` if
 
 Otherwise executes `failK`.
 -/
-@[inline] private def matchConstAux {α} (e : Expr) (failK : Unit → MetaM α) (k : ConstantInfo → List Level → MetaM α) (ignoreTransparency := false) : MetaM α := do
+@[inline] private def matchConstAux {α} (e : Expr) (failK : Unit  MetaM α) (k : ConstantInfo  List Level  MetaM α) (ignoreTransparency := false) : MetaM α := do
   let .const declName lvls := e
     | failK ()
   let some cinfo ← getConstInfo? declName ignoreTransparency
@@ -209,7 +209,7 @@ private def cleanupNatOffsetMajor (e : Expr) : MetaM Expr := do
     return mkNatSucc (mkNatAdd e (toExpr (k - 1)))
 
 /-- Auxiliary function for reducing recursor applications. -/
-private def reduceRec (recVal : RecursorVal) (recLvls : List Level) (recArgs : Array Expr) (failK : Unit → MetaM α) (successK : Expr → MetaM α) : MetaM α :=
+private def reduceRec (recVal : RecursorVal) (recLvls : List Level) (recArgs : Array Expr) (failK : Unit  MetaM α) (successK : Expr  MetaM α) : MetaM α :=
   let majorIdx := recVal.getMajorIdx
   if h : majorIdx < recArgs.size then do
     let major := recArgs[majorIdx]
@@ -251,7 +251,7 @@ private def reduceRec (recVal : RecursorVal) (recLvls : List Level) (recArgs : A
 -- ===========================
 
 /-- Auxiliary function for reducing `Quot.lift` and `Quot.ind` applications. -/
-private def reduceQuotRec (recVal  : QuotVal) (recArgs : Array Expr) (failK : Unit → MetaM α) (successK : Expr → MetaM α) : MetaM α :=
+private def reduceQuotRec (recVal  : QuotVal) (recArgs : Array Expr) (failK : Unit  MetaM α) (successK : Expr  MetaM α) : MetaM α :=
   let process (majorPos argPos : Nat) : MetaM α :=
     if h : majorPos < recArgs.size then do
       let major := recArgs[majorPos]
@@ -357,7 +357,7 @@ end
 -- ===========================
 
 /-- Auxiliary combinator for handling easy WHNF cases. It takes a function for handling the "hard" cases as an argument -/
-@[specialize] partial def whnfEasyCases (e : Expr) (k : Expr → MetaM Expr) : MetaM Expr := do
+@[specialize] partial def whnfEasyCases (e : Expr) (k : Expr  MetaM Expr) : MetaM Expr := do
   match e with
   | .forallE ..    => return e
   | .lam ..        => return e
@@ -389,14 +389,14 @@ end
     | none   => return e
 
 @[specialize] private def deltaDefinition (c : ConstantInfo) (lvls : List Level)
-    (failK : Unit → MetaM α) (successK : Expr → MetaM α) : MetaM α := do
+    (failK : Unit  MetaM α) (successK : Expr  MetaM α) : MetaM α := do
   if c.levelParams.length != lvls.length then
     failK ()
   else
     successK (← instantiateValueLevelParams c lvls)
 
 @[specialize] private def deltaBetaDefinition (c : ConstantInfo) (lvls : List Level) (revArgs : Array Expr)
-    (failK : Unit → MetaM α) (successK : Expr → MetaM α) (preserveMData := false) : MetaM α := do
+    (failK : Unit  MetaM α) (successK : Expr  MetaM α) (preserveMData := false) : MetaM α := do
   if c.levelParams.length != lvls.length then
     failK ()
   else
@@ -769,9 +769,9 @@ mutual
                   structural recursion is recursing on reduces to a constructor.
                   This extra check is necessary in definitions (see issue #1081) such as
                   ```
-                  inductive Vector (α : Type u) : Nat → Type u where
+                  inductive Vector (α : Type u) : Nat  Type u where
                     | nil  : Vector α 0
-                    | cons : α → Vector α n → Vector α (n+1)
+                    | cons : α  Vector α n  Vector α (n+1)
 
                   def Vector.insert (a: α) (i : Fin (n+1)) (xs : Vector α n) : Vector α (n+1) :=
                     match i, xs with
@@ -790,7 +790,7 @@ mutual
                   Remark 3: this check is unnecessary in most cases, but we don't need dependent elimination to trigger the issue
                   fixed by this extra check. Here is another example that triggers the issue fixed by this check.
                   ```
-                  def f : Nat → Nat → Nat
+                  def f : Nat  Nat  Nat
                     | 0,   y   => y
                     | x+1, y+1 => f (x-2) y
                     | x+1, 0   => 0
@@ -837,7 +837,7 @@ def unfoldDefinition (e : Expr) : MetaM Expr := do
   let some e ← unfoldDefinition? e | throwError "failed to unfold definition{indentExpr e}"
   return e
 
-@[specialize] partial def whnfHeadPred (e : Expr) (pred : Expr → MetaM Bool) : MetaM Expr :=
+@[specialize] partial def whnfHeadPred (e : Expr) (pred : Expr  MetaM Bool) : MetaM Expr :=
   whnfEasyCases e fun e => do
     let e ← whnfCore e
     if (← pred e) then
@@ -888,7 +888,7 @@ def reduceNative? (e : Expr) : MetaM (Option Expr) :=
   | _ =>
     return none
 
-@[inline] def withNatValue (a : Expr) (k : Nat → MetaM (Option α)) : MetaM (Option α) := do
+@[inline] def withNatValue (a : Expr) (k : Nat  MetaM (Option α)) : MetaM (Option α) := do
   if !a.hasExprMVar && a.hasFVar then
     return none
   let a ← instantiateMVars a
@@ -900,11 +900,11 @@ def reduceNative? (e : Expr) : MetaM (Option Expr) :=
   | .lit (.natVal v)    => k v
   | _                   => return none
 
-def reduceUnaryNatOp (f : Nat → Nat) (a : Expr) : MetaM (Option Expr) :=
+def reduceUnaryNatOp (f : Nat  Nat) (a : Expr) : MetaM (Option Expr) :=
   withNatValue a fun a =>
   return mkRawNatLit <| f a
 
-def reduceBinNatOp (f : Nat → Nat → Nat) (a b : Expr) : MetaM (Option Expr) :=
+def reduceBinNatOp (f : Nat  Nat  Nat) (a b : Expr) : MetaM (Option Expr) :=
   withNatValue a fun a =>
   withNatValue b fun b => do
   trace[Meta.isDefEq.whnf.reduceBinOp] "{a} op {b}"
@@ -917,7 +917,7 @@ def reducePow (a b : Expr) : MetaM (Option Expr) :=
   trace[Meta.isDefEq.whnf.reduceBinOp] "{a} ^ {b}"
   return mkRawNatLit <| a ^ b
 
-def reduceBinNatPred (f : Nat → Nat → Bool) (a b : Expr) : MetaM (Option Expr) := do
+def reduceBinNatPred (f : Nat  Nat  Bool) (a b : Expr) : MetaM (Option Expr) := do
   withNatValue a fun a =>
   withNatValue b fun b =>
   return toExpr <| f a b
@@ -991,7 +991,7 @@ partial def whnfImp (e : Expr) : MetaM Expr :=
             | none => cache useCache e e'
 
 /-- If `e` is a projection function that satisfies `p`, then reduce it -/
-def reduceProjOf? (e : Expr) (p : Name → Bool) : MetaM (Option Expr) := do
+def reduceProjOf? (e : Expr) (p : Name  Bool) : MetaM (Option Expr) := do
   if !e.isApp then
     pure none
   else match e.getAppFn with

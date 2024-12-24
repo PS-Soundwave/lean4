@@ -415,7 +415,7 @@ static inline HANDLE win_handle(FILE * fp) {
     return (HANDLE)_get_osfhandle(_fileno(fp));
 }
 
-/* Handle.lock : (@& Handle) → (exclusive : Bool) → IO Unit */
+/* Handle.lock : (@& Handle)  (exclusive : Bool)  IO Unit */
 extern "C" LEAN_EXPORT obj_res lean_io_prim_handle_lock(b_obj_arg h, uint8_t x, obj_arg /* w */) {
     OVERLAPPED o = {0};
     HANDLE wh = win_handle(io_get_handle(h));
@@ -427,7 +427,7 @@ extern "C" LEAN_EXPORT obj_res lean_io_prim_handle_lock(b_obj_arg h, uint8_t x, 
     }
 }
 
-/* Handle.tryLock : (@& Handle) → (exclusive : Bool) → IO Bool */
+/* Handle.tryLock : (@& Handle)  (exclusive : Bool)  IO Bool */
 extern "C" LEAN_EXPORT obj_res lean_io_prim_handle_try_lock(b_obj_arg h, uint8_t x, obj_arg /* w */) {
     OVERLAPPED o = {0};
     HANDLE wh = win_handle(io_get_handle(h));
@@ -443,7 +443,7 @@ extern "C" LEAN_EXPORT obj_res lean_io_prim_handle_try_lock(b_obj_arg h, uint8_t
     }
 }
 
-/* Handle.unlock : (@& Handle) → IO Unit */
+/* Handle.unlock : (@& Handle)  IO Unit */
 extern "C" LEAN_EXPORT obj_res lean_io_prim_handle_unlock(b_obj_arg h, obj_arg /* w */) {
     OVERLAPPED o = {0};
     HANDLE wh = win_handle(io_get_handle(h));
@@ -461,7 +461,7 @@ extern "C" LEAN_EXPORT obj_res lean_io_prim_handle_unlock(b_obj_arg h, obj_arg /
 
 #else
 
-/* Handle.lock : (@& Handle) → (exclusive : Bool) → IO Unit */
+/* Handle.lock : (@& Handle)  (exclusive : Bool)  IO Unit */
 extern "C" LEAN_EXPORT obj_res lean_io_prim_handle_lock(b_obj_arg h,  uint8_t x, obj_arg /* w */) {
     FILE * fp = io_get_handle(h);
     if (!flock(fileno(fp), x ? LOCK_EX : LOCK_SH)) {
@@ -471,7 +471,7 @@ extern "C" LEAN_EXPORT obj_res lean_io_prim_handle_lock(b_obj_arg h,  uint8_t x,
     }
 }
 
-/* Handle.tryLock : (@& Handle) → (exclusive : Bool) → IO Bool */
+/* Handle.tryLock : (@& Handle)  (exclusive : Bool)  IO Bool */
 extern "C" LEAN_EXPORT obj_res lean_io_prim_handle_try_lock(b_obj_arg h, uint8_t x, obj_arg /* w */) {
     FILE * fp = io_get_handle(h);
     if (!flock(fileno(fp), (x ? LOCK_EX : LOCK_SH) | LOCK_NB)) {
@@ -485,7 +485,7 @@ extern "C" LEAN_EXPORT obj_res lean_io_prim_handle_try_lock(b_obj_arg h, uint8_t
     }
 }
 
-/* Handle.unlock : (@& Handle) → IO Unit */
+/* Handle.unlock : (@& Handle)  IO Unit */
 extern "C" LEAN_EXPORT obj_res lean_io_prim_handle_unlock(b_obj_arg h, obj_arg /* w */) {
     FILE * fp = io_get_handle(h);
     if (!flock(fileno(fp), LOCK_UN)) {
@@ -497,7 +497,7 @@ extern "C" LEAN_EXPORT obj_res lean_io_prim_handle_unlock(b_obj_arg h, obj_arg /
 
 #endif
 
-/* Handle.isTty : (@& Handle) → BaseIO Bool */
+/* Handle.isTty : (@& Handle)  BaseIO Bool */
 extern "C" LEAN_EXPORT obj_res lean_io_prim_handle_is_tty(b_obj_arg h, obj_arg /* w */) {
     FILE * fp = io_get_handle(h);
 #ifdef LEAN_WINDOWS
@@ -525,13 +525,13 @@ extern "C" LEAN_EXPORT obj_res lean_io_prim_handle_is_tty(b_obj_arg h, obj_arg /
 #endif
 }
 
-/* Handle.isEof : (@& Handle) → BaseIO Bool */
+/* Handle.isEof : (@& Handle)  BaseIO Bool */
 extern "C" LEAN_EXPORT obj_res lean_io_prim_handle_is_eof(b_obj_arg h, obj_arg /* w */) {
     FILE * fp = io_get_handle(h);
     return io_result_mk_ok(box(std::feof(fp) != 0));
 }
 
-/* Handle.flush : (@& Handle) → IO Unit */
+/* Handle.flush : (@& Handle)  IO Unit */
 extern "C" LEAN_EXPORT obj_res lean_io_prim_handle_flush(b_obj_arg h, obj_arg /* w */) {
     FILE * fp = io_get_handle(h);
     if (!std::fflush(fp)) {
@@ -541,7 +541,7 @@ extern "C" LEAN_EXPORT obj_res lean_io_prim_handle_flush(b_obj_arg h, obj_arg /*
     }
 }
 
-/* Handle.rewind : (@& Handle) → IO Unit */
+/* Handle.rewind : (@& Handle)  IO Unit */
 extern "C" LEAN_EXPORT obj_res lean_io_prim_handle_rewind(b_obj_arg h, obj_arg /* w */) {
     FILE * fp = io_get_handle(h);
     if (!std::fseek(fp, 0, SEEK_SET)) {
@@ -551,7 +551,7 @@ extern "C" LEAN_EXPORT obj_res lean_io_prim_handle_rewind(b_obj_arg h, obj_arg /
     }
 }
 
-/* Handle.truncate : (@& Handle) → IO Unit */
+/* Handle.truncate : (@& Handle)  IO Unit */
 extern "C" LEAN_EXPORT obj_res lean_io_prim_handle_truncate(b_obj_arg h, obj_arg /* w */) {
     FILE * fp = io_get_handle(h);
 #ifdef LEAN_WINDOWS
@@ -565,7 +565,7 @@ extern "C" LEAN_EXPORT obj_res lean_io_prim_handle_truncate(b_obj_arg h, obj_arg
     }
 }
 
-/* Handle.read : (@& Handle) → USize → IO ByteArray */
+/* Handle.read : (@& Handle)  USize  IO ByteArray */
 extern "C" LEAN_EXPORT obj_res lean_io_prim_handle_read(b_obj_arg h, usize nbytes, obj_arg /* w */) {
     FILE * fp = io_get_handle(h);
     obj_res res = lean_alloc_sarray(1, 0, nbytes);
@@ -583,7 +583,7 @@ extern "C" LEAN_EXPORT obj_res lean_io_prim_handle_read(b_obj_arg h, usize nbyte
     }
 }
 
-/* Handle.write : (@& Handle) → (@& ByteArray) → IO Unit */
+/* Handle.write : (@& Handle)  (@& ByteArray)  IO Unit */
 extern "C" LEAN_EXPORT obj_res lean_io_prim_handle_write(b_obj_arg h, b_obj_arg buf, obj_arg /* w */) {
     FILE * fp = io_get_handle(h);
     usize n = lean_sarray_size(buf);
@@ -595,7 +595,7 @@ extern "C" LEAN_EXPORT obj_res lean_io_prim_handle_write(b_obj_arg h, b_obj_arg 
     }
 }
 
-/* Handle.getLine : (@& Handle) → IO Unit */
+/* Handle.getLine : (@& Handle)  IO Unit */
 extern "C" LEAN_EXPORT obj_res lean_io_prim_handle_get_line(b_obj_arg h, obj_arg /* w */) {
     FILE * fp = io_get_handle(h);
 
@@ -619,7 +619,7 @@ extern "C" LEAN_EXPORT obj_res lean_io_prim_handle_get_line(b_obj_arg h, obj_arg
     }
 }
 
-/* Handle.putStr : (@& Handle) → (@& String) → IO Unit */
+/* Handle.putStr : (@& Handle)  (@& String)  IO Unit */
 extern "C" LEAN_EXPORT obj_res lean_io_prim_handle_put_str(b_obj_arg h, b_obj_arg s, obj_arg /* w */) {
     FILE * fp = io_get_handle(h);
     usize n = lean_string_size(s) - 1; // - 1 to ignore the terminal NULL byte.
@@ -762,7 +762,7 @@ extern "C" LEAN_EXPORT obj_res lean_windows_get_next_transition(b_obj_arg timezo
 #endif
 }
 
-/* Std.Time.Database.Windows.getLocalTimeZoneIdentifierAt : Int64 → IO String */
+/* Std.Time.Database.Windows.getLocalTimeZoneIdentifierAt : Int64  IO String */
 extern "C" LEAN_EXPORT obj_res lean_get_windows_local_timezone_id_at(uint64_t tm_obj, obj_arg /* w */) {
 #if defined(LEAN_WINDOWS)
     UErrorCode status = U_ZERO_ERROR;
@@ -988,7 +988,7 @@ structure DirEntry where
   root     : String
   filename : String
 
-constant readDir : @& FilePath → IO (Array DirEntry)
+constant readDir : @& FilePath  IO (Array DirEntry)
 */
 extern "C" LEAN_EXPORT obj_res lean_io_read_dir(b_obj_arg dirname, obj_arg) {
     object * arr = array_mk_empty();
@@ -1028,7 +1028,7 @@ structure Metadata where
   byteSize : UInt64
   type     : FileType
 
-constant metadata : @& FilePath → IO IO.FS.Metadata
+constant metadata : @& FilePath  IO IO.FS.Metadata
 */
 static obj_res timespec_to_obj(timespec const & ts) {
     object * o = alloc_cnstr(0, 1, sizeof(uint32));
@@ -1398,13 +1398,13 @@ extern "C" LEAN_EXPORT obj_res lean_io_as_task(obj_arg act, obj_arg prio, obj_ar
     return io_result_mk_ok(t);
 }
 
-/* {α β : Type} (f : α → BaseIO β) (a : α) : β */
+/* {α β : Type} (f : α  BaseIO β) (a : α) : β */
 static obj_res lean_io_bind_task_fn(obj_arg f, obj_arg a) {
     object_ref r(apply_2(f, a, io_mk_world()));
     return object_ref(io_result_get_value(r.raw()), true).steal();
 }
 
-/*  mapTask (f : α → BaseIO β) (t : Task α) (prio : Nat) (sync : Bool) : BaseIO (Task β) */
+/*  mapTask (f : α  BaseIO β) (t : Task α) (prio : Nat) (sync : Bool) : BaseIO (Task β) */
 extern "C" LEAN_EXPORT obj_res lean_io_map_task(obj_arg f, obj_arg t, obj_arg prio, uint8 sync,
         obj_arg) {
     object * c = lean_alloc_closure((void*)lean_io_bind_task_fn, 2, 1);
@@ -1413,7 +1413,7 @@ extern "C" LEAN_EXPORT obj_res lean_io_map_task(obj_arg f, obj_arg t, obj_arg pr
     return io_result_mk_ok(t2);
 }
 
-/*  bindTask (t : Task α) (f : α → BaseIO (Task β)) (prio : Nat) (sync : Bool) : BaseIO (Task β) */
+/*  bindTask (t : Task α) (f : α  BaseIO (Task β)) (prio : Nat) (sync : Bool) : BaseIO (Task β) */
 extern "C" LEAN_EXPORT obj_res lean_io_bind_task(obj_arg t, obj_arg f, obj_arg prio, uint8 sync,
         obj_arg) {
     object * c = lean_alloc_closure((void*)lean_io_bind_task_fn, 2, 1);

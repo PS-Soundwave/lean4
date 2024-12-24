@@ -19,7 +19,7 @@ inductive Exp
   | hole
   | app (x y : Exp)
 with
-  f : Exp → Nat
+  f : Exp  Nat
     | .hole => 42
     | .app x y => f x + f y
 

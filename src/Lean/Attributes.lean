@@ -135,7 +135,7 @@ structure TagAttribute where
   deriving Inhabited
 
 def registerTagAttribute (name : Name) (descr : String)
-    (validate : Name → AttrM Unit := fun _ => pure ()) (ref : Name := by exact decl_name%) (applicationTime := AttributeApplicationTime.afterTypeChecking) : IO TagAttribute := do
+    (validate : Name  AttrM Unit := fun _ => pure ()) (ref : Name := by exact decl_name%) (applicationTime := AttributeApplicationTime.afterTypeChecking) : IO TagAttribute := do
   let ext : PersistentEnvExtension Name Name NameSet ← registerPersistentEnvExtension {
     name            := ref
     mkInitial       := pure {}
@@ -181,9 +181,9 @@ structure ParametricAttribute (α : Type) where
   deriving Inhabited
 
 structure ParametricAttributeImpl (α : Type) extends AttributeImplCore where
-  getParam : Name → Syntax → AttrM α
-  afterSet : Name → α → AttrM Unit := fun _ _ _ => pure ()
-  afterImport : Array (Array (Name × α)) → ImportM Unit := fun _ => pure ()
+  getParam : Name  Syntax  AttrM α
+  afterSet : Name  α  AttrM Unit := fun _ _ _ => pure ()
+  afterImport : Array (Array (Name × α))  ImportM Unit := fun _ => pure ()
 
 def registerParametricAttribute (impl : ParametricAttributeImpl α) : IO (ParametricAttribute α) := do
   let ext : PersistentEnvExtension (Name × α) (Name × α) (NameMap α) ← registerPersistentEnvExtension {
@@ -240,7 +240,7 @@ structure EnumAttributes (α : Type) where
   deriving Inhabited
 
 def registerEnumAttributes (attrDescrs : List (Name × String × α))
-    (validate : Name → α → AttrM Unit := fun _ _ => pure ())
+    (validate : Name  α  AttrM Unit := fun _ _ => pure ())
     (applicationTime := AttributeApplicationTime.afterTypeChecking)
     (ref : Name := by exact decl_name%) : IO (EnumAttributes α) := do
   let ext : PersistentEnvExtension (Name × α) (Name × α) (NameMap α) ← registerPersistentEnvExtension {
@@ -295,7 +295,7 @@ end EnumAttributes
   Attribute extension and builders. We use builders to implement attribute factories for parser categories.
 -/
 
-abbrev AttributeImplBuilder := Name → List DataValue → Except String AttributeImpl
+abbrev AttributeImplBuilder := Name  List DataValue  Except String AttributeImpl
 abbrev AttributeImplBuilderTable := Std.HashMap Name AttributeImplBuilder
 
 builtin_initialize attributeImplBuilderTableRef : IO.Ref AttributeImplBuilderTable ← IO.mkRef {}

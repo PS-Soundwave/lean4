@@ -117,7 +117,7 @@ theorem of_concat_eq_concat {as bs : List α} {a b : α} (h : as.concat a = bs.c
 The equality relation on lists asserts that they have the same length
 and they are pairwise `BEq`.
 -/
-protected def beq [BEq α] : List α → List α → Bool
+protected def beq [BEq α] : List α  List α  Bool
   | [],    []    => true
   | a::as, b::bs => a == b && List.beq as bs
   | _,     _     => false
@@ -149,7 +149,7 @@ instance [BEq α] [LawfulBEq α] : LawfulBEq (List α) where
 `O(min |as| |bs|)`. Returns true if `as` and `bs` have the same length,
 and they are pairwise related by `eqv`.
 -/
-@[specialize] def isEqv : (as bs : List α) → (eqv : α → α → Bool) → Bool
+@[specialize] def isEqv : (as bs : List α)  (eqv : α  α  Bool)  Bool
   | [],    [],    _   => true
   | a::as, b::bs, eqv => eqv a b && isEqv as bs eqv
   | _,     _,     _   => false
@@ -163,7 +163,7 @@ theorem isEqv_cons₂ : isEqv (a::as) (b::bs) eqv = (eqv a b && isEqv as bs eqv)
 /-! ## Lexicographic ordering -/
 
 /-- Lexicographic ordering for lists. -/
-inductive Lex (r : α → α → Prop) : List α → List α → Prop
+inductive Lex (r : α  α  Prop) : List α  List α  Prop
   /-- `[]` is the smallest element in the order. -/
   | nil {a l} : Lex r [] (a :: l)
   /-- If `a` is indistinguishable from `b` and `as < bs`, then `a::as < b::bs`. -/
@@ -171,8 +171,8 @@ inductive Lex (r : α → α → Prop) : List α → List α → Prop
   /-- If `a < b` then `a::as < b::bs`. -/
   | rel {a₁ l₁ a₂ l₂} (h : r a₁ a₂) : Lex r (a₁ :: l₁) (a₂ :: l₂)
 
-instance decidableLex [DecidableEq α] (r : α → α → Prop) [h : DecidableRel r] :
-    (l₁ l₂ : List α) → Decidable (Lex r l₁ l₂)
+instance decidableLex [DecidableEq α] (r : α  α  Prop) [h : DecidableRel r] :
+    (l₁ l₂ : List α)  Decidable (Lex r l₁ l₂)
   | [], [] => isFalse nofun
   | [], _::_ => isTrue Lex.nil
   | _::_, [] => isFalse nofun
@@ -192,7 +192,7 @@ instance decidableLex [DecidableEq α] (r : α → α → Prop) [h : DecidableRe
           | Lex.cons h₂' => h₂ rfl)
 
 @[inherit_doc Lex]
-protected abbrev lt [LT α] : List α → List α → Prop := Lex (· < ·)
+protected abbrev lt [LT α] : List α  List α  Prop := Lex (· < ·)
 
 instance instLT [LT α] : LT (List α) := ⟨List.lt⟩
 
@@ -219,7 +219,7 @@ Lexicographic comparator for lists.
 * `lex lt as []` is false.
 * `lex lt (a :: as) (b :: bs)` is true if `lt a b` or `a == b` and `lex lt as bs` is true.
 -/
-def lex [BEq α] (l₁ l₂ : List α) (lt : α → α → Bool := by exact (· < ·)) : Bool :=
+def lex [BEq α] (l₁ l₂ : List α) (lt : α  α  Bool := by exact (· < ·)) : Bool :=
   match l₁, l₂ with
   | [],      _ :: _  => true
   | _,      []       => false
@@ -241,7 +241,7 @@ Returns the `i`-th element in the list (zero-based).
 If the index is out of bounds (`i ≥ as.length`), this function returns `none`.
 Also see `get`, `getD` and `get!`.
 -/
-def get? : (as : List α) → (i : Nat) → Option α
+def get? : (as : List α)  (i : Nat)  Option α
   | a::_,  0   => some a
   | _::as, n+1 => get? as n
   | _,     _   => none
@@ -250,7 +250,7 @@ def get? : (as : List α) → (i : Nat) → Option α
 @[simp] theorem get?_cons_zero : @get? α (a::l) 0 = some a := rfl
 @[simp] theorem get?_cons_succ : @get? α (a::l) (n+1) = get? l n := rfl
 
-theorem ext_get? : ∀ {l₁ l₂ : List α}, (∀ n, l₁.get? n = l₂.get? n) → l₁ = l₂
+theorem ext_get? : ∀ {l₁ l₂ : List α}, (∀ n, l₁.get? n = l₂.get? n)  l₁ = l₂
   | [], [], _ => rfl
   | _ :: _, [], h => nomatch h 0
   | [], _ :: _, h => nomatch h 0
@@ -281,7 +281,7 @@ def getD (as : List α) (i : Nat) (fallback : α) : α :=
 /--
 Returns the last element of a non-empty list.
 -/
-def getLast : ∀ (as : List α), as ≠ [] → α
+def getLast : ∀ (as : List α), as ≠ []  α
   | [],       h => absurd rfl h
   | [a],      _ => a
   | _::b::as, _ => getLast (b::as) (fun h => List.noConfusion h)
@@ -294,7 +294,7 @@ Returns the last element in the list.
 If the list is empty, this function returns `none`.
 Also see `getLastD` and `getLast!`.
 -/
-def getLast? : List α → Option α
+def getLast? : List α  Option α
   | []    => none
   | a::as => some (getLast (a::as) (fun h => List.noConfusion h))
 
@@ -308,7 +308,7 @@ Returns the last element in the list.
 If the list is empty, this function returns `fallback`.
 Also see `getLast?` and `getLast!`.
 -/
-def getLastD : (as : List α) → (fallback : α) → α
+def getLastD : (as : List α)  (fallback : α)  α
   | [],   a₀ => a₀
   | a::as, _ => getLast (a::as) (fun h => List.noConfusion h)
 
@@ -323,7 +323,7 @@ theorem getLastD_cons (a b l) : @getLastD α (b::l) a = getLastD l b := by cases
 /--
 Returns the first element of a non-empty list.
 -/
-def head : (as : List α) → as ≠ [] → α
+def head : (as : List α)  as ≠ []  α
   | a::_, _ => a
 
 @[simp] theorem head_cons : @head α (a::l) h = a := rfl
@@ -336,7 +336,7 @@ Returns the first element in the list.
 If the list is empty, this function returns `none`.
 Also see `headD` and `head!`.
 -/
-def head? : List α → Option α
+def head? : List α  Option α
   | []   => none
   | a::_ => some a
 
@@ -351,7 +351,7 @@ Returns the first element in the list.
 If the list is empty, this function returns `fallback`.
 Also see `head?` and `head!`.
 -/
-def headD : (as : List α) → (fallback : α) → α
+def headD : (as : List α)  (fallback : α)  α
   | [],   fallback => fallback
   | a::_, _  => a
 
@@ -361,7 +361,7 @@ def headD : (as : List α) → (fallback : α) → α
 /-! ### tail -/
 
 /-- Get the tail of a nonempty list, or return `[]` for `[]`. -/
-def tail : List α → List α
+def tail : List α  List α
   | []    => []
   | _::as => as
 
@@ -376,7 +376,7 @@ Drops the first element of the list.
 If the list is empty, this function returns `none`.
 Also see `tailD` and `tail!`.
 -/
-def tail? : List α → Option (List α)
+def tail? : List α  Option (List α)
   | []    => none
   | _::as => some as
 
@@ -411,12 +411,12 @@ We define the basic functional programming operations on `List`:
 `O(|l|)`. `map f l` applies `f` to each element of the list.
 * `map f [a, b, c] = [f a, f b, f c]`
 -/
-@[specialize] def map (f : α → β) : List α → List β
+@[specialize] def map (f : α  β) : List α  List β
   | []    => []
   | a::as => f a :: map f as
 
-@[simp] theorem map_nil {f : α → β} : map f [] = [] := rfl
-@[simp] theorem map_cons (f : α → β) a l : map f (a :: l) = f a :: map f l := rfl
+@[simp] theorem map_nil {f : α  β} : map f [] = [] := rfl
+@[simp] theorem map_cons (f : α  β) a l : map f (a :: l) = f a :: map f l := rfl
 
 /-! ### filter -/
 
@@ -426,18 +426,18 @@ We define the basic functional programming operations on `List`:
 filter (· > 2) [1, 2, 5, 2, 7, 7] = [5, 7, 7]
 ```
 -/
-def filter (p : α → Bool) : List α → List α
+def filter (p : α  Bool) : List α  List α
   | [] => []
   | a::as => match p a with
     | true => a :: filter p as
     | false => filter p as
 
-@[simp] theorem filter_nil (p : α → Bool) : filter p [] = [] := rfl
+@[simp] theorem filter_nil (p : α  Bool) : filter p [] = [] := rfl
 
 /-! ### filterMap -/
 
 /--
-`O(|l|)`. `filterMap f l` takes a function `f : α → Option β` and applies it to each element of `l`;
+`O(|l|)`. `filterMap f l` takes a function `f : α  Option β` and applies it to each element of `l`;
 the resulting non-`none` values are collected to form the output list.
 ```
 filterMap
@@ -446,15 +446,15 @@ filterMap
 = [10, 14, 14]
 ```
 -/
-@[specialize] def filterMap (f : α → Option β) : List α → List β
+@[specialize] def filterMap (f : α  Option β) : List α  List β
   | []   => []
   | a::as =>
     match f a with
     | none   => filterMap f as
     | some b => b :: filterMap f as
 
-@[simp] theorem filterMap_nil (f : α → Option β) : filterMap f [] = [] := rfl
-theorem filterMap_cons (f : α → Option β) (a : α) (l : List α) :
+@[simp] theorem filterMap_nil (f : α  Option β) : filterMap f [] = [] := rfl
+theorem filterMap_cons (f : α  Option β) (a : α) (l : List α) :
     filterMap f (a :: l) =
       match f a with
       | none => filterMap f l
@@ -466,7 +466,7 @@ theorem filterMap_cons (f : α → Option β) (a : α) (l : List α) :
 `O(|l|)`. Applies function `f` to all of the elements of the list, from right to left.
 * `foldr f init [a, b, c] = f a <| f b <| f c <| init`
 -/
-@[specialize] def foldr (f : α → β → β) (init : β) : List α → β
+@[specialize] def foldr (f : α  β  β) (init : β) : List α  β
   | []     => init
   | a :: l => f a (foldr f init l)
 
@@ -476,7 +476,7 @@ theorem filterMap_cons (f : α → Option β) (a : α) (l : List α) :
 /-! ### reverse -/
 
 /-- Auxiliary for `List.reverse`. `List.reverseAux l r = l.reverse ++ r`, but it is defined directly. -/
-def reverseAux : List α → List α → List α
+def reverseAux : List α  List α  List α
   | [],   r => r
   | a::l, r => reverseAux l (a::r)
 
@@ -507,7 +507,7 @@ theorem reverseAux_reverseAux (as bs cs : List α) : reverseAux (reverseAux as b
 `O(|xs|)`: append two lists. `[1, 2, 3] ++ [4, 5] = [1, 2, 3, 4, 5]`.
 It takes time proportional to the first list.
 -/
-protected def append : (xs ys : List α) → List α
+protected def append : (xs ys : List α)  List α
   | [],    bs => bs
   | a::as, bs => a :: List.append as bs
 
@@ -582,7 +582,7 @@ theorem reverseAux_eq_append (as bs : List α) : reverseAux as bs = reverseAux a
 `O(|flatten L|)`. `flatten L` concatenates all the lists in `L` into one list.
 * `flatten [[a], [], [b, c], [d, e, f]] = [a, b, c, d, e, f]`
 -/
-def flatten : List (List α) → List α
+def flatten : List (List α)  List α
   | []      => []
   | a :: as => a ++ flatten as
 
@@ -606,10 +606,10 @@ set_option linter.missingDocs false in
 to get a list of lists, and then concatenates them all together.
 * `[2, 3, 2].bind range = [0, 1, 0, 1, 2, 0, 1]`
 -/
-@[inline] def flatMap {α : Type u} {β : Type v} (a : List α) (b : α → List β) : List β := flatten (map b a)
+@[inline] def flatMap {α : Type u} {β : Type v} (a : List α) (b : α  List β) : List β := flatten (map b a)
 
-@[simp] theorem flatMap_nil (f : α → List β) : List.flatMap [] f = [] := by simp [flatten, List.flatMap]
-@[simp] theorem flatMap_cons x xs (f : α → List β) :
+@[simp] theorem flatMap_nil (f : α  List β) : List.flatMap [] f = [] := by simp [flatten, List.flatMap]
+@[simp] theorem flatMap_cons x xs (f : α  List β) :
   List.flatMap (x :: xs) f = f x ++ List.flatMap xs f := by simp [flatten, List.flatMap]
 
 set_option linter.missingDocs false in
@@ -630,7 +630,7 @@ set_option linter.missingDocs false in
 `replicate n a` is `n` copies of `a`:
 * `replicate 5 a = [a, a, a, a, a]`
 -/
-def replicate : (n : Nat) → (a : α) → List α
+def replicate : (n : Nat)  (a : α)  List α
   | 0,   _ => []
   | n+1, a => a :: replicate n a
 
@@ -661,7 +661,7 @@ def rightpad (n : Nat) (a : α) (l : List α) : List α := l ++ replicate (n - l
 /-! ### reduceOption -/
 
 /-- Drop `none`s from a list, and replace each remaining `some a` with `a`. -/
-@[inline] def reduceOption {α} : List (Option α) → List α :=
+@[inline] def reduceOption {α} : List (Option α)  List α :=
   List.filterMap id
 
 /-! ## List membership
@@ -684,7 +684,7 @@ instance : EmptyCollection (List α) := ⟨List.nil⟩
 * `isEmpty [a] = false`
 * `isEmpty [a, b] = false`
 -/
-def isEmpty : List α → Bool
+def isEmpty : List α  Bool
   | []     => true
   | _ :: _ => false
 
@@ -703,7 +703,7 @@ def isEmpty : List α → Bool
 The preferred simp normal form is `l.contains a`, and when `LawfulBEq α` is available,
 `l.contains a = true ↔ a ∈ l` and `l.contains a = false ↔ a ∉ l`.
 -/
-def elem [BEq α] (a : α) : List α → Bool
+def elem [BEq α] (a : α) : List α  Bool
   | []    => false
   | b::bs => match a == b with
     | true  => true
@@ -730,18 +730,18 @@ def notElem [BEq α] (a : α) (as : List α) : Bool :=
 /--
 `a ∈ l` is a predicate which asserts that `a` is in the list `l`.
 Unlike `elem`, this uses `=` instead of `==` and is suited for mathematical reasoning.
-* `a ∈ [x, y, z] ↔ a = x ∨ a = y ∨ a = z`
+* `a ∈ [x, y, z] ↔ a = x  a = y  a = z`
 -/
-inductive Mem (a : α) : List α → Prop
+inductive Mem (a : α) : List α  Prop
   /-- The head of a list is a member: `a ∈ a :: as`. -/
   | head (as : List α) : Mem a (a::as)
-  /-- A member of the tail of a list is a member of the list: `a ∈ l → a ∈ b :: l`. -/
-  | tail (b : α) {as : List α} : Mem a as → Mem a (b::as)
+  /-- A member of the tail of a list is a member of the list: `a ∈ l  a ∈ b :: l`. -/
+  | tail (b : α) {as : List α} : Mem a as  Mem a (b::as)
 
 instance : Membership α (List α) where
   mem l a := Mem a l
 
-theorem mem_of_elem_eq_true [BEq α] [LawfulBEq α] {a : α} {as : List α} : elem a as = true → a ∈ as := by
+theorem mem_of_elem_eq_true [BEq α] [LawfulBEq α] {a : α} {as : List α} : elem a as = true  a ∈ as := by
   match as with
   | [] => simp [elem]
   | a'::as =>
@@ -758,19 +758,19 @@ theorem elem_eq_true_of_mem [BEq α] [LawfulBEq α] {a : α} {as : List α} (h :
 instance [BEq α] [LawfulBEq α] (a : α) (as : List α) : Decidable (a ∈ as) :=
   decidable_of_decidable_of_iff (Iff.intro mem_of_elem_eq_true elem_eq_true_of_mem)
 
-theorem mem_append_left {a : α} {as : List α} (bs : List α) : a ∈ as → a ∈ as ++ bs := by
+theorem mem_append_left {a : α} {as : List α} (bs : List α) : a ∈ as  a ∈ as ++ bs := by
   intro h
   induction h with
   | head => apply Mem.head
   | tail => apply Mem.tail; assumption
 
-theorem mem_append_right {b : α} {bs : List α} (as : List α) : b ∈ bs → b ∈ as ++ bs := by
+theorem mem_append_right {b : α} {bs : List α} (as : List α) : b ∈ bs  b ∈ as ++ bs := by
   intro h
   induction as with
   | nil  => simp [h]
   | cons => apply Mem.tail; assumption
 
-instance decidableBEx (p : α → Prop) [DecidablePred p] :
+instance decidableBEx (p : α  Prop) [DecidablePred p] :
     ∀ l : List α, Decidable (Exists fun x => x ∈ l ∧ p x)
   | [] => isFalse nofun
   | x :: xs =>
@@ -781,8 +781,8 @@ instance decidableBEx (p : α → Prop) [DecidablePred p] :
         | ⟨y, .tail _ h, hp⟩ => h₂ ⟨y, h, hp⟩
         | ⟨_, .head .., hp⟩ => h₁ hp
 
-instance decidableBAll (p : α → Prop) [DecidablePred p] :
-    ∀ l : List α, Decidable (∀ x, x ∈ l → p x)
+instance decidableBAll (p : α  Prop) [DecidablePred p] :
+    ∀ l : List α, Decidable (∀ x, x ∈ l  p x)
   | [] => isTrue nofun
   | x :: xs =>
     if h₁ : p x then
@@ -803,7 +803,7 @@ instance decidableBAll (p : α → Prop) [DecidablePred p] :
 * `take 3 [a, b, c, d, e] = [a, b, c]`
 * `take 6 [a, b, c, d, e] = [a, b, c, d, e]`
 -/
-def take : Nat → List α → List α
+def take : Nat  List α  List α
   | 0,   _     => []
   | _+1, []    => []
   | n+1, a::as => a :: take n as
@@ -820,7 +820,7 @@ def take : Nat → List α → List α
 * `drop 3 [a, b, c, d, e] = [d, e]`
 * `drop 6 [a, b, c, d, e] = []`
 -/
-def drop : Nat → List α → List α
+def drop : Nat  List α  List α
   | 0,   a     => a
   | _+1, []    => []
   | n+1, _::as => drop n as
@@ -843,7 +843,7 @@ theorem drop_eq_nil_of_le {as : List α} {i : Nat} (h : as.length ≤ i) : as.dr
 * `takeWhile (· > 5) [7, 6, 4, 8] = [7, 6]`
 * `takeWhile (· > 5) [7, 6, 6, 8] = [7, 6, 6, 8]`
 -/
-def takeWhile (p : α → Bool) : (xs : List α) → List α
+def takeWhile (p : α  Bool) : (xs : List α)  List α
   | []       => []
   | hd :: tl => match p hd with
    | true  => hd :: takeWhile p tl
@@ -860,7 +860,7 @@ for which `p` returns false; this element and everything after it is returned.
 dropWhile (· < 4) [1, 3, 2, 4, 2, 7, 4] = [4, 2, 7, 4]
 ```
 -/
-def dropWhile (p : α → Bool) : List α → List α
+def dropWhile (p : α  Bool) : List α  List α
   | []   => []
   | a::l => match p a with
     | true  => dropWhile p l
@@ -874,16 +874,16 @@ def dropWhile (p : α → Bool) : List α → List α
 `O(|l|)`. `partition p l` calls `p` on each element of `l`, partitioning the list into two lists
 `(l_true, l_false)` where `l_true` has the elements where `p` was true
 and `l_false` has the elements where `p` is false.
-`partition p l = (filter p l, filter (not ∘ p) l)`, but it is slightly more efficient
+`partition p l = (filter p l, filter (not  p) l)`, but it is slightly more efficient
 since it only has to do one pass over the list.
 ```
 partition (· > 2) [1, 2, 5, 2, 7, 7] = ([5, 7, 7], [1, 2, 2])
 ```
 -/
-@[inline] def partition (p : α → Bool) (as : List α) : List α × List α :=
+@[inline] def partition (p : α  Bool) (as : List α) : List α × List α :=
   loop as ([], [])
 where
-  @[specialize] loop : List α → List α × List α → List α × List α
+  @[specialize] loop : List α  List α × List α  List α × List α
   | [],    (bs, cs) => (bs.reverse, cs.reverse)
   | a::as, (bs, cs) =>
     match p a with
@@ -898,7 +898,7 @@ Removes the last element of the list.
 * `dropLast [a] = []`
 * `dropLast [a, b, c] = [a, b]`
 -/
-def dropLast {α} : List α → List α
+def dropLast {α} : List α  List α
   | []    => []
   | [_]   => []
   | a::as => a :: dropLast as
@@ -922,28 +922,28 @@ def dropLast {α} : List α → List α
 /--
 `l₁ ⊆ l₂` means that every element of `l₁` is also an element of `l₂`, ignoring multiplicity.
 -/
-protected def Subset (l₁ l₂ : List α) := ∀ ⦃a : α⦄, a ∈ l₁ → a ∈ l₂
+protected def Subset (l₁ l₂ : List α) := ∀ ⦃a : α⦄, a ∈ l₁  a ∈ l₂
 
 instance : HasSubset (List α) := ⟨List.Subset⟩
 
-instance [DecidableEq α] : DecidableRel (Subset : List α → List α → Prop) :=
+instance [DecidableEq α] : DecidableRel (Subset : List α  List α  Prop) :=
   fun _ _ => decidableBAll _ _
 
 /-! ### Sublist and isSublist -/
 
 /-- `l₁ <+ l₂`, or `Sublist l₁ l₂`, says that `l₁` is a (non-contiguous) subsequence of `l₂`. -/
-inductive Sublist {α} : List α → List α → Prop
+inductive Sublist {α} : List α  List α  Prop
   /-- the base case: `[]` is a sublist of `[]` -/
   | slnil : Sublist [] []
   /-- If `l₁` is a subsequence of `l₂`, then it is also a subsequence of `a :: l₂`. -/
-  | cons a : Sublist l₁ l₂ → Sublist l₁ (a :: l₂)
+  | cons a : Sublist l₁ l₂  Sublist l₁ (a :: l₂)
   /-- If `l₁` is a subsequence of `l₂`, then `a :: l₁` is a subsequence of `a :: l₂`. -/
-  | cons₂ a : Sublist l₁ l₂ → Sublist (a :: l₁) (a :: l₂)
+  | cons₂ a : Sublist l₁ l₂  Sublist (a :: l₁) (a :: l₂)
 
 @[inherit_doc] scoped infixl:50 " <+ " => Sublist
 
 /-- True if the first list is a potentially non-contiguous sub-sequence of the second list. -/
-def isSublist [BEq α] : List α → List α → Bool
+def isSublist [BEq α] : List α  List α  Bool
   | [], _ => true
   | _, [] => false
   | l₁@(hd₁::tl₁), hd₂::tl₂ =>
@@ -963,7 +963,7 @@ def IsPrefix (l₁ : List α) (l₂ : List α) : Prop := Exists fun t => l₁ ++
 
 /--  `isPrefixOf l₁ l₂` returns `true` Iff `l₁` is a prefix of `l₂`.
 That is, there exists a `t` such that `l₂ == l₁ ++ t`. -/
-def isPrefixOf [BEq α] : List α → List α → Bool
+def isPrefixOf [BEq α] : List α  List α  Bool
   | [],    _     => true
   | _,     []    => false
   | a::as, b::bs => a == b && isPrefixOf as bs
@@ -975,7 +975,7 @@ theorem isPrefixOf_cons₂ [BEq α] {a : α} :
     isPrefixOf (a::as) (b::bs) = (a == b && isPrefixOf as bs) := rfl
 
 /-- `isPrefixOf? l₁ l₂` returns `some t` when `l₂ == l₁ ++ t`. -/
-def isPrefixOf? [BEq α] : List α → List α → Option (List α)
+def isPrefixOf? [BEq α] : List α  List α  Option (List α)
   | [], l₂ => some l₂
   | _, [] => none
   | (x₁ :: l₁), (x₂ :: l₂) =>
@@ -1027,7 +1027,7 @@ def splitAt (n : Nat) (l : List α) : List α × List α := go l n [] where
   `splitAt.go l xs n acc = (acc.reverse ++ take n xs, drop n xs)` if `n < xs.length`,
   and `(l, [])` otherwise.
   -/
-  go : List α → Nat → List α → List α × List α
+  go : List α  Nat  List α  List α × List α
   | [], _, _ => (l, []) -- This branch ensures the pointer equality of the result with the input
                         -- without any runtime branching cost.
   | x :: xs, n+1, acc => go xs n (x :: acc)
@@ -1079,7 +1079,7 @@ def rotateRight (xs : List α) (n : Nat := 1) : List α :=
 
 section Pairwise
 
-variable (R : α → α → Prop)
+variable (R : α  α  Prop)
 
 /--
 `Pairwise R l` means that all the elements with earlier indexes are
@@ -1090,22 +1090,22 @@ Pairwise R [1, 2, 3] ↔ R 1 2 ∧ R 1 3 ∧ R 2 3
 For example if `R = (·≠·)` then it asserts `l` has no duplicates,
 and if `R = (·<·)` then it asserts that `l` is (strictly) sorted.
 -/
-inductive Pairwise : List α → Prop
+inductive Pairwise : List α  Prop
   /-- All elements of the empty list are vacuously pairwise related. -/
   | nil : Pairwise []
   /-- `a :: l` is `Pairwise R` if `a` `R`-relates to every element of `l`,
   and `l` is `Pairwise R`. -/
-  | cons : ∀ {a : α} {l : List α}, (∀ a', a' ∈ l → R a a') → Pairwise l → Pairwise (a :: l)
+  | cons : ∀ {a : α} {l : List α}, (∀ a', a' ∈ l  R a a')  Pairwise l  Pairwise (a :: l)
 
 attribute [simp] Pairwise.nil
 
 variable {R}
 
-@[simp] theorem pairwise_cons : Pairwise R (a::l) ↔ (∀ a', a' ∈ l → R a a') ∧ Pairwise R l :=
+@[simp] theorem pairwise_cons : Pairwise R (a::l) ↔ (∀ a', a' ∈ l  R a a') ∧ Pairwise R l :=
   ⟨fun | .cons h₁ h₂ => ⟨h₁, h₂⟩, fun ⟨h₁, h₂⟩ => h₂.cons h₁⟩
 
 instance instDecidablePairwise [DecidableRel R] :
-    (l : List α) → Decidable (Pairwise R l)
+    (l : List α)  Decidable (Pairwise R l)
   | [] => isTrue .nil
   | hd :: tl =>
     match instDecidablePairwise tl with
@@ -1119,7 +1119,7 @@ end Pairwise
 
 /-- `Nodup l` means that `l` has no duplicates, that is, any element appears at most
   once in the List. It is defined as `Pairwise (≠)`. -/
-def Nodup : List α → Prop := Pairwise (· ≠ ·)
+def Nodup : List α  Prop := Pairwise (· ≠ ·)
 
 instance nodupDecidable [DecidableEq α] : ∀ l : List α, Decidable (Nodup l) :=
   instDecidablePairwise
@@ -1134,7 +1134,7 @@ instance nodupDecidable [DecidableEq α] : ∀ l : List α, Decidable (Nodup l) 
 * `replace [1, 4, 2, 3, 3, 7] 3 6 = [1, 4, 2, 6, 3, 7]`
 * `replace [1, 4, 2, 3, 3, 7] 5 6 = [1, 4, 2, 3, 3, 7]`
 -/
-def replace [BEq α] : List α → α → α → List α
+def replace [BEq α] : List α  α  α  List α
   | [],    _, _ => []
   | a::as, b, c => match b == a with
     | true  => c::as
@@ -1154,24 +1154,24 @@ using `f` if the index is larger than the length of the List.
 modifyTailIdx f 2 [a, b, c] = [a, b] ++ f [c]
 ```
 -/
-@[simp] def modifyTailIdx (f : List α → List α) : Nat → List α → List α
+@[simp] def modifyTailIdx (f : List α  List α) : Nat  List α  List α
   | 0, l => f l
   | _+1, [] => []
   | n+1, a :: l => a :: modifyTailIdx f n l
 
 /-- Apply `f` to the head of the list, if it exists. -/
-@[inline] def modifyHead (f : α → α) : List α → List α
+@[inline] def modifyHead (f : α  α) : List α  List α
   | [] => []
   | a :: l => f a :: l
 
-@[simp] theorem modifyHead_nil (f : α → α) : [].modifyHead f = [] := by rw [modifyHead]
-@[simp] theorem modifyHead_cons (a : α) (l : List α) (f : α → α) :
+@[simp] theorem modifyHead_nil (f : α  α) : [].modifyHead f = [] := by rw [modifyHead]
+@[simp] theorem modifyHead_cons (a : α) (l : List α) (f : α  α) :
     (a :: l).modifyHead f = f a :: l := by rw [modifyHead]
 
 /--
 Apply `f` to the nth element of the list, if it exists, replacing that element with the result.
 -/
-def modify (f : α → α) : Nat → List α → List α :=
+def modify (f : α  α) : Nat  List α  List α :=
   modifyTailIdx (modifyHead f)
 
 /-! ### insert -/
@@ -1186,7 +1186,7 @@ def modify (f : α → α) : Nat → List α → List α :=
 insertIdx 2 1 [1, 2, 3, 4] = [1, 2, 1, 3, 4]
 ```
 -/
-def insertIdx (n : Nat) (a : α) : List α → List α :=
+def insertIdx (n : Nat) (a : α) : List α  List α :=
   modifyTailIdx (cons a) n
 
 /-! ### erase -/
@@ -1196,7 +1196,7 @@ def insertIdx (n : Nat) (a : α) : List α → List α :=
 * `erase [1, 5, 3, 2, 5] 5 = [1, 3, 2, 5]`
 * `erase [1, 5, 3, 2, 5] 6 = [1, 5, 3, 2, 5]`
 -/
-protected def erase {α} [BEq α] : List α → α → List α
+protected def erase {α} [BEq α] : List α  α  List α
   | [],    _ => []
   | a::as, b => match a == b with
     | true  => as
@@ -1208,7 +1208,7 @@ theorem erase_cons [BEq α] (a b : α) (l : List α) :
   simp only [List.erase]; split <;> simp_all
 
 /-- `eraseP p l` removes the first element of `l` satisfying the predicate `p`. -/
-def eraseP (p : α → Bool) : List α → List α
+def eraseP (p : α  Bool) : List α  List α
   | [] => []
   | a :: l => bif p a then l else a :: eraseP p l
 
@@ -1220,7 +1220,7 @@ def eraseP (p : α → Bool) : List α → List α
 * `erase [a, b, c, d, e] 1 = [a, c, d, e]`
 * `erase [a, b, c, d, e] 5 = [a, b, c, d, e]`
 -/
-def eraseIdx : List α → Nat → List α
+def eraseIdx : List α  Nat  List α
   | [],    _   => []
   | _::as, 0   => as
   | a::as, n+1 => a :: eraseIdx as n
@@ -1240,7 +1240,7 @@ or `none` if no such element is found.
 * `find? (· < 5) [7, 6, 5, 8, 1, 2, 6] = some 1`
 * `find? (· < 1) [7, 6, 5, 8, 1, 2, 6] = none`
 -/
-def find? (p : α → Bool) : List α → Option α
+def find? (p : α  Bool) : List α  Option α
   | []    => none
   | a::as => match p a with
     | true  => some a
@@ -1257,60 +1257,60 @@ theorem find?_cons : (a::as).find? p = match p a with | true => some a | false =
 
 * `findSome? (fun x => if x < 5 then some (10 * x) else none) [7, 6, 5, 8, 1, 2, 6] = some 10`
 -/
-def findSome? (f : α → Option β) : List α → Option β
+def findSome? (f : α  Option β) : List α  Option β
   | []    => none
   | a::as => match f a with
     | some b => some b
     | none   => findSome? f as
 
 @[simp] theorem findSome?_nil : ([] : List α).findSome? f = none := rfl
-theorem findSome?_cons {f : α → Option β} :
+theorem findSome?_cons {f : α  Option β} :
     (a::as).findSome? f = match f a with | some b => some b | none => as.findSome? f :=
   rfl
 
 /-! ### findIdx -/
 
 /-- Returns the index of the first element satisfying `p`, or the length of the list otherwise. -/
-@[inline] def findIdx (p : α → Bool) (l : List α) : Nat := go l 0 where
+@[inline] def findIdx (p : α  Bool) (l : List α) : Nat := go l 0 where
   /-- Auxiliary for `findIdx`: `findIdx.go p l n = findIdx p l + n` -/
-  @[specialize] go : List α → Nat → Nat
+  @[specialize] go : List α  Nat  Nat
   | [], n => n
   | a :: l, n => bif p a then n else go l (n + 1)
 
-@[simp] theorem findIdx_nil {α : Type _} (p : α → Bool) : [].findIdx p = 0 := rfl
+@[simp] theorem findIdx_nil {α : Type _} (p : α  Bool) : [].findIdx p = 0 := rfl
 
 /-! ### indexOf -/
 
 /-- Returns the index of the first element equal to `a`, or the length of the list otherwise. -/
-def indexOf [BEq α] (a : α) : List α → Nat := findIdx (· == a)
+def indexOf [BEq α] (a : α) : List α  Nat := findIdx (· == a)
 
 @[simp] theorem indexOf_nil [BEq α] : ([] : List α).indexOf x = 0 := rfl
 
 /-! ### findIdx? -/
 
 /-- Return the index of the first occurrence of an element satisfying `p`. -/
-def findIdx? (p : α → Bool) : List α → (start : Nat := 0) → Option Nat
+def findIdx? (p : α  Bool) : List α  (start : Nat := 0)  Option Nat
 | [], _ => none
 | a :: l, i => if p a then some i else findIdx? p l (i + 1)
 
 /-! ### indexOf? -/
 
 /-- Return the index of the first occurrence of `a` in the list. -/
-@[inline] def indexOf? [BEq α] (a : α) : List α → Option Nat := findIdx? (· == a)
+@[inline] def indexOf? [BEq α] (a : α) : List α  Option Nat := findIdx? (· == a)
 
 /-! ### countP -/
 
 /-- `countP p l` is the number of elements of `l` that satisfy `p`. -/
-@[inline] def countP (p : α → Bool) (l : List α) : Nat := go l 0 where
+@[inline] def countP (p : α  Bool) (l : List α) : Nat := go l 0 where
   /-- Auxiliary for `countP`: `countP.go p l acc = countP p l + acc`. -/
-  @[specialize] go : List α → Nat → Nat
+  @[specialize] go : List α  Nat  Nat
   | [], acc => acc
   | x :: xs, acc => bif p x then go xs (acc + 1) else go xs acc
 
 /-! ### count -/
 
 /-- `count a l` is the number of occurrences of `a` in `l`. -/
-@[inline] def count [BEq α] (a : α) : List α → Nat := countP (· == a)
+@[inline] def count [BEq α] (a : α) : List α  Nat := countP (· == a)
 
 /-! ### lookup -/
 
@@ -1321,7 +1321,7 @@ and returns the first `β` value corresponding to an `α` value in the list equa
 * `lookup 3 [(1, 2), (3, 4), (3, 5)] = some 4`
 * `lookup 2 [(1, 2), (3, 4), (3, 5)] = none`
 -/
-def lookup [BEq α] : α → List (α × β) → Option β
+def lookup [BEq α] : α  List (α × β)  Option β
   | _, []        => none
   | a, (k,b)::es => match a == k with
     | true  => some b
@@ -1340,15 +1340,15 @@ theorem lookup_cons [BEq α] {k : α} :
 `Perm l₁ l₂` or `l₁ ~ l₂` asserts that `l₁` and `l₂` are permutations
 of each other. This is defined by induction using pairwise swaps.
 -/
-inductive Perm : List α → List α → Prop
+inductive Perm : List α  List α  Prop
   /-- `[] ~ []` -/
   | nil : Perm [] []
-  /-- `l₁ ~ l₂ → x::l₁ ~ x::l₂` -/
-  | cons (x : α) {l₁ l₂ : List α} : Perm l₁ l₂ → Perm (x :: l₁) (x :: l₂)
+  /-- `l₁ ~ l₂  x::l₁ ~ x::l₂` -/
+  | cons (x : α) {l₁ l₂ : List α} : Perm l₁ l₂  Perm (x :: l₁) (x :: l₂)
   /-- `x::y::l ~ y::x::l` -/
   | swap (x y : α) (l : List α) : Perm (y :: x :: l) (x :: y :: l)
   /-- `Perm` is transitive. -/
-  | trans {l₁ l₂ l₃ : List α} : Perm l₁ l₂ → Perm l₂ l₃ → Perm l₁ l₃
+  | trans {l₁ l₂ l₃ : List α} : Perm l₁ l₂  Perm l₂ l₃  Perm l₁ l₃
 
 @[inherit_doc] scoped infixl:50 " ~ " => Perm
 
@@ -1358,7 +1358,7 @@ inductive Perm : List α → List α → Prop
 `O(|l₁| * |l₂|)`. Computes whether `l₁` is a permutation of `l₂`. See `isPerm_iff` for a
 characterization in terms of `List.Perm`.
 -/
-def isPerm [BEq α] : List α → List α → Bool
+def isPerm [BEq α] : List α  List α  Bool
   | [], l₂ => l₂.isEmpty
   | a :: l₁, l₂ => l₂.contains a && l₁.isPerm (l₂.erase a)
 
@@ -1372,7 +1372,7 @@ def isPerm [BEq α] : List α → List α → Bool
 
 Short-circuits upon encountering the first `true`.
 -/
-def any : List α → (α → Bool) → Bool
+def any : List α  (α  Bool)  Bool
   | [], _ => false
   | h :: t, p => p h || any t p
 
@@ -1387,7 +1387,7 @@ def any : List α → (α → Bool) → Bool
 
 Short-circuits upon encountering the first `false`.
 -/
-def all : List α → (α → Bool) → Bool
+def all : List α  (α  Bool)  Bool
   | [], _ => true
   | h :: t, p => p h && all t p
 
@@ -1424,13 +1424,13 @@ def and (bs : List Bool) : Bool := bs.all id
 `O(min |xs| |ys|)`. Applies `f` to the two lists in parallel, stopping at the shorter list.
 * `zipWith f [x₁, x₂, x₃] [y₁, y₂, y₃, y₄] = [f x₁ y₁, f x₂ y₂, f x₃ y₃]`
 -/
-@[specialize] def zipWith (f : α → β → γ) : (xs : List α) → (ys : List β) → List γ
+@[specialize] def zipWith (f : α  β  γ) : (xs : List α)  (ys : List β)  List γ
   | x::xs, y::ys => f x y :: zipWith f xs ys
   | _,     _     => []
 
-@[simp] theorem zipWith_nil_left {f : α → β → γ} : zipWith f [] l = [] := rfl
-@[simp] theorem zipWith_nil_right {f : α → β → γ} : zipWith f l [] = [] := by simp [zipWith]
-@[simp] theorem zipWith_cons_cons {f : α → β → γ} :
+@[simp] theorem zipWith_nil_left {f : α  β  γ} : zipWith f [] l = [] := rfl
+@[simp] theorem zipWith_nil_right {f : α  β  γ} : zipWith f l [] = [] := by simp [zipWith]
+@[simp] theorem zipWith_cons_cons {f : α  β  γ} :
     zipWith f (a :: as) (b :: bs) = f a b :: zipWith f as bs := rfl
 
 /-! ### zip -/
@@ -1440,7 +1440,7 @@ def and (bs : List Bool) : Bool := bs.all id
 The longer list is truncated to match the shorter list.
 * `zip [x₁, x₂, x₃] [y₁, y₂, y₃, y₄] = [(x₁, y₁), (x₂, y₂), (x₃, y₃)]`
 -/
-def zip : List α → List β → List (Prod α β) :=
+def zip : List α  List β  List (Prod α β) :=
   zipWith Prod.mk
 
 @[simp] theorem zip_nil_left : zip ([] : List α) (l : List β)  = [] := rfl
@@ -1454,7 +1454,7 @@ def zip : List α → List β → List (Prod α β) :=
 Version of `List.zipWith` that continues to the end of both lists,
 passing `none` to one argument once the shorter list has run out.
 -/
-def zipWithAll (f : Option α → Option β → γ) : List α → List β → List γ
+def zipWithAll (f : Option α  Option β  γ) : List α  List β  List γ
   | [], bs => bs.map fun b => f none (some b)
   | a :: as, [] => (a :: as).map fun a => f (some a) none
   | a :: as, b :: bs => f a b :: zipWithAll f as bs
@@ -1473,7 +1473,7 @@ def zipWithAll (f : Option α → Option β → γ) : List α → List β → Li
 `O(|l|)`. Separates a list of pairs into two lists containing the first components and second components.
 * `unzip [(x₁, y₁), (x₂, y₂), (x₃, y₃)] = ([x₁, x₂, x₃], [y₁, y₂, y₃])`
 -/
-def unzip : List (α × β) → List α × List β
+def unzip : List (α × β)  List α × List β
   | []          => ([], [])
   | (a, b) :: t => match unzip t with | (al, bl) => (a::al, b::bl)
 
@@ -1486,7 +1486,7 @@ def unzip : List (α × β) → List α × List β
 /-- Sum of a list.
 
 `List.sum [a, b, c] = a + (b + (c + 0))` -/
-def sum {α} [Add α] [Zero α] : List α → α :=
+def sum {α} [Add α] [Zero α] : List α  α :=
   foldr (· + ·) 0
 
 @[simp] theorem sum_nil [Add α] [Zero α] : ([] : List α).sum = 0 := rfl
@@ -1513,7 +1513,7 @@ theorem _root_.Nat.sum_cons (a : Nat) (l : List Nat) :
 def range (n : Nat) : List Nat :=
   loop n []
 where
-  loop : Nat → List Nat → List Nat
+  loop : Nat  List Nat  List Nat
   | 0,   ns => ns
   | n+1, ns => loop n (n::ns)
 
@@ -1523,7 +1523,7 @@ where
 
 /-- `range' start len step` is the list of numbers `[start, start+step, ..., start+(len-1)*step]`.
   It is intended mainly for proving properties of `range` and `iota`. -/
-def range' : (start len : Nat) → (step : Nat := 1) → List Nat
+def range' : (start len : Nat)  (step : Nat := 1)  List Nat
   | _, 0, _ => []
   | s, n+1, step => s :: range' (s+step) n step
 
@@ -1533,7 +1533,7 @@ def range' : (start len : Nat) → (step : Nat := 1) → List Nat
 `O(n)`. `iota n` is the numbers from `1` to `n` inclusive, in decreasing order.
 * `iota 5 = [5, 4, 3, 2, 1]`
 -/
-def iota : Nat → List Nat
+def iota : Nat  List Nat
   | 0       => []
   | m@(n+1) => m :: iota n
 
@@ -1546,7 +1546,7 @@ def iota : Nat → List Nat
 `O(|l|)`. `enumFrom n l` is like `enum` but it allows you to specify the initial index.
 * `enumFrom 5 [a, b, c] = [(5, a), (6, b), (7, c)]`
 -/
-def enumFrom : Nat → List α → List (Nat × α)
+def enumFrom : Nat  List α  List (Nat × α)
   | _, [] => nil
   | n, x :: xs   => (n, x) :: enumFrom (n + 1) xs
 
@@ -1559,7 +1559,7 @@ def enumFrom : Nat → List α → List (Nat × α)
 `O(|l|)`. `enum l` pairs up each element with its index in the list.
 * `enum [a, b, c] = [(0, a), (1, b), (2, c)]`
 -/
-def enum : List α → List (Nat × α) := enumFrom 0
+def enum : List α  List (Nat × α) := enumFrom 0
 
 @[simp] theorem enum_nil : ([] : List α).enum = [] := rfl
 
@@ -1573,7 +1573,7 @@ Returns the smallest element of the list, if it is not empty.
 * `[4].min? = some 4`
 * `[1, 4, 2, 10, 6].min? = some 1`
 -/
-def min? [Min α] : List α → Option α
+def min? [Min α] : List α  Option α
   | []    => none
   | a::as => some <| as.foldl min a
 
@@ -1587,7 +1587,7 @@ Returns the largest element of the list, if it is not empty.
 * `[4].max? = some 4`
 * `[1, 4, 2, 10, 6].max? = some 10`
 -/
-def max? [Max α] : List α → Option α
+def max? [Max α] : List α  Option α
   | []    => none
   | a::as => some <| as.foldl max a
 
@@ -1608,7 +1608,7 @@ and do not have sufficient API developed for verification work.
 * `intersperse sep [a, b] = [a, sep, b]`
 * `intersperse sep [a, b, c] = [a, sep, b, sep, c]`
 -/
-def intersperse (sep : α) : List α → List α
+def intersperse (sep : α) : List α  List α
   | []    => []
   | [x]   => [x]
   | x::xs => x :: sep :: intersperse sep xs
@@ -1639,7 +1639,7 @@ Keeps the first occurrence of duplicated elements.
 def eraseDups {α} [BEq α] (as : List α) : List α :=
   loop as []
 where
-  loop : List α → List α → List α
+  loop : List α  List α  List α
   | [],    bs => bs.reverse
   | a::as, bs => match bs.elem a with
     | true  => loop as bs
@@ -1651,11 +1651,11 @@ where
 `O(|l|)`. Erase repeated adjacent elements. Keeps the first occurrence of each run.
 * `eraseReps [1, 3, 2, 2, 2, 3, 5] = [1, 3, 2, 3, 5]`
 -/
-def eraseReps {α} [BEq α] : List α → List α
+def eraseReps {α} [BEq α] : List α  List α
   | []    => []
   | a::as => loop a as []
 where
-  loop {α} [BEq α] : α → List α → List α → List α
+  loop {α} [BEq α] : α  List α  List α  List α
   | a, [], rs => (a::rs).reverse
   | a, a'::as, rs => match a == a' with
     | true  => loop a as rs
@@ -1671,10 +1671,10 @@ and the second part is everything else.
 * `span (· > 5) [6, 8, 9, 5, 2, 9] = ([6, 8, 9], [5, 2, 9])`
 * `span (· > 10) [6, 8, 9, 5, 2, 9] = ([], [6, 8, 9, 5, 2, 9])`
 -/
-@[inline] def span (p : α → Bool) (as : List α) : List α × List α :=
+@[inline] def span (p : α  Bool) (as : List α) : List α × List α :=
   loop as []
 where
-  @[specialize] loop : List α → List α → List α × List α
+  @[specialize] loop : List α  List α  List α × List α
   | [],    rs => (rs.reverse, [])
   | a::as, rs => match p a with
     | true  => loop as (a::rs)
@@ -1689,7 +1689,7 @@ such that adjacent elements are related by `R`.
 * `splitBy (·==·) [1, 1, 2, 2, 2, 3, 2] = [[1, 1], [2, 2, 2], [3], [2]]`
 * `splitBy (·<·) [1, 2, 5, 4, 5, 1, 4] = [[1, 2, 5], [4, 5], [1, 4]]`
 -/
-@[specialize] def splitBy (R : α → α → Bool) : List α → List (List α)
+@[specialize] def splitBy (R : α  α  Bool) : List α  List (List α)
   | []    => []
   | a::as => loop as a [] []
 where
@@ -1701,7 +1701,7 @@ where
   - `g : List α` is the group currently being assembled, in **reverse order**.
   - `gs : List (List α)` is all of the groups that have been completed, in **reverse order**.
   -/
-  @[specialize] loop : List α → α → List α → List (List α) → List (List α)
+  @[specialize] loop : List α  α  List α  List (List α)  List (List α)
   | a::as, ag, g, gs => match R ag a with
     | true  => loop as a (ag::g) gs
     | false => loop as a [] ((ag::g).reverse::gs)
@@ -1744,14 +1744,14 @@ theorem length_add_eq_lengthTRAux (as : List α) (n : Nat) : as.length + n = as.
 /-! ### map -/
 
 /-- Tail-recursive version of `List.map`. -/
-@[inline] def mapTR (f : α → β) (as : List α) : List β :=
+@[inline] def mapTR (f : α  β) (as : List α) : List β :=
   loop as []
 where
-  @[specialize] loop : List α → List β → List β
+  @[specialize] loop : List α  List β  List β
   | [],    bs => bs.reverse
   | a::as, bs => loop as (f a :: bs)
 
-theorem mapTR_loop_eq (f : α → β) (as : List α) (bs : List β) :
+theorem mapTR_loop_eq (f : α  β) (as : List α) (bs : List β) :
     mapTR.loop f as bs = bs.reverse ++ map f as := by
   induction as generalizing bs with
   | nil => simp [mapTR.loop, map]
@@ -1767,16 +1767,16 @@ theorem mapTR_loop_eq (f : α → β) (as : List α) (bs : List β) :
 /-! ### filter -/
 
 /-- Tail-recursive version of `List.filter`. -/
-@[inline] def filterTR (p : α → Bool) (as : List α) : List α :=
+@[inline] def filterTR (p : α  Bool) (as : List α) : List α :=
   loop as []
 where
-  @[specialize] loop : List α → List α → List α
+  @[specialize] loop : List α  List α  List α
   | [],    rs => rs.reverse
   | a::as, rs => match p a with
      | true  => loop as (a::rs)
      | false => loop as rs
 
-theorem filterTR_loop_eq (p : α → Bool) (as bs : List α) :
+theorem filterTR_loop_eq (p : α  Bool) (as bs : List α) :
     filterTR.loop p as bs = bs.reverse ++ filter p as := by
   induction as generalizing bs with
   | nil => simp [filterTR.loop, filter]
@@ -1792,7 +1792,7 @@ theorem filterTR_loop_eq (p : α → Bool) (as bs : List α) :
 
 /-- Tail-recursive version of `List.replicate`. -/
 def replicateTR {α : Type u} (n : Nat) (a : α) : List α :=
-  let rec loop : Nat → List α → List α
+  let rec loop : Nat  List α  List α
     | 0, as => as
     | n+1, as => loop n (a::as)
   loop n []
@@ -1843,7 +1843,7 @@ def unzipTR (l : List (α × β)) : List α × List β :=
 /-- Optimized version of `range'`. -/
 @[inline] def range'TR (s n : Nat) (step : Nat := 1) : List Nat := go n (s + step * n) [] where
   /-- Auxiliary for `range'TR`: `range'TR.go n e = [e-n, ..., e-1] ++ acc`. -/
-  go : Nat → Nat → List Nat → List Nat
+  go : Nat  Nat  List Nat  List Nat
   | 0, _, acc => acc
   | n+1, e, acc => go n (e-step) ((e-step) :: acc)
 
@@ -1862,7 +1862,7 @@ def unzipTR (l : List (α × β)) : List α × List β :=
 
 /-- Tail-recursive version of `List.iota`. -/
 def iotaTR (n : Nat) : List Nat :=
-  let rec go : Nat → List Nat → List Nat
+  let rec go : Nat  List Nat  List Nat
     | 0, r => r.reverse
     | m@(n+1), r => go n (m::r)
   go n []
@@ -1880,7 +1880,7 @@ theorem iota_eq_iotaTR : @iota = @iotaTR :=
 /-! ### intersperse -/
 
 /-- Tail recursive version of `List.intersperse`. -/
-def intersperseTR (sep : α) : List α → List α
+def intersperseTR (sep : α) : List α  List α
   | [] => []
   | [x] => [x]
   | x::y::xs => x :: sep :: y :: xs.foldr (fun a r => sep :: a :: r) []

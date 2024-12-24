@@ -9,7 +9,7 @@ import Init.Data.Ord
 
 namespace Array
 
-private def qpartition {n} (as : Vector α n) (lt : α → α → Bool) (lo hi : Nat)
+private def qpartition {n} (as : Vector α n) (lt : α  α  Bool) (lo hi : Nat)
     (hlo : lo < n := by omega) (hhi : hi < n := by omega) : {n : Nat // lo ≤ n} × Vector α n :=
   let mid := (lo + hi) / 2
   let as  := if lt as[mid] as[lo] then as.swap lo mid else as
@@ -27,7 +27,7 @@ private def qpartition {n} (as : Vector α n) (lt : α → α → Bool) (lo hi :
       (⟨i, ilo⟩, as.swap i hi)
   loop as lo lo
 
-@[inline] def qsort (as : Array α) (lt : α → α → Bool := by exact (· < ·))
+@[inline] def qsort (as : Array α) (lt : α  α  Bool := by exact (· < ·))
     (low := 0) (high := as.size - 1) : Array α :=
   let rec @[specialize] sort {n} (as : Vector α n) (lo hi : Nat)
       (hlo : lo < n := by omega) (hhi : hi < n := by omega) :=

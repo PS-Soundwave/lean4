@@ -91,15 +91,15 @@ This guarantees that applying such a function will not change the semantics of a
 of the circuit, allowing us to perform local reasoning on the AIG.
 -/
 class LawfulOperator (α : Type) [Hashable α] [DecidableEq α]
-    (β : AIG α → Type) (f : (aig : AIG α) → β aig → Entrypoint α)  where
+    (β : AIG α  Type) (f : (aig : AIG α)  β aig  Entrypoint α)  where
   le_size : ∀ (aig : AIG α) (input : β aig), aig.decls.size ≤ (f aig input).aig.decls.size
   decl_eq : ∀ (aig : AIG α) (input : β aig) (idx : Nat) (h1 : idx < aig.decls.size) (h2),
     (f aig input).aig.decls[idx]'h2 = aig.decls[idx]'h1
 
 namespace LawfulOperator
 
-variable {β : AIG α → Type}
-variable {f : (aig : AIG α) → β aig → Entrypoint α} [LawfulOperator α β f]
+variable {β : AIG α  Type}
+variable {f : (aig : AIG α)  β aig  Entrypoint α} [LawfulOperator α β f]
 
 theorem isPrefix_aig (aig : AIG α) (input : β aig) :
     IsPrefix aig.decls (f aig input).aig.decls := by

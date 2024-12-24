@@ -92,7 +92,7 @@ theorem add_neg_one (i : Int) : i + -1 = i - 1 := rfl
 /- ## basic properties of subNatNat -/
 
 -- @[elabAsElim] -- TODO(Mario): unexpected eliminator resulting type
-theorem subNatNat_elim (m n : Nat) (motive : Nat → Nat → Int → Prop)
+theorem subNatNat_elim (m n : Nat) (motive : Nat  Nat  Int  Prop)
     (hp : ∀ i n, motive (n + i) n i)
     (hn : ∀ i m, motive m (m + i + 1) -[i+1]) :
     motive m n (subNatNat m n) := by
@@ -477,7 +477,7 @@ protected theorem neg_eq_neg_one_mul : ∀ a : Int, -a = -1 * a
   | succ n => show _ = -[1 * n +1] by rw [Nat.one_mul]; rfl
   | -[n+1] => show _ = ofNat _ by rw [Nat.one_mul]; rfl
 
-protected theorem mul_eq_zero {a b : Int} : a * b = 0 ↔ a = 0 ∨ b = 0 := by
+protected theorem mul_eq_zero {a b : Int} : a * b = 0 ↔ a = 0  b = 0 := by
   refine ⟨fun h => ?_, fun h => h.elim (by simp [·, Int.zero_mul]) (by simp [·, Int.mul_zero])⟩
   exact match a, b, h with
   | .ofNat 0, _, _ => by simp
@@ -485,7 +485,7 @@ protected theorem mul_eq_zero {a b : Int} : a * b = 0 ↔ a = 0 ∨ b = 0 := by
   | .ofNat (a+1), .negSucc b, h => by cases h
 
 protected theorem mul_ne_zero {a b : Int} (a0 : a ≠ 0) (b0 : b ≠ 0) : a * b ≠ 0 :=
-  Or.rec a0 b0 ∘ Int.mul_eq_zero.mp
+  Or.rec a0 b0  Int.mul_eq_zero.mp
 
 @[simp] protected theorem mul_ne_zero_iff {a b : Int} : a * b ≠ 0 ↔ a ≠ 0 ∧ b ≠ 0 := by
   rw [ne_eq, Int.mul_eq_zero, not_or, ne_eq]

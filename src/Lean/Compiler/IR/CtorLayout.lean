@@ -18,7 +18,7 @@ inductive CtorFieldInfo where
 
 namespace CtorFieldInfo
 
-def format : CtorFieldInfo → Format
+def format : CtorFieldInfo  Format
   | irrelevant => "◾"
   | object i   => f!"obj@{i}"
   | usize i    => f!"usize@{i}"

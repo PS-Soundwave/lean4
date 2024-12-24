@@ -12,7 +12,7 @@ import Init.Meta
 # Recursive cases (`rcases`) tactic and related tactics
 
 `rcases` is a tactic that will perform `cases` recursively, according to a pattern. It is used to
-destructure hypotheses or expressions composed of inductive types like `h1 : a ∧ b ∧ c ∨ d` or
+destructure hypotheses or expressions composed of inductive types like `h1 : a ∧ b ∧ c  d` or
 `h2 : ∃ x y, trans_rel R x y`. Usual usage might be `rcases h1 with ⟨ha, hb, hc⟩ | hd` or
 `rcases h2 with ⟨x, y, _ | ⟨z, hxz, hzy⟩⟩` for these examples.
 
@@ -35,7 +35,7 @@ the input expression). An `rcases` pattern has the following grammar:
 * A `@` before a tuple pattern as in `@⟨p1, p2, p3⟩` will bind all arguments in the constructor,
   while leaving the `@` off will only use the patterns on the explicit arguments.
 * An alternation pattern `p1 | p2 | p3`, which matches an inductive type with multiple constructors,
-  or a nested disjunction like `a ∨ b ∨ c`.
+  or a nested disjunction like `a  b  c`.
 
 The patterns are fairly liberal about the exact shape of the constructors, and will insert
 additional alternation branches and tuple arguments if there are not enough arguments provided, and
@@ -50,8 +50,8 @@ patterns but with a slightly different use case:
 * `obtain` is the same as `rcases` but with a syntax styled after `have` rather than `cases`.
   `obtain ⟨hx, hy⟩ | hz := foo` is equivalent to `rcases foo with ⟨hx, hy⟩ | hz`. Unlike `rcases`,
   `obtain` also allows one to omit `:= foo`, although a type must be provided in this case,
-  as in `obtain ⟨hx, hy⟩ | hz : a ∧ b ∨ c`, in which case it produces a subgoal for proving
-  `a ∧ b ∨ c` in addition to the subgoals `hx : a, hy : b |- goal` and `hz : c |- goal`.
+  as in `obtain ⟨hx, hy⟩ | hz : a ∧ b  c`, in which case it produces a subgoal for proving
+  `a ∧ b  c` in addition to the subgoals `hx : a, hy : b |- goal` and `hz : c |- goal`.
 
 ## Tags
 
@@ -106,7 +106,7 @@ syntax (name := rcases?) "rcases?" casesTarget,* (" : " num)? : tactic
 
 /--
 `rcases` is a tactic that will perform `cases` recursively, according to a pattern. It is used to
-destructure hypotheses or expressions composed of inductive types like `h1 : a ∧ b ∧ c ∨ d` or
+destructure hypotheses or expressions composed of inductive types like `h1 : a ∧ b ∧ c  d` or
 `h2 : ∃ x y, trans_rel R x y`. Usual usage might be `rcases h1 with ⟨ha, hb, hc⟩ | hd` or
 `rcases h2 with ⟨x, y, _ | ⟨z, hxz, hzy⟩⟩` for these examples.
 
@@ -129,7 +129,7 @@ the input expression). An `rcases` pattern has the following grammar:
 * A `@` before a tuple pattern as in `@⟨p1, p2, p3⟩` will bind all arguments in the constructor,
   while leaving the `@` off will only use the patterns on the explicit arguments.
 * An alternation pattern `p1 | p2 | p3`, which matches an inductive type with multiple constructors,
-  or a nested disjunction like `a ∨ b ∨ c`.
+  or a nested disjunction like `a  b  c`.
 
 A pattern like `⟨a, b, c⟩ | ⟨d, e⟩` will do a split over the inductive datatype,
 naming the first three parameters of the first constructor as `a,b,c` and the

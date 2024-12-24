@@ -3,11 +3,11 @@ namespace Demo
 @[extern "lean_ptr_addr"]
 unsafe def ptrAddrUnsafe {α : Type} (a : @& α) : USize := 0
 
-@[inline] unsafe def withPtrEqUnsafe {α : Type} (a b : α) (k : Unit → Bool) (h : a = b → k () = true) : Bool :=
+@[inline] unsafe def withPtrEqUnsafe {α : Type} (a b : α) (k : Unit  Bool) (h : a = b  k () = true) : Bool :=
 if ptrAddrUnsafe a == ptrAddrUnsafe b then true else k ()
 
 @[implemented_by withPtrEqUnsafe]
-def withPtrEq {α : Type} (a b : α) (k : Unit → Bool) (h : a = b → k () = true) : Bool :=
+def withPtrEq {α : Type} (a b : α) (k : Unit  Bool) (h : a = b  k () = true) : Bool :=
 k ()
 
 /-
@@ -17,7 +17,7 @@ class inductive Decidable (p : Prop)
 -/
 
 /-- `withPtrEq` for `DecidableEq` -/
-@[inline] def withPtrEqDecEq {α : Type} (a b : α) (k : Unit → Decidable (a = b)) : Decidable (a = b) :=
+@[inline] def withPtrEqDecEq {α : Type} (a b : α) (k : Unit  Decidable (a = b)) : Decidable (a = b) :=
 let b := withPtrEq a b (fun _ => toBoolUsing (k ())) (toBoolUsingEqTrue (k ()));
 condEq b
   (fun h => isTrue (ofBoolUsingEqTrue h))

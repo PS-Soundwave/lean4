@@ -37,12 +37,12 @@ macro (name := hydrateOpaqueType)
   let unsafeGet := mkIdent `unsafeGet
   `(
   namespace $oty
-  unsafe def $unsafeMk : $ty $args* → $oty $args* := unsafeCast
-  @[implemented_by $unsafeMk] opaque $mk : $ty $args* → $oty $args*
+  unsafe def $unsafeMk : $ty $args*  $oty $args* := unsafeCast
+  @[implemented_by $unsafeMk] opaque $mk : $ty $args*  $oty $args*
   instance : Coe ($ty $args*) ($oty $args*) := ⟨$mk⟩
 
-  unsafe def $unsafeGet : $oty $args* → $ty $args* := unsafeCast
-  @[implemented_by $unsafeGet] opaque $get $[{$args}]* : $oty $args* → $ty $args*
+  unsafe def $unsafeGet : $oty $args*  $ty $args* := unsafeCast
+  @[implemented_by $unsafeGet] opaque $get $[{$args}]* : $oty $args*  $ty $args*
   instance : Coe ($oty $args*) ($ty $args*) := ⟨$get⟩
 
   instance [Inhabited ($ty $args*)] : Inhabited ($oty $args*) := ⟨$mk default⟩

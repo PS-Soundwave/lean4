@@ -3,10 +3,10 @@ inductive Moo : Type
 | M2 : Moo
 
 inductive Foo : Type
-| mk₁ : Moo → Foo
+| mk₁ : Moo  Foo
 | mk₂ : Foo
 
-def bar : Foo → String
+def bar : Foo  String
 | Foo.mk₁ M1 => "mk₁ M1"
 | _ => "else"
 

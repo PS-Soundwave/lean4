@@ -9,7 +9,7 @@ example (h₁ : x = y) (h₂ : y = z) : z = x := by
   apply this.trans
   exact ‹y = x›
 
-example (h₁ : p ∨ q) (h₂ : p → x = 0) (h₃ : q → y = 0) : x * y = 0 := by
+example (h₁ : p  q) (h₂ : p  x = 0) (h₃ : q  y = 0) : x * y = 0 := by
   expensive_tactic
   save
   match h₁ with
@@ -20,7 +20,7 @@ example (h₁ : p ∨ q) (h₂ : p → x = 0) (h₃ : q → y = 0) : x * y = 0 :
     simp [*]
   | .inl h => stop done
 
-example (h₁ : p ∨ q) (h₂ : p → x = 0) (h₃ : q → y = 0) : x * y = 0 := by
+example (h₁ : p  q) (h₂ : p  x = 0) (h₃ : q  y = 0) : x * y = 0 := by
   expensive_tactic
   save
   cases h₁ with

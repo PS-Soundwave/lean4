@@ -1,4 +1,4 @@
-partial def foo : Nat → Nat → Nat
+partial def foo : Nat  Nat  Nat
 | 0     a := a
 | (n+1) a := foo n a + a + foo n (a+1)
 

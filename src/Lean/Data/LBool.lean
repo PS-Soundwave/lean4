@@ -16,16 +16,16 @@ inductive LBool where
 
 namespace LBool
 
-def neg : LBool → LBool
+def neg : LBool  LBool
   | true  => false
   | false => true
   | undef => undef
 
-def and : LBool → LBool → LBool
+def and : LBool  LBool  LBool
   | true,  b  => b
   | a,     _  => a
 
-def toString : LBool → String
+def toString : LBool  String
   | true  => "true"
   | false => "false"
   | undef => "undef"
@@ -36,10 +36,10 @@ end LBool
 
 end Lean
 
-def Bool.toLBool : Bool → Lean.LBool
+def Bool.toLBool : Bool  Lean.LBool
   | true  => Lean.LBool.true
   | false => Lean.LBool.false
 
-@[inline] def toLBoolM {m : Type → Type} [Monad m] (x : m Bool) : m Lean.LBool := do
+@[inline] def toLBoolM {m : Type  Type} [Monad m] (x : m Bool) : m Lean.LBool := do
   let b ← x
   pure b.toLBool

@@ -4557,7 +4557,7 @@ static lean_object* _init_l___aux__Init__Data__UInt__Lemmas______macroRules__com
 _start:
 {
 lean_object* x_1; 
-x_1 = lean_mk_string_unchecked("→", 3, 1);
+x_1 = lean_mk_string_unchecked("", 3, 1);
 return x_1;
 }
 }
@@ -5381,7 +5381,7 @@ static lean_object* _init_l___aux__Init__Data__UInt__Lemmas______macroRules__com
 _start:
 {
 lean_object* x_1; 
-x_1 = lean_mk_string_unchecked("term_∨_", 9, 7);
+x_1 = lean_mk_string_unchecked("term__", 9, 7);
 return x_1;
 }
 }
@@ -5399,7 +5399,7 @@ static lean_object* _init_l___aux__Init__Data__UInt__Lemmas______macroRules__com
 _start:
 {
 lean_object* x_1; 
-x_1 = lean_mk_string_unchecked("∨", 3, 1);
+x_1 = lean_mk_string_unchecked("", 3, 1);
 return x_1;
 }
 }

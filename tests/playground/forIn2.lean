@@ -14,7 +14,7 @@ def tst1 : IO Nat :=
 structure Range :=
 (lower upper : Nat)
 
-def Range.forIn {β m} [Monad m] (range : Range) (init : β) (f : Nat → β → m (ForInStep β)) : m β :=
+def Range.forIn {β m} [Monad m] (range : Range) (init : β) (f : Nat  β  m (ForInStep β)) : m β :=
 let base := range.lower + range.upper - 2
 let rec @[specialize] loop
   | 0,   b => pure b

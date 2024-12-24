@@ -1,5 +1,5 @@
 class HasMulComm (α : Type u) [Mul α] : Prop where
-    mulComm : {a b : α} → a * b = b * a
+    mulComm : {a b : α}  a * b = b * a
 
 class A (α : Type u) where
     [Mul : Mul α]

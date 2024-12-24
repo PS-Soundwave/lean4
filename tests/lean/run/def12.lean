@@ -1,4 +1,4 @@
-def diag : Bool → Bool → Bool → Nat
+def diag : Bool  Bool  Bool  Nat
 | b,  true, false => 1
 | false, b,  true => 2
 | true, false, b  => 3
@@ -21,12 +21,12 @@ rfl
 theorem diag4_2 : diag true true true = default :=
 rfl
 
-def f : Nat → Nat → Nat
+def f : Nat  Nat  Nat
 | n, 0 => 0
 | 0, n => 1
 | n, m => default
 
-theorem f_zero_right : (a : Nat) → f a 0 = 0
+theorem f_zero_right : (a : Nat)  f a 0 = 0
 | 0   => rfl
 | a+1 => rfl
 
@@ -36,7 +36,7 @@ rfl
 theorem f_succ_succ (a b : Nat) : f (a+1) (b+1) = default :=
 rfl
 
-def app {α} : List α → List α → List α
+def app {α} : List α  List α  List α
 | [],   l => l
 | h::t, l => h :: (app t l)
 

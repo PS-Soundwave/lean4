@@ -7,7 +7,7 @@ class TypeClass (n : Nat) : Type where
 opaque P2 (n : Nat) [TypeClass n] : Prop
 
 /--
-info: thm for foo: ∀ (p p_1 : Prop), p = p_1 → ∀ {inst : Decidable p} {inst_1 : Decidable p_1}, foo p = foo p_1
+info: thm for foo: ∀ (p p_1 : Prop), p = p_1  ∀ {inst : Decidable p} {inst_1 : Decidable p_1}, foo p = foo p_1
 kinds: #[Lean.Meta.CongrArgKind.eq, Lean.Meta.CongrArgKind.subsingletonInst]
 ---
 info: thm for P1: ∀ (n n_1 : Nat) (e_n : n = n_1) [inst : PropClass n], P1 n = P1 n_1

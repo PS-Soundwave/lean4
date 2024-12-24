@@ -1,4 +1,4 @@
-@[specialize] unsafe partial def umapAux {α β : Type} (f : α → β) : Nat → Array NonScalar → Array NonScalar
+@[specialize] unsafe partial def umapAux {α β : Type} (f : α  β) : Nat  Array NonScalar  Array NonScalar
 | i, a =>
   if h : i < a.size then
      let a                := dbgTraceIfShared "array" a;
@@ -10,10 +10,10 @@
   else
      a
 
-@[inline] unsafe partial def umap {α β : Type} (f : α → β) (as : Array α) : Array β :=
+@[inline] unsafe partial def umap {α β : Type} (f : α  β) (as : Array α) : Array β :=
 unsafeCast (umapAux f 0 (unsafeCast as))
 
-@[implemented_by umap] def map {α β : Type} (f : α → β) (as : Array α) : Array β :=
+@[implemented_by umap] def map {α β : Type} (f : α  β) (as : Array α) : Array β :=
 as.foldl (fun bs a => bs.push (f a)) (Array.mkEmpty as.size)
 
 set_option compiler.extract_closed false

@@ -2,7 +2,7 @@ structure ParamType where
   /-- Name of the type, used when displaying the help. -/
   name    : String
   /-- Function to check whether a value conforms to the type. -/
-  isValid : String → Bool
+  isValid : String  Bool
 
 structure Flag where
   /-- Designates `x` in `-x`. -/

@@ -59,113 +59,113 @@ instance : Coe String IO.Error := ⟨IO.userError⟩
 namespace IO.Error
 
 @[export lean_mk_io_error_already_exists_file]
-def mkAlreadyExistsFile : String → UInt32 → String → IO.Error :=
-  alreadyExists ∘ some
+def mkAlreadyExistsFile : String  UInt32  String  IO.Error :=
+  alreadyExists  some
 
 @[export lean_mk_io_error_eof]
-def mkEofError : Unit → IO.Error := fun _ =>
+def mkEofError : Unit  IO.Error := fun _ =>
   unexpectedEof
 
 @[export lean_mk_io_error_inappropriate_type_file]
-def mkInappropriateTypeFile : String → UInt32 → String → IO.Error :=
-  inappropriateType ∘ some
+def mkInappropriateTypeFile : String  UInt32  String  IO.Error :=
+  inappropriateType  some
 
 @[export lean_mk_io_error_interrupted]
-def mkInterrupted : String → UInt32 → String → IO.Error :=
+def mkInterrupted : String  UInt32  String  IO.Error :=
   interrupted
 
 @[export lean_mk_io_error_invalid_argument_file]
-def mkInvalidArgumentFile : String → UInt32 → String → IO.Error :=
-  invalidArgument ∘ some
+def mkInvalidArgumentFile : String  UInt32  String  IO.Error :=
+  invalidArgument  some
 
 @[export lean_mk_io_error_no_file_or_directory]
-def mkNoFileOrDirectory : String → UInt32 → String → IO.Error :=
+def mkNoFileOrDirectory : String  UInt32  String  IO.Error :=
   noFileOrDirectory
 
 @[export lean_mk_io_error_no_such_thing_file]
-def mkNoSuchThingFile : String → UInt32 → String → IO.Error :=
-  noSuchThing ∘ some
+def mkNoSuchThingFile : String  UInt32  String  IO.Error :=
+  noSuchThing  some
 
 @[export lean_mk_io_error_permission_denied_file]
-def mkPermissionDeniedFile : String → UInt32 → String → IO.Error :=
-  permissionDenied ∘ some
+def mkPermissionDeniedFile : String  UInt32  String  IO.Error :=
+  permissionDenied  some
 
 @[export lean_mk_io_error_resource_exhausted_file]
-def mkResourceExhaustedFile : String → UInt32 → String → IO.Error :=
-  resourceExhausted ∘ some
+def mkResourceExhaustedFile : String  UInt32  String  IO.Error :=
+  resourceExhausted  some
 
 @[export lean_mk_io_error_unsupported_operation]
-def mkUnsupportedOperation : UInt32 → String → IO.Error :=
+def mkUnsupportedOperation : UInt32  String  IO.Error :=
   unsupportedOperation
 
 @[export lean_mk_io_error_resource_exhausted]
-def mkResourceExhausted : UInt32 → String → IO.Error :=
+def mkResourceExhausted : UInt32  String  IO.Error :=
   resourceExhausted none
 
 @[export lean_mk_io_error_already_exists]
-def mkAlreadyExists : UInt32 → String → IO.Error :=
+def mkAlreadyExists : UInt32  String  IO.Error :=
   alreadyExists none
 
 @[export lean_mk_io_error_inappropriate_type]
-def mkInappropriateType : UInt32 → String → IO.Error :=
+def mkInappropriateType : UInt32  String  IO.Error :=
   inappropriateType none
 
 @[export lean_mk_io_error_no_such_thing]
-def mkNoSuchThing : UInt32 → String → IO.Error :=
+def mkNoSuchThing : UInt32  String  IO.Error :=
   noSuchThing none
 
 @[export lean_mk_io_error_resource_vanished]
-def mkResourceVanished : UInt32 → String → IO.Error :=
+def mkResourceVanished : UInt32  String  IO.Error :=
   resourceVanished
 
 @[export lean_mk_io_error_resource_busy]
-def mkResourceBusy : UInt32 → String → IO.Error :=
+def mkResourceBusy : UInt32  String  IO.Error :=
   resourceBusy
 
 @[export lean_mk_io_error_invalid_argument]
-def mkInvalidArgument : UInt32 → String → IO.Error :=
+def mkInvalidArgument : UInt32  String  IO.Error :=
   invalidArgument none
 
 @[export lean_mk_io_error_other_error]
-def mkOtherError : UInt32 → String → IO.Error :=
+def mkOtherError : UInt32  String  IO.Error :=
   otherError
 
 @[export lean_mk_io_error_permission_denied]
-def mkPermissionDenied : UInt32 → String → IO.Error :=
+def mkPermissionDenied : UInt32  String  IO.Error :=
   permissionDenied none
 
 @[export lean_mk_io_error_hardware_fault]
-def mkHardwareFault : UInt32 → String → IO.Error :=
+def mkHardwareFault : UInt32  String  IO.Error :=
   hardwareFault
 
 @[export lean_mk_io_error_unsatisfied_constraints]
-def mkUnsatisfiedConstraints : UInt32 → String → IO.Error :=
+def mkUnsatisfiedConstraints : UInt32  String  IO.Error :=
   unsatisfiedConstraints
 
 @[export lean_mk_io_error_illegal_operation]
-def mkIllegalOperation : UInt32 → String → IO.Error :=
+def mkIllegalOperation : UInt32  String  IO.Error :=
   illegalOperation
 
 @[export lean_mk_io_error_protocol_error]
-def mkProtocolError : UInt32 → String → IO.Error :=
+def mkProtocolError : UInt32  String  IO.Error :=
   protocolError
 
 @[export lean_mk_io_error_time_expired]
-def mkTimeExpired : UInt32 → String → IO.Error :=
+def mkTimeExpired : UInt32  String  IO.Error :=
   timeExpired
 
 private def downCaseFirst (s : String) : String := s.modify 0 Char.toLower
 
-def fopenErrorToString (gist fn : String) (code : UInt32) : Option String → String
+def fopenErrorToString (gist fn : String) (code : UInt32) : Option String  String
   | some details => downCaseFirst gist ++ " (error code: " ++ toString code ++ ", " ++ downCaseFirst details ++ ")\n  file: " ++ fn
   | none => downCaseFirst gist ++ " (error code: " ++ toString code ++ ")\n  file: " ++ fn
 
-def otherErrorToString (gist : String) (code : UInt32) : Option String → String
+def otherErrorToString (gist : String) (code : UInt32) : Option String  String
   | some details => downCaseFirst gist ++ " (error code: " ++ toString code ++ ", " ++ downCaseFirst details ++ ")"
   | none => downCaseFirst gist ++ " (error code: " ++ toString code ++ ")"
 
 @[export lean_io_error_to_string]
-def toString : IO.Error → String
+def toString : IO.Error  String
   | unexpectedEof                            => "end of file"
   | inappropriateType (some fn) code details => fopenErrorToString "inappropriate type" fn code details
   | inappropriateType none code details      => otherErrorToString "inappropriate type" code details

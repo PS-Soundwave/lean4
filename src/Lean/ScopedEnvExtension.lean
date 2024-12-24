@@ -13,8 +13,8 @@ namespace Lean
 namespace ScopedEnvExtension
 
 inductive Entry (α : Type) where
-  | global : α → Entry α
-  | scoped : Name → α → Entry α
+  | global : α  Entry α
+  | scoped : Name  α  Entry α
 
 structure State (σ : Type) where
   state        : σ
@@ -33,10 +33,10 @@ structure StateStack (α : Type) (β : Type) (σ : Type) where
 structure Descr (α : Type) (β : Type) (σ : Type) where
   name           : Name := by exact decl_name%
   mkInitial      : IO σ
-  ofOLeanEntry   : σ → α → ImportM β
-  toOLeanEntry   : β → α
-  addEntry       : σ → β → σ
-  finalizeImport : σ → σ := id
+  ofOLeanEntry   : σ  α  ImportM β
+  toOLeanEntry   : β  α
+  addEntry       : σ  β  σ
+  finalizeImport : σ  σ := id
 
 instance [Inhabited α] : Inhabited (Descr α β σ) where
   default := {
@@ -181,7 +181,7 @@ def ScopedEnvExtension.activateScoped (ext : ScopedEnvExtension α β σ) (env :
       ext.ext.setState env { s with stateStack := top :: stack }
   | _ => env
 
-def ScopedEnvExtension.modifyState (ext : ScopedEnvExtension α β σ) (env : Environment) (f : σ → σ) : Environment :=
+def ScopedEnvExtension.modifyState (ext : ScopedEnvExtension α β σ) (env : Environment) (f : σ  σ) : Environment :=
   let s := ext.ext.getState env
   match s.stateStack with
   | top :: stack => ext.ext.setState env { s with stateStack := { top with state := f top.state } :: stack }
@@ -203,9 +203,9 @@ abbrev SimpleScopedEnvExtension (α : Type) (σ : Type) := ScopedEnvExtension α
 
 structure SimpleScopedEnvExtension.Descr (α : Type) (σ : Type) where
   name           : Name := by exact decl_name%
-  addEntry       : σ → α → σ
+  addEntry       : σ  α  σ
   initial        : σ
-  finalizeImport : σ → σ := id
+  finalizeImport : σ  σ := id
 
 def registerSimpleScopedEnvExtension (descr : SimpleScopedEnvExtension.Descr α σ) : IO (SimpleScopedEnvExtension α σ) := do
   registerScopedEnvExtension {

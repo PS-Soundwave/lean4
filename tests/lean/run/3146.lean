@@ -3,7 +3,7 @@
   Fixes `#3146`
 -/
 
-def Product (m₁ : Type → Type) (m₂ : Type → Type) (α : Type) := m₁ α × m₂ α
+def Product (m₁ : Type  Type) (m₂ : Type  Type) (α : Type) := m₁ α × m₂ α
 
 instance [Monad m₁] [Monad m₂] : Monad (Product m₁ m₂) where
   pure x := (pure x, pure x)

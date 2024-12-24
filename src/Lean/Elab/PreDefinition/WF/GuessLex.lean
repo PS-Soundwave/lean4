@@ -203,7 +203,7 @@ The expression `param` is passed along, and refined when going under a matcher
 or `casesOn` application.
 -/
 partial def withRecApps {α} (recFnName : Name) (fixedPrefixSize : Nat) (param : Expr) (e : Expr)
-    (k : Expr → Array Expr → MetaM α) : MetaM (Array α) := do
+    (k : Expr  Array Expr  MetaM α) : MetaM (Array α) := do
   trace[Elab.definition.wf] "withRecApps (param {param}): {indentExpr e}"
   let (_, as) ← loop param e |>.run #[] |>.run' {}
   return as
@@ -351,7 +351,7 @@ def collectRecCalls (unaryPreDef : PreDefinition) (fixedPrefixSize : Nat)
       unless args.size ≥ fixedPrefixSize + 1 do
         throwError "Insufficient arguments in recursive call"
       let arg := args[fixedPrefixSize]!
-      trace[Elab.definition.wf] "collectRecCalls: {unaryPreDef.declName} ({param}) → {unaryPreDef.declName} ({arg})"
+      trace[Elab.definition.wf] "collectRecCalls: {unaryPreDef.declName} ({param})  {unaryPreDef.declName} ({arg})"
       let some (caller, params) := argsPacker.unpack param
         | throwError "Cannot unpack param, unexpected expression:{indentExpr param}"
       let some (callee, args) := argsPacker.unpack arg
@@ -381,7 +381,7 @@ def complexMeasures (preDefs : Array PreDefinition) (fixedPrefixSize : Nat)
       let varyingParams : Array FVarId := xs[fixedPrefixSize:]
       measures ← rc.ctxt.run do
         withUserNames rc.params[fixedPrefixSize:] userVarNamess[funIdx]! do
-        trace[Elab.definition.wf] "rc: {rc.caller} ({rc.params}) → {rc.callee} ({rc.args})"
+        trace[Elab.definition.wf] "rc: {rc.caller} ({rc.params})  {rc.callee} ({rc.args})"
         let mut measures := measures
         for ldecl in ← getLCtx do
           if let some (e₁, e₂) := isNatCmp ldecl.type then
@@ -416,7 +416,7 @@ instance : ToFormat GuessLexRel where
   format r := toString r
 
 /-- Given a `GuessLexRel`, produce a binary `Expr` that relates two `Nat` values accordingly. -/
-def GuessLexRel.toNatRel : GuessLexRel → Expr
+def GuessLexRel.toNatRel : GuessLexRel  Expr
   | lt => mkAppN (mkConst ``LT.lt [levelZero]) #[mkConst ``Nat, mkConst ``instLTNat]
   | eq => mkAppN (mkConst ``Eq [levelOne]) #[mkConst ``Nat]
   | le => mkAppN (mkConst ``LE.le [levelZero]) #[mkConst ``Nat, mkConst ``instLENat]
@@ -433,7 +433,7 @@ def evalRecCall (decrTactic? : Option DecreasingBy) (callerMeasures calleeMeasur
     let calleeMeasure := calleeMeasures[calleeMeasureIdx]!
     let param := callerMeasure.natFn.beta rcc.params
     let arg := calleeMeasure.natFn.beta rcc.args
-    trace[Elab.definition.wf] "inspectRecCall: {rcc.caller} ({param}) → {rcc.callee} ({arg})"
+    trace[Elab.definition.wf] "inspectRecCall: {rcc.caller} ({param})  {rcc.callee} ({arg})"
     for rel in [GuessLexRel.eq, .lt, .le] do
       let goalExpr := mkAppN rel.toNatRel #[arg, param]
       trace[Elab.definition.wf] "Goal for {rel}: {goalExpr}"
@@ -503,12 +503,12 @@ def RecCallCache.prettyEntry (rcc : RecCallCache) (callerMeasureIdx calleeMeasur
 or numbering the functions -/
 inductive MutualMeasure where
   /-- For every function, the given argument index -/
-  | args : Array Nat → MutualMeasure
+  | args : Array Nat  MutualMeasure
   /-- The given function index is assigned 1, the rest 0 -/
-  | func : Nat → MutualMeasure
+  | func : Nat  MutualMeasure
 
 /-- Evaluate a recursive call at a given `MutualMeasure` -/
-def inspectCall (rc : RecCallCache) : MutualMeasure → MetaM GuessLexRel
+def inspectCall (rc : RecCallCache) : MutualMeasure  MetaM GuessLexRel
   | .args taIdxs => do
     let callerMeasureIdx := taIdxs[rc.rcc.caller]!
     let calleeMeasureIdx := taIdxs[rc.rcc.callee]!
@@ -579,10 +579,10 @@ The matrix is implemented here as an array of monadic query methods only so that
 we can fill is lazily. Morally, this is a pure function
 -/
 partial def solve {m} {α} [Monad m] (measures : Array α)
-  (calls : Array (α → m GuessLexRel)) : m (Option (Array α)) := do
+  (calls : Array (α  m GuessLexRel)) : m (Option (Array α)) := do
   go measures calls #[]
   where
-  go (measures : Array α) (calls : Array (α → m GuessLexRel)) (acc : Array α) := do
+  go (measures : Array α) (calls : Array (α  m GuessLexRel)) (acc : Array α) := do
     if calls.isEmpty then return .some acc
 
     -- Find the first measure that has at least one < and otherwise only = or <=
@@ -613,7 +613,7 @@ Given a matrix (row-major) of strings, arranges them in tabular form.
 First column is left-aligned, others right-aligned.
 Single space as column separator.
 -/
-def formatTable : Array (Array String) → String := fun xss => Id.run do
+def formatTable : Array (Array String)  String := fun xss => Id.run do
   let mut colWidths := xss[0]!.map (fun _ => 0)
   for hi : i in [:xss.size] do
     for hj : j in [:xss[i].size] do

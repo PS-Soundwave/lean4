@@ -70,7 +70,7 @@ theorem go_get (aig : AIG α) (n : Nat) (curr : Nat) (hcurr : curr ≤ n)
     (input : AIG.RefVec aig w) (s : AIG.RefVec aig (w * curr)) :
     ∀ (idx : Nat) (hidx1 : idx < w * n),
         w * curr ≤ idx
-          →
+          
         (go n input curr hcurr s).get idx hidx1
           =
         input.get (idx % w) (aux2 hidx1) := by
@@ -102,7 +102,7 @@ end blastReplicate
 
 @[simp]
 theorem denote_blastReplicate (aig : AIG α) (target : ReplicateTarget aig newWidth)
-    (assign : α → Bool) :
+    (assign : α  Bool) :
     ∀ (idx : Nat) (hidx : idx < newWidth),
         ⟦(blastReplicate aig target).aig, (blastReplicate aig target).vec.get idx hidx, assign⟧
           =

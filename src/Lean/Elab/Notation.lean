@@ -14,7 +14,7 @@ open Lean.Parser.Term hiding macroArg
 open Lean.Parser.Command
 
 /-- Wrap all occurrences of the given `ident` nodes in antiquotations -/
-private partial def antiquote (vars : Array Syntax) : Syntax → Syntax
+private partial def antiquote (vars : Array Syntax) : Syntax  Syntax
   | stx => match stx with
   | `($id:ident) =>
     if vars.any (fun var => var.getId == id.getId) then
@@ -38,7 +38,7 @@ private partial def antiquote (vars : Array Syntax) : Syntax → Syntax
     | _ => attrs
 
 /-- Convert `notation` command lhs item into a `syntax` command item -/
-def expandNotationItemIntoSyntaxItem : TSyntax ``notationItem → MacroM (TSyntax `stx)
+def expandNotationItemIntoSyntaxItem : TSyntax ``notationItem  MacroM (TSyntax `stx)
   | `(notationItem| $_:ident$[:$prec?]?) => `(stx| term $[:$prec?]?)
   | `(notationItem| $s:str)              => `(stx| $s:str)
   | _                                    => Macro.throwUnsupported

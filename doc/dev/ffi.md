@@ -17,7 +17,7 @@ For simple examples of how to call foreign code from Lean and vice versa, see <h
 
 The Lean Application Binary Interface (ABI) describes how the signature of a Lean declaration is encoded as a native calling convention.
 It is based on the standard C ABI and calling convention of the target platform.
-For a Lean declaration marked with either `@[extern "sym"]` or `@[export sym]` for some symbol name `sym`, let `α₁ → ... → αₙ → β` be the normalized declaration's type.
+For a Lean declaration marked with either `@[extern "sym"]` or `@[export sym]` for some symbol name `sym`, let `α₁  ...  αₙ  β` be the normalized declaration's type.
 If `n` is 0, the corresponding C declaration is
 ```c
 extern s sym;
@@ -51,7 +51,7 @@ In the case of `@[extern]` all *irrelevant* types are removed first; see next se
   For example, `{ x : α // p }`, the `Subtype` structure of a value of type `α` and an irrelevant proof, is represented by the representation of `α`.
 * `Nat` is represented by `lean_object *`.
   Its runtime value is either a pointer to an opaque bignum object or, if the lowest bit of the "pointer" is 1 (`lean_is_scalar`), an encoded unboxed natural number (`lean_box`/`lean_unbox`).
-* A universe `Sort u`, type constructor `... → Sort u`, or proposition `p : Prop` is *irrelevant* and is either statically erased (see above) or represented as a `lean_object *` with the runtime value `lean_box(0)`
+* A universe `Sort u`, type constructor `...  Sort u`, or proposition `p : Prop` is *irrelevant* and is either statically erased (see above) or represented as a `lean_object *` with the runtime value `lean_box(0)`
 * Any other type is represented by `lean_object *`.
   Its runtime value is a pointer to an object of a subtype of `lean_object` (see the "Inductive types" section below) or the unboxed value `lean_box(cidx)` for the `cidx`th constructor of an inductive type if this constructor does not have any relevant parameters.
 

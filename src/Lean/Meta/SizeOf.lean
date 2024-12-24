@@ -12,7 +12,7 @@ import Lean.Meta.Instances
 namespace Lean.Meta
 
 /-- Create `SizeOf` local instances for applicable parameters, and execute `k` using them. -/
-private partial def mkLocalInstances (params : Array Expr) (k : Array Expr → MetaM α) : MetaM α :=
+private partial def mkLocalInstances (params : Array Expr) (k : Array Expr  MetaM α) : MetaM α :=
   loop 0 #[]
 where
   loop (i : Nat) (insts : Array Expr) : MetaM α := do
@@ -63,7 +63,7 @@ private def isRecField? (motiveFVars : Array Expr) (minorFVars : Array Expr) (fv
     idx := idx + 1
   return none
 
-private partial def mkSizeOfMotives (motiveFVars : Array Expr) (k : Array Expr → MetaM α) : MetaM α :=
+private partial def mkSizeOfMotives (motiveFVars : Array Expr) (k : Array Expr  MetaM α) : MetaM α :=
   loop 0 #[]
 where
   loop (i : Nat) (motives : Array Expr) : MetaM α := do
@@ -91,14 +91,14 @@ private def ignoreField (x : Expr) : MetaM Bool := do
   let type ← inferType x
   ignoreFieldType type
 
-/-- See `ignoreField`. We have support for functions of the form `Unit → ...` -/
+/-- See `ignoreField`. We have support for functions of the form `Unit  ...` -/
 private partial def mkSizeOfRecFieldFormIH (ih : Expr) : MetaM Expr := do
   if (← whnf (← inferType ih)).isForall then
      mkSizeOfRecFieldFormIH (mkApp ih (mkConst ``Unit.unit))
   else
      return ih
 
-private partial def mkSizeOfMinors (motiveFVars : Array Expr) (minorFVars : Array Expr) (minorFVars' : Array Expr) (k : Array Expr → MetaM α) : MetaM α :=
+private partial def mkSizeOfMinors (motiveFVars : Array Expr) (minorFVars : Array Expr) (minorFVars' : Array Expr) (k : Array Expr  MetaM α) : MetaM α :=
   assert! minorFVars.size == minorFVars'.size
   loop 0 #[]
 where
@@ -336,7 +336,7 @@ mutual
     inductive Expr where
       | app (f : String) (args : List Expr)
     ```
-    We generate the auxiliary function `Expr._sizeOf_1 : List Expr → Nat`.
+    We generate the auxiliary function `Expr._sizeOf_1 : List Expr  Nat`.
     To generate the `sizeOf` spec lemma
     ```
     sizeOf (Expr.app f args) = 1 + sizeOf f + sizeOf args

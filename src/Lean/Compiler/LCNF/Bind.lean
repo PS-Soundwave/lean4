@@ -9,8 +9,8 @@ import Lean.Compiler.LCNF.InferType
 namespace Lean.Compiler.LCNF
 
 /-- Helper class for lifting `CompilerM.codeBind` -/
-class MonadCodeBind (m : Type → Type) where
-  codeBind : (c : Code) → (f : FVarId → m Code) → m Code
+class MonadCodeBind (m : Type  Type) where
+  codeBind : (c : Code)  (f : FVarId  m Code)  m Code
 
 /--
 Return code that is equivalent to `c >>= f`. That is, executes `c`, and then `f x`, where
@@ -21,10 +21,10 @@ an invalid block would be generated. It would be invalid because `f` would not
 be applied to `jp_i`. Note that, we could have decided to create a copy of `jp_i` where we apply `f` to it,
 by we decided to not do it to avoid code duplication.
 -/
-abbrev Code.bind [MonadCodeBind m] (c : Code) (f : FVarId → m Code) : m Code :=
+abbrev Code.bind [MonadCodeBind m] (c : Code) (f : FVarId  m Code) : m Code :=
   MonadCodeBind.codeBind c f
 
-partial def CompilerM.codeBind (c : Code) (f : FVarId → CompilerM Code) : CompilerM Code := do
+partial def CompilerM.codeBind (c : Code) (f : FVarId  CompilerM Code) : CompilerM Code := do
   go c |>.run {}
 where
   go (c : Code) : ReaderT FVarIdSet CompilerM Code := do
@@ -74,7 +74,7 @@ instance [STWorld ω m] [MonadCodeBind m] : MonadCodeBind (StateRefT' ω σ m) w
 
 /--
 Create new parameters for the given arrow type.
-Example: if `type` is `Nat → Bool → Int`, the result is
+Example: if `type` is `Nat  Bool  Int`, the result is
 an array containing two new parameters with types `Nat` and `Bool`.
 -/
 partial def mkNewParams (type : Expr) : CompilerM (Array Param) :=

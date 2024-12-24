@@ -43,7 +43,7 @@ structure SubexprInfo where
 /-- Pretty-printed syntax (usually but not necessarily an `Expr`) with embedded `Info`s. -/
 abbrev CodeWithInfos := TaggedText SubexprInfo
 
-def CodeWithInfos.mergePosMap [Monad m] (merger : SubexprInfo → α → m SubexprInfo) (pm : Lean.SubExpr.PosMap α) (tt : CodeWithInfos) : m CodeWithInfos :=
+def CodeWithInfos.mergePosMap [Monad m] (merger : SubexprInfo  α  m SubexprInfo) (pm : Lean.SubExpr.PosMap α) (tt : CodeWithInfos) : m CodeWithInfos :=
   if pm.isEmpty then return tt else
   tt.mapM (fun (info : SubexprInfo) =>
     match pm.find? info.subexprPos with

@@ -17,7 +17,7 @@ namespace Ordering
 deriving instance DecidableEq for Ordering
 
 /-- Swaps less and greater ordering results -/
-def swap : Ordering → Ordering
+def swap : Ordering  Ordering
   | .lt => .gt
   | .eq => .eq
   | .gt => .lt
@@ -40,49 +40,49 @@ the same name by age (in descending order). (If all fields are sorted ascending 
 order as they are listed in the structure, you can also use `deriving Ord` on the structure
 definition for the same effect.)
 -/
-@[macro_inline] def «then» : Ordering → Ordering → Ordering
+@[macro_inline] def «then» : Ordering  Ordering  Ordering
   | .eq, f => f
   | o, _ => o
 
 /--
 Check whether the ordering is 'equal'.
 -/
-def isEq : Ordering → Bool
+def isEq : Ordering  Bool
   | eq => true
   | _ => false
 
 /--
 Check whether the ordering is 'not equal'.
 -/
-def isNe : Ordering → Bool
+def isNe : Ordering  Bool
   | eq => false
   | _ => true
 
 /--
 Check whether the ordering is 'less than or equal to'.
 -/
-def isLE : Ordering → Bool
+def isLE : Ordering  Bool
   | gt => false
   | _ => true
 
 /--
 Check whether the ordering is 'less than'.
 -/
-def isLT : Ordering → Bool
+def isLT : Ordering  Bool
   | lt => true
   | _ => false
 
 /--
 Check whether the ordering is 'greater than'.
 -/
-def isGT : Ordering → Bool
+def isGT : Ordering  Bool
   | gt => true
   | _ => false
 
 /--
 Check whether the ordering is 'greater than or equal'.
 -/
-def isGE : Ordering → Bool
+def isGE : Ordering  Bool
   | lt => false
   | _ => true
 
@@ -111,12 +111,12 @@ Compare `a` and `b` lexicographically by `cmp₁` and `cmp₂`. `a` and `b` are
 first compared by `cmp₁`. If this returns 'equal', `a` and `b` are compared
 by `cmp₂` to break the tie.
 -/
-@[inline] def compareLex (cmp₁ cmp₂ : α → β → Ordering) (a : α) (b : β) : Ordering :=
+@[inline] def compareLex (cmp₁ cmp₂ : α  β  Ordering) (a : α) (b : β) : Ordering :=
   (cmp₁ a b).then (cmp₂ a b)
 
 /--
 `Ord α` provides a computable total order on `α`, in terms of the
-`compare : α → α → Ordering` function.
+`compare : α  α  Ordering` function.
 
 Typically instances will be transitive, reflexive, and antisymmetric,
 but this is not enforced by the typeclass.
@@ -126,7 +126,7 @@ will attempt to create an `Ord` instance.
 -/
 class Ord (α : Type u) where
   /-- Compare two elements in `α` using the comparator contained in an `[Ord α]` instance. -/
-  compare : α → α → Ordering
+  compare : α  α  Ordering
 
 export Ord (compare)
 
@@ -134,7 +134,7 @@ set_option linter.unusedVariables false in  -- allow specifying `ord` explicitly
 /--
 Compare `x` and `y` by comparing `f x` and `f y`.
 -/
-@[inline] def compareOn [ord : Ord β] (f : α → β) (x y : α) : Ordering :=
+@[inline] def compareOn [ord : Ord β] (f : α  β) (x y : α) : Ordering :=
   compare (f x) (f y)
 
 instance : Ord Nat where
@@ -231,7 +231,7 @@ protected def opposite (ord : Ord α) : Ord α where
 /--
 `ord.on f` compares `x` and `y` by comparing `f x` and `f y` according to `ord`.
 -/
-protected def on (_ : Ord β) (f : α → β) : Ord α where
+protected def on (_ : Ord β) (f : α  β) : Ord α where
   compare := compareOn f
 
 /--

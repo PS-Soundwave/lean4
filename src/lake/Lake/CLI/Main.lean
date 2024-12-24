@@ -137,7 +137,7 @@ def takeOptArg (opt arg : String) : CliM String := do
   | none => throw <| CliError.missingOptArg opt arg
   | some arg => pure arg
 
-@[inline] def takeOptArg' (opt arg : String) (f : String → Option α)  : CliM α := do
+@[inline] def takeOptArg' (opt arg : String) (f : String  Option α)  : CliM α := do
   if let some a :=  f (← takeOptArg opt arg) then return a
   throw <| CliError.invalidOptArg opt arg
 
@@ -165,7 +165,7 @@ def setConfigOpt (kvPair : String) : CliM PUnit :=
   modifyThe LakeOptions fun opts =>
     {opts with configOpts := opts.configOpts.insert key val}
 
-def lakeShortOption : (opt : Char) → CliM PUnit
+def lakeShortOption : (opt : Char)  CliM PUnit
 | 'q' => modifyThe LakeOptions ({· with verbosity := .quiet})
 | 'v' => modifyThe LakeOptions ({· with verbosity := .verbose})
 | 'd' => do let rootDir ← takeOptArg "-d" "path"; modifyThe LakeOptions ({· with rootDir})
@@ -177,7 +177,7 @@ def lakeShortOption : (opt : Char) → CliM PUnit
 | 'H' => modifyThe LakeOptions ({· with trustHash := false})
 | opt => throw <| CliError.unknownShortOption opt
 
-def lakeLongOption : (opt : String) → CliM PUnit
+def lakeLongOption : (opt : String)  CliM PUnit
 | "--quiet"       => modifyThe LakeOptions ({· with verbosity := .quiet})
 | "--verbose"     => modifyThe LakeOptions ({· with verbosity := .verbose})
 | "--update"      => modifyThe LakeOptions ({· with updateDeps := true})
@@ -319,7 +319,7 @@ protected def help : CliM PUnit := do
 
 end script
 
-def scriptCli : (cmd : String) → CliM PUnit
+def scriptCli : (cmd : String)  CliM PUnit
 | "list"  => script.list
 | "run"   => script.run
 | "doc"   => script.doc
@@ -592,7 +592,7 @@ protected def help : CliM PUnit := do
 
 end lake
 
-def lakeCli : (cmd : String) → CliM PUnit
+def lakeCli : (cmd : String)  CliM PUnit
 | "new"                 => lake.new
 | "init"                => lake.init
 | "build"               => lake.build

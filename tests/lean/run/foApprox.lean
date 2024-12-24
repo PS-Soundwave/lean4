@@ -1,7 +1,7 @@
-def f : Prop → Prop := id
+def f : Prop  Prop := id
 
-class Foo (foo : Prop → Prop) where
-  l : x → foo x
+class Foo (foo : Prop  Prop) where
+  l : x  foo x
 
 instance : Foo f where
   l := by simp_all [f]

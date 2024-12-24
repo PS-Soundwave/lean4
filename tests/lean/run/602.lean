@@ -1,5 +1,5 @@
-class Semiring (α : Type) where add : α → α → α
-class Ring (α : Type) where add : α → α → α
+class Semiring (α : Type) where add : α  α  α
+class Ring (α : Type) where add : α  α  α
 
 class AddCommMonoid (α : Type) where
 class AddCommGroup (α : Type) where
@@ -7,7 +7,7 @@ class AddCommGroup (α : Type) where
 class Module (α β : Type) [Semiring α] [AddCommMonoid β] where
 
 class NormedField (α : Type) where
-  add : α → α → α
+  add : α  α  α
   add_comm  : ∀ (x y : α), @Add.add _ ⟨add⟩ x y = @Add.add _ ⟨add⟩ y x
 
 class SemiNormedGroup (α : Type) where

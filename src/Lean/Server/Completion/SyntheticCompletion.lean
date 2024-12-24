@@ -12,8 +12,8 @@ open Elab
 
 private def findBest?
     (infoTree : InfoTree)
-    (gt : α → α → Bool)
-    (f : ContextInfo → Info → PersistentArray InfoTree → Option α)
+    (gt : α  α  Bool)
+    (f : ContextInfo  Info  PersistentArray InfoTree  Option α)
     : Option α :=
   infoTree.visitM (m := Id) (postNode := choose) |>.join
 where
@@ -194,7 +194,7 @@ where
       || stx.getKind == ``Parser.Tactic.tacticSeq1Indented && isEmpty stx
       || stx.getKind == ``Parser.Tactic.tacticSeqBracketed && isEmpty stx[1]
 
-  isEmpty : Syntax → Bool
+  isEmpty : Syntax  Bool
     | .missing       => true
     | .ident ..      => false
     | .atom ..       => false
@@ -243,7 +243,7 @@ private def findExpectedTypeAt (infoTree : InfoTree) (hoverPos : String.Pos) : O
   (ctx, i.expectedType?.get!)
 
 private partial def foldWithLeadingToken [Inhabited α]
-    (f    : α → Option Syntax → Syntax → α)
+    (f    : α  Option Syntax  Syntax  α)
     (init : α)
     (stx  : Syntax)
     : α :=
@@ -266,7 +266,7 @@ where
       return (lastToken?, acc)
 
 private def findWithLeadingToken?
-    (p : Option Syntax → Syntax → Bool)
+    (p : Option Syntax  Syntax  Bool)
     (stx : Syntax)
     : Option Syntax :=
   foldWithLeadingToken (stx := stx) (init := none) fun foundStx? leadingToken? stx =>

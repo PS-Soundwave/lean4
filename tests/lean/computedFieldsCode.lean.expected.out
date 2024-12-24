@@ -2,14 +2,14 @@
 [result]
 def Exp.casesOn._override._rarg (x_1 : obj) (x_2 : obj) (x_3 : obj) (x_4 : @& obj) (x_5 : @& obj) (x_6 : @& obj) (x_7 : @& obj) (x_8 : @& obj) : obj :=
   case x_1 : obj of
-  Exp.var._impl →
+  Exp.var._impl 
     dec x_3;
     let x_9 : u32 := sproj[0, 8] x_1;
     dec x_1;
     let x_10 : obj := box x_9;
     let x_11 : obj := app x_2 x_10;
     ret x_11
-  Exp.app._impl →
+  Exp.app._impl 
     dec x_2;
     let x_12 : obj := proj[0] x_1;
     inc x_12;
@@ -18,27 +18,27 @@ def Exp.casesOn._override._rarg (x_1 : obj) (x_2 : obj) (x_3 : obj) (x_4 : @& ob
     dec x_1;
     let x_14 : obj := app x_3 x_12 x_13;
     ret x_14
-  Exp.a1._impl →
+  Exp.a1._impl 
     dec x_3;
     dec x_2;
     inc x_4;
     ret x_4
-  Exp.a2._impl →
+  Exp.a2._impl 
     dec x_3;
     dec x_2;
     inc x_5;
     ret x_5
-  Exp.a3._impl →
+  Exp.a3._impl 
     dec x_3;
     dec x_2;
     inc x_6;
     ret x_6
-  Exp.a4._impl →
+  Exp.a4._impl 
     dec x_3;
     dec x_2;
     inc x_7;
     ret x_7
-  Exp.a5._impl →
+  Exp.a5._impl 
     dec x_3;
     dec x_2;
     inc x_8;
@@ -87,13 +87,13 @@ def Exp.a5._override : obj :=
   ret x_1
 def Exp.hash._override (x_1 : @& obj) : u64 :=
   case x_1 : obj of
-  Exp.var._impl →
+  Exp.var._impl 
     let x_2 : u64 := sproj[0, 0] x_1;
     ret x_2
-  Exp.app._impl →
+  Exp.app._impl 
     let x_3 : u64 := sproj[2, 0] x_1;
     ret x_3
-  default →
+  default 
     let x_4 : u64 := 42;
     ret x_4
 def Exp.var._override._boxed (x_1 : obj) : obj :=
@@ -129,10 +129,10 @@ def f : u64 :=
 [result]
 def g (x_1 : @& obj) : u8 :=
   case x_1 : obj of
-  Exp.a3._impl →
+  Exp.a3._impl 
     let x_2 : u8 := 1;
     ret x_2
-  default →
+  default 
     let x_3 : u8 := 0;
     ret x_3
 def g._boxed (x_1 : obj) : obj :=
@@ -144,11 +144,11 @@ def g._boxed (x_1 : obj) : obj :=
 [result]
 def hash' (x_1 : @& obj) : obj :=
   case x_1 : obj of
-  Exp.var._impl →
+  Exp.var._impl 
     let x_2 : u32 := sproj[0, 8] x_1;
     let x_3 : obj := UInt32.toNat x_2;
     ret x_3
-  Exp.app._impl →
+  Exp.app._impl 
     let x_4 : obj := proj[0] x_1;
     let x_5 : obj := proj[1] x_1;
     let x_6 : obj := hash' x_4;
@@ -157,7 +157,7 @@ def hash' (x_1 : @& obj) : obj :=
     dec x_7;
     dec x_6;
     ret x_8
-  default →
+  default 
     let x_9 : obj := 42;
     ret x_9
 def hash'._boxed (x_1 : obj) : obj :=
@@ -168,11 +168,11 @@ def hash'._boxed (x_1 : obj) : obj :=
 [result]
 def getAppFn (x_1 : @& obj) : obj :=
   case x_1 : obj of
-  Exp.app._impl →
+  Exp.app._impl 
     let x_2 : obj := proj[0] x_1;
     let x_3 : obj := getAppFn x_2;
     ret x_3
-  default →
+  default 
     inc x_1;
     ret x_1
 def getAppFn._boxed (x_1 : obj) : obj :=

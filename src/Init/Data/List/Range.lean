@@ -45,7 +45,7 @@ theorem range'_ne_nil (s : Nat) {n : Nat} : range' s n ≠ [] ↔ n ≠ 0 := by
   | zero => simp
   | succ n => simp [range'_succ]
 
-@[simp] theorem range'_inj : range' s n = range' s' n' ↔ n = n' ∧ (n = 0 ∨ s = s') := by
+@[simp] theorem range'_inj : range' s n = range' s' n' ↔ n = n' ∧ (n = 0  s = s') := by
   constructor
   · intro h
     have h' := congrArg List.length h
@@ -61,13 +61,13 @@ theorem range'_ne_nil (s : Nat) {n : Nat} : range' s n ≠ [] ↔ n ≠ 0 := by
 theorem mem_range' : ∀{n}, m ∈ range' s n step ↔ ∃ i < n, m = s + step * i
   | 0 => by simp [range', Nat.not_lt_zero]
   | n + 1 => by
-    have h (i) : i ≤ n ↔ i = 0 ∨ ∃ j, i = succ j ∧ j < n := by
+    have h (i) : i ≤ n ↔ i = 0  ∃ j, i = succ j ∧ j < n := by
       cases i <;> simp [Nat.succ_le, Nat.succ_inj']
     simp [range', mem_range', Nat.lt_succ, h]; simp only [← exists_and_right, and_assoc]
     rw [exists_comm]; simp [Nat.mul_succ, Nat.add_assoc, Nat.add_comm]
 
 theorem getElem?_range' (s step) :
-    ∀ {m n : Nat}, m < n → (range' s n step)[m]? = some (s + step * m)
+    ∀ {m n : Nat}, m < n  (range' s n step)[m]? = some (s + step * m)
   | 0, n + 1, _ => by simp [range'_succ]
   | m + 1, n + 1, h => by
     simp only [range'_succ, getElem?_cons_succ]
@@ -239,7 +239,7 @@ theorem tail_enumFrom (l : List α) (n : Nat) : (enumFrom n l).tail = enumFrom (
 
 theorem map_fst_add_enumFrom_eq_enumFrom (l : List α) (n k : Nat) :
     map (Prod.map (· + n) id) (enumFrom k l) = enumFrom (n + k) l :=
-  ext_getElem? fun i ↦ by simp [(· ∘ ·), Nat.add_comm, Nat.add_left_comm]; rfl
+  ext_getElem? fun i ↦ by simp [(·  ·), Nat.add_comm, Nat.add_left_comm]; rfl
 
 theorem map_fst_add_enum_eq_enumFrom (l : List α) (n : Nat) :
     map (Prod.map (· + n) id) (enum l) = enumFrom n l :=

@@ -31,7 +31,7 @@ info: 11
 #eval bar2
 
 def bla.aux := 1
-def bla : Nat → Nat
+def bla : Nat  Nat
  | n => n + bla.aux -- should not be interpreted as `(bla).aux`
 
 /--

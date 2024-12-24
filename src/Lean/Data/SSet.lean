@@ -24,14 +24,14 @@ abbrev insert (s : SSet α) (a : α) : SSet α :=
 abbrev contains (s : SSet α) (a : α) : Bool :=
   SMap.contains s a
 
-abbrev forM [Monad m] (s : SSet α) (f : α → m PUnit) : m PUnit :=
+abbrev forM [Monad m] (s : SSet α) (f : α  m PUnit) : m PUnit :=
   SMap.forM s fun a _ => f a
 
 /-- Move from stage 1 into stage 2. -/
 abbrev switch (s : SSet α) : SSet α :=
   SMap.switch s
 
-abbrev fold (f : σ → α → σ) (init : σ) (s : SSet α) : σ :=
+abbrev fold (f : σ  α  σ) (init : σ) (s : SSet α) : σ :=
   SMap.fold (fun d a _ => f d a) init s
 
 def toList (m : SSet α) : List α :=

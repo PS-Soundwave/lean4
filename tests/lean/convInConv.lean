@@ -1,4 +1,4 @@
-def twice : Nat → Nat := λ n => 2*n
+def twice : Nat  Nat := λ n => 2*n
 
 def foo1 : (λ x : Nat => id (twice (id x))) = twice := by
   conv in (id _) =>

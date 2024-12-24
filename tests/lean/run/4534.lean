@@ -1,9 +1,9 @@
 universe u
 
 class MyClass (α : Type u) extends LE α where
-  sup : α → α → α
+  sup : α  α  α
   le_refl : ∀ a : α, a ≤ a
-  sup_of_le_left : ∀ a b : α, b ≤ a → sup a b = a
+  sup_of_le_left : ∀ a b : α, b ≤ a  sup a b = a
 
 instance : MyClass Prop where
   le_refl _ := id

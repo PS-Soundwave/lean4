@@ -37,7 +37,7 @@ private partial def countDigits (n : Nat) : Nat :=
   loop n 1
 
 -- convert mantissa * 10^-exponent to 0.mantissa * 10^exponent
-protected def normalize : JsonNumber → Int × Nat × Int
+protected def normalize : JsonNumber  Int × Nat × Int
   | ⟨m, e⟩ => Id.run do
     if m = 0 then (0, 0, 0)
     else
@@ -92,7 +92,7 @@ instance : Ord JsonNumber where
     else if x > y then Ordering.gt
     else Ordering.eq
 
-protected def toString : JsonNumber → String
+protected def toString : JsonNumber  String
   | ⟨m, 0⟩ => m.repr
   | ⟨m, e⟩ =>
     let sign := if m ≥ 0 then "" else "-"
@@ -117,14 +117,14 @@ protected def toString : JsonNumber → String
       s!"{sign}{left}.{right}{exp}"
 
 -- shift a JsonNumber by a specified amount of places to the left
-protected def shiftl : JsonNumber → Nat → JsonNumber
+protected def shiftl : JsonNumber  Nat  JsonNumber
   -- if s ≤ e, then 10 ^ (s - e) = 1, and hence the mantissa remains unchanged.
   -- otherwise, the expression pads the mantissa with zeroes
   -- to accommodate for the remaining places to shift.
   | ⟨m, e⟩, s => ⟨m * (10 ^ (s - e) : Nat), e - s⟩
 
 -- shift a JsonNumber by a specified amount of places to the right
-protected def shiftr : JsonNumber → Nat → JsonNumber
+protected def shiftr : JsonNumber  Nat  JsonNumber
   | ⟨m, e⟩, s => ⟨m, e + s⟩
 
 instance : ToString JsonNumber := ⟨JsonNumber.toString⟩
@@ -144,7 +144,7 @@ instance : Neg JsonNumber where
 
 instance : Inhabited JsonNumber := ⟨0⟩
 
-def toFloat : JsonNumber → Float
+def toFloat : JsonNumber  Float
   | ⟨m, e⟩ => (if m >= 0 then 1.0 else -1.0) * OfScientific.ofScientific m.natAbs true e
 
 /-- Creates a json number from a positive float, panicking if it isn't.
@@ -186,7 +186,7 @@ inductive Json where
 
 namespace Json
 
-private partial def beq' : Json → Json → Bool
+private partial def beq' : Json  Json  Bool
   | null,   null   => true
   | bool a, bool b => a == b
   | num a,  num b  => a == b
@@ -207,7 +207,7 @@ private partial def beq' : Json → Json → Bool
 instance : BEq Json where
   beq := beq'
 
-private partial def hash' : Json → UInt64
+private partial def hash' : Json  UInt64
   | null   => 11
   | bool b => mixHash 13 <| hash b
   | num n  => mixHash 17 <| hash n
@@ -238,42 +238,42 @@ def isNull : Json -> Bool
   | null => true
   | _    => false
 
-def getObj? : Json → Except String (RBNode String (fun _ => Json))
+def getObj? : Json  Except String (RBNode String (fun _ => Json))
   | obj kvs => return kvs
   | _       => throw "object expected"
 
-def getArr? : Json → Except String (Array Json)
+def getArr? : Json  Except String (Array Json)
   | arr a => return a
   | _     => throw "array expected"
 
-def getStr? : Json → Except String String
+def getStr? : Json  Except String String
   | str s => return s
   | _     => throw "String expected"
 
-def getNat? : Json → Except String Nat
+def getNat? : Json  Except String Nat
   | (n : Nat) => return n
   | _         => throw "Natural number expected"
 
-def getInt? : Json → Except String Int
+def getInt? : Json  Except String Int
   | (i : Int) => return i
   | _         => throw "Integer expected"
 
-def getBool? : Json → Except String Bool
+def getBool? : Json  Except String Bool
   | (b : Bool) => return b
   | _          => throw "Bool expected"
 
-def getNum? : Json → Except String JsonNumber
+def getNum? : Json  Except String JsonNumber
   | num n => return n
   | _     => throw "number expected"
 
-def getObjVal? : Json → String → Except String Json
+def getObjVal? : Json  String  Except String Json
   | obj kvs, k =>
     match kvs.find compare k with
     | some v => return v
     | none => throw s!"property not found: {k}"
   | _      , _ => throw "object expected"
 
-def getArrVal? : Json → Nat → Except String Json
+def getArrVal? : Json  Nat  Except String Json
   | arr a, i =>
     match a.get? i with
     | some v => return v
@@ -283,7 +283,7 @@ def getArrVal? : Json → Nat → Except String Json
 def getObjValD (j : Json) (k : String) : Json :=
   (j.getObjVal? k).toOption.getD null
 
-def setObjVal! : Json → String → Json → Json
+def setObjVal! : Json  String  Json  Json
   | obj kvs, k, v => obj <| kvs.insert compare k v
   | _      , _, _ => panic! "Json.setObjVal!: not an object: {j}"
 
@@ -291,7 +291,7 @@ open Lean.RBNode in
 /-- Assuming both inputs `o₁, o₂` are json objects, will compute `{...o₁, ...o₂}`.
 If `o₁` is not a json object, `o₂` will be returned.
 -/
-def mergeObj : Json → Json → Json
+def mergeObj : Json  Json  Json
   | obj kvs₁, obj kvs₂ =>
     obj <| fold (insert compare) kvs₁ kvs₂
   | _, j₂ => j₂

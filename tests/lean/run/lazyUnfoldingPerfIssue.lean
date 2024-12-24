@@ -1,14 +1,14 @@
 namespace Ex1
 
 inductive T: Type :=
-  | mk: String → Option T → T
+  | mk: String  Option T  T
 
-def runT: T → Nat
+def runT: T  Nat
   | .mk _ none => 0
   | .mk _ (some t) => runT t
 
 class Run (α: Type) where
-  run: α → Nat
+  run: α  Nat
 instance: Run T := ⟨runT⟩
 
 def x := T.mk "PrettyLong" (some <| .mk "PrettyLong" none)
@@ -27,29 +27,29 @@ namespace Ex2
 inductive Wrapper where
   | wrap: Wrapper
 
-def Wrapper.extend: Wrapper → (Unit × Unit)
+def Wrapper.extend: Wrapper  (Unit × Unit)
   | .wrap => ((), ())
 
 mutual
 inductive Op where
-  | mk: String → Block → Op
+  | mk: String  Block  Op
 
 inductive Assign where
-  | mk : String → Op → Assign
+  | mk : String  Op  Assign
 
 inductive Block where
-  | mk: Assign → Block
+  | mk: Assign  Block
   | empty: Block
 end
 
 mutual
-def runOp: Op → Wrapper
+def runOp: Op  Wrapper
   | .mk _ r => let r' := runBlock r; .wrap
 
-def runAssign: Assign → Wrapper
+def runAssign: Assign  Wrapper
   | .mk _ op => runOp op
 
-def runBlock: Block → Wrapper
+def runBlock: Block  Wrapper
   | .mk a => runAssign a
   | .empty => .wrap
 end
@@ -73,20 +73,20 @@ notation "Assign" => Program ProgramType.Assign
 notation "Block"  => Program ProgramType.Block
 end
 
-inductive Program: (type: ProgramType) → Type :=
-  | mkOp: String → Block → Op
-  | mkAssign: String → Op → Assign
-  | mkBlock: Assign → Block
+inductive Program: (type: ProgramType)  Type :=
+  | mkOp: String  Block  Op
+  | mkAssign: String  Op  Assign
+  | mkBlock: Assign  Block
   | emptyBlock: Block
 
-def runBase: Program type → Nat
+def runBase: Program type  Nat
   | .mkOp _ v => let _ := runBase v; 0
   | .mkAssign _ t => runBase t
   | .mkBlock u => runBase u
   | .emptyBlock => 0
 
 class Run (α: Type) where
-  run: α → Nat
+  run: α  Nat
 instance: Run Assign := ⟨runBase⟩
 
 def x: Assign := .mkAssign "PrettyLong" <| .mkOp "PrettyLong" .emptyBlock

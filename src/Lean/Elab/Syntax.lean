@@ -165,7 +165,7 @@ where
     let aliasName := id.getId.eraseMacroScopes
     let info ← Parser.getParserAliasInfo aliasName
     addAliasInfo id info
-    let args' ← args.mapM (withNestedParser ∘ process)
+    let args' ← args.mapM (withNestedParser  process)
     -- wrap lone string literals in `<|>` in dedicated node (#1275)
     let args' ← if aliasName == `orelse then  -- TODO: generalize if necessary
       args.zip args' |>.mapM fun (arg, arg') => do
@@ -415,7 +415,7 @@ def addMacroScopeIfLocal [MonadQuotation m] [Monad m] (name : Name) (attrKind : 
 def checkRuleKind (given expected : SyntaxNodeKind) : Bool :=
   given == expected || given == expected ++ `antiquot
 
-def inferMacroRulesAltKind : TSyntax ``matchAlt → CommandElabM SyntaxNodeKind
+def inferMacroRulesAltKind : TSyntax ``matchAlt  CommandElabM SyntaxNodeKind
   | `(matchAltExpr| | $pat:term => $_) => do
     if !pat.raw.isQuot then
       throwUnsupportedSyntax
@@ -426,7 +426,7 @@ def inferMacroRulesAltKind : TSyntax ``matchAlt → CommandElabM SyntaxNodeKind
 /--
 Infer syntax kind `k` from first pattern, put alternatives of same kind into new `macro/elab_rules (kind := k)` via `mkCmd (some k)`,
 leave remaining alternatives (via `mkCmd none`) to be recursively expanded. -/
-def expandNoKindMacroRulesAux (alts : Array (TSyntax ``matchAlt)) (cmdName : String) (mkCmd : Option Name → Array (TSyntax ``matchAlt) → CommandElabM Command) : CommandElabM Command := do
+def expandNoKindMacroRulesAux (alts : Array (TSyntax ``matchAlt)) (cmdName : String) (mkCmd : Option Name  Array (TSyntax ``matchAlt)  CommandElabM Command) : CommandElabM Command := do
   let mut k ← inferMacroRulesAltKind alts[0]!
   if k.isStr && k.getString! == "antiquot" then
     k := k.getPrefix

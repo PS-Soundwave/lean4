@@ -72,8 +72,8 @@ structure TraceState where
 
 builtin_initialize inheritedTraceOptions : IO.Ref (Std.HashSet Name) ← IO.mkRef ∅
 
-class MonadTrace (m : Type → Type) where
-  modifyTraceState : (TraceState → TraceState) → m Unit
+class MonadTrace (m : Type  Type) where
+  modifyTraceState : (TraceState  TraceState)  m Unit
   getTraceState    : m TraceState
 
 export MonadTrace (getTraceState modifyTraceState)
@@ -82,7 +82,7 @@ instance (m n) [MonadLift m n] [MonadTrace m] : MonadTrace n where
   modifyTraceState := fun f => liftM (modifyTraceState f : m _)
   getTraceState    := liftM (getTraceState : m _)
 
-variable {α : Type} {m : Type → Type} [Monad m] [MonadTrace m] [MonadOptions m] [MonadLiftT IO m]
+variable {α : Type} {m : Type  Type} [Monad m] [MonadTrace m] [MonadOptions m] [MonadLiftT IO m]
 
 def printTraces : m Unit := do
   for {msg, ..} in (← getTraceState).traces do
@@ -113,7 +113,7 @@ def isTracingEnabledFor (cls : Name) : m Bool := do
   let s ← getTraceState
   pure s.traces
 
-@[inline] def modifyTraces (f : PersistentArray TraceElem → PersistentArray TraceElem) : m Unit :=
+@[inline] def modifyTraces (f : PersistentArray TraceElem  PersistentArray TraceElem) : m Unit :=
   modifyTraceState fun s => { s with traces := f s.traces }
 
 @[inline] def setTraceState (s : TraceState) : m Unit :=
@@ -137,7 +137,7 @@ def addTrace (cls : Name) (msg : MessageData) : m Unit := do
   let msg ← addMessageContext msg
   modifyTraces (·.push { ref, msg := .trace { collapsed := false, cls } msg #[] })
 
-@[inline] def trace (cls : Name) (msg : Unit → MessageData) : m Unit := do
+@[inline] def trace (cls : Name) (msg : Unit  MessageData) : m Unit := do
   if (← isTracingEnabledFor cls) then
     addTrace cls (msg ())
 
@@ -222,7 +222,7 @@ In most circumstances, we want to let runtime exceptions during term elaboration
 command elaborator (see `Core.tryCatch`). However, in a few cases like building the trace tree, we
 really need to handle (and then re-throw) every exception lest we end up with a broken tree.
 -/
-class MonadAlwaysExcept (ε : outParam (Type u)) (m : Type u → Type v) where
+class MonadAlwaysExcept (ε : outParam (Type u)) (m : Type u  Type v) where
   except : MonadExceptOf ε m
 
 -- instances sufficient for inferring `MonadAlwaysExcept` for the elaboration monads
@@ -244,7 +244,7 @@ instance [always : MonadAlwaysExcept ε m] [STWorld ω m] [BEq α] [Hashable α]
   except := let _ := always.except; inferInstance
 
 def withTraceNode [always : MonadAlwaysExcept ε m] [MonadLiftT BaseIO m] (cls : Name)
-    (msg : Except ε α → m MessageData) (k : m α) (collapsed := true) (tag := "") : m α := do
+    (msg : Except ε α  m MessageData) (k : m α) (collapsed := true) (tag := "") : m α := do
   let _ := always.except
   let opts ← getOptions
   let clsEnabled ← isTracingEnabledFor cls
@@ -304,23 +304,23 @@ def bombEmoji := "💥️"
 def checkEmoji := "✅️"
 def crossEmoji := "❌️"
 
-def exceptBoolEmoji : Except ε Bool → String
+def exceptBoolEmoji : Except ε Bool  String
   | .error _ => bombEmoji
   | .ok true => checkEmoji
   | .ok false => crossEmoji
 
-def exceptOptionEmoji : Except ε (Option α) → String
+def exceptOptionEmoji : Except ε (Option α)  String
   | .error _ => bombEmoji
   | .ok (some _) => checkEmoji
   | .ok none => crossEmoji
 
 /-- Visualize an `Except` using a checkmark or a cross. -/
-def exceptEmoji : Except ε α → String
+def exceptEmoji : Except ε α  String
   | .error _ => crossEmoji
   | .ok _ => checkEmoji
 
 class ExceptToEmoji (ε α : Type) where
-  toEmoji : Except ε α → String
+  toEmoji : Except ε α  String
 
 instance : ExceptToEmoji ε Bool where
   toEmoji := exceptBoolEmoji

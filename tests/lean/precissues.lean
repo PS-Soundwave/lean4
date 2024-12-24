@@ -4,7 +4,7 @@
 
 #check 0
 
-def f (x : Nat) (g : Nat → Nat) := g x
+def f (x : Nat) (g : Nat  Nat) := g x
 
 #check f 1 fun x => x -- should fail
 
@@ -34,7 +34,7 @@ macro_rules | `(¬ $p) => `(Not $p)
 #check ¬(p = q)
 #check ¬ p = q
 #check id ¬p
-#check Nat → ∀ (a : Nat), a = a
+#check Nat  ∀ (a : Nat), a = a
 
 macro "foo!" x:term : term => `($x + 1)
 

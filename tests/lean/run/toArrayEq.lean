@@ -1,6 +1,6 @@
 inductive Foo
-  | foo : Nat → Foo
-  | foos : Array Foo → Foo
+  | foo : Nat  Foo
+  | foos : Array Foo  Foo
   deriving BEq
 
 example : Foo.foo 0 ≠ Foo.foo 1 := by simp

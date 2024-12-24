@@ -53,7 +53,7 @@ opaque evalWidgetInstance (e : Expr) : MetaM WidgetInstance
 /-! ## Storage of widget modules -/
 
 class ToModule (α : Type u) where
-  toModule : α → Module
+  toModule : α  Module
 
 instance : ToModule Module := ⟨id⟩
 
@@ -247,7 +247,7 @@ def elabWidgetInstanceSpecAux (mod : Ident) (props : Term) : TermElabM Expr := d
       javascriptHash := (ToModule.toModule $mod).javascriptHash
       props := Server.RpcEncodable.rpcEncode $props })
 
-def elabWidgetInstanceSpec : TSyntax ``widgetInstanceSpec → TermElabM Expr
+def elabWidgetInstanceSpec : TSyntax ``widgetInstanceSpec  TermElabM Expr
   | `(widgetInstanceSpec| $mod:ident) => do
     elabWidgetInstanceSpecAux mod (← ``(Json.mkObj []))
   | `(widgetInstanceSpec| $mod:ident with $props:term) => do

@@ -10,15 +10,15 @@ import Lean.Compiler.LCNF.PhaseExt
 
 namespace Lean.Compiler.LCNF
 
-abbrev Probe α β := Array α → CompilerM (Array β)
+abbrev Probe α β := Array α  CompilerM (Array β)
 
 namespace Probe
 
 @[inline]
-def map (f : α → CompilerM β) : Probe α β := fun data => data.mapM f
+def map (f : α  CompilerM β) : Probe α β := fun data => data.mapM f
 
 @[inline]
-def filter (f : α → CompilerM Bool) : Probe α α := fun data => data.filterM f
+def filter (f : α  CompilerM Bool) : Probe α α := fun data => data.filterM f
 
 @[inline]
 def sorted [Inhabited α] [LT α] [DecidableLT α] : Probe α α := fun data => return data.qsort (· < ·)
@@ -74,76 +74,76 @@ where
   start (decls : Array Decl) : StateRefT (Array FunDecl) CompilerM Unit :=
     decls.forM (·.value.forCodeM go)
 
-partial def filterByLet (f : LetDecl → CompilerM Bool) : Probe Decl Decl :=
+partial def filterByLet (f : LetDecl  CompilerM Bool) : Probe Decl Decl :=
   filter (·.value.isCodeAndM go)
 where
-  go : Code → CompilerM Bool
+  go : Code  CompilerM Bool
   | .let decl k => do if (← f decl) then return true else go k
   | .fun decl k | .jp decl k => go decl.value <||> go k
   | .cases cs => cs.alts.anyM (go ·.getCode)
   | .jmp .. | .return .. | .unreach .. => return false
 
-partial def filterByFun (f : FunDecl → CompilerM Bool) : Probe Decl Decl :=
+partial def filterByFun (f : FunDecl  CompilerM Bool) : Probe Decl Decl :=
   filter (·.value.isCodeAndM go)
 where
-  go : Code → CompilerM Bool
+  go : Code  CompilerM Bool
   | .let _ k | .jp _ k  => go k
   | .fun decl k => do if (← f decl) then return true else go decl.value <||> go k
   | .cases cs => cs.alts.anyM (go ·.getCode)
   | .jmp .. | .return .. | .unreach .. => return false
 
-partial def filterByJp (f : FunDecl → CompilerM Bool) : Probe Decl Decl :=
+partial def filterByJp (f : FunDecl  CompilerM Bool) : Probe Decl Decl :=
   filter (·.value.isCodeAndM go)
 where
-  go : Code → CompilerM Bool
+  go : Code  CompilerM Bool
   | .let _ k => go k
   | .fun decl k => go decl.value <||> go k
   | .jp decl k => do if (← f decl) then return true else go decl.value <||> go k
   | .cases cs => cs.alts.anyM (go ·.getCode)
   | .jmp .. | .return .. | .unreach .. => return false
 
-partial def filterByFunDecl (f : FunDecl → CompilerM Bool) : Probe Decl Decl :=
+partial def filterByFunDecl (f : FunDecl  CompilerM Bool) : Probe Decl Decl :=
   filter (·.value.isCodeAndM go)
 where
-  go : Code → CompilerM Bool
+  go : Code  CompilerM Bool
   | .let _ k => go k
   | .fun decl k | .jp decl k => do if (← f decl) then return true else go decl.value <||> go k
   | .cases cs => cs.alts.anyM (go ·.getCode)
   | .jmp .. | .return .. | .unreach .. => return false
 
-partial def filterByCases (f : Cases → CompilerM Bool) : Probe Decl Decl :=
+partial def filterByCases (f : Cases  CompilerM Bool) : Probe Decl Decl :=
   filter (·.value.isCodeAndM go)
 where
-  go : Code → CompilerM Bool
+  go : Code  CompilerM Bool
   | .let _ k => go k
   | .fun decl k | .jp decl k => go decl.value <||> go k
   | .cases cs => do if (← f cs) then return true else cs.alts.anyM (go ·.getCode)
   | .jmp .. | .return .. | .unreach .. => return false
 
-partial def filterByJmp (f : FVarId → Array Arg → CompilerM Bool) : Probe Decl Decl :=
+partial def filterByJmp (f : FVarId  Array Arg  CompilerM Bool) : Probe Decl Decl :=
   filter (·.value.isCodeAndM go)
 where
-  go : Code → CompilerM Bool
+  go : Code  CompilerM Bool
   | .let _ k => go k
   | .fun decl k | .jp decl k => go decl.value <||> go k
   | .cases cs => cs.alts.anyM (go ·.getCode)
   | .jmp fn var => f fn var
   | .return .. | .unreach .. => return false
 
-partial def filterByReturn (f : FVarId → CompilerM Bool) : Probe Decl Decl :=
+partial def filterByReturn (f : FVarId  CompilerM Bool) : Probe Decl Decl :=
   filter (·.value.isCodeAndM go)
 where
-  go : Code → CompilerM Bool
+  go : Code  CompilerM Bool
   | .let _ k => go k
   | .fun decl k | .jp decl k => go decl.value <||> go k
   | .cases cs => cs.alts.anyM (go ·.getCode)
   | .jmp .. | .unreach .. => return false
   | .return var  => f var
 
-partial def filterByUnreach (f : Expr → CompilerM Bool) : Probe Decl Decl :=
+partial def filterByUnreach (f : Expr  CompilerM Bool) : Probe Decl Decl :=
   filter (·.value.isCodeAndM go)
 where
-  go : Code → CompilerM Bool
+  go : Code  CompilerM Bool
   | .let _ k => go k
   | .fun decl k | .jp decl k => go decl.value <||> go k
   | .cases cs => cs.alts.anyM (go ·.getCode)

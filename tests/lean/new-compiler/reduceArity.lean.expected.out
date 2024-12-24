@@ -1,5 +1,5 @@
 [Compiler.result] size: 5
-    def g._redArg (n : Nat) (a : ◾) (f : ◾ → ◾) : ◾ :=
+    def g._redArg (n : Nat) (a : ◾) (f : ◾  ◾) : ◾ :=
       cases n : ◾
       | Nat.zero =>
         return a
@@ -8,7 +8,7 @@
         let _x.3 := f _x.2;
         return _x.3
 [Compiler.result] size: 1
-    def g (α : ◾) (n : Nat) (a : ◾) (b : ◾) (f : ◾ → ◾) : ◾ :=
+    def g (α : ◾) (n : Nat) (a : ◾) (b : ◾) (f : ◾  ◾) : ◾ :=
       let _x.1 := g._redArg n a f;
       return _x.1
 [Compiler.result] size: 4

@@ -26,7 +26,7 @@ def _root_.Lean.MVarId.ensureProp (mvarId : MVarId) : MetaM Unit := do
   unless (← isProp type) do
     throwTacticEx `grind mvarId "goal is not a proposition"
 
-def _root_.Lean.MVarId.transformTarget (mvarId : MVarId) (f : Expr → MetaM Expr) : MetaM MVarId := mvarId.withContext do
+def _root_.Lean.MVarId.transformTarget (mvarId : MVarId) (f : Expr  MetaM Expr) : MetaM MVarId := mvarId.withContext do
   mvarId.checkNotAssigned `grind
   let tag ← mvarId.getTag
   let type ← mvarId.getType

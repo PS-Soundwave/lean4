@@ -5,18 +5,18 @@ inductive LazyList (α : Type u)
 
 namespace LazyList
 
-def force : LazyList α → Option (α × LazyList α)
+def force : LazyList α  Option (α × LazyList α)
 | delayed as => force as.get
 | nil        => none
 | cons a as  => some (a,as)
 
-def length : LazyList α → Nat
+def length : LazyList α  Nat
 | nil        => 0
 | cons _ as  => length as + 1
 | delayed as => length as.get
 
 theorem F_force_some_len_minus_one {L L' : LazyList α}
-  : L.force = some (a, L') → L'.length = L.length - 1
+  : L.force = some (a, L')  L'.length = L.length - 1
   := sorry
 
 end LazyList

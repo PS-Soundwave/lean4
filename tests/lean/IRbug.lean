@@ -2,10 +2,10 @@
 
 namespace Repro
 
-def FooM (α : Type) : Type := Unit → α
+def FooM (α : Type) : Type := Unit  α
 def FooM.run {α : Type} (ψ : FooM α) (x : Unit) : α := ψ x
 
-def bind {α β : Type} : ∀ (ψ₁ : FooM α) (ψ₂ : α → FooM β), FooM β
+def bind {α β : Type} : ∀ (ψ₁ : FooM α) (ψ₂ : α  FooM β), FooM β
 | ψ₁, ψ₂ => λ _ => ψ₂ (ψ₁.run ()) ()
 
 instance : Pure FooM := ⟨λ x => λ _ => x⟩

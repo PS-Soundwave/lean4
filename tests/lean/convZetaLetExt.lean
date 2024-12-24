@@ -11,12 +11,12 @@ example (k y : Nat) (h : let x := y; f (0+x) = k) : f y = k := by
   trace_state
   exact h
 
-example (g : Nat → Nat) (y : Nat) (h : let x := y; g (0+x) = 0+x) : g y = 0 + y := by
+example (g : Nat  Nat) (y : Nat) (h : let x := y; g (0+x) = 0+x) : g y = 0 + y := by
   conv at h => enter [x, 1, 1]; rw [Nat.zero_add]
   trace_state
   exact h
 
-example (g : Nat → Nat) (y : Nat) (h : let x := y; let z := y + 1; g (0+x) = 0+z) : g y = y + 1 := by
+example (g : Nat  Nat) (y : Nat) (h : let x := y; let z := y + 1; g (0+x) = 0+z) : g y = y + 1 := by
   conv at h => enter [x, z, 1, 1]; rw [Nat.zero_add]
   trace_state
   conv at h => enter [x, z, 2]; rw [Nat.zero_add]

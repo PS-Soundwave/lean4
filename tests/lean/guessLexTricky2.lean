@@ -9,7 +9,7 @@ Works out of the box!
 set_option showInferredTerminationBy true
 
 mutual
-def pedal : Nat → Nat → Nat → Nat
+def pedal : Nat  Nat  Nat  Nat
   | 0, _m, c => c
   | _n, 0, c => c
   | n+1, m+1, c =>
@@ -17,7 +17,7 @@ def pedal : Nat → Nat → Nat → Nat
     then coast n m (c + m + 1)
     else pedal n (m + 1) (c + m + 1)
 
-def coast : Nat → Nat → Nat → Nat
+def coast : Nat  Nat  Nat  Nat
   | n, m , c =>
   if n < m
   then coast n (m - 1) (c + n)

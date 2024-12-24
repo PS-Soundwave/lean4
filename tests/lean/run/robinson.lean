@@ -2,9 +2,9 @@ inductive Term
   | Var (i : Nat)
   | Cons (l : Term) (r : Term)
 
-def Subst := Nat → Nat
+def Subst := Nat  Nat
 
-def depth : Term → Nat
+def depth : Term  Nat
   | .Var _ => 0
   | .Cons l r => 1 + depth l + depth r
 
@@ -35,7 +35,7 @@ def robinson (u v : Term) : { f : Option Subst // P f u v } := match u, v with
     | ⟨ none, h ⟩ => ⟨ none, sorry ⟩
     | ⟨ some f, h ⟩ => match robinson (act f r₁) (act f r₂) with
       | ⟨ none, h ⟩ => ⟨ none, sorry ⟩
-      | ⟨ some g, h ⟩ => ⟨ some (g ∘ f), sorry ⟩
+      | ⟨ some g, h ⟩ => ⟨ some (g  f), sorry ⟩
   | .Var i, .Cons l r => ⟨ none, sorry ⟩
   | .Cons l r, .Var i => ⟨ none, sorry ⟩
   | .Var i, .Var j =>

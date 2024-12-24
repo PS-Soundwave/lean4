@@ -1,4 +1,4 @@
-inductive Mem' (a : α) : List α → Prop where
+inductive Mem' (a : α) : List α  Prop where
   | intro (as bs) : Mem' a (as ++ (a :: bs))
 
 example {x : α} (h : Mem' x l) : True :=

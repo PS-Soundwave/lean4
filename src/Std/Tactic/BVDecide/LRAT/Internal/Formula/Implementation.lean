@@ -113,11 +113,11 @@ def delete {n : Nat} (f : DefaultFormula n) (ids : Array Nat) : DefaultFormula n
 instance {n : Nat} : Entails (PosFin n) (DefaultFormula n) where
   eval := fun p f => (toList f).all (fun s => p ⊨ s)
 
-theorem formulaEntails_def {n : Nat} (p : (PosFin n) → Bool) (f : DefaultFormula n) :
+theorem formulaEntails_def {n : Nat} (p : (PosFin n)  Bool) (f : DefaultFormula n) :
   Entails.eval p f = (toList f).all (fun c => p ⊨ c) := Eq.refl (p ⊨ f)
 
-def insertUnit : Array (Literal (PosFin n)) × Array Assignment × Bool →
-    Literal (PosFin n) → Array (Literal (PosFin n)) × Array Assignment × Bool :=
+def insertUnit : Array (Literal (PosFin n)) × Array Assignment × Bool 
+    Literal (PosFin n)  Array (Literal (PosFin n)) × Array Assignment × Bool :=
   fun (units, assignments, foundContradiction) (l, b) =>
     let curAssignment := assignments[l.1]!
     if hasAssignment b curAssignment then (units, assignments, foundContradiction)
@@ -142,7 +142,7 @@ def insertRatUnits {n : Nat} (f : DefaultFormula n) (ls : CNF.Clause (PosFin n))
   let (ratUnits, assignments, foundContradiction) := ls.foldl insertUnit (ratUnits, assignments, false)
   (⟨clauses, rupUnits, ratUnits, assignments⟩, foundContradiction)
 
-def clearUnit : Array Assignment → Literal (PosFin n) → Array Assignment
+def clearUnit : Array Assignment  Literal (PosFin n)  Array Assignment
   | assignments, (l, b) => assignments.modify l (removeAssignment b)
 
 def clearRupUnits {n : Nat} (f : DefaultFormula n) : DefaultFormula n :=
@@ -166,7 +166,7 @@ def restoreAssignments {n : Nat} (assignments : Array Assignment) (derivedLits :
 The fold function used for performRupCheck.
 -/
 def confirmRupHint {n : Nat} (clauses : Array (Option (DefaultClause n))) :
-    Array Assignment × CNF.Clause (PosFin n) × Bool × Bool → Nat →
+    Array Assignment × CNF.Clause (PosFin n) × Bool × Bool  Nat 
     Array Assignment × CNF.Clause (PosFin n) × Bool × Bool :=
   fun (assignments, derivedLits, derivedEmpty, encounteredError) id =>
     if (encounteredError || derivedEmpty) then

@@ -12,14 +12,14 @@ open System
 namespace Lean.Compiler.FFI
 
 @[extern "lean_get_leanc_extra_flags"]
-private opaque getLeancExtraFlags : Unit → String
+private opaque getLeancExtraFlags : Unit  String
 
 /-- Return C compiler flags for including Lean's headers. -/
 def getCFlags (leanSysroot : FilePath) : Array String :=
   #["-I", (leanSysroot / "include").toString] ++ (getLeancExtraFlags ()).trim.splitOn
 
 @[extern "lean_get_leanc_internal_flags"]
-private opaque getLeancInternalFlags : Unit → String
+private opaque getLeancInternalFlags : Unit  String
 
 /-- Return C compiler flags needed to use the C compiler bundled with the Lean toolchain. -/
 def getInternalCFlags (leanSysroot : FilePath) : Array String :=
@@ -33,7 +33,7 @@ def getLinkerFlags (leanSysroot : FilePath) (linkStatic := true) : Array String 
   #["-L", (leanSysroot / "lib" / "lean").toString] ++ (getBuiltinLinkerFlags linkStatic).trim.splitOn
 
 @[extern "lean_get_internal_linker_flags"]
-private opaque getBuiltinInternalLinkerFlags : Unit → String
+private opaque getBuiltinInternalLinkerFlags : Unit  String
 
 /-- Return linker flags needed to use the linker bundled with the Lean toolchain. -/
 def getInternalLinkerFlags (leanSysroot : FilePath) : Array String :=

@@ -50,24 +50,24 @@ N-ary alternations are treated as a group, so `p1 | p2 | p3` is not the same as 
 and similarly for tuples. However, note that an n-ary alternation or tuple can match an n-ary
 conjunction or disjunction, because if the number of patterns exceeds the number of constructors in
 the type being destructed, the extra patterns will match on the last element, meaning that
-`p1 | p2 | p3` will act like `p1 | (p2 | p3)` when matching `a1 ∨ a2 ∨ a3`. If matching against a
+`p1 | p2 | p3` will act like `p1 | (p2 | p3)` when matching `a1  a2  a3`. If matching against a
 type with 3 constructors,  `p1 | (p2 | p3)` will act like `p1 | (p2 | p3) | _` instead.
 -/
 inductive RCasesPatt : Type
   /-- A parenthesized expression, used for hovers -/
-  | paren (ref : Syntax) : RCasesPatt → RCasesPatt
+  | paren (ref : Syntax) : RCasesPatt  RCasesPatt
   /-- A named pattern like `foo` -/
-  | one (ref : Syntax) : Name → RCasesPatt
+  | one (ref : Syntax) : Name  RCasesPatt
   /-- A hyphen `-`, which clears the active hypothesis and any dependents. -/
   | clear (ref : Syntax) : RCasesPatt
   /-- An explicit pattern `@pat`. -/
-  | explicit (ref : Syntax) : RCasesPatt → RCasesPatt
+  | explicit (ref : Syntax) : RCasesPatt  RCasesPatt
   /-- A type ascription like `pat : ty` (parentheses are optional) -/
-  | typed (ref : Syntax) : RCasesPatt → Term → RCasesPatt
+  | typed (ref : Syntax) : RCasesPatt  Term  RCasesPatt
   /-- A tuple constructor like `⟨p1, p2, p3⟩` -/
-  | tuple (ref : Syntax) : ListΠ RCasesPatt → RCasesPatt
+  | tuple (ref : Syntax) : ListΠ RCasesPatt  RCasesPatt
   /-- An alternation / variant pattern `p1 | p2 | p3` -/
-  | alts (ref : Syntax) : ListΣ RCasesPatt → RCasesPatt
+  | alts (ref : Syntax) : ListΣ RCasesPatt  RCasesPatt
   deriving Repr
 
 namespace RCasesPatt
@@ -75,7 +75,7 @@ namespace RCasesPatt
 instance : Inhabited RCasesPatt := ⟨RCasesPatt.one Syntax.missing `_⟩
 
 /-- Get the name from a pattern, if provided -/
-partial def name? : RCasesPatt → Option Name
+partial def name? : RCasesPatt  Option Name
   | one _ `_    => none
   | one _ `rfl  => none
   | one _ n     => n
@@ -85,7 +85,7 @@ partial def name? : RCasesPatt → Option Name
   | _           => none
 
 /-- Get the syntax node from which this pattern was parsed. Used for error messages -/
-def ref : RCasesPatt → Syntax
+def ref : RCasesPatt  Syntax
   | paren ref _
   | one ref _
   | clear ref
@@ -97,7 +97,7 @@ def ref : RCasesPatt → Syntax
 /--
 Interpret an rcases pattern as a tuple, where `p` becomes `⟨p⟩` if `p` is not already a tuple.
 -/
-def asTuple : RCasesPatt → Bool × ListΠ RCasesPatt
+def asTuple : RCasesPatt  Bool × ListΠ RCasesPatt
   | paren _ p    => p.asTuple
   | explicit _ p => (true, p.asTuple.2)
   | tuple _ ps   => (false, ps)
@@ -107,18 +107,18 @@ def asTuple : RCasesPatt → Bool × ListΠ RCasesPatt
 Interpret an rcases pattern as an alternation, where non-alternations are treated as one
 alternative.
 -/
-def asAlts : RCasesPatt → ListΣ RCasesPatt
+def asAlts : RCasesPatt  ListΣ RCasesPatt
   | paren _ p => p.asAlts
   | alts _ ps => ps
   | p         => [p]
 
 /-- Convert a list of patterns to a tuple pattern, but mapping `[p]` to `p` instead of `⟨p⟩`. -/
-def typed? (ref : Syntax) : RCasesPatt → Option Term → RCasesPatt
+def typed? (ref : Syntax) : RCasesPatt  Option Term  RCasesPatt
   | p, none => p
   | p, some ty => typed ref p ty
 
 /-- Convert a list of patterns to a tuple pattern, but mapping `[p]` to `p` instead of `⟨p⟩`. -/
-def tuple' : ListΠ RCasesPatt → RCasesPatt
+def tuple' : ListΠ RCasesPatt  RCasesPatt
   | [p] => p
   | ps  => tuple (ps.head?.map (·.ref) |>.getD .missing) ps
 
@@ -126,7 +126,7 @@ def tuple' : ListΠ RCasesPatt → RCasesPatt
 Convert a list of patterns to an alternation pattern, but mapping `[p]` to `p` instead of
 a unary alternation `|p`.
 -/
-def alts' (ref : Syntax) : ListΣ RCasesPatt → RCasesPatt
+def alts' (ref : Syntax) : ListΣ RCasesPatt  RCasesPatt
   | [p] => p
   | ps  => alts ref ps
 
@@ -139,7 +139,7 @@ becomes `⟨a, b, c, d⟩` instead of `⟨a, b, ⟨c, d⟩⟩`.
 We must be careful to turn `[a, ⟨⟩]` into `⟨a, ⟨⟩⟩` instead of `⟨a⟩` (which will not perform the
 nested match).
 -/
-def tuple₁Core : ListΠ RCasesPatt → ListΠ RCasesPatt
+def tuple₁Core : ListΠ RCasesPatt  ListΠ RCasesPatt
   | []         => []
   | [tuple ref []] => [tuple ref []]
   | [tuple _ ps] => ps
@@ -150,7 +150,7 @@ This function is used for producing rcases patterns based on a case tree. This i
 `tuple₁Core` but it produces a pattern instead of a tuple pattern list, converting `[n]` to `n`
 instead of `⟨n⟩` and `[]` to `_`, and otherwise just converting `[a, b, c]` to `⟨a, b, c⟩`.
 -/
-def tuple₁ : ListΠ RCasesPatt → RCasesPatt
+def tuple₁ : ListΠ RCasesPatt  RCasesPatt
   | []      => default
   | [one ref n] => one ref n
   | ps      => tuple ps.head!.ref $ tuple₁Core ps
@@ -162,7 +162,7 @@ produce a list of alternatives with the same effect. This function calls `tuple�
 individual alternatives, and handles merging `[a, b, c | d]` to `a | b | c | d` instead of
 `a | b | (c | d)`.
 -/
-def alts₁Core : ListΣ (ListΠ RCasesPatt) → ListΣ RCasesPatt
+def alts₁Core : ListΣ (ListΠ RCasesPatt)  ListΣ RCasesPatt
   | []          => []
   | [[alts _ ps]] => ps
   | p :: ps     => tuple₁ p :: alts₁Core ps
@@ -174,7 +174,7 @@ specially translate the empty alternation to `⟨⟩`, and translate `|(a | b)` 
 don't have any syntax for unary alternation). Otherwise we can use the regular merging of
 alternations at the last argument so that `a | b | (c | d)` becomes `a | b | c | d`.
 -/
-def alts₁ (ref : Syntax) : ListΣ (ListΠ RCasesPatt) → RCasesPatt
+def alts₁ (ref : Syntax) : ListΣ (ListΠ RCasesPatt)  RCasesPatt
   | [[]]        => tuple .missing []
   | [[alts ref ps]] => tuple ref ps
   | ps          => alts' ref $ alts₁Core ps
@@ -185,7 +185,7 @@ partial instance : ToMessageData RCasesPatt := ⟨fmt 0⟩ where
   parenAbove (tgt p : Nat) (m : MessageData) : MessageData :=
     if tgt < p then m.paren else m
   /-- format an `RCasesPatt` with the given precedence: 0 = lo, 1 = med, 2 = hi -/
-  fmt : Nat → RCasesPatt → MessageData
+  fmt : Nat  RCasesPatt  MessageData
   | p, paren _ pat => fmt p pat
   | _, one _ n => n
   | _, clear _ => "-"
@@ -227,7 +227,7 @@ and the list of `(constructor name, patterns)` for each constructor, where `patt
 (conjunctive) list of patterns to apply to each constructor argument.
 -/
 def processConstructors (ref : Syntax) (params : Nat) (altVarNames : Array AltVarNames := #[]) :
-    ListΣ Name → ListΣ RCasesPatt → MetaM (Array AltVarNames × ListΣ (Name × ListΠ RCasesPatt))
+    ListΣ Name  ListΣ RCasesPatt  MetaM (Array AltVarNames × ListΣ (Name × ListΠ RCasesPatt))
   | [], _ => pure (altVarNames, [])
   | c :: cs, ps => do
     let info := (← getFunInfo (← mkConstWithLevelParams c)).paramInfo
@@ -288,9 +288,9 @@ This will match a pattern `pat` against a local hypothesis `e`.
   match, with updated values for `g` , `fs`, `clears`, and `a`.
 -/
 partial def rcasesCore (g : MVarId) (fs : FVarSubst) (clears : Array FVarId) (e : Expr) (a : α)
-    (pat : RCasesPatt) (cont : MVarId → FVarSubst → Array FVarId → α → TermElabM α) :
+    (pat : RCasesPatt) (cont : MVarId  FVarSubst  Array FVarId  α  TermElabM α) :
     TermElabM α := do
-  let asFVar : Expr → MetaM _
+  let asFVar : Expr  MetaM _
     | .fvar e => pure e
     | e => throwError "rcases tactic failed: {e} is not a fvar"
   withRef pat.ref <| g.withContext do match pat with
@@ -354,7 +354,7 @@ partial def rcasesCore (g : MVarId) (fs : FVarSubst) (clears : Array FVarId) (e 
       let rec
       /-- Runs `rcasesContinue` on the first pattern in `r` with a matching `ctorName`.
       The unprocessed patterns (subsequent to the matching pattern) are returned. -/
-      align : ListΠ (Name × ListΠ RCasesPatt) → TermElabM (ListΠ (Name × ListΠ RCasesPatt) × α)
+      align : ListΠ (Name × ListΠ RCasesPatt)  TermElabM (ListΠ (Name × ListΠ RCasesPatt) × α)
       | [] => pure ([], a)
       | (tgt, ps) :: as => do
         if tgt == ctorName then
@@ -372,7 +372,7 @@ earlier arguments. For example `⟨a | b, ⟨c, d⟩⟩` performs the `⟨c, d�
 `a` branch and once on `b`.
 -/
 partial def rcasesContinue (g : MVarId) (fs : FVarSubst) (clears : Array FVarId) (a : α)
-  (pats : ListΠ (RCasesPatt × Expr)) (cont : MVarId → FVarSubst → Array FVarId → α → TermElabM α) :
+  (pats : ListΠ (RCasesPatt × Expr)) (cont : MVarId  FVarSubst  Array FVarId  α  TermElabM α) :
   TermElabM α :=
   match pats with
   | []  => cont g fs clears a
@@ -503,7 +503,7 @@ This introduces the pattern `pat`. It has the same arguments as `rcasesCore`, pl
 -/
 partial def rintroCore (g : MVarId) (fs : FVarSubst) (clears : Array FVarId) (a : α)
     (ref : Syntax) (pat : TSyntax `rintroPat) (ty? : Option Term)
-    (cont : MVarId → FVarSubst → Array FVarId → α → TermElabM α) : TermElabM α := do
+    (cont : MVarId  FVarSubst  Array FVarId  α  TermElabM α) : TermElabM α := do
   match pat with
   | `(rintroPat| $pat:rcasesPat) =>
     let pat := (← RCasesPatt.parse pat).typed? ref ty?
@@ -520,7 +520,7 @@ This introduces the list of patterns `pats`. It has the same arguments as `rcase
 -/
 partial def rintroContinue (g : MVarId) (fs : FVarSubst) (clears : Array FVarId)
     (ref : Syntax) (pats : TSyntaxArray `rintroPat) (ty? : Option Term) (a : α)
-    (cont : MVarId → FVarSubst → Array FVarId → α → TermElabM α) : TermElabM α := do
+    (cont : MVarId  FVarSubst  Array FVarId  α  TermElabM α) : TermElabM α := do
   g.withContext (loop 0 g fs clears a)
 where
   /-- Runs `rintroContinue` on `pats[i:]` -/

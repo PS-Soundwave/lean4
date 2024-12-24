@@ -63,7 +63,7 @@ abbrev ExternLib.dynlibBuildKey (self : ExternLib) : BuildKey :=
 /-! ### Build Info to Key -/
 
 /-- The key that identifies the build in the Lake build store. -/
-@[reducible] def BuildInfo.key : (self : BuildInfo) → BuildKey
+@[reducible] def BuildInfo.key : (self : BuildInfo)  BuildKey
 | moduleFacet m f => m.facetBuildKey f
 | packageFacet p f => p.facetBuildKey f
 | libraryFacet l f => l.facetBuildKey f

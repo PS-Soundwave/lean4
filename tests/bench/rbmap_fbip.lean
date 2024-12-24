@@ -12,23 +12,23 @@ inductive Color
 
 inductive Tree where
   | leaf
-  | node : Color → Tree → Nat → Bool → Tree → Tree
+  | node : Color  Tree  Nat  Bool  Tree  Tree
 
-def fold (f : Nat → Bool → σ → σ) : Tree → σ → σ
+def fold (f : Nat  Bool  σ  σ) : Tree  σ  σ
   | .leaf,           b => b
   | .node _ l k v r, b => fold f r (f k v (fold f l b))
 
 inductive Tree.Zipper where
-  | nodeR : Color → Tree → Nat → Bool → Tree.Zipper → Tree.Zipper
-  | nodeL : Color → Tree.Zipper → Nat → Bool → Tree → Tree.Zipper
+  | nodeR : Color  Tree  Nat  Bool  Tree.Zipper  Tree.Zipper
+  | nodeL : Color  Tree.Zipper  Nat  Bool  Tree  Tree.Zipper
   | done
 
-def rebuild (t : Tree) : Tree.Zipper → Tree
+def rebuild (t : Tree) : Tree.Zipper  Tree
   | .nodeR c l k v z => rebuild (.node c l k v t) z
   | .nodeL c z k v r => rebuild (.node c t k v r) z
   | .done            => t
 
-def balance (l : Tree) (k : Nat) (v : Bool) (r : Tree) : Tree.Zipper → Tree
+def balance (l : Tree) (k : Nat) (v : Bool) (r : Tree) : Tree.Zipper  Tree
   | .nodeR .black l1 k1 v1 z1 => rebuild (.node .black l1 k1 v1 (.node .red l k v r)) z1
   | .nodeL .black z1 k1 v1 r1 => rebuild (.node .black (.node .red l k v r) k1 v1 r1) z1
   | .nodeR .red l1 k1 v1 z1 => match z1 with
@@ -41,7 +41,7 @@ def balance (l : Tree) (k : Nat) (v : Bool) (r : Tree) : Tree.Zipper → Tree
     | .done => .node .black (.node .red l k v r) k1 v1 r1
   | .done => .node .black l k v r
 
-def ins (kx : Nat) (vx : Bool) (z : Tree.Zipper) : Tree → Tree
+def ins (kx : Nat) (vx : Bool) (z : Tree.Zipper) : Tree  Tree
   | .leaf => balance .leaf kx vx .leaf z
   | .node c a ky vy b =>
     (if kx < ky then ins kx vx (.nodeL c z ky vy b) a
@@ -51,7 +51,7 @@ def ins (kx : Nat) (vx : Bool) (z : Tree.Zipper) : Tree → Tree
 def insert (k : Nat) (v : Bool) (t : Tree) : Tree :=
   ins k v .done t
 
-def mkMapAux : Nat → Tree → Tree
+def mkMapAux : Nat  Tree  Tree
   | 0,   m => m
   | n+1, m => mkMapAux n (insert n (n % 10 = 0) m)
 

@@ -10,7 +10,7 @@ import Init.Coe
 # `NatCast`
 
 We introduce the typeclass `NatCast R` for a type `R` with a "canonical
-homomorphism" `Nat → R`. The typeclass carries the data of the function,
+homomorphism" `Nat  R`. The typeclass carries the data of the function,
 but no required axioms.
 
 This typeclass was introduced to support a uniform `simp` normal form
@@ -39,15 +39,15 @@ instance : CoeHTCT Nat R where coe := ...
 ```
 
 It needs to be `CoeTail` instead of `Coe` because otherwise type-class
-inference would loop when constructing the transitive coercion `Nat →
-Nat → Nat → ...`. Sometimes we also need to declare the `CoeHTCT`
+inference would loop when constructing the transitive coercion `Nat 
+Nat  Nat  ...`. Sometimes we also need to declare the `CoeHTCT`
 instance if we need to shadow another coercion.
 -/
 
-/-- Type class for the canonical homomorphism `Nat → R`. -/
+/-- Type class for the canonical homomorphism `Nat  R`. -/
 class NatCast (R : Type u) where
-  /-- The canonical map `Nat → R`. -/
-  protected natCast : Nat → R
+  /-- The canonical map `Nat  R`. -/
+  protected natCast : Nat  R
 
 instance : NatCast Nat where natCast n := n
 
@@ -62,7 +62,7 @@ The prototypical example is `Int.ofNat`.
 
 This class and `IntCast` exist to allow different libraries with their own types that can be notated as natural numbers to have consistent `simp` normal forms without needing to create coercion simplification sets that are aware of all combinations. Libraries should make it easy to work with `NatCast` where possible. For instance, in Mathlib there will be such a homomorphism (and thus a `NatCast R` instance) whenever `R` is an additive monoid with a `1`.
 -/
-@[coe, reducible, match_pattern] protected def Nat.cast {R : Type u} [NatCast R] : Nat → R :=
+@[coe, reducible, match_pattern] protected def Nat.cast {R : Type u} [NatCast R] : Nat  R :=
   NatCast.natCast
 
 -- see the notes about coercions into arbitrary types in the module doc-string

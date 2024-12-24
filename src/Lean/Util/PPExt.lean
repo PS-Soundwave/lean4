@@ -51,11 +51,11 @@ instance : Coe Format FormatWithInfos where
   coe fmt := { fmt, infos := ∅ }
 
 structure PPFns where
-  ppExprWithInfos : PPContext → Expr → IO FormatWithInfos
-  ppConstNameWithInfos : PPContext → Name → IO FormatWithInfos
-  ppTerm : PPContext → Term → IO Format
-  ppLevel : PPContext → Level → BaseIO Format
-  ppGoal : PPContext → MVarId → IO Format
+  ppExprWithInfos : PPContext  Expr  IO FormatWithInfos
+  ppConstNameWithInfos : PPContext  Name  IO FormatWithInfos
+  ppTerm : PPContext  Term  IO Format
+  ppLevel : PPContext  Level  BaseIO Format
+  ppGoal : PPContext  MVarId  IO Format
   deriving Inhabited
 
 def formatRawTerm (ctx : PPContext) (stx : Term) : Format :=

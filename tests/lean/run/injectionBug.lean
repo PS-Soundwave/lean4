@@ -1,6 +1,6 @@
-inductive Vec (α : Type u) : Nat → Type u
+inductive Vec (α : Type u) : Nat  Type u
   | nil  : Vec α 0
-  | cons : α → {n : Nat} → Vec α n → Vec α (n+1)
+  | cons : α  {n : Nat}  Vec α n  Vec α (n+1)
   deriving DecidableEq
 
 inductive Test (α : Type)

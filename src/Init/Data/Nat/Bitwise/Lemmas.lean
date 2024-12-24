@@ -38,8 +38,8 @@ private theorem two_mul_sub_one {n : Nat} (n_pos : n > 0) : (2*n - 1) % 2 = 1 :=
 /--
 An induction principal that works on division by two.
 -/
-noncomputable def div2Induction {motive : Nat → Sort u}
-    (n : Nat) (ind : ∀(n : Nat), (n > 0 → motive (n/2)) → motive n) : motive n := by
+noncomputable def div2Induction {motive : Nat  Sort u}
+    (n : Nat) (ind : ∀(n : Nat), (n > 0  motive (n/2))  motive n) : motive n := by
   induction n using Nat.strongRecOn with
   | ind n hyp =>
     apply ind
@@ -221,7 +221,7 @@ theorem testBit_lt_two_pow {x i : Nat} (lt : x < 2^i) : x.testBit i = false := b
     exfalso
     exact Nat.not_le_of_gt lt (testBit_implies_ge p)
 
-theorem lt_pow_two_of_testBit (x : Nat) (p : ∀i, i ≥ n → testBit x i = false) : x < 2^n := by
+theorem lt_pow_two_of_testBit (x : Nat) (p : ∀i, i ≥ n  testBit x i = false) : x < 2^n := by
   apply Decidable.by_contra
   intro not_lt
   have x_ge_n := Nat.ge_of_not_lt not_lt
@@ -577,7 +577,7 @@ instance : Std.LawfulCommIdentity (α := Nat) (· ||| ·) 0 where
 theorem or_lt_two_pow {x y n : Nat} (left : x < 2^n) (right : y < 2^n) : x ||| y < 2^n :=
   bitwise_lt_two_pow left right
 
-@[simp] theorem or_mod_two_eq_one : (a ||| b) % 2 = 1 ↔ a % 2 = 1 ∨ b % 2 = 1 := by
+@[simp] theorem or_mod_two_eq_one : (a ||| b) % 2 = 1 ↔ a % 2 = 1  b % 2 = 1 := by
   simp only [mod_two_eq_one_iff_testBit_zero]
   rw [testBit_or]
   simp
@@ -731,7 +731,7 @@ theorem shiftRight_xor_distrib {a b : Nat} : (a ^^^ b) >>> i = a >>> i ^^^ b >>>
 
 /-! ### le -/
 
-theorem le_of_testBit {n m : Nat} (h : ∀ i, n.testBit i = true → m.testBit i = true) : n ≤ m := by
+theorem le_of_testBit {n m : Nat} (h : ∀ i, n.testBit i = true  m.testBit i = true) : n ≤ m := by
   induction n using div2Induction generalizing m
   next n ih =>
   have : n / 2 ≤ m / 2 := by

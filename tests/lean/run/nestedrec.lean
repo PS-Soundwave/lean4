@@ -1,5 +1,5 @@
 
-def f : Nat → Nat → Nat
+def f : Nat  Nat  Nat
 | 0,   b => b+1
 | a+1, b => f a (f a b)
 

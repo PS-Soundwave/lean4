@@ -12,8 +12,8 @@ namespace Lake
 Proof that the equality of a compare function corresponds
 to propositional equality.
 -/
-class EqOfCmp (α : Type u) (cmp : α → α → Ordering) where
-  eq_of_cmp {a a' : α} : cmp a a' = .eq → a = a'
+class EqOfCmp (α : Type u) (cmp : α  α  Ordering) where
+  eq_of_cmp {a a' : α} : cmp a a' = .eq  a = a'
 
 export EqOfCmp (eq_of_cmp)
 
@@ -21,7 +21,7 @@ export EqOfCmp (eq_of_cmp)
 Proof that the equality of a compare function corresponds
 to propositional equality and vice versa.
 -/
-class LawfulCmpEq (α : Type u) (cmp : α → α → Ordering) extends EqOfCmp α cmp where
+class LawfulCmpEq (α : Type u) (cmp : α  α  Ordering) extends EqOfCmp α cmp where
   cmp_rfl {a : α} : cmp a a = .eq
 
 export LawfulCmpEq (cmp_rfl)
@@ -35,8 +35,8 @@ attribute [simp] cmp_rfl
 Proof that the equality of a compare function corresponds
 to propositional equality with respect to a given function.
 -/
-class EqOfCmpWrt (α : Type u) {β : Type v} (f : α → β) (cmp : α → α → Ordering) where
-  eq_of_cmp_wrt {a a' : α} : cmp a a' = .eq → f a = f a'
+class EqOfCmpWrt (α : Type u) {β : Type v} (f : α  β) (cmp : α  α  Ordering) where
+  eq_of_cmp_wrt {a a' : α} : cmp a a' = .eq  f a = f a'
 
 export EqOfCmpWrt (eq_of_cmp_wrt)
 

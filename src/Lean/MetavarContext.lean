@@ -261,11 +261,11 @@ inductive MetavarKind where
   | syntheticOpaque
   deriving Inhabited, Repr
 
-def MetavarKind.isSyntheticOpaque : MetavarKind → Bool
+def MetavarKind.isSyntheticOpaque : MetavarKind  Bool
   | MetavarKind.syntheticOpaque => true
   | _                           => false
 
-def MetavarKind.isNatural : MetavarKind → Bool
+def MetavarKind.isNatural : MetavarKind  Bool
   | MetavarKind.natural => true
   | _                   => false
 
@@ -338,9 +338,9 @@ structure MetavarContext where
 instance : Inhabited MetavarContext := ⟨{}⟩
 
 /-- A monad with a stateful metavariable context, defining `getMCtx` and `modifyMCtx`. -/
-class MonadMCtx (m : Type → Type) where
+class MonadMCtx (m : Type  Type) where
   getMCtx    : m MetavarContext
-  modifyMCtx : (MetavarContext → MetavarContext) → m Unit
+  modifyMCtx : (MetavarContext  MetavarContext)  m Unit
 
 instance : MonadMCtx (StateM MetavarContext) where
   getMCtx := get
@@ -435,7 +435,7 @@ def _root_.Lean.MVarId.isAssignable [Monad m] [MonadMCtx m] (mvarId : MVarId) : 
   return decl.depth == mctx.depth
 
 /-- Return true iff the given level contains an assigned metavariable. -/
-def hasAssignedLevelMVar [Monad m] [MonadMCtx m] : Level → m Bool
+def hasAssignedLevelMVar [Monad m] [MonadMCtx m] : Level  m Bool
   | .succ lvl       => pure lvl.hasMVar <&&> hasAssignedLevelMVar lvl
   | .max lvl₁ lvl₂  => (pure lvl₁.hasMVar <&&> hasAssignedLevelMVar lvl₁) <||> (pure lvl₂.hasMVar <&&> hasAssignedLevelMVar lvl₂)
   | .imax lvl₁ lvl₂ => (pure lvl₁.hasMVar <&&> hasAssignedLevelMVar lvl₁) <||> (pure lvl₂.hasMVar <&&> hasAssignedLevelMVar lvl₂)
@@ -444,7 +444,7 @@ def hasAssignedLevelMVar [Monad m] [MonadMCtx m] : Level → m Bool
   | .param _        => pure false
 
 /-- Return `true` iff expression contains assigned (level/expr) metavariables or delayed assigned mvars -/
-def hasAssignedMVar [Monad m] [MonadMCtx m] : Expr → m Bool
+def hasAssignedMVar [Monad m] [MonadMCtx m] : Expr  m Bool
   | .const _ lvls    => lvls.anyM hasAssignedLevelMVar
   | .sort lvl        => hasAssignedLevelMVar lvl
   | .app f a         => (pure f.hasMVar <&&> hasAssignedMVar f) <||> (pure a.hasMVar <&&> hasAssignedMVar a)
@@ -459,7 +459,7 @@ def hasAssignedMVar [Monad m] [MonadMCtx m] : Expr → m Bool
   | .mvar mvarId     => mvarId.isAssigned <||> mvarId.isDelayedAssigned
 
 /-- Return true iff the given level contains a metavariable that can be assigned. -/
-def hasAssignableLevelMVar [Monad m] [MonadMCtx m] : Level → m Bool
+def hasAssignableLevelMVar [Monad m] [MonadMCtx m] : Level  m Bool
   | .succ lvl       => pure lvl.hasMVar <&&> hasAssignableLevelMVar lvl
   | .max lvl₁ lvl₂  => (pure lvl₁.hasMVar <&&> hasAssignableLevelMVar lvl₁) <||> (pure lvl₂.hasMVar <&&> hasAssignableLevelMVar lvl₂)
   | .imax lvl₁ lvl₂ => (pure lvl₁.hasMVar <&&> hasAssignableLevelMVar lvl₁) <||> (pure lvl₂.hasMVar <&&> hasAssignableLevelMVar lvl₂)
@@ -468,7 +468,7 @@ def hasAssignableLevelMVar [Monad m] [MonadMCtx m] : Level → m Bool
   | .param _        => return false
 
 /-- Return `true` iff expression contains a metavariable that can be assigned. -/
-def hasAssignableMVar [Monad m] [MonadMCtx m] : Expr → m Bool
+def hasAssignableMVar [Monad m] [MonadMCtx m] : Expr  m Bool
   | .const _ lvls    => lvls.anyM hasAssignableLevelMVar
   | .sort lvl        => hasAssignableLevelMVar lvl
   | .app f a         => (pure f.hasMVar <&&> hasAssignableMVar f) <||> (pure a.hasMVar <&&> hasAssignableMVar a)
@@ -529,7 +529,7 @@ containing `(x : Nat) (y : Nat) (b : Bool)`, then we can assign terms such as `x
 are in the context used to create `?m`. Now, suppose we have the term `?m + 1` and we want to create the lambda expression
 `fun x => ?m + 1`. This term is not correct since we may assign to `?m` a term containing `x`.
 
-We address this issue by create a synthetic metavariable `?n : Nat → Nat` and adding the delayed assignment
+We address this issue by create a synthetic metavariable `?n : Nat  Nat` and adding the delayed assignment
 `?n #[x] := ?m`, and the term `fun x => ?n x + 1`. When we later assign a term `t[x]` to `?m`, `fun x => t[x]` is assigned to
 `?n`, and if we substitute it at `fun x => ?n x + 1`, we produce `fun x => ((fun x => t[x]) x) + 1`.
 
@@ -633,17 +633,17 @@ private def shouldVisit (e : Expr) : M Bool := do
     modify fun s => { s with visited := s.visited.insert e }
     return true
 
-@[specialize] private partial def dep (pf : FVarId → Bool) (pm : MVarId →  Bool) (e : Expr) : M Bool :=
+@[specialize] private partial def dep (pf : FVarId  Bool) (pm : MVarId   Bool) (e : Expr) : M Bool :=
   let rec
     visit (e : Expr) : M Bool := do
       if !(← shouldVisit e) then
         pure false
       else
         visitMain e,
-    visitApp : Expr → M Bool
+    visitApp : Expr  M Bool
       | .app f a .. => visitApp f <||> visit a
       | e => visit e,
-    visitMain : Expr → M Bool
+    visitMain : Expr  M Bool
       | .proj _ _ s      => visit s
       | .forallE _ d b _ => visit d <||> visit b
       | .lam _ d b _     => visit d <||> visit b
@@ -674,7 +674,7 @@ private def shouldVisit (e : Expr) : M Bool := do
       | _                    => pure false
   visit e
 
-@[inline] partial def main (pf : FVarId → Bool) (pm : MVarId → Bool) (e : Expr) : M Bool :=
+@[inline] partial def main (pf : FVarId  Bool) (pm : MVarId  Bool) (e : Expr) : M Bool :=
   if !e.hasFVar && !e.hasMVar then pure false else dep pf pm e
 
 end DependsOn
@@ -685,7 +685,7 @@ end DependsOn
   1- If `?m := t`, then we visit `t` looking for `x`
   2- If `?m` is unassigned, then we consider the worst case and check whether `x` is in the local context of `?m`.
      This case is a "may dependency". That is, we may assign a term `t` to `?m` s.t. `t` contains `x`. -/
-@[inline] def findExprDependsOn [Monad m] [MonadMCtx m] (e : Expr) (pf : FVarId → Bool := fun _ => false) (pm : MVarId → Bool := fun _ => false) : m Bool := do
+@[inline] def findExprDependsOn [Monad m] [MonadMCtx m] (e : Expr) (pf : FVarId  Bool := fun _ => false) (pm : MVarId  Bool := fun _ => false) : m Bool := do
   let (result, { mctx, .. }) := DependsOn.main pf pm e |>.run { mctx := (← getMCtx) }
   setMCtx mctx
   return result
@@ -693,7 +693,7 @@ end DependsOn
 /--
   Similar to `findExprDependsOn`, but checks the expressions in the given local declaration
   depends on a free variable `x` s.t. `pf x` is `true` or an unassigned metavariable `?m` s.t. `pm ?m` is true. -/
-@[inline] def findLocalDeclDependsOn [Monad m] [MonadMCtx m] (localDecl : LocalDecl) (pf : FVarId → Bool := fun _ => false) (pm : MVarId → Bool := fun _ => false) : m Bool := do
+@[inline] def findLocalDeclDependsOn [Monad m] [MonadMCtx m] (localDecl : LocalDecl) (pf : FVarId  Bool := fun _ => false) (pm : MVarId  Bool := fun _ => false) : m Bool := do
   match localDecl with
   | .cdecl (type := t) ..  => findExprDependsOn t pf pm
   | .ldecl (type := t) (value := v) .. =>
@@ -731,18 +731,18 @@ def localDeclDependsOn' [Monad m] [MonadMCtx m] (localDecl : LocalDecl) (x : Exp
     return false
 
 /-- Return true iff `e` depends on a free variable `x` s.t. `pf x`, or an unassigned metavariable `?m` s.t. `pm ?m` is true. -/
-def dependsOnPred [Monad m] [MonadMCtx m] (e : Expr) (pf : FVarId → Bool := fun _ => false) (pm : MVarId → Bool := fun _ => false) : m Bool :=
+def dependsOnPred [Monad m] [MonadMCtx m] (e : Expr) (pf : FVarId  Bool := fun _ => false) (pm : MVarId  Bool := fun _ => false) : m Bool :=
   findExprDependsOn e pf pm
 
 /-- Return true iff the local declaration `localDecl` depends on a free variable `x` s.t. `pf x`, an unassigned metavariable `?m` s.t. `pm ?m` is true. -/
-def localDeclDependsOnPred [Monad m] [MonadMCtx m] (localDecl : LocalDecl) (pf : FVarId → Bool := fun _ => false) (pm : MVarId → Bool := fun _ => false) : m Bool := do
+def localDeclDependsOnPred [Monad m] [MonadMCtx m] (localDecl : LocalDecl) (pf : FVarId  Bool := fun _ => false) (pm : MVarId  Bool := fun _ => false) : m Bool := do
   findLocalDeclDependsOn localDecl pf pm
 
 
 namespace MetavarContext
 
 @[export lean_mk_metavar_ctx]
-def mkMetavarContext : Unit → MetavarContext := fun _ => {}
+def mkMetavarContext : Unit  MetavarContext := fun _ => {}
 
 /-- Low level API for adding/declaring metavariable declarations.
    It is used to implement actions in the monads `MetaM`, `ElabM` and `TacticM`.
@@ -792,7 +792,7 @@ You must ensure that the modification is legal. In particular, expressions may
 only be replaced with defeq expressions.
 -/
 def modifyExprMVarDecl (mctx : MetavarContext) (mvarId : MVarId)
-    (f : MetavarDecl → MetavarDecl) : MetavarContext :=
+    (f : MetavarDecl  MetavarDecl) : MetavarContext :=
   if let some mdecl := mctx.decls.find? mvarId then
     { mctx with decls := mctx.decls.insert mvarId (f mdecl) }
   else
@@ -837,7 +837,7 @@ You must ensure that the modification is legal. In particular, expressions may
 only be replaced with defeq expressions.
 -/
 def modifyExprMVarLCtx (mctx : MetavarContext) (mvarId : MVarId)
-    (f : LocalContext → LocalContext) : MetavarContext :=
+    (f : LocalContext  LocalContext) : MetavarContext :=
   mctx.modifyExprMVarDecl mvarId fun mdecl => { mdecl with lctx := f mdecl.lctx }
 
 /--
@@ -957,11 +957,11 @@ private def getLocalDeclWithSmallestIdx (lctx : LocalContext) (xs : Array Expr) 
   _
   ```
   would trigger the `Exception.revertFailure` exception. In the definition above,
-  the elaborator creates the auxiliary definition `f : {α : Type} → List α`.
-  The `_` is elaborated as a new fresh variable `?m` that contains `α : Type`, `a : α`, and `f : α → List α` in its context,
+  the elaborator creates the auxiliary definition `f : {α : Type}  List α`.
+  The `_` is elaborated as a new fresh variable `?m` that contains `α : Type`, `a : α`, and `f : α  List α` in its context,
   When we try to create the lambda `fun {α : Type} (a : α) => ?m`, we first need to create
   an auxiliary `?n` which does not contain `α` and `a` in its context. That is,
-  we create the metavariable `?n : {α : Type} → (a : α) → (f : α → List α) → List α`,
+  we create the metavariable `?n : {α : Type}  (a : α)  (f : α  List α)  List α`,
   add the delayed assignment `?n #[α, a, f] := ?m`, and create the lambda
   `fun {α : Type} (a : α) => ?n α a f`.
 
@@ -1296,7 +1296,7 @@ def mkBinding (isLambda : Bool) (xs : Array Expr) (e : Expr) (usedOnly : Bool :=
   `isWellFormed lctx e` returns true iff
   - All locals in `e` are declared in `lctx`
   - All metavariables `?m` in `e` have a local context which is a subprefix of `lctx` or are assigned, and the assignment is well-formed. -/
-partial def isWellFormed [Monad m] [MonadMCtx m] (lctx : LocalContext) : Expr → m Bool
+partial def isWellFormed [Monad m] [MonadMCtx m] (lctx : LocalContext) : Expr  m Bool
   | .mdata _ e           => isWellFormed lctx e
   | .proj _ _ e          => isWellFormed lctx e
   | e@(.app f a)         => pure (!e.hasExprMVar && !e.hasFVar) <||> (isWellFormed lctx f <&&> isWellFormed lctx a)
@@ -1320,8 +1320,8 @@ namespace LevelMVarToParam
 
 structure Context where
   paramNamePrefix : Name
-  alreadyUsedPred : Name → Bool
-  except          : LMVarId → Bool
+  alreadyUsedPred : Name  Bool
+  except          : LMVarId  Bool
 
 structure State where
   mctx         : MetavarContext
@@ -1402,7 +1402,7 @@ structure UnivMVarParamResult where
   nextParamIdx  : Nat
   expr          : Expr
 
-def levelMVarToParam (mctx : MetavarContext) (alreadyUsedPred : Name → Bool) (except : LMVarId → Bool) (e : Expr) (paramNamePrefix : Name := `u) (nextParamIdx : Nat := 1)
+def levelMVarToParam (mctx : MetavarContext) (alreadyUsedPred : Name  Bool) (except : LMVarId  Bool) (e : Expr) (paramNamePrefix : Name := `u) (nextParamIdx : Nat := 1)
     : UnivMVarParamResult :=
   let (e, s) := LevelMVarToParam.main e { except, paramNamePrefix, alreadyUsedPred } { mctx, nextParamIdx }
   { mctx          := s.mctx
@@ -1425,7 +1425,7 @@ You must ensure that the modification is legal. In particular, expressions may
 only be replaced with defeq expressions.
 -/
 def modifyDecl [MonadMCtx m] (mvarId : MVarId)
-    (f : MetavarDecl → MetavarDecl) : m Unit :=
+    (f : MetavarDecl  MetavarDecl) : m Unit :=
   modifyMCtx (·.modifyExprMVarDecl mvarId f)
 
 /--
@@ -1436,7 +1436,7 @@ You must ensure that the modification is legal. In particular, expressions may
 only be replaced with defeq expressions.
 -/
 def modifyLCtx [MonadMCtx m] (mvarId : MVarId)
-    (f : LocalContext → LocalContext) : m Unit :=
+    (f : LocalContext  LocalContext) : m Unit :=
   modifyMCtx (·.modifyExprMVarLCtx mvarId f)
 
 /--

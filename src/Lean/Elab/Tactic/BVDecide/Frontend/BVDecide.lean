@@ -80,7 +80,7 @@ def reconstructCounterExample (var2Cnf : Std.HashMap BVBit Nat) (assignment : Ar
 
 structure ReflectionResult where
   bvExpr : BVLogicalExpr
-  proveFalse : Expr → M Expr
+  proveFalse : Expr  M Expr
   unusedHypotheses : Std.HashSet FVarId
 
 /--
@@ -105,7 +105,7 @@ structure UnsatProver.Result where
   proof : Expr
   lratCert : LratCert
 
-abbrev UnsatProver := MVarId → ReflectionResult → Std.HashMap Nat (Nat × Expr × Bool) →
+abbrev UnsatProver := MVarId  ReflectionResult  Std.HashMap Nat (Nat × Expr × Bool) 
     MetaM (Except CounterExample UnsatProver.Result)
 
 /--
@@ -115,7 +115,7 @@ structure Diagnosis where
   uninterpretedSymbols : Std.HashSet Expr := {}
   unusedRelevantHypotheses : Std.HashSet FVarId := {}
 
-abbrev DiagnosisM : Type → Type := ReaderT CounterExample <| StateRefT Diagnosis MetaM
+abbrev DiagnosisM : Type  Type := ReaderT CounterExample <| StateRefT Diagnosis MetaM
 
 namespace DiagnosisM
 
@@ -170,7 +170,7 @@ def unusedRelevantHypothesesExplainer (d : Diagnosis) : Option MessageData := do
   let hypList := d.unusedRelevantHypotheses.toList.map mkFVar
   return m!"The following potentially relevant hypotheses could not be used: {hypList}"
 
-def explainers : List (Diagnosis → Option MessageData) :=
+def explainers : List (Diagnosis  Option MessageData) :=
   [uninterpretedExplainer, unusedRelevantHypothesesExplainer]
 
 def explainCounterExampleQuality (counterExample : CounterExample) : MetaM MessageData := do
@@ -319,4 +319,3 @@ def evalBvTrace : Tactic := fun
 
 end Frontend
 end Lean.Elab.Tactic.BVDecide
-

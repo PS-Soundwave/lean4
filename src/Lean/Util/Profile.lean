@@ -13,7 +13,7 @@ register_builtin_option profiler : Bool := {
   defValue := false
   group    := "profiler"
   descr    := "show exclusive execution times of various Lean components
-  
+
 See also `trace.profiler` for an alternative profiling system with structured output."
 }
 
@@ -33,7 +33,7 @@ def profiler.threshold.getSecs (o : Options) : Float :=
 
 /-- Print and accumulate run time of `act` when option `profiler` is set to `true`. -/
 @[extern "lean_profileit"]
-def profileit {α : Type} (category : @& String) (opts : @& Options) (fn : Unit → α) (decl := Name.anonymous) : α := fn ()
+def profileit {α : Type} (category : @& String) (opts : @& Options) (fn : Unit  α) (decl := Name.anonymous) : α := fn ()
 
 unsafe def profileitIOUnsafe {ε α : Type} (category : String) (opts : Options) (act : EIO ε α) (decl := Name.anonymous) : EIO ε α :=
   match profileit (decl := decl) category opts fun _ => unsafeEIO act with
@@ -44,7 +44,7 @@ unsafe def profileitIOUnsafe {ε α : Type} (category : String) (opts : Options)
 def profileitIO {ε α : Type} (category : String) (opts : Options) (act : EIO ε α) (decl := Name.anonymous) : EIO ε α := act
 
 -- impossible to infer `ε`
-def profileitM {m : Type → Type} (ε : Type) [MonadFunctorT (EIO ε) m] {α : Type} (category : String) (opts : Options) (act : m α) (decl := Name.anonymous) : m α :=
+def profileitM {m : Type  Type} (ε : Type) [MonadFunctorT (EIO ε) m] {α : Type} (category : String) (opts : Options) (act : m α) (decl := Name.anonymous) : m α :=
   monadMap (fun {β} => profileitIO (ε := ε) (α := β) (decl := decl) category opts) act
 
 end Lean

@@ -1,4 +1,4 @@
-theorem n_minus_one_le_n {n : Nat} : n > 0 → n - 1 < n := by
+theorem n_minus_one_le_n {n : Nat} : n > 0  n - 1 < n := by
   cases n with
   | zero => simp []
   | succ n =>
@@ -6,7 +6,7 @@ theorem n_minus_one_le_n {n : Nat} : n > 0 → n - 1 < n := by
   rw [Nat.add_sub_cancel]
   apply Nat.le.refl
 
-partial def foo : Array Int → Int
+partial def foo : Array Int  Int
   | arr => Id.run do
     let mut r : Int := 1
     while h : arr.size > 0 do

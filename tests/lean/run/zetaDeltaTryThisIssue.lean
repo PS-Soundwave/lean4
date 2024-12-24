@@ -1,4 +1,4 @@
-opaque f : Nat → Nat
+opaque f : Nat  Nat
 
 /--
 info: Try this: simp only [h1, x]

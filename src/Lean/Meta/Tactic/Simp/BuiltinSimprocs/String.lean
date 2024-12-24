@@ -32,13 +32,13 @@ builtin_dsimproc [simp, seval] reduceMk (String.mk _) := fun e => do
   unless e.isAppOfArity ``String.mk 1 do return .continue
   reduceListChar e.appArg! ""
 
-@[inline] def reduceBinPred (declName : Name) (arity : Nat) (op : String → String → Bool) (e : Expr) : SimpM Step := do
+@[inline] def reduceBinPred (declName : Name) (arity : Nat) (op : String  String  Bool) (e : Expr) : SimpM Step := do
   unless e.isAppOfArity declName arity do return .continue
   let some n ← fromExpr? e.appFn!.appArg! | return .continue
   let some m ← fromExpr? e.appArg! | return .continue
   evalPropStep e (op n m)
 
-@[inline] def reduceBoolPred (declName : Name) (arity : Nat) (op : String → String → Bool) (e : Expr) : SimpM DStep := do
+@[inline] def reduceBoolPred (declName : Name) (arity : Nat) (op : String  String  Bool) (e : Expr) : SimpM DStep := do
   unless e.isAppOfArity declName arity do return .continue
   let some n ← fromExpr? e.appFn!.appArg! | return .continue
   let some m ← fromExpr? e.appArg! | return .continue

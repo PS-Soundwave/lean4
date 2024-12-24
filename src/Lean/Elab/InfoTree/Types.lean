@@ -259,9 +259,9 @@ structure InfoState where
   trees      : PersistentArray InfoTree := {}
   deriving Inhabited
 
-class MonadInfoTree (m : Type → Type) where
+class MonadInfoTree (m : Type  Type) where
   getInfoState    : m InfoState
-  modifyInfoState : (InfoState → InfoState) → m Unit
+  modifyInfoState : (InfoState  InfoState)  m Unit
 
 export MonadInfoTree (getInfoState modifyInfoState)
 
@@ -272,7 +272,7 @@ instance [MonadLift m n] [MonadInfoTree m] : MonadInfoTree n where
 def setInfoState [MonadInfoTree m] (s : InfoState) : m Unit :=
   modifyInfoState fun _ => s
 
-class MonadParentDecl (m : Type → Type) where
+class MonadParentDecl (m : Type  Type) where
   getParentDeclName? : m (Option Name)
 
 export MonadParentDecl (getParentDeclName?)

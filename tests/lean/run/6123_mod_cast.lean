@@ -7,7 +7,7 @@ section Preorder
 
 class Preorder (α : Type _) extends LE α, LT α where
   le_refl : ∀ a : α, a ≤ a
-  le_trans : ∀ a b c : α, a ≤ b → b ≤ c → a ≤ c
+  le_trans : ∀ a b c : α, a ≤ b  b ≤ c  a ≤ c
   lt := fun a b => a ≤ b ∧ ¬b ≤ a
   lt_iff_le_not_le : ∀ a b : α, a < b ↔ a ≤ b ∧ ¬b ≤ a := by intros; rfl
 
@@ -16,17 +16,17 @@ end Preorder
 section PartialOrder
 
 class PartialOrder (α : Type _) extends Preorder α where
-  le_antisymm : ∀ a b : α, a ≤ b → b ≤ a → a = b
+  le_antisymm : ∀ a b : α, a ≤ b  b ≤ a  a = b
 
 end PartialOrder
 
 section LinearOrder
 
 class LinearOrder (α : Type _) extends PartialOrder α, Min α, Max α, Ord α where
-  le_total (a b : α) : a ≤ b ∨ b ≤ a
-  decidableLE : DecidableRel (· ≤ · : α → α → Prop)
+  le_total (a b : α) : a ≤ b  b ≤ a
+  decidableLE : DecidableRel (· ≤ · : α  α  Prop)
   decidableEq : DecidableEq α
-  decidableLT : DecidableRel (· < · : α → α → Prop)
+  decidableLT : DecidableRel (· < · : α  α  Prop)
   min := fun a b => if a ≤ b then a else b
   max := fun a b => if a ≤ b then b else a
   min_def : ∀ a b, min a b = if a ≤ b then a else b := by intros; rfl
@@ -56,13 +56,13 @@ variable {α : Type _}
 /-- An order is dense if there is an element between any pair of distinct comparable elements. -/
 class DenselyOrdered (α : Type _) [LT α] : Prop where
   /-- An order is dense if there is an element between any pair of distinct elements. -/
-  dense : ∀ a₁ a₂ : α, a₁ < a₂ → ∃ a, a₁ < a ∧ a < a₂
+  dense : ∀ a₁ a₂ : α, a₁ < a₂  ∃ a, a₁ < a ∧ a < a₂
 
-theorem exists_between [LT α] [DenselyOrdered α] : ∀ {a₁ a₂ : α}, a₁ < a₂ → ∃ a, a₁ < a ∧ a < a₂ :=
+theorem exists_between [LT α] [DenselyOrdered α] : ∀ {a₁ a₂ : α}, a₁ < a₂  ∃ a, a₁ < a ∧ a < a₂ :=
   DenselyOrdered.dense _ _
 
 theorem le_of_forall_le_of_dense [LinearOrder α] [DenselyOrdered α] {a₁ a₂ : α}
-    (h : ∀ a, a₂ < a → a₁ ≤ a) : a₁ ≤ a₂ := sorry
+    (h : ∀ a, a₂ < a  a₁ ≤ a) : a₁ ≤ a₂ := sorry
 
 end Mathlib.Order.Basic
 
@@ -98,7 +98,7 @@ def WithBot (α : Type _) := Option α
 
 namespace WithBot
 
-@[coe, match_pattern] def some : α → WithBot α :=
+@[coe, match_pattern] def some : α  WithBot α :=
   Option.some
 
 instance coe : Coe α (WithBot α) :=
@@ -108,7 +108,7 @@ instance bot : Bot (WithBot α) :=
   ⟨none⟩
 
 @[elab_as_elim, induction_eliminator, cases_eliminator]
-def recBotCoe {C : WithBot α → Sort _} (bot : C ⊥) (coe : ∀ a : α, C a) : ∀ n : WithBot α, C n
+def recBotCoe {C : WithBot α  Sort _} (bot : C ⊥) (coe : ∀ a : α, C a) : ∀ n : WithBot α, C n
   | ⊥ => bot
   | (a : α) => coe a
 
@@ -135,7 +135,7 @@ section LE
 variable [LE α]
 
 instance (priority := 10) le : LE (WithBot α) :=
-  ⟨fun o₁ o₂ => ∀ a : α, o₁ = ↑a → ∃ b : α, o₂ = ↑b ∧ a ≤ b⟩
+  ⟨fun o₁ o₂ => ∀ a : α, o₁ = ↑a  ∃ b : α, o₂ = ↑b ∧ a ≤ b⟩
 
 @[simp, norm_cast]
 theorem coe_le_coe : (a : WithBot α) ≤ b ↔ a ≤ b := by
@@ -144,7 +144,7 @@ theorem coe_le_coe : (a : WithBot α) ≤ b ↔ a ≤ b := by
 instance orderBot : OrderBot (WithBot α) where
   bot_le _ := fun _ h => Option.noConfusion h
 
-theorem le_coe_iff : ∀ {x : WithBot α}, x ≤ b ↔ ∀ a : α, x = ↑a → a ≤ b
+theorem le_coe_iff : ∀ {x : WithBot α}, x ≤ b ↔ ∀ a : α, x = ↑a  a ≤ b
   | (b : α) => by simp
   | ⊥ => by simp
 
@@ -155,7 +155,7 @@ section LT
 variable [LT α]
 
 instance (priority := 10) lt : LT (WithBot α) :=
-  ⟨fun o₁ o₂ : WithBot α => ∃ b : α, o₂ = ↑b ∧ ∀ a : α, o₁ = ↑a → a < b⟩
+  ⟨fun o₁ o₂ : WithBot α => ∃ b : α, o₂ = ↑b ∧ ∀ a : α, o₁ = ↑a  a < b⟩
 
 @[simp, norm_cast]
 theorem coe_lt_coe : (a : WithBot α) < b ↔ a < b := by
@@ -177,7 +177,7 @@ namespace WithBot
 /-- warning: declaration uses 'sorry' -/
 #guard_msgs in
 theorem le_of_forall_lt_iff_le [LinearOrder α] [DenselyOrdered α]
-    {x y : WithBot α} : (∀ z : α, x < z → y ≤ z) ↔ y ≤ x := by
+    {x y : WithBot α} : (∀ z : α, x < z  y ≤ z) ↔ y ≤ x := by
   refine ⟨fun h ↦ ?_, fun h z x_z ↦ sorry⟩
   induction x with
   | bot => sorry

@@ -22,10 +22,10 @@ def xyz : BaseIO UInt32 := do
 run_meta Lean.Compiler.compile #[``xyz]
 
 @[extern "f_imp"]
-opaque f : Nat → Nat
+opaque f : Nat  Nat
 
 @[extern "g_imp"]
-opaque g : Nat → Nat → Nat → Nat
+opaque g : Nat  Nat  Nat  Nat
 
 inductive Ty where
   | c1 | c2 | c3 | c4 | c5

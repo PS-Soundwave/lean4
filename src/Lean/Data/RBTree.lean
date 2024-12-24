@@ -8,40 +8,40 @@ import Lean.Data.RBMap
 namespace Lean
 universe u v w
 
-def RBTree (α : Type u) (cmp : α → α → Ordering) : Type u :=
+def RBTree (α : Type u) (cmp : α  α  Ordering) : Type u :=
   RBMap α Unit cmp
 
 instance : Inhabited (RBTree α p) where
   default := RBMap.empty
 
-@[inline] def mkRBTree (α : Type u) (cmp : α → α → Ordering) : RBTree α cmp :=
+@[inline] def mkRBTree (α : Type u) (cmp : α  α  Ordering) : RBTree α cmp :=
   mkRBMap α Unit cmp
 
-instance (α : Type u) (cmp : α → α → Ordering) : EmptyCollection (RBTree α cmp) :=
+instance (α : Type u) (cmp : α  α  Ordering) : EmptyCollection (RBTree α cmp) :=
   ⟨mkRBTree α cmp⟩
 
 namespace RBTree
-variable {α : Type u} {β : Type v} {cmp : α → α → Ordering}
+variable {α : Type u} {β : Type v} {cmp : α  α  Ordering}
 
 @[inline] def empty : RBTree α cmp :=
   RBMap.empty
 
-@[inline] def depth (f : Nat → Nat → Nat) (t : RBTree α cmp) : Nat :=
+@[inline] def depth (f : Nat  Nat  Nat) (t : RBTree α cmp) : Nat :=
   RBMap.depth f t
 
-@[inline] def fold (f : β → α → β) (init : β) (t : RBTree α cmp) : β :=
+@[inline] def fold (f : β  α  β) (init : β) (t : RBTree α cmp) : β :=
   RBMap.fold (fun r a _ => f r a) init t
 
-@[inline] def revFold (f : β → α → β) (init : β) (t : RBTree α cmp) : β :=
+@[inline] def revFold (f : β  α  β) (init : β) (t : RBTree α cmp) : β :=
   RBMap.revFold (fun r a _ => f r a) init t
 
-@[inline] def foldM {m : Type v → Type w} [Monad m] (f : β → α → m β) (init : β) (t : RBTree α cmp) : m β :=
+@[inline] def foldM {m : Type v  Type w} [Monad m] (f : β  α  m β) (init : β) (t : RBTree α cmp) : m β :=
   RBMap.foldM (fun r a _ => f r a) init t
 
-@[inline] def forM {m : Type v → Type w} [Monad m] (f : α → m PUnit) (t : RBTree α cmp) : m PUnit :=
+@[inline] def forM {m : Type v  Type w} [Monad m] (f : α  m PUnit) (t : RBTree α cmp) : m PUnit :=
   t.foldM (fun _ a => f a) ⟨⟩
 
-@[inline] protected def forIn [Monad m] (t : RBTree α cmp) (init : σ) (f : α → σ → m (ForInStep σ)) : m σ :=
+@[inline] protected def forIn [Monad m] (t : RBTree α cmp) (init : σ) (f : α  σ  m (ForInStep σ)) : m σ :=
   t.val.forIn init (fun a _ acc => f a acc)
 
 instance : ForIn m (RBTree α cmp) α where
@@ -75,7 +75,7 @@ instance [Repr α] : Repr (RBTree α cmp) where
 @[inline] def erase (t : RBTree α cmp) (a : α) : RBTree α cmp :=
   RBMap.erase t a
 
-@[specialize] def ofList : List α → RBTree α cmp
+@[specialize] def ofList : List α  RBTree α cmp
   | []    => mkRBTree ..
   | x::xs => (ofList xs).insert x
 
@@ -87,16 +87,16 @@ instance [Repr α] : Repr (RBTree α cmp) where
 @[inline] def contains (t : RBTree α cmp) (a : α) : Bool :=
   (t.find? a).isSome
 
-def fromList (l : List α) (cmp : α → α → Ordering) : RBTree α cmp :=
+def fromList (l : List α) (cmp : α  α  Ordering) : RBTree α cmp :=
   l.foldl insert (mkRBTree α cmp)
 
-def fromArray (l : Array α) (cmp : α → α → Ordering) : RBTree α cmp :=
+def fromArray (l : Array α) (cmp : α  α  Ordering) : RBTree α cmp :=
   l.foldl insert (mkRBTree α cmp)
 
-@[inline] def all (t : RBTree α cmp) (p : α → Bool) : Bool :=
+@[inline] def all (t : RBTree α cmp) (p : α  Bool) : Bool :=
   RBMap.all t (fun a _ => p a)
 
-@[inline] def any (t : RBTree α cmp) (p : α → Bool) : Bool :=
+@[inline] def any (t : RBTree α cmp) (p : α  Bool) : Bool :=
   RBMap.any t (fun a _ => p a)
 
 def subset (t₁ t₂ : RBTree α cmp) : Bool :=
@@ -118,10 +118,10 @@ def diff (t₁ t₂ : RBTree α cmp) : RBTree α cmp :=
 `filter f m` returns the `RBTree` consisting of all
 `x` in `m` where `f x` returns `true`.
 -/
-def filter (f : α → Bool) (m : RBTree α cmp) : RBTree α cmp :=
+def filter (f : α  Bool) (m : RBTree α cmp) : RBTree α cmp :=
   RBMap.filter (fun a _ => f a) m
 
 end RBTree
 
-def rbtreeOf {α : Type u} (l : List α) (cmp : α → α → Ordering) : RBTree α cmp :=
+def rbtreeOf {α : Type u} (l : List α) (cmp : α  α  Ordering) : RBTree α cmp :=
   RBTree.fromList l cmp

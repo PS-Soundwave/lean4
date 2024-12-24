@@ -67,7 +67,7 @@ private def simpMatchTargetCore (mvarId : MVarId) (matchDeclName : Name) (matchE
     | some proof => mvarId.replaceTargetEq r.expr proof
     | none => mvarId.replaceTargetDefEq r.expr
 
-private partial def withEqs (lhs rhs : Array Expr) (k : Array Expr → Array Expr → MetaM α) : MetaM α := do
+private partial def withEqs (lhs rhs : Array Expr) (k : Array Expr  Array Expr  MetaM α) : MetaM α := do
   go 0 #[] #[]
 where
   go (i : Nat) (hs : Array Expr) (rfls : Array Expr) : MetaM α := do
@@ -179,7 +179,7 @@ where
     - `altEqsNew` are fresh free variables of the form `h_altEqNew : discrVar = pattern`
     - `subst` are terms of the form `h_eq.trans h_altEqNew : discr = pattern`. We use `subst` later to replace occurrences of `h_altEq` with `h_eq.trans h_altEqNew`.
    -/
-  withNewAltEqs (matcherInfo : MatcherInfo) (eqs : Array Expr) (altEqs : Array Expr) (k : Array Expr → Array Expr → MetaM Expr) : MetaM Expr := do
+  withNewAltEqs (matcherInfo : MatcherInfo) (eqs : Array Expr) (altEqs : Array Expr) (k : Array Expr  Array Expr  MetaM Expr) : MetaM Expr := do
     let eqs' := (eqs.zip matcherInfo.discrInfos).filterMap fun (eq, info) => if info.hName?.isNone then none else some eq
     -- `eqs'.size == altEqs.size ≤ eqs.size`
     let rec go (i : Nat) (altEqsNew : Array Expr) (subst : Array Expr) : MetaM Expr := do

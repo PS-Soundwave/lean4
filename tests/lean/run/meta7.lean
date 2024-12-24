@@ -3,7 +3,7 @@ import Lean.Meta
 open Lean
 open Lean.Meta
 
-partial def fact : Nat → Nat
+partial def fact : Nat  Nat
 | 0   => 1
 | n+1 => (n+1)*fact n
 
@@ -18,7 +18,7 @@ unless (← x) do throwError "check failed"
 
 def ex (x_1 x_2 x_3 : Nat) : Nat × Nat :=
 let x  := fact (10 + x_1 + x_2 + x_3);
-let ty := Nat → Nat;
+let ty := Nat  Nat;
 let f  : ty := fun x => x;
 let n  := 20;
 let z  := f 10;
@@ -58,7 +58,7 @@ forallBoundedTelescope t (some 1) fun xs b => do
 
 /--
 info: [Meta.debug] ----- tst2 -----
-[Meta.debug] Nat → IO Nat
+[Meta.debug] Nat  IO Nat
 [Meta.debug] IO Nat
 -/
 #guard_msgs in
@@ -246,11 +246,11 @@ info: [Meta.debug] ----- tst9 -----
 
 mutual
 inductive Foo (α : Type) where
-  | mk : List (Bla α) → Foo α
-  | leaf : α → Foo α
+  | mk : List (Bla α)  Foo α
+  | leaf : α  Foo α
 inductive Bla (α : Type) where
   | nil : Bla α
-  | cons : Foo α → Bla α → Bla α
+  | cons : Foo α  Bla α  Bla α
 end
 
 def tst10 : MetaM Unit := do

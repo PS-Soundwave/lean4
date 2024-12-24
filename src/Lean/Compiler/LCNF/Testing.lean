@@ -90,7 +90,7 @@ def assert (property : Bool) (msg : String) : TestM Unit := do
   unless property do
     throwError msg
 
-private def assertAfterTest (test : SimpleTest) : TestInstallerM (Pass → Pass) := do
+private def assertAfterTest (test : SimpleTest) : TestInstallerM (Pass  Pass) := do
   let testName := (←read).testName
   return fun passUnderTest => {
     phase := passUnderTest.phase
@@ -123,7 +123,7 @@ def assertAfterEachOccurrence (test : SimpleTest) : TestInstaller := do
 Install an assertion pass right after a specific occurrence of a pass,
 default is first. The assertion operates on a per declaration basis.
 -/
-def assertForEachDeclAfter (assertion : Pass → Decl → Bool) (msg : String) (occurrence : Nat := 0) : TestInstaller :=
+def assertForEachDeclAfter (assertion : Pass  Decl  Bool) (msg : String) (occurrence : Nat := 0) : TestInstaller :=
   let assertion := do
     let pass ← getPassUnderTest
     (←getDecls).forM (fun decl => assert (assertion pass decl) msg)
@@ -133,12 +133,12 @@ def assertForEachDeclAfter (assertion : Pass → Decl → Bool) (msg : String) (
 Install an assertion pass right after the each occurrence of a pass. The
 assertion operates on a per declaration basis.
 -/
-def assertForEachDeclAfterEachOccurrence (assertion : Pass → Decl → Bool) (msg : String) : TestInstaller :=
+def assertForEachDeclAfterEachOccurrence (assertion : Pass  Decl  Bool) (msg : String) : TestInstaller :=
   assertAfterEachOccurrence <| do
     let pass ← getPassUnderTest
     (←getDecls).forM (fun decl => assert (assertion pass decl) msg)
 
-private def assertAroundTest (test : InOutTest) : TestInstallerM (Pass → Pass) := do
+private def assertAroundTest (test : InOutTest) : TestInstallerM (Pass  Pass) := do
   let testName := (←read).testName
   return fun passUnderTest => {
     phase := passUnderTest.phase
@@ -205,7 +205,7 @@ def assertIsAtFixPoint : TestInstaller :=
 Compare the overall sizes of the input and output of `passUnderTest` with `assertion`.
 If `assertion inputSize outputSize` is `false` throw an exception with `msg`.
 -/
-def assertSize (assertion : Nat → Nat → Bool) (msg : String) : TestInstaller :=
+def assertSize (assertion : Nat  Nat  Bool) (msg : String) : TestInstaller :=
   let sumDeclSizes := fun decls => decls.map Decl.size |>.foldl (init := 0) (· + ·)
   let assertion := (fun inputS outputS => Testing.assert (assertion inputS outputS) s!"{msg}: input size {inputS} output size {outputS}")
   assertAroundEachOccurrence (do assertion (sumDeclSizes (←getInputDecls)) (sumDeclSizes (←getOutputDecls)))

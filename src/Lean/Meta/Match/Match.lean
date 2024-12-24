@@ -25,7 +25,7 @@ private def checkNumPatterns (numDiscrs : Nat) (lhss : List AltLHS) : MetaM Unit
   Execute `k hs` where `hs` contains new equalities `h : lhs[i] = rhs[i]` for each `discrInfos[i] = some h`.
   Assume `lhs.size == rhs.size == discrInfos.size`
 -/
-private partial def withEqs (lhs rhs : Array Expr) (discrInfos : Array DiscrInfo) (k : Array Expr → MetaM α) : MetaM α := do
+private partial def withEqs (lhs rhs : Array Expr) (discrInfos : Array DiscrInfo) (k : Array Expr  MetaM α) : MetaM α := do
   go 0 #[]
 where
   go (i : Nat) (hs : Array Expr) : MetaM α := do
@@ -39,7 +39,7 @@ where
       k hs
 
 /-- Given a list of `AltLHS`, create a minor premise for each one, convert them into `Alt`, and then execute `k` -/
-private def withAlts {α} (motive : Expr) (discrs : Array Expr) (discrInfos : Array DiscrInfo) (lhss : List AltLHS) (k : List Alt → Array (Expr × Nat) → MetaM α) : MetaM α :=
+private def withAlts {α} (motive : Expr) (discrs : Array Expr) (discrInfos : Array DiscrInfo) (lhss : List AltLHS) (k : List Alt  Array (Expr × Nat)  MetaM α) : MetaM α :=
   loop lhss [] #[]
 where
   mkMinorType (xs : Array Expr) (lhs : AltLHS) : MetaM Expr :=
@@ -139,7 +139,7 @@ private def isValueTransition (p : Problem) : Bool :=
      | .var _ :: _ => true
      | _           => false
 
-private def isValueOnlyTransitionCore (p : Problem) (isValue : Expr → MetaM Bool) : MetaM Bool := do
+private def isValueOnlyTransitionCore (p : Problem) (isValue : Expr  MetaM Bool) : MetaM Bool := do
   if hasVarPattern p then return false
   if !hasValPattern p then return false
   p.alts.allM fun alt => do
@@ -301,11 +301,11 @@ private def processAsPattern (p : Problem) : MetaM Problem := withGoalOf p do
       /- We used to use `checkAndReplaceFVarId` here, but `x` and `fvarId` may have different types
         when dependent types are being used. Let's consider the repro for issue #471
         ```
-        inductive vec : Nat → Type
+        inductive vec : Nat  Type
         | nil : vec 0
-        | cons : Int → vec n → vec n.succ
+        | cons : Int  vec n  vec n.succ
 
-        def vec_len : vec n → Nat
+        def vec_len : vec n  Nat
         | vec.nil => 0
         | x@(vec.cons h t) => vec_len t + 1
 
@@ -345,10 +345,10 @@ private def processVariable (p : Problem) : MetaM Problem := withGoalOf p do
 Note that we decided to store pending constraints to address issues exposed by #1279 and #1361.
 Here is a simplified version of the example on this issue (see test: `1279_simplified.lean`)
 ```lean
-inductive Arrow : Type → Type → Type 1
+inductive Arrow : Type  Type  Type 1
   | id   : Arrow a a
   | unit : Arrow Unit Unit
-  | comp : Arrow β γ → Arrow α β → Arrow α γ
+  | comp : Arrow β γ  Arrow α β  Arrow α γ
 deriving Repr
 
 def Arrow.compose (f : Arrow β γ) (g : Arrow α β) : Arrow α γ :=
@@ -766,7 +766,7 @@ builtin_initialize matcherExt : EnvExtension (PHashMap (Expr × Bool) Name) ← 
 
 /-- Similar to `mkAuxDefinition`, but uses the cache `matcherExt`.
    It also returns an Boolean that indicates whether a new matcher function was added to the environment or not. -/
-def mkMatcherAuxDefinition (name : Name) (type : Expr) (value : Expr) : MetaM (Expr × Option (MatcherInfo → MetaM Unit)) := do
+def mkMatcherAuxDefinition (name : Name) (type : Expr) (value : Expr) : MetaM (Expr × Option (MatcherInfo  MetaM Unit)) := do
   trace[Meta.Match.debug] "{name} : {type} := {value}"
   let compile := bootstrap.genMatcherCode.get (← getOptions)
   let result ← Closure.mkValueTypeClosure type value (zetaDelta := false)
@@ -779,7 +779,7 @@ def mkMatcherAuxDefinition (name : Name) (type : Expr) (value : Expr) : MetaM (E
     let decl := Declaration.defnDecl (← mkDefinitionValInferrringUnsafe name result.levelParams.toList
       result.type result.value .abbrev)
     trace[Meta.Match.debug] "{name} : {result.type} := {result.value}"
-    let addMatcher : MatcherInfo → MetaM Unit := fun mi => do
+    let addMatcher : MatcherInfo  MetaM Unit := fun mi => do
       addDecl decl
       modifyEnv fun env => matcherExt.modifyState env fun s => s.insert (result.value, compile) name
       addMatcherInfo name mi
@@ -965,7 +965,7 @@ def getMkMatcherInputInContext (matcherApp : MatcherApp) : MetaM MkMatcherInput 
   return { matcherName, matchType, discrInfos := matcherInfo.discrInfos, lhss := lhss.toList }
 
 /-- This function is only used for testing purposes -/
-def withMkMatcherInput (matcherName : Name) (k : MkMatcherInput → MetaM α) : MetaM α := do
+def withMkMatcherInput (matcherName : Name) (k : MkMatcherInput  MetaM α) : MetaM α := do
   let some matcherInfo ← getMatcherInfo? matcherName | throwError "not a matcher: {matcherName}"
   let matcherConst ← getConstInfo matcherName
   forallBoundedTelescope matcherConst.type (some matcherInfo.arity) fun xs _ => do

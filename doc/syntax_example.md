@@ -14,8 +14,8 @@ We begin by defining an inductive data type of the grammar we wish to parse:
 
 ```lean,ignore
 inductive Dyck : Type where
-  | round : Dyck → Dyck  -- ( <inner> )
-  | curly : Dyck → Dyck  -- { <inner> }
+  | round : Dyck  Dyck  -- ( <inner> )
+  | curly : Dyck  Dyck  -- { <inner> }
   | leaf : Dyck
 ```
 

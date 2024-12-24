@@ -30,7 +30,7 @@ private partial def addNonRecPreDefs (fixedPrefixSize : Nat) (argsPacker : ArgsP
     trace[Elab.definition.wf] "{preDef.declName} := {value}"
     addNonRec { preDef with value } (applyAttrAfterCompilation := false) (all := all)
 
-partial def withCommonTelescope (preDefs : Array PreDefinition) (k : Array Expr → Array Expr → TermElabM α) : TermElabM α :=
+partial def withCommonTelescope (preDefs : Array PreDefinition) (k : Array Expr  Array Expr  TermElabM α) : TermElabM α :=
   go #[] (preDefs.map (·.value))
 where
   go (fvars : Array Expr) (vals : Array Expr) : TermElabM α := do
@@ -71,7 +71,7 @@ Collect the names of the varying variables (after the fixed prefix); this also d
 arity for the well-founded translations, and is turned into an `ArgsPacker`.
 We use the term to determine the arity, but take the name from the type, for better names in the
 ```
-fun : (n : Nat) → Nat | 0 => 0 | n+1 => fun n
+fun : (n : Nat)  Nat | 0 => 0 | n+1 => fun n
 ```
 idiom.
 -/

@@ -474,13 +474,13 @@ theorem drop_sub_one {l : List α} {n : Nat} (h : 0 < n) :
 
 /-! ### findIdx -/
 
-theorem false_of_mem_take_findIdx {xs : List α} {p : α → Bool} (h : x ∈ xs.take (xs.findIdx p)) :
+theorem false_of_mem_take_findIdx {xs : List α} {p : α  Bool} (h : x ∈ xs.take (xs.findIdx p)) :
     p x = false := by
   simp only [mem_take_iff_getElem, forall_exists_index] at h
   obtain ⟨i, h, rfl⟩ := h
   exact not_of_lt_findIdx (by omega)
 
-@[simp] theorem findIdx_take {xs : List α} {n : Nat} {p : α → Bool} :
+@[simp] theorem findIdx_take {xs : List α} {n : Nat} {p : α  Bool} :
     (xs.take n).findIdx p = min n (xs.findIdx p) := by
   induction xs generalizing n with
   | nil => simp
@@ -492,7 +492,7 @@ theorem false_of_mem_take_findIdx {xs : List α} {p : α → Bool} (h : x ∈ xs
       · simp
       · rw [Nat.add_min_add_right]
 
-@[simp] theorem findIdx?_take {xs : List α} {n : Nat} {p : α → Bool} :
+@[simp] theorem findIdx?_take {xs : List α} {n : Nat} {p : α  Bool} :
     (xs.take n).findIdx? p = (xs.findIdx? p).bind (Option.guard (fun i => i < n)) := by
   induction xs generalizing n with
   | nil => simp
@@ -504,7 +504,7 @@ theorem false_of_mem_take_findIdx {xs : List α} {p : α → Bool} (h : x ∈ xs
       · simp
       · simp [ih, Option.guard_comp, Option.bind_map]
 
-@[simp] theorem min_findIdx_findIdx {xs : List α} {p q : α → Bool} :
+@[simp] theorem min_findIdx_findIdx {xs : List α} {p q : α  Bool} :
     min (xs.findIdx p) (xs.findIdx q) = xs.findIdx (fun a => p a || q a) := by
   induction xs with
   | nil => simp
@@ -514,7 +514,7 @@ theorem false_of_mem_take_findIdx {xs : List α} {p : α → Bool} (h : x ∈ xs
 
 /-! ### takeWhile -/
 
-theorem takeWhile_eq_take_findIdx_not {xs : List α} {p : α → Bool} :
+theorem takeWhile_eq_take_findIdx_not {xs : List α} {p : α  Bool} :
     takeWhile p xs = take (xs.findIdx (fun a => !p a)) xs := by
   induction xs with
   | nil => simp
@@ -522,7 +522,7 @@ theorem takeWhile_eq_take_findIdx_not {xs : List α} {p : α → Bool} :
     simp only [takeWhile_cons, ih, findIdx_cons, cond_eq_if, Bool.not_eq_eq_eq_not, Bool.not_true]
     split <;> simp_all
 
-theorem dropWhile_eq_drop_findIdx_not {xs : List α} {p : α → Bool} :
+theorem dropWhile_eq_drop_findIdx_not {xs : List α} {p : α  Bool} :
     dropWhile p xs = drop (xs.findIdx (fun a => !p a)) xs := by
   induction xs with
   | nil => simp
@@ -536,7 +536,7 @@ theorem dropWhile_eq_drop_findIdx_not {xs : List α} {p : α → Bool} :
   cases n with
   | zero => simp
   | succ n =>
-    suffices 1 < m → m - (n + 1) % m + min ((n + 1) % m) m = m by
+    suffices 1 < m  m - (n + 1) % m + min ((n + 1) % m) m = m by
       simpa [rotateLeft]
     intro h
     rw [Nat.min_eq_left (Nat.le_of_lt (Nat.mod_lt _ (by omega)))]
@@ -549,7 +549,7 @@ theorem dropWhile_eq_drop_findIdx_not {xs : List α} {p : α → Bool} :
   cases n with
   | zero => simp
   | succ n =>
-    suffices 1 < m → m - (m - (n + 1) % m) + min (m - (n + 1) % m) m = m by
+    suffices 1 < m  m - (m - (n + 1) % m) + min (m - (n + 1) % m) m = m by
       simpa [rotateRight]
     intro h
     have : (n + 1) % m < m := Nat.mod_lt _ (by omega)
@@ -558,19 +558,19 @@ theorem dropWhile_eq_drop_findIdx_not {xs : List α} {p : α → Bool} :
 
 /-! ### zipWith -/
 
-@[simp] theorem length_zipWith (f : α → β → γ) (l₁ l₂) :
+@[simp] theorem length_zipWith (f : α  β  γ) (l₁ l₂) :
     length (zipWith f l₁ l₂) = min (length l₁) (length l₂) := by
   induction l₁ generalizing l₂ <;> cases l₂ <;>
     simp_all [succ_min_succ, Nat.zero_min, Nat.min_zero]
 
-theorem lt_length_left_of_zipWith {f : α → β → γ} {i : Nat} {l : List α} {l' : List β}
+theorem lt_length_left_of_zipWith {f : α  β  γ} {i : Nat} {l : List α} {l' : List β}
     (h : i < (zipWith f l l').length) : i < l.length := by rw [length_zipWith] at h; omega
 
-theorem lt_length_right_of_zipWith {f : α → β → γ} {i : Nat} {l : List α} {l' : List β}
+theorem lt_length_right_of_zipWith {f : α  β  γ} {i : Nat} {l : List α} {l' : List β}
     (h : i < (zipWith f l l').length) : i < l'.length := by rw [length_zipWith] at h; omega
 
 @[simp]
-theorem getElem_zipWith {f : α → β → γ} {l : List α} {l' : List β}
+theorem getElem_zipWith {f : α  β  γ} {l : List α} {l' : List β}
     {i : Nat} {h : i < (zipWith f l l').length} :
     (zipWith f l l')[i] =
       f (l[i]'(lt_length_left_of_zipWith h))

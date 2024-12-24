@@ -8,7 +8,7 @@ info: Try this: rw [List.map_append]
 -- "no goals"
 -/
 #guard_msgs in
-example (f : α → β) (L M : List α) : (L ++ M).map f = L.map f ++ M.map f := by
+example (f : α  β) (L M : List α) : (L ++ M).map f = L.map f ++ M.map f := by
   rw?
 
 /--
@@ -39,7 +39,7 @@ axiom K : Type
 @[instance] axiom K.hasOne : OfNat K 1
 @[instance] axiom K.hasIntCoe : Coe K Int
 
-noncomputable def foo : K → K := test_sorry
+noncomputable def foo : K  K := test_sorry
 
 #guard_msgs(drop info) in
 example : foo x = 1 ↔ ∃ k : Int, x = k := by
@@ -68,7 +68,7 @@ example (n : Nat) : let y := 3; n + y = 3 + n := by
   rw?
 
 axiom α : Type
-axiom f : α → α
+axiom f : α  α
 axiom z : α
 axiom f_eq (n) : f n = z
 
@@ -101,7 +101,7 @@ info: Try this: rw [h p]
 -- "no goals"
 -/
 #guard_msgs in
-example {P : Prop} (p : P) (h : P → 1 = 2) : 2 = 1 := by
+example {P : Prop} (p : P) (h : P  1 = 2) : 2 = 1 := by
   rw?
 
 -- Use `solve_by_elim` to discharge side conditions.
@@ -110,7 +110,7 @@ info: Try this: rw [h (f p)]
 -- "no goals"
 -/
 #guard_msgs in
-example {P Q : Prop} (p : P) (f : P → Q) (h : Q → 1 = 2) : 2 = 1 := by
+example {P Q : Prop} (p : P) (f : P  Q) (h : Q  1 = 2) : 2 = 1 := by
   rw?
 
 -- Rewrite in reverse, discharging side conditions from local hypotheses.
@@ -119,6 +119,6 @@ info: Try this: rw [← h₁ p]
 -- Q a
 -/
 #guard_msgs in
-example {P : Prop} (p : P) (Q : α → Prop) (a b : α) (h₁ : P → a = b) (w : Q a) : Q b := by
+example {P : Prop} (p : P) (Q : α  Prop) (a b : α) (h₁ : P  a = b) (w : Q a) : Q b := by
   rw?
   exact w

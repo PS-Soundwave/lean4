@@ -1,10 +1,10 @@
 import init.data.hashmap.basic
 
-def mkMap (s : String) : Nat → HashMap String Nat → HashMap String Nat
+def mkMap (s : String) : Nat  HashMap String Nat  HashMap String Nat
 | 0     m := m
 | (n+1) m := mkMap n (m.insert (s ++ toString n) n)
 
-def checkMap (s : String) (m : HashMap String Nat) : Nat → IO Unit
+def checkMap (s : String) (m : HashMap String Nat) : Nat  IO Unit
 | 0     := pure ()
 | (n+1) := do
   let key := s ++ toString n,

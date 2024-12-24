@@ -1,23 +1,23 @@
 
-def hello : (x : Nat) → (h : x = x) → True := by
+def hello : (x : Nat)  (h : x = x)  True := by
   intro x
   --^ goals
   intro
 --^ goals
   trivial
 
-def hello2 : (x : Nat) → (h : x = x) → True := by
+def hello2 : (x : Nat)  (h : x = x)  True := by
   intros
 --^ goals
   trivial
 
 
-theorem qqww (x y : Nat) (f : (α → x = y)) (h : y = x) : True := by
+theorem qqww (x y : Nat) (f : (α  x = y)) (h : y = x) : True := by
   rw [h] at f
    --^ goals
   trivial
 
-theorem qqww2 (x y : Nat) (f : (α → x = y)) (h : y = x) : True := by
+theorem qqww2 (x y : Nat) (f : (α  x = y)) (h : y = x) : True := by
   rw [h] at f
        --^ goals
   trivial

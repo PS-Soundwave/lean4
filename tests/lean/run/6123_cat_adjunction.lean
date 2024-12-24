@@ -4,14 +4,14 @@ universe u v
 
 namespace CategoryTheory
 
-variable {c : Type u → Type v}
+variable {c : Type u  Type v}
 
-structure Bundled (c : Type u → Type v) : Type max (u + 1) v where
+structure Bundled (c : Type u  Type v) : Type max (u + 1) v where
   α : Type u
   str : c α := by infer_instance
 
 set_option checkBinderAnnotations false in
-def Bundled.of {c : Type u → Type v} (α : Type u) [str : c α] : Bundled c :=
+def Bundled.of {c : Type u  Type v} (α : Type u) [str : c α] : Bundled c :=
   ⟨α, str⟩
 
 end CategoryTheory
@@ -27,8 +27,8 @@ universe u v
 variable {α : Sort u} {β : Sort v}
 
 structure Equiv (α : Sort _) (β : Sort _) where
-  protected toFun : α → β
-  protected invFun : β → α
+  protected toFun : α  β
+  protected invFun : β  α
 
 infixl:25 " ≃ " => Equiv
 
@@ -41,13 +41,13 @@ section Mathlib.Combinatorics.Quiver.Basic
 universe v v₁ v₂ u u₁ u₂
 
 class Quiver (V : Type u) where
-  Hom : V → V → Sort v
+  Hom : V  V  Sort v
 
 infixr:10 " ⟶ " => Quiver.Hom
 
 structure Prefunctor (V : Type u₁) [Quiver.{v₁} V] (W : Type u₂) [Quiver.{v₂} W] where
-  obj : V → W
-  map : ∀ {X Y : V}, (X ⟶ Y) → (obj X ⟶ obj Y)
+  obj : V  W
+  map : ∀ {X Y : V}, (X ⟶ Y)  (obj X ⟶ obj Y)
 
 end Mathlib.Combinatorics.Quiver.Basic
 
@@ -59,7 +59,7 @@ namespace CategoryTheory
 
 class CategoryStruct (obj : Type u) extends Quiver.{v + 1} obj : Type max u (v + 1) where
   id : ∀ X : obj, Hom X X
-  comp : ∀ {X Y Z : obj}, (X ⟶ Y) → (Y ⟶ Z) → (X ⟶ Z)
+  comp : ∀ {X Y Z : obj}, (X ⟶ Y)  (Y ⟶ Z)  (X ⟶ Z)
 
 scoped notation "𝟙" => CategoryStruct.id
 scoped infixr:80 " ≫ " => CategoryStruct.comp
@@ -239,8 +239,8 @@ protected abbrev eqToHom {X Y : Discrete α} (h : X.as = Y.as) : X ⟶ Y :=
 
 variable {C : Type u₂} [Category.{v₂} C]
 
-def functor {I : Type u₁} (F : I → C) : Discrete I ⥤ C where
-  obj := F ∘ Discrete.as
+def functor {I : Type u₁} (F : I  C) : Discrete I ⥤ C where
+  obj := F  Discrete.as
   map {X Y} f := by
     dsimp
     rcases f with ⟨⟨h⟩⟩
@@ -260,9 +260,9 @@ namespace CategoryTheory
 universe v v' w u u'
 
 instance types : Category (Type u) where
-  Hom a b := a → b
+  Hom a b := a  b
   id _ := id
-  comp f g := g ∘ f
+  comp f g := g  f
 
 end CategoryTheory
 
@@ -339,11 +339,11 @@ def typeToCat : Type u ⥤ Cat where
   obj X := Cat.of (Discrete X)
   map := fun {X} {Y} f => by
     dsimp
-    exact Discrete.functor (Discrete.mk ∘ f)
+    exact Discrete.functor (Discrete.mk  f)
 
 @[simp] theorem typeToCat_obj (X : Type u) : typeToCat.obj X = Cat.of (Discrete X) := rfl
 @[simp] theorem typeToCat_map {X Y : Type u} (f : X ⟶ Y) :
-  typeToCat.map f = Discrete.functor (Discrete.mk ∘ f) := rfl
+  typeToCat.map f = Discrete.functor (Discrete.mk  f) := rfl
 
 end CategoryTheory
 
@@ -408,7 +408,7 @@ variable {J : Type u₁} [Category.{v₁} J]
 
 def Zag (j₁ j₂ : J) : Prop := sorry
 
-def Zigzag : J → J → Prop := sorry
+def Zigzag : J  J  Prop := sorry
 
 def Zigzag.setoid (J : Type u₂) [Category.{v₁} J] : Setoid J where
   r := Zigzag
@@ -435,15 +435,15 @@ def ConnectedComponents (J : Type u₁) [Category.{v₁} J] : Type u₁ :=
 
 def Functor.mapConnectedComponents {K : Type u₂} [Category.{v₂} K] (F : J ⥤ K)
     (x : ConnectedComponents J) : ConnectedComponents K :=
-  x |> Quotient.lift (Quotient.mk (Zigzag.setoid _) ∘ F.obj) sorry
+  x |> Quotient.lift (Quotient.mk (Zigzag.setoid _)  F.obj) sorry
 
 def ConnectedComponents.functorToDiscrete   (X : Type _)
-    (f : ConnectedComponents J → X) : J ⥤ Discrete X where
+    (f : ConnectedComponents J  X) : J ⥤ Discrete X where
   obj Y :=  Discrete.mk (f (Quotient.mk (Zigzag.setoid _) Y))
   map g := Discrete.eqToHom sorry
 
 def ConnectedComponents.liftFunctor (J) [Category J] {X : Type _} (F :J ⥤ Discrete X) :
-    (ConnectedComponents J → X) :=
+    (ConnectedComponents J  X) :=
   Quotient.lift (fun c => (F.obj c).as) sorry
 
 end CategoryTheory
@@ -463,7 +463,7 @@ private def typeToCatObjectsAdjHomEquiv : (typeToCat.obj X ⟶ C) ≃ (X ⟶ Cat
 
 private def typeToCatObjectsAdjCounitApp : (Cat.objects ⋙ typeToCat).obj C ⥤ C where
   obj := Discrete.as
-  map := eqToHom ∘ Discrete.eq_of_hom
+  map := eqToHom  Discrete.eq_of_hom
 
 /-- `typeToCat : Type ⥤ Cat` is left adjoint to `Cat.objects : Cat ⥤ Type` -/
 def typeToCatObjectsAdj : typeToCat ⊣ Cat.objects :=

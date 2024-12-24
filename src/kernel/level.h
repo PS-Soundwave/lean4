@@ -19,11 +19,11 @@ struct level_cell;
 /**
 inductive level
 | zero   : level
-| succ   : level → level
-| max    : level → level → level
-| imax   : level → level → level
-| param  : name → level
-| mvar   : name → level
+| succ   : level  level
+| max    : level  level  level
+| imax   : level  level  level
+| param  : name  level
+| mvar   : name  level
 
 We level.imax to handle Pi-types.
 */

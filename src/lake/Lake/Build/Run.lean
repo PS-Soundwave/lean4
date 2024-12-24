@@ -107,10 +107,10 @@ def reportJob (job : OpaqueJob) : MonitorM PUnit := do
   let failed := log.hasEntries ∧ maxLv ≥ failLv
   if failed ∧ ¬optional then
     modify fun s => {s with failures := s.failures.push caption}
-  let hasOutput := failed ∨ (log.hasEntries ∧ maxLv ≥ outLv)
+  let hasOutput := failed  (log.hasEntries ∧ maxLv ≥ outLv)
   let showJob :=
-    (¬ optional ∨ showOptional) ∧
-    (hasOutput ∨ (showProgress ∧ ¬ useAnsi ∧ action ≥ minAction))
+    (¬ optional  showOptional) ∧
+    (hasOutput  (showProgress ∧ ¬ useAnsi ∧ action ≥ minAction))
   if showJob then
     let verb := action.verb failed
     let icon := if hasOutput then maxLv.icon else '✔'
@@ -213,7 +213,7 @@ def Workspace.runFetchM
     flush out
   let (a?, log) ← ((withLoggedIO build).run.run'.run ctx).run?
   let failed := log.hasEntries ∧ log.maxLv ≥ failLv
-  if failed ∨ (log.hasEntries ∧ log.maxLv ≥ outLv) then
+  if failed  (log.hasEntries ∧ log.maxLv ≥ outLv) then
     let icon := log.maxLv.icon
     let caption := s!"{icon} [?/?] {caption}"
     if useAnsi then

@@ -18,7 +18,7 @@ structure A where
   p: Prop
   q: True
 
-example := (λ ⟨_,_⟩ ↦ True.intro : (A.mk (And True True) (by exact True.intro)).p → True)
+example := (λ ⟨_,_⟩ ↦ True.intro : (A.mk (And True True) (by exact True.intro)).p  True)
 
 end Test1
 
@@ -33,7 +33,7 @@ structure A where
   q: True
 
 structure B extends A where
-  q': p → True
+  q': p  True
 
 example: B where
   p := True ∧ True
@@ -53,10 +53,10 @@ class Preorder (α : Type) extends LE α, LT α where
   lt := fun a b => a ≤ b ∧ ¬b ≤ a
 
 class PartialOrder (α : Type) extends Preorder α where
-  le_antisymm : ∀ a b : α, a ≤ b → b ≤ a → a = b
+  le_antisymm : ∀ a b : α, a ≤ b  b ≤ a  a = b
 
-inductive MyOrder : Nat × Nat → Nat × Nat → Prop
-  | within {x u m : Nat} : x ≤ u → MyOrder (x, m) (u, m)
+inductive MyOrder : Nat × Nat  Nat × Nat  Prop
+  | within {x u m : Nat} : x ≤ u  MyOrder (x, m) (u, m)
 
 instance : PartialOrder (Nat × Nat) where
   le := MyOrder
@@ -71,13 +71,13 @@ namespace Test4
 Example from issue 5925 (by @Komyyy)
 -/
 
-def Injective (f : α → β) : Prop :=
-  ∀ ⦃a₁ a₂⦄, f a₁ = f a₂ → a₁ = a₂
+def Injective (f : α  β) : Prop :=
+  ∀ ⦃a₁ a₂⦄, f a₁ = f a₂  a₁ = a₂
 
 axiom my_mul_right_injective {M₀ : Type} [Mul M₀] [Zero M₀] {a : M₀} (ha : a ≠ 0) :
   Injective fun (x : M₀) ↦ a * x
 
-def mul2 : { f : Nat → Nat // Injective f } := ⟨fun x : Nat ↦ 2 * x, my_mul_right_injective nofun⟩
+def mul2 : { f : Nat  Nat // Injective f } := ⟨fun x : Nat ↦ 2 * x, my_mul_right_injective nofun⟩
 
 end Test4
 
@@ -91,7 +91,7 @@ structure ValVar (D: Type) where
   d: D
   x: Nat
 
-def Set (T : Type) := T → Prop
+def Set (T : Type) := T  Prop
 
 structure Salg where
   D: Type

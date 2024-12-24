@@ -104,7 +104,7 @@ Reorders constructor arguments to improve the effectiveness of the `fixedIndices
 
 The idea is quite simple. Given a constructor type of the form
 ```
-(a₁ : A₁) → ... → (aₙ : Aₙ) → C b₁ ... bₘ
+(a₁ : A₁)  ...  (aₙ : Aₙ)  C b₁ ... bₘ
 ```
 We try to find the longest prefix `b₁ ... bᵢ`, `i ≤ m` s.t.
 - each `bₖ` is in `{a₁, ..., aₙ}`
@@ -142,17 +142,17 @@ private def reorderCtorArgs (ctorType : Expr) : MetaM Expr := do
          This is important when some of constructor parameters were inferred using the auto-bound implicit feature.
          For example, in the following declaration.
          ```
-          inductive Member : α → List α → Type u
+          inductive Member : α  List α  Type u
             | head : Member a (a::as)
-            | tail : Member a bs → Member a (b::bs)
+            | tail : Member a bs  Member a (b::bs)
          ```
          if we do not copy the binder names
          ```
          #check @Member.head
          ```
-         produces `@Member.head : {x : Type u_1} → {a : x} → {as : List x} → Member a (a :: as)`
+         produces `@Member.head : {x : Type u_1}  {a : x}  {as : List x}  Member a (a :: as)`
          which is correct, but a bit confusing. By copying the binder names, we obtain
-         `@Member.head : {α : Type u_1} → {a : α} → {as : List α} → Member a (a :: as)`
+         `@Member.head : {α : Type u_1}  {a : α}  {as : List α}  Member a (a :: as)`
        -/
       let C := type.getAppFn
       let binderNames := getArrowBinderNames (← instantiateMVars (← inferType C))
@@ -200,10 +200,10 @@ private def elabCtors (indFVars : Array Expr) (params : Array Expr) (r : ElabHea
           We convert metavariables in the resulting type into extra parameters. Otherwise, we would not be able to elaborate
           declarations such as
           ```
-          inductive Palindrome : List α → Prop where
+          inductive Palindrome : List α  Prop where
             | nil      : Palindrome [] -- We would get an error here saying "failed to synthesize implicit argument" at `@List.nil ?m`
-            | single   : (a : α) → Palindrome [a]
-            | sandwich : (a : α) → Palindrome as → Palindrome ([a] ++ as ++ [a])
+            | single   : (a : α)  Palindrome [a]
+            | sandwich : (a : α)  Palindrome as  Palindrome ([a] ++ as ++ [a])
           ```
           We used to also collect unassigned metavariables on `ctorParams`, but it produced counterintuitive behavior.
           For example, the following declaration used to be accepted.
@@ -212,7 +212,7 @@ private def elabCtors (indFVars : Array Expr) (params : Array Expr) (r : ElabHea
           | bar (x)
 
           #check Foo.bar
-          -- @Foo.bar : {x : Sort u_1} → x → Foo
+          -- @Foo.bar : {x : Sort u_1}  x  Foo
           ```
           which is also inconsistent with the behavior of auto implicits in definitions. For example, the following example was never accepted.
           ```

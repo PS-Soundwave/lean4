@@ -38,9 +38,9 @@ namespace List.MergeSort.Internal
 /--
 `O(min |l| |r|)`. Merge two lists using `le` as a switch.
 -/
-def mergeTR (l₁ l₂ : List α) (le : α → α → Bool) : List α :=
+def mergeTR (l₁ l₂ : List α) (le : α  α  Bool) : List α :=
   go l₁ l₂ []
-where go : List α → List α → List α → List α
+where go : List α  List α  List α  List α
   | [], l₂, acc => reverseAux acc l₂
   | l₁, [], acc => reverseAux acc l₁
   | x :: xs, y :: ys, acc =>
@@ -72,7 +72,7 @@ and should not be used elsewhere.
 -/
 def splitRevAt (n : Nat) (l : List α) : List α × List α := go l n [] where
   /-- Auxiliary for `splitAtRev`: `splitAtRev.go xs n acc = ((take n xs).reverse ++ acc, drop n xs)`. -/
-  go : List α → Nat → List α → List α × List α
+  go : List α  Nat  List α  List α × List α
   | x :: xs, n+1, acc => go xs n (x :: acc)
   | xs, _, acc => (acc, xs)
 
@@ -97,9 +97,9 @@ This version uses the tail-recurive `mergeTR` function as a subroutine.
 This is not the final version we use at runtime, as `mergeSortTR₂` is faster.
 This definition is useful as an intermediate step in proving the `@[csimp]` lemma for `mergeSortTR₂`.
 -/
-def mergeSortTR (l : List α) (le : α → α → Bool := by exact fun a b => a ≤ b) : List α :=
+def mergeSortTR (l : List α) (le : α  α  Bool := by exact fun a b => a ≤ b) : List α :=
   run ⟨l, rfl⟩
-where run : {n : Nat} → { l : List α // l.length = n } → List α
+where run : {n : Nat}  { l : List α // l.length = n }  List α
   | 0, ⟨[], _⟩ => []
   | 1, ⟨[a], _⟩ => [a]
   | _+2, xs =>
@@ -130,16 +130,16 @@ Faster version of `mergeSortTR`, which avoids unnecessary list reversals.
 -- Per the benchmark in `tests/bench/mergeSort/`
 -- (which averages over 4 use cases: already sorted lists, reverse sorted lists, almost sorted lists, and random lists),
 -- for lists of length 10^6, `mergeSortTR₂` is about 20% faster than `mergeSortTR`.
-def mergeSortTR₂ (l : List α) (le : α → α → Bool := by exact fun a b => a ≤ b) : List α :=
+def mergeSortTR₂ (l : List α) (le : α  α  Bool := by exact fun a b => a ≤ b) : List α :=
   run ⟨l, rfl⟩
 where
-  run : {n : Nat} → { l : List α // l.length = n } → List α
+  run : {n : Nat}  { l : List α // l.length = n }  List α
   | 0, ⟨[], _⟩ => []
   | 1, ⟨[a], _⟩ => [a]
   | _+2, xs =>
     let (l, r) := splitRevInTwo xs
     mergeTR (run' l) (run r) le
-  run' : {n : Nat} → { l : List α // l.length = n } → List α
+  run' : {n : Nat}  { l : List α // l.length = n }  List α
   | 0, ⟨[], _⟩ => []
   | 1, ⟨[a], _⟩ => [a]
   | _+2, xs =>
@@ -164,7 +164,7 @@ theorem splitRevInTwo_snd (l : { l : List α // l.length = n }) :
     (splitRevInTwo l).2 = ⟨(splitInTwo l).2.1, by simp; omega⟩ := by
   simp only [splitRevInTwo, splitRevAt_eq, reverse_take, splitInTwo_snd]
 
-theorem mergeSortTR_run_eq_mergeSort : {n : Nat} → (l : { l : List α // l.length = n }) → mergeSortTR.run le l = mergeSort l.1 le
+theorem mergeSortTR_run_eq_mergeSort : {n : Nat}  (l : { l : List α // l.length = n })  mergeSortTR.run le l = mergeSort l.1 le
   | 0, ⟨[], _⟩
   | 1, ⟨[a], _⟩ => by simp [mergeSortTR.run, mergeSort]
   | n+2, ⟨a :: b :: l, h⟩ => by
@@ -181,7 +181,7 @@ theorem mergeSort_eq_mergeSortTR : @mergeSort = @mergeSortTR := by
 -- This mutual block is unfortunately quite slow to elaborate.
 set_option maxHeartbeats 400000 in
 mutual
-theorem mergeSortTR₂_run_eq_mergeSort : {n : Nat} → (l : { l : List α // l.length = n }) → mergeSortTR₂.run le l = mergeSort l.1 le
+theorem mergeSortTR₂_run_eq_mergeSort : {n : Nat}  (l : { l : List α // l.length = n })  mergeSortTR₂.run le l = mergeSort l.1 le
   | 0, ⟨[], _⟩
   | 1, ⟨[a], _⟩ => by simp [mergeSortTR₂.run, mergeSort]
   | n+2, ⟨a :: b :: l, h⟩ => by
@@ -193,7 +193,7 @@ theorem mergeSortTR₂_run_eq_mergeSort : {n : Nat} → (l : { l : List α // l.
     rw [reverse_reverse]
 termination_by n => n
 
-theorem mergeSortTR₂_run'_eq_mergeSort : {n : Nat} → (l : { l : List α // l.length = n }) → (w : l' = l.1.reverse) → mergeSortTR₂.run' le l = mergeSort l' le
+theorem mergeSortTR₂_run'_eq_mergeSort : {n : Nat}  (l : { l : List α // l.length = n })  (w : l' = l.1.reverse)  mergeSortTR₂.run' le l = mergeSort l' le
   | 0, ⟨[], _⟩, w
   | 1, ⟨[a], _⟩, w => by simp_all [mergeSortTR₂.run', mergeSort]
   | n+2, ⟨a :: b :: l, h⟩, w => by

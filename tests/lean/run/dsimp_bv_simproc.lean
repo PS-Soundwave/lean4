@@ -1,6 +1,6 @@
 open BitVec
 
-variable (write : (n : Nat) → BitVec 64 → BitVec (n * 8) → Type → Type)
+variable (write : (n : Nat)  BitVec 64  BitVec (n * 8)  Type  Type)
 
 theorem write_simplify_test_0 (a x y : BitVec 64)
   (h : ((8 * 8) + 8 * 8) = 2 * ((8 * 8) / 8) * 8) :
@@ -12,7 +12,7 @@ theorem write_simplify_test_0 (a x y : BitVec 64)
 /--
 warning: declaration uses 'sorry'
 ---
-info: write : (n : Nat) → BitVec 64 → BitVec (n * 8) → Type → Type
+info: write : (n : Nat)  BitVec 64  BitVec (n * 8)  Type  Type
 s aux : Type
 a x y : BitVec 64
 h : 128 = 128

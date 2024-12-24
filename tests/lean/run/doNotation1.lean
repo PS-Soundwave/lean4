@@ -94,7 +94,7 @@ if x > 10 then g x else pure none
 
 syntax:max (name := doHash) "#" : term
 
-partial def expandHash : Syntax → StateT Bool MacroM Syntax
+partial def expandHash : Syntax  StateT Bool MacroM Syntax
 | Syntax.node i k args =>
   if k == `doHash then do set true; `(←MonadState.get)
   else do

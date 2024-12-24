@@ -15,7 +15,7 @@ structure UnionFind (α) where
 -- set_option simprocs false
 
 def rankMaxAux (self : UnionFind α) : ∀ (i : Nat),
-    {k : Nat // ∀ j, j < i → ∀ h, self.arr[j].rank ≤ k}
+    {k : Nat // ∀ j, j < i  ∀ h, self.arr[j].rank ≤ k}
   | 0 => ⟨0, fun j hj => nomatch hj⟩
   | i+1 => by
     let ⟨k, H⟩ := rankMaxAux self i

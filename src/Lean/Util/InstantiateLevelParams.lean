@@ -11,7 +11,7 @@ namespace Lean.Expr
 /--
 Instantiate level parameters
 -/
-@[specialize] def instantiateLevelParamsCore (s : Name → Option Level) (e : Expr) : Expr :=
+@[specialize] def instantiateLevelParamsCore (s : Name  Option Level) (e : Expr) : Expr :=
   e.replace replaceFn
 where
   @[specialize] replaceFn (e : Expr) : Option Expr :=
@@ -20,7 +20,7 @@ where
     | sort u => e.updateSort! (u.substParams s)
     | _ => none
 
-private def getParamSubst : List Name → List Level → Name → Option Level
+private def getParamSubst : List Name  List Level  Name  Option Level
   | p::ps, u::us, p' => if p == p' then some u else getParamSubst ps us p'
   | _,     _,     _  => none
 

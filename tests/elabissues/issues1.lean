@@ -1,4 +1,4 @@
-def f : List Int → Bool := fun _ => true
+def f : List Int  Bool := fun _ => true
 
 def ex1 : Bool :=
 f [1, 2, 3]  -- Works
@@ -23,12 +23,12 @@ def ex5 (xs : List String) :=
 xs.foldl (fun r x => r.push x) Array.empty
 
 inductive Expr
-| val : Nat → Expr
-| app : Expr → Expr → Expr
+| val : Nat  Expr
+| app : Expr  Expr  Expr
 
 instance : HasCoe Nat Expr := ⟨Expr.val⟩
 
-def foo : Expr → Expr := fun e => e
+def foo : Expr  Expr := fun e => e
 
 def ex6 :=
 /- `1` is elaborated to `HasOne.one ?A ?S : ?A`.

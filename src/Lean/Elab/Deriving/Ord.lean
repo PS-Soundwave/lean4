@@ -33,7 +33,7 @@ where
         let mut ctorArgs1 := #[]
         let mut ctorArgs2 := #[]
         -- construct RHS top-down as continuation over the remaining comparison
-        let mut rhsCont : Term → TermElabM Term := fun rhs => pure rhs
+        let mut rhsCont : Term  TermElabM Term := fun rhs => pure rhs
         -- add `_` for inductive parameters, they are inaccessible
         for _ in [:indVal.numParams] do
           ctorArgs1 := ctorArgs1.push (← `(_))

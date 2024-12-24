@@ -1,12 +1,12 @@
 universe u
 
-/-- A curried function of exactly `n` arguments; `α → ... → α → β` -/
-abbrev CurriedFun (α β : Type u) : Nat → Type u
+/-- A curried function of exactly `n` arguments; `α  ...  α  β` -/
+abbrev CurriedFun (α β : Type u) : Nat  Type u
   | 0   => β
-  | n+1 => α → CurriedFun α β n
+  | n+1 => α  CurriedFun α β n
 
-/-- A curried type function of `n` arguments, i.e., `Type u → Type u → ... → Type u` -/
-abbrev CurriedTypeFun : Nat → Type (u+1)
+/-- A curried type function of `n` arguments, i.e., `Type u  Type u  ...  Type u` -/
+abbrev CurriedTypeFun : Nat  Type (u+1)
   := CurriedFun (Type u) (Type u)
 
 /-- In my actual code, `GenTypeFun` is distinct from `CurriedTypeFun`, and `m` is used -/

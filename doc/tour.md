@@ -63,7 +63,7 @@ end BasicFunctions
 -- `twice` takes two arguments `f` and `a` where
 -- `f` is a function from natural numbers to natural numbers, and
 -- `a` is a natural number.
-def twice (f : Nat → Nat) (a : Nat) :=
+def twice (f : Nat  Nat) (a : Nat) :=
   f (f a)
 
 -- `fun` is used to declare anonymous functions
@@ -121,7 +121,7 @@ def natOfWeekday (d : Weekday) : Nat :=
 
 #eval natOfWeekday tuesday
 
-def isMonday : Weekday → Bool :=
+def isMonday : Weekday  Bool :=
   -- `fun` + `match`  is a common idiom.
   -- The following expression is syntax sugar for
   -- `fun d => match d with | monday => true | _ => false`.

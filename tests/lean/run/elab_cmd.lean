@@ -55,7 +55,7 @@ h3 : x = y
 ⊢ y = z
 -/
 #guard_msgs in
-theorem tst (x y z : Nat) : y = z → x = x → x = y → x = z :=
+theorem tst (x y z : Nat) : y = z  x = x  x = y  x = z :=
 by {
   intro h1; intro h2; intro h3;
   apply @Eq.trans;

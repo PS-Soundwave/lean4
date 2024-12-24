@@ -2,10 +2,10 @@
 namespace Example
 
 class ToString (α : Type u) where
-  toString : α → String
+  toString : α  String
 
 #check @ToString.toString
--- {α : Type u_1} → [self : ToString α] → α → String
+-- {α : Type u_1}  [self : ToString α]  α  String
 
 instance : ToString String where
   toString s := s

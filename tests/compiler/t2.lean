@@ -1,22 +1,22 @@
 /- Benchmark for new code generator -/
 inductive Expr
-| Val : Int → Expr
-| Var : String → Expr
-| Add : Expr → Expr → Expr
-| Mul : Expr → Expr → Expr
-| Pow : Expr → Expr → Expr
-| Ln  : Expr → Expr
+| Val : Int  Expr
+| Var : String  Expr
+| Add : Expr  Expr  Expr
+| Mul : Expr  Expr  Expr
+| Pow : Expr  Expr  Expr
+| Ln  : Expr  Expr
 
 namespace Expr
 
-partial def pown : Int → Int → Int
+partial def pown : Int  Int  Int
 | a, 0 => 1
 | a, 1 => a
 | a, n =>
   let b := pown a (n / 2);
   b * b * (if n % 2 = 0 then 1 else a)
 
-partial def add : Expr → Expr → Expr
+partial def add : Expr  Expr  Expr
 | Val n,     Val m           => Val (n + m)
 | Val 0,     f               => f
 | f,         Val 0           => f
@@ -26,7 +26,7 @@ partial def add : Expr → Expr → Expr
 | Add f g,   h               => add f (add g h)
 | f,         g               => Add f g
 
-partial def mul : Expr → Expr → Expr
+partial def mul : Expr  Expr  Expr
 | Val n,     Val m           => Val (n*m)
 | Val 0,     _               => Val 0
 | _,         Val 0           => Val 0
@@ -38,18 +38,18 @@ partial def mul : Expr → Expr → Expr
 | Mul f g,   h               => mul f (mul g h)
 | f,         g               => Mul f g
 
-def pow : Expr → Expr → Expr
+def pow : Expr  Expr  Expr
 | Val m,   Val n   => Val (pown m n)
 | _,       Val 0   => Val 1
 | f,       Val 1   => f
 | Val 0,   _       => Val 0
 | f,       g       => Pow f g
 
-def ln : Expr → Expr
+def ln : Expr  Expr
 | Val 1   => Val 0
 | f       => Ln f
 
-def d (x : String) : Expr → Expr
+def d (x : String) : Expr  Expr
 | Val _     => Val 0
 | Var y     => if x = y then Val 1 else Val 0
 | Add f g   => add (d x f) (d x g)
@@ -57,7 +57,7 @@ def d (x : String) : Expr → Expr
 | Pow f g   => mul (pow f g) (add (mul (mul g (d x f)) (pow f (Val (-1)))) (mul (ln f) (d x g)))
 | Ln f      => mul (d x f) (pow f (Val (-1)))
 
-def count : Expr → Nat
+def count : Expr  Nat
 | Val _   => 1
 | Var _   => 1
 | Add f g   => count f + count g
@@ -65,7 +65,7 @@ def count : Expr → Nat
 | Pow f g   => count f + count g
 | Ln f      => count f
 
-protected def Expr.toString : Expr → String
+protected def Expr.toString : Expr  String
 | Val n   => toString n
 | Var x   => x
 | Add f g   => "(" ++ Expr.toString f ++ " + " ++ Expr.toString g ++ ")"
@@ -76,11 +76,11 @@ protected def Expr.toString : Expr → String
 instance : ToString Expr :=
 ⟨Expr.toString⟩
 
-def nestAux (s : Nat) (f : Nat → Expr → IO Expr) : Nat → Expr → IO Expr
+def nestAux (s : Nat) (f : Nat  Expr  IO Expr) : Nat  Expr  IO Expr
 | 0,       x => pure x
 | m@(n+1), x => f (s - m) x >>= nestAux s f n
 
-def nest (f : Nat → Expr → IO Expr) (n : Nat) (e : Expr) : IO Expr :=
+def nest (f : Nat  Expr  IO Expr) (n : Nat) (e : Expr) : IO Expr :=
 nestAux n f n e
 
 def deriv (i : Nat) (f : Expr) : IO Expr :=

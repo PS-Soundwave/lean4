@@ -66,7 +66,7 @@ instance : EmptyCollection (Subarray α) :=
 instance : Inhabited (Subarray α) :=
   ⟨{}⟩
 
-@[inline] unsafe def forInUnsafe {α : Type u} {β : Type v} {m : Type v → Type w} [Monad m] (s : Subarray α) (b : β) (f : α → β → m (ForInStep β)) : m β :=
+@[inline] unsafe def forInUnsafe {α : Type u} {β : Type v} {m : Type v  Type w} [Monad m] (s : Subarray α) (b : β) (f : α  β  m (ForInStep β)) : m β :=
   let sz := USize.ofNat s.stop
   let rec @[specialize] loop (i : USize) (b : β) : m β := do
     if i < sz then
@@ -80,55 +80,55 @@ instance : Inhabited (Subarray α) :=
 
 -- TODO: provide reference implementation
 @[implemented_by Subarray.forInUnsafe]
-protected opaque forIn {α : Type u} {β : Type v} {m : Type v → Type w} [Monad m] (s : Subarray α) (b : β) (f : α → β → m (ForInStep β)) : m β :=
+protected opaque forIn {α : Type u} {β : Type v} {m : Type v  Type w} [Monad m] (s : Subarray α) (b : β) (f : α  β  m (ForInStep β)) : m β :=
   pure b
 
 instance : ForIn m (Subarray α) α where
   forIn := Subarray.forIn
 
 @[inline]
-def foldlM {α : Type u} {β : Type v} {m : Type v → Type w} [Monad m] (f : β → α → m β) (init : β) (as : Subarray α) : m β :=
+def foldlM {α : Type u} {β : Type v} {m : Type v  Type w} [Monad m] (f : β  α  m β) (init : β) (as : Subarray α) : m β :=
   as.array.foldlM f (init := init) (start := as.start) (stop := as.stop)
 
 @[inline]
-def foldrM {α : Type u} {β : Type v} {m : Type v → Type w} [Monad m] (f : α → β → m β) (init : β) (as : Subarray α) : m β :=
+def foldrM {α : Type u} {β : Type v} {m : Type v  Type w} [Monad m] (f : α  β  m β) (init : β) (as : Subarray α) : m β :=
   as.array.foldrM f (init := init) (start := as.stop) (stop := as.start)
 
 @[inline]
-def anyM {α : Type u} {m : Type → Type w} [Monad m] (p : α → m Bool) (as : Subarray α) : m Bool :=
+def anyM {α : Type u} {m : Type  Type w} [Monad m] (p : α  m Bool) (as : Subarray α) : m Bool :=
   as.array.anyM p (start := as.start) (stop := as.stop)
 
 @[inline]
-def allM {α : Type u} {m : Type → Type w} [Monad m] (p : α → m Bool) (as : Subarray α) : m Bool :=
+def allM {α : Type u} {m : Type  Type w} [Monad m] (p : α  m Bool) (as : Subarray α) : m Bool :=
   as.array.allM p (start := as.start) (stop := as.stop)
 
 @[inline]
-def forM {α : Type u} {m : Type v → Type w} [Monad m] (f : α → m PUnit) (as : Subarray α) : m PUnit :=
+def forM {α : Type u} {m : Type v  Type w} [Monad m] (f : α  m PUnit) (as : Subarray α) : m PUnit :=
   as.array.forM f (start := as.start) (stop := as.stop)
 
 @[inline]
-def forRevM {α : Type u} {m : Type v → Type w} [Monad m] (f : α → m PUnit) (as : Subarray α) : m PUnit :=
+def forRevM {α : Type u} {m : Type v  Type w} [Monad m] (f : α  m PUnit) (as : Subarray α) : m PUnit :=
   as.array.forRevM f (start := as.stop) (stop := as.start)
 
 @[inline]
-def foldl {α : Type u} {β : Type v} (f : β → α → β) (init : β) (as : Subarray α) : β :=
+def foldl {α : Type u} {β : Type v} (f : β  α  β) (init : β) (as : Subarray α) : β :=
   Id.run <| as.foldlM f (init := init)
 
 @[inline]
-def foldr {α : Type u} {β : Type v} (f : α → β → β) (init : β) (as : Subarray α) : β :=
+def foldr {α : Type u} {β : Type v} (f : α  β  β) (init : β) (as : Subarray α) : β :=
   Id.run <| as.foldrM f (init := init)
 
 @[inline]
-def any {α : Type u} (p : α → Bool) (as : Subarray α) : Bool :=
+def any {α : Type u} (p : α  Bool) (as : Subarray α) : Bool :=
   Id.run <| as.anyM p
 
 @[inline]
-def all {α : Type u} (p : α → Bool) (as : Subarray α) : Bool :=
+def all {α : Type u} (p : α  Bool) (as : Subarray α) : Bool :=
   Id.run <| as.allM p
 
 @[inline]
-def findSomeRevM? {α : Type u} {β : Type v} {m : Type v → Type w} [Monad m] (as : Subarray α) (f : α → m (Option β)) : m (Option β) :=
-  let rec @[specialize] find : (i : Nat) → i ≤ as.size → m (Option β)
+def findSomeRevM? {α : Type u} {β : Type v} {m : Type v  Type w} [Monad m] (as : Subarray α) (f : α  m (Option β)) : m (Option β) :=
+  let rec @[specialize] find : (i : Nat)  i ≤ as.size  m (Option β)
     | 0,   _ => pure none
     | i+1, h => do
       have : i < as.size := Nat.lt_of_lt_of_le (Nat.lt_succ_self _) h
@@ -141,11 +141,11 @@ def findSomeRevM? {α : Type u} {β : Type v} {m : Type v → Type w} [Monad m] 
   find as.size (Nat.le_refl _)
 
 @[inline]
-def findRevM? {α : Type} {m : Type → Type w} [Monad m] (as : Subarray α) (p : α → m Bool) : m (Option α) :=
+def findRevM? {α : Type} {m : Type  Type w} [Monad m] (as : Subarray α) (p : α  m Bool) : m (Option α) :=
   as.findSomeRevM? fun a => return if (← p a) then some a else none
 
 @[inline]
-def findRev? {α : Type} (as : Subarray α) (p : α → Bool) : Option α :=
+def findRev? {α : Type} (as : Subarray α) (p : α  Bool) : Option α :=
   Id.run <| as.findRevM? p
 
 end Subarray

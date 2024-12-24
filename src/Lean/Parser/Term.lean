@@ -181,7 +181,7 @@ It is included here until there is a suitable place for it in the reference manu
 
 When a synthetic hole appears under a binding construct, such as for example `fun (x : α) (y : β) => ?s`,
 the system creates a *delayed assignment*. This consists of
-1. A metavariable `?m` of type `(x : α) → (y : β) → γ x y` whose local context is the local context outside the `fun`,
+1. A metavariable `?m` of type `(x : α)  (y : β)  γ x y` whose local context is the local context outside the `fun`,
   where `γ x y` is the type of `?s`. Recall that `x` and `y` appear in the local context of `?s`.
 2. A delayed assigment record associating `?m` to `?s` and the variables `#[x, y]` in the local context of `?s`
 
@@ -342,10 +342,10 @@ a `_` placeholder until at least one subsequent explicit parameter is specified.
 Do *not* use strict-implicit binders unless there is a subsequent explicit parameter.
 Assuming this rule is followed, for fully applied expressions implicit and strict-implicit binders have the same behavior.
 
-Example: If `h : ∀ ⦃x : A⦄, x ∈ s → p x` and `hs : y ∈ s`,
+Example: If `h : ∀ ⦃x : A⦄, x ∈ s  p x` and `hs : y ∈ s`,
 then `h` by itself elaborates to itself without inserting `_` for the `x : A` parameter,
 and `h hs` has type `p y`.
-In contrast, if `h' : ∀ {x : A}, x ∈ s → p x`, then `h` by itself elaborates to have type `?m ∈ s → p ?m`
+In contrast, if `h' : ∀ {x : A}, x ∈ s  p x`, then `h` by itself elaborates to have type `?m ∈ s  p ?m`
 with `?m` a fresh metavariable.
 -/
 @[builtin_doc] def strictImplicitBinder (requireType := false) := leading_parser ppGroup <|
@@ -372,22 +372,22 @@ use `(_)` to inhibit this and have it be solved for by unification instead, like
     implicitBinder requireType <|> instBinder
 
 /-
-It is feasible to support dependent arrows such as `{α} → α → α` without sacrificing the quality of the error messages for the longer case.
-`{α} → α → α` would be short for `{α : Type} → α → α`
+It is feasible to support dependent arrows such as `{α}  α  α` without sacrificing the quality of the error messages for the longer case.
+`{α}  α  α` would be short for `{α : Type}  α  α`
 Here is the encoding:
 ```
 def implicitShortBinder := node `Lean.Parser.Term.implicitBinder $ "{" >> many1 binderIdent >> pushNone >> "}"
-def depArrowShortPrefix := try (implicitShortBinder >> unicodeSymbol " → " " -> ")
-def depArrowLongPrefix  := bracketedBinder true >> unicodeSymbol " → " " -> "
+def depArrowShortPrefix := try (implicitShortBinder >> unicodeSymbol "  " " -> ")
+def depArrowLongPrefix  := bracketedBinder true >> unicodeSymbol "  " " -> "
 def depArrowPrefix      := depArrowShortPrefix <|> depArrowLongPrefix
 @[builtin_term_parser] def depArrow := leading_parser depArrowPrefix >> termParser
 ```
 Note that no changes in the elaborator are needed.
-We decided to not use it because terms such as `{α} → α → α` may look too cryptic.
-Note that we did not add a `explicitShortBinder` parser since `(α) → α → α` is really cryptic as a short for `(α : Type) → α → α`.
+We decided to not use it because terms such as `{α}  α  α` may look too cryptic.
+Note that we did not add a `explicitShortBinder` parser since `(α)  α  α` is really cryptic as a short for `(α : Type)  α  α`.
 -/
 @[builtin_term_parser] def depArrow := leading_parser:25
-  bracketedBinder true >> unicodeSymbol " → " " -> " >> termParser
+  bracketedBinder true >> unicodeSymbol "  " " -> " >> termParser
 
 @[builtin_term_parser]
 def «forall» := leading_parser:leadPrec
@@ -701,7 +701,7 @@ because the difference between the arguments `a` and `b` decreases.
 
 If the function takes further argument after the colon, you can name them as follows:
 ```
-def example (a : Nat) : Nat → Nat → Nat :=
+def example (a : Nat) : Nat  Nat  Nat :=
 termination_by b c => a - b
 ```
 
@@ -888,7 +888,7 @@ is short for accessing the `i`-th field (1-indexed) of `e` if it is of a structu
 @[builtin_term_parser] def completion := trailing_parser
   checkNoWsBefore >> "."
 @[builtin_term_parser] def arrow    := trailing_parser
-  checkPrec 25 >> unicodeSymbol " → " " -> " >> termParser 25
+  checkPrec 25 >> unicodeSymbol "  " " -> " >> termParser 25
 
 /--
 Syntax kind for syntax nodes representing the field of a projection in the `InfoTree`.

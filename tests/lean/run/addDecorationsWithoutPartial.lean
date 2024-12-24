@@ -17,7 +17,7 @@ unsafe def cache (i : USize) (key : Expr) (result : Expr) : ReplaceM Expr := do
   modify fun ⟨keys, results⟩ => { keys := keys.uset i key lcProof, results := results.uset i result lcProof };
   pure result
 
-unsafe def replaceUnsafeM (size : USize) (e : Expr) (f? : (e' : Expr) → sizeOf e' ≤ sizeOf e → Option Expr) : ReplaceM Expr := do
+unsafe def replaceUnsafeM (size : USize) (e : Expr) (f? : (e' : Expr)  sizeOf e' ≤ sizeOf e  Option Expr) : ReplaceM Expr := do
   let rec visit (e : Expr) := do
     let c ← get
     let h := ptrAddrUnsafe e
@@ -40,7 +40,7 @@ unsafe def initCache : State :=
   { keys    := mkArray cacheSize.toNat (cast lcProof ()), -- `()` is not a valid `Expr`
     results := mkArray cacheSize.toNat default }
 
-unsafe def replaceUnsafe (e : Expr) (f? : (e' : Expr) → sizeOf e' ≤ sizeOf e → Option Expr) : Expr :=
+unsafe def replaceUnsafe (e : Expr) (f? : (e' : Expr)  sizeOf e' ≤ sizeOf e  Option Expr) : Expr :=
   (replaceUnsafeM cacheSize e f?).run' initCache
 
 end ReplaceImpl'
@@ -49,7 +49,7 @@ end ReplaceImpl'
 local macro "dec " h:ident : term => `(by apply Nat.le_trans _ $h; simp_arith)
 
 @[implemented_by ReplaceImpl'.replaceUnsafe]
-def replace' (e0 : Expr) (f? : (e : Expr) → sizeOf e ≤ sizeOf e0 → Option Expr) : Expr :=
+def replace' (e0 : Expr) (f? : (e : Expr)  sizeOf e ≤ sizeOf e0  Option Expr) : Expr :=
   let rec go (e : Expr) (h : sizeOf e ≤ sizeOf e0) : Expr :=
     match f? e h with
     | some eNew => eNew

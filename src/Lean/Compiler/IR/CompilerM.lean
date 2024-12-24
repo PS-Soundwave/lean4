@@ -15,7 +15,7 @@ inductive LogEntry where
   | message (msg : Format)
 
 namespace LogEntry
-protected def fmt : LogEntry → Format
+protected def fmt : LogEntry  Format
   | step cls decls => Format.bracket "[" (format cls) "]" ++ decls.foldl (fun fmt decl => fmt ++ Format.line ++ format decl) Format.nil
   | message msg    => msg
 
@@ -67,7 +67,7 @@ private def logMessageIfAux {α : Type} [ToFormat α] (optName : Name) (a : α) 
 @[inline] def logMessage {α : Type} [ToFormat α] (a : α) : CompilerM Unit :=
   logMessageIfAux tracePrefixOptionName a
 
-@[inline] def modifyEnv (f : Environment → Environment) : CompilerM Unit :=
+@[inline] def modifyEnv (f : Environment  Environment) : CompilerM Unit :=
   modify fun s => { s with env := f s.env }
 
 abbrev DeclMap := PHashMap Name Decl

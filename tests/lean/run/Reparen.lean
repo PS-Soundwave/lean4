@@ -11,7 +11,7 @@ match parens.getHeadInfo, body.getHeadInfo, body.getTailInfo, parens.getTailInfo
     body.setHeadInfo (SourceInfo.original lead pos trail pos') |>.setTailInfo (SourceInfo.original endLead endPos endTrail endPos')
 | _, _, _, _ => body
 
-partial def unparen : Syntax → Syntax
+partial def unparen : Syntax  Syntax
 -- don't remove parentheses in syntax quotations, they might be semantically significant
 | stx => if stx.isOfKind `Lean.Parser.Term.stxQuot then stx
   else match stx with

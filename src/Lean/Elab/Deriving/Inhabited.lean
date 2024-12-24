@@ -24,7 +24,7 @@ private def mkInhabitedInstanceUsing (inductiveTypeName : Name) (ctorName : Name
   | none =>
     return false
 where
-  addLocalInstancesForParamsAux {α} (k : LocalInst2Index → TermElabM α) : List Expr → Nat → LocalInst2Index → TermElabM α
+  addLocalInstancesForParamsAux {α} (k : LocalInst2Index  TermElabM α) : List Expr  Nat  LocalInst2Index  TermElabM α
     | [], _, map    => k map
     | x::xs, i, map =>
       try
@@ -38,7 +38,7 @@ where
       catch _ =>
         addLocalInstancesForParamsAux k xs (i+1) map
 
-  addLocalInstancesForParams {α} (xs : Array Expr) (k : LocalInst2Index → TermElabM α) : TermElabM α := do
+  addLocalInstancesForParams {α} (xs : Array Expr) (k : LocalInst2Index  TermElabM α) : TermElabM α := do
     if addHypotheses then
       addLocalInstancesForParamsAux k xs.toList 0 {}
     else

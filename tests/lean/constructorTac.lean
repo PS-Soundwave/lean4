@@ -1,6 +1,6 @@
-inductive Le (m : Nat) : Nat → Prop
+inductive Le (m : Nat) : Nat  Prop
   | base : Le m m
-  | succ : (n : Nat) → Le m n → Le m n.succ
+  | succ : (n : Nat)  Le m n  Le m n.succ
 
 example : Le n n := by constructor
 example : Le n m := by constructor

@@ -188,8 +188,8 @@ theorem carry_succ_one (i : Nat) (x : BitVec w) (h : 0 < w) :
       simpa
     case true =>
       suffices
-          (∀ (j : Nat), j ≤ i → x.getLsbD j = true)
-          ↔ (∀ (j : Nat), j ≤ i + 1 → x.getLsbD j = true) by
+          (∀ (j : Nat), j ≤ i  x.getLsbD j = true)
+          ↔ (∀ (j : Nat), j ≤ i + 1  x.getLsbD j = true) by
         simpa
       constructor
       · intro h j hj
@@ -233,7 +233,7 @@ theorem toNat_add_of_and_eq_zero {x y : BitVec w} (h : x &&& y = 0#w) :
 def adcb (x y c : Bool) : Bool × Bool := (atLeastTwo x y c, x ^^ (y ^^ c))
 
 /-- Bitwise addition implemented via a ripple carry adder. -/
-def adc (x y : BitVec w) : Bool → Bool × BitVec w :=
+def adc (x y : BitVec w) : Bool  Bool × BitVec w :=
   iunfoldr fun (i : Fin w) c => adcb (x.getLsbD i) (y.getLsbD i) c
 
 theorem getLsbD_add_add_bool {i : Nat} (i_lt : i < w) (x y : BitVec w) (c : Bool) :
@@ -307,13 +307,13 @@ theorem msb_add {w : Nat} {x y: BitVec w} :
     omega
 
 /-- Adding a bitvector to its own complement yields the all ones bitpattern -/
-@[simp] theorem add_not_self (x : BitVec w) : x + ~~~x = allOnes w := by
+@[simp] theorem add_not_self (x : BitVec w) : x + x = allOnes w := by
   rw [add_eq_adc, adc, iunfoldr_replace (fun _ => false) (allOnes w)]
   · rfl
   · simp [adcb, atLeastTwo]
 
 /-- Subtracting `x` from the all ones bitvector is equivalent to taking its complement -/
-theorem allOnes_sub_eq_not (x : BitVec w) : allOnes w - x = ~~~x := by
+theorem allOnes_sub_eq_not (x : BitVec w) : allOnes w - x = x := by
   rw [← add_not_self x, BitVec.add_comm, add_sub_cancel]
 
 /-- Addition of bitvectors is the same as bitwise or, if bitwise and is zero. -/
@@ -335,24 +335,24 @@ theorem add_eq_or_of_and_eq_zero {w : Nat} (x y : BitVec w)
 
 theorem getLsbD_sub {i : Nat} {i_lt : i < w} {x y : BitVec w} :
     (x - y).getLsbD i
-      = (x.getLsbD i ^^ ((~~~y + 1#w).getLsbD i ^^ carry i x (~~~y + 1#w) false)) := by
+      = (x.getLsbD i ^^ ((y + 1#w).getLsbD i ^^ carry i x (y + 1#w) false)) := by
   rw [sub_toAdd, BitVec.neg_eq_not_add, getLsbD_add]
   omega
 
 theorem getMsbD_sub {i : Nat} {i_lt : i < w} {x y : BitVec w} :
     (x - y).getMsbD i =
-      (x.getMsbD i ^^ ((~~~y + 1).getMsbD i ^^ carry (w - 1 - i) x (~~~y + 1) false)) := by
+      (x.getMsbD i ^^ ((y + 1).getMsbD i ^^ carry (w - 1 - i) x (y + 1) false)) := by
   rw [sub_toAdd, neg_eq_not_add, getMsbD_add]
   · rfl
   · omega
 
 theorem getElem_sub {i : Nat} {x y : BitVec w} (h : i < w) :
-    (x - y)[i] = (x[i] ^^ ((~~~y + 1#w)[i] ^^ carry i x (~~~y + 1#w) false)) := by
+    (x - y)[i] = (x[i] ^^ ((y + 1#w)[i] ^^ carry i x (y + 1#w) false)) := by
   simp [← getLsbD_eq_getElem, getLsbD_sub, h]
 
 theorem msb_sub {x y: BitVec w} :
     (x - y).msb
-      = (x.msb ^^ ((~~~y + 1#w).msb ^^ carry (w - 1 - 0) x (~~~y + 1#w) false)) := by
+      = (x.msb ^^ ((y + 1#w).msb ^^ carry (w - 1 - 0) x (y + 1#w) false)) := by
   simp [sub_toAdd, BitVec.neg_eq_not_add, msb_add]
 
 /-! ### Negation -/
@@ -370,7 +370,7 @@ theorem bit_not_add_self (x : BitVec w) :
   <;> simp [bit_not_testBit, negOne_eq_allOnes, getLsbD_allOnes]
 
 theorem bit_not_eq_not (x : BitVec w) :
-  ((iunfoldr (fun i c => (c, !(x.getLsbD i)))) ()).snd = ~~~ x := by
+  ((iunfoldr (fun i c => (c, !(x.getLsbD i)))) ()).snd =  x := by
   simp [←allOnes_sub_eq_not, BitVec.eq_sub_iff_add_eq.mpr (bit_not_add_self x), ←negOne_eq_allOnes]
 
 theorem bit_neg_eq_neg (x : BitVec w) : -x = (adc (((iunfoldr (fun (i : Fin w) c => (c, !(x.getLsbD i)))) ()).snd) (BitVec.ofNat w 1) false).snd:= by
@@ -382,7 +382,7 @@ theorem bit_neg_eq_neg (x : BitVec w) : -x = (adc (((iunfoldr (fun (i : Fin w) c
 
 /--
 Remember that negating a bitvector is equal to incrementing the complement
-by one, i.e., `-x = ~~~x + 1`. See also `neg_eq_not_add`.
+by one, i.e., `-x = x + 1`. See also `neg_eq_not_add`.
 
 This computation has two crucial properties:
 - The least significant bit of `-x` is the same as the least significant bit of `x`, and
@@ -497,7 +497,7 @@ theorem msb_abs {w : Nat} {x : BitVec w} :
 
 /-! ### Inequalities (le / lt) -/
 
-theorem ult_eq_not_carry (x y : BitVec w) : x.ult y = !carry w x (~~~y) true := by
+theorem ult_eq_not_carry (x y : BitVec w) : x.ult y = !carry w x (y) true := by
   simp only [BitVec.ult, carry, toNat_mod_cancel, toNat_not, toNat_true, ge_iff_le, ← decide_not,
     Nat.not_le, decide_eq_decide]
   rw [Nat.mod_eq_of_lt (by omega)]
@@ -506,7 +506,7 @@ theorem ult_eq_not_carry (x y : BitVec w) : x.ult y = !carry w x (~~~y) true := 
 theorem ule_eq_not_ult (x y : BitVec w) : x.ule y = !y.ult x := by
   simp [BitVec.ule, BitVec.ult, ← decide_not]
 
-theorem ule_eq_carry (x y : BitVec w) : x.ule y = carry w y (~~~x) true := by
+theorem ule_eq_carry (x y : BitVec w) : x.ule y = carry w y (x) true := by
   simp [ule_eq_not_ult, ult_eq_not_carry]
 
 /-- If two bitvectors have the same `msb`, then signed and unsigned comparisons coincide -/
@@ -535,7 +535,7 @@ theorem slt_eq_ult (x y : BitVec w) :
     simp [slt_eq_not_ult_of_msb_neq h, h']
 
 theorem slt_eq_not_carry (x y : BitVec w) :
-    x.slt y = (x.msb == y.msb).xor (carry w x (~~~y) true) := by
+    x.slt y = (x.msb == y.msb).xor (carry w x (y) true) := by
   simp only [slt_eq_ult, bne, ult_eq_not_carry]
   cases x.msb == y.msb <;> simp
 
@@ -543,7 +543,7 @@ theorem sle_eq_not_slt (x y : BitVec w) : x.sle y = !y.slt x := by
   simp only [BitVec.sle, BitVec.slt, ← decide_not, decide_eq_decide]; omega
 
 theorem sle_eq_carry (x y : BitVec w) :
-    x.sle y = !((x.msb == y.msb).xor (carry w y (~~~x) true)) := by
+    x.sle y = !((x.msb == y.msb).xor (carry w y (x) true)) := by
   rw [sle_eq_not_slt, slt_eq_not_carry, beq_comm]
 
 /-! ### mul recurrence for bitblasting -/

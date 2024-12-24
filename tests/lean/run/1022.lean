@@ -4,20 +4,20 @@ abbrev Var := Char
 
 inductive type where
   | base  : type
-  | arrow : type → type → type
+  | arrow : type  type  type
 
 inductive term where
-  | var : Var → term
-  | lam : Var → type → term → term
-  | app : term → term → term
+  | var : Var  term
+  | lam : Var  type  term  term
+  | app : term  term  term
 
 def ctx := List (Var × type)
 
 open type term in
-inductive typing : ctx → term → type → Prop where
+inductive typing : ctx  term  type  Prop where
   | var  : typing ((x, A) :: Γ) (var x) A -- simplified
-  | arri : typing ((x, A) :: Γ) M B → typing Γ (lam x A M) (arrow A B)
-  | arre : typing Γ M (arrow A B) → typing Γ N A → typing Γ (app M N) B
+  | arri : typing ((x, A) :: Γ) M B  typing Γ (lam x A M) (arrow A B)
+  | arre : typing Γ M (arrow A B)  typing Γ N A  typing Γ (app M N) B
 
 open type term in
 theorem no_δ : ¬ ∃ A B, typing nil (lam x A (app (var x) (var x))) (arrow A B) :=

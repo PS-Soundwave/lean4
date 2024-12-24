@@ -361,7 +361,7 @@ pair_ref<environment, object_ref> run_new_frontend(
     ));
 }
 
-/* def workerMain : Options → IO UInt32 */
+/* def workerMain : Options  IO UInt32 */
 extern "C" object * lean_server_worker_main(object * opts, object * w);
 uint32_t run_server_worker(options const & opts) {
     return get_io_scalar_result<uint32_t>(lean_server_worker_main(opts.to_obj_arg(), io_mk_world()));

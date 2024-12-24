@@ -13,7 +13,7 @@ import Init.Control.Except
 namespace ReaderT
 
 @[always_inline, inline]
-protected def orElse [Alternative m] (x₁ : ReaderT ρ m α) (x₂ : Unit → ReaderT ρ m α) : ReaderT ρ m α :=
+protected def orElse [Alternative m] (x₁ : ReaderT ρ m α) (x₂ : Unit  ReaderT ρ m α) : ReaderT ρ m α :=
   fun s => x₁ s <|> x₂ () s
 
 @[always_inline, inline]

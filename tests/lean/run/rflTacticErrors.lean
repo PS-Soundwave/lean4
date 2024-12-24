@@ -21,7 +21,7 @@ example : false = true := by rfl
 -- Now to `apply_rfl`.
 
 -- A plain reflexive predicate
-inductive P : α → α → Prop where | refl : P a a
+inductive P : α  α  Prop where | refl : P a a
 attribute [refl] P.refl
 
 -- Plain error
@@ -57,13 +57,13 @@ example : P (@withImplicitNat 42) (@withImplicitNat 23) := by apply_rfl
 
 
 -- Defeq to relation `P` at reducible transparency
-abbrev Q : α → α → Prop := P
+abbrev Q : α  α  Prop := P
 
 -- Defeq to relation `P` at default transparency
-def Q' : α → α → Prop := P
+def Q' : α  α  Prop := P
 
 -- No refl attribute
-inductive R : α → α → Prop where | refl : R a a
+inductive R : α  α  Prop where | refl : R a a
 
 
 /-
@@ -404,7 +404,7 @@ example : HEq true 1 := by with_reducible apply_rfl -- Error
 -- Rfl lemma with side condition:
 -- Error message should show left-over goal
 
-inductive S : Bool → Bool → Prop where | refl : a = true → S a a
+inductive S : Bool  Bool  Prop where | refl : a = true  S a a
 attribute [refl] S.refl
 /--
 error: tactic 'rfl' failed, the left-hand side

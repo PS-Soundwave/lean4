@@ -2269,7 +2269,7 @@ static lean_object* _init_l_Lake___aux__Lake__Util__OpaqueType______macroRules__
 _start:
 {
 lean_object* x_1; 
-x_1 = lean_mk_string_unchecked("→", 3, 1);
+x_1 = lean_mk_string_unchecked("", 3, 1);
 return x_1;
 }
 }

@@ -1,6 +1,6 @@
 structure Magma.{u} where
   α   : Type u
-  mul : α → α → α
+  mul : α  α  α
 
 def Nat.Magma : Magma where
   α       := Nat

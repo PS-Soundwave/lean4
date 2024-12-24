@@ -1,11 +1,11 @@
 abbrev Map1 : Type := RBMap Nat Bool (λ a b, a < b)
 abbrev Map2 : Type := HashMap Nat Bool
 
-def mkMap1Aux : Nat → Map1 → Map1
+def mkMap1Aux : Nat  Map1  Map1
 | 0 m := m
 | (n+1) m := mkMap1Aux n (m.insert n (n % 10 = 0))
 
-def mkMap2Aux : Nat → Map2 → Map2
+def mkMap2Aux : Nat  Map2  Map2
 | 0 m := m
 | (n+1) m := mkMap2Aux n (m.insert n (n % 10 = 0))
 

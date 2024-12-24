@@ -30,11 +30,11 @@ instance : EmptyCollection FloatArray where
   emptyCollection := FloatArray.empty
 
 @[extern "lean_float_array_push"]
-def push : FloatArray → Float → FloatArray
+def push : FloatArray  Float  FloatArray
   | ⟨ds⟩, b => ⟨ds.push b⟩
 
 @[extern "lean_float_array_size"]
-def size : (@& FloatArray) → Nat
+def size : (@& FloatArray)  Nat
   | ⟨ds⟩ => ds.size
 
 @[extern "lean_sarray_size", simp]
@@ -42,15 +42,15 @@ def usize (a : @& FloatArray) : USize :=
   a.size.toUSize
 
 @[extern "lean_float_array_uget"]
-def uget : (a : @& FloatArray) → (i : USize) → i.toNat < a.size → Float
+def uget : (a : @& FloatArray)  (i : USize)  i.toNat < a.size  Float
   | ⟨ds⟩, i, h => ds[i]
 
 @[extern "lean_float_array_fget"]
-def get : (ds : @& FloatArray) → (i : @& Nat) → (h : i < ds.size := by get_elem_tactic) → Float
+def get : (ds : @& FloatArray)  (i : @& Nat)  (h : i < ds.size := by get_elem_tactic)  Float
   | ⟨ds⟩, i, h => ds.get i h
 
 @[extern "lean_float_array_get"]
-def get! : (@& FloatArray) → (@& Nat) → Float
+def get! : (@& FloatArray)  (@& Nat)  Float
   | ⟨ds⟩, i => ds.get! i
 
 def get? (ds : FloatArray) (i : Nat) : Option Float :=
@@ -66,15 +66,15 @@ instance : GetElem FloatArray USize Float fun xs i => i.val < xs.size where
   getElem xs i h := xs.uget i h
 
 @[extern "lean_float_array_uset"]
-def uset : (a : FloatArray) → (i : USize) → Float → (h : i.toNat < a.size := by get_elem_tactic) → FloatArray
+def uset : (a : FloatArray)  (i : USize)  Float  (h : i.toNat < a.size := by get_elem_tactic)  FloatArray
   | ⟨ds⟩, i, v, h => ⟨ds.uset i v h⟩
 
 @[extern "lean_float_array_fset"]
-def set : (ds : FloatArray) → (i : @& Nat) → Float → (h : i < ds.size := by get_elem_tactic) → FloatArray
+def set : (ds : FloatArray)  (i : @& Nat)  Float  (h : i < ds.size := by get_elem_tactic)  FloatArray
   | ⟨ds⟩, i, d, h => ⟨ds.set i d h⟩
 
 @[extern "lean_float_array_set"]
-def set! : FloatArray → (@& Nat) → Float → FloatArray
+def set! : FloatArray  (@& Nat)  Float  FloatArray
   | ⟨ds⟩, i, d => ⟨ds.set! i d⟩
 
 def isEmpty (s : FloatArray) : Bool :=
@@ -93,7 +93,7 @@ partial def toList (ds : FloatArray) : List Float :=
   This is similar to the `Array` version.
 -/
 -- TODO: avoid code duplication in the future after we improve the compiler.
-@[inline] unsafe def forInUnsafe {β : Type v} {m : Type v → Type w} [Monad m] (as : FloatArray) (b : β) (f : Float → β → m (ForInStep β)) : m β :=
+@[inline] unsafe def forInUnsafe {β : Type v} {m : Type v  Type w} [Monad m] (as : FloatArray) (b : β) (f : Float  β  m (ForInStep β)) : m β :=
   let sz := as.usize
   let rec @[specialize] loop (i : USize) (b : β) : m β := do
     if i < sz then
@@ -107,7 +107,7 @@ partial def toList (ds : FloatArray) : List Float :=
 
 /-- Reference implementation for `forIn` -/
 @[implemented_by FloatArray.forInUnsafe]
-protected def forIn {β : Type v} {m : Type v → Type w} [Monad m] (as : FloatArray) (b : β) (f : Float → β → m (ForInStep β)) : m β :=
+protected def forIn {β : Type v} {m : Type v  Type w} [Monad m] (as : FloatArray) (b : β) (f : Float  β  m (ForInStep β)) : m β :=
   let rec loop (i : Nat) (h : i ≤ as.size) (b : β) : m β := do
     match i, h with
     | 0,   _ => pure b
@@ -126,7 +126,7 @@ instance : ForIn m FloatArray Float where
 /-- See comment at `forInUnsafe` -/
 -- TODO: avoid code duplication.
 @[inline]
-unsafe def foldlMUnsafe {β : Type v} {m : Type v → Type w} [Monad m] (f : β → Float → m β) (init : β) (as : FloatArray) (start := 0) (stop := as.size) : m β :=
+unsafe def foldlMUnsafe {β : Type v} {m : Type v  Type w} [Monad m] (f : β  Float  m β) (init : β) (as : FloatArray) (start := 0) (stop := as.size) : m β :=
   let rec @[specialize] fold (i : USize) (stop : USize) (b : β) : m β := do
     if i == stop then
       pure b
@@ -142,7 +142,7 @@ unsafe def foldlMUnsafe {β : Type v} {m : Type v → Type w} [Monad m] (f : β 
 
 /-- Reference implementation for `foldlM` -/
 @[implemented_by foldlMUnsafe]
-def foldlM {β : Type v} {m : Type v → Type w} [Monad m] (f : β → Float → m β) (init : β) (as : FloatArray) (start := 0) (stop := as.size) : m β :=
+def foldlM {β : Type v} {m : Type v  Type w} [Monad m] (f : β  Float  m β) (init : β) (as : FloatArray) (start := 0) (stop := as.size) : m β :=
   let fold (stop : Nat) (h : stop ≤ as.size) :=
     let rec loop (i : Nat) (j : Nat) (b : β) : m β := do
       if hlt : j < stop then
@@ -159,7 +159,7 @@ def foldlM {β : Type v} {m : Type v → Type w} [Monad m] (f : β → Float →
     fold as.size (Nat.le_refl _)
 
 @[inline]
-def foldl {β : Type v} (f : β → Float → β) (init : β) (as : FloatArray) (start := 0) (stop := as.size) : β :=
+def foldl {β : Type v} (f : β  Float  β) (init : β) (as : FloatArray) (start := 0) (stop := as.size) : β :=
   Id.run <| as.foldlM f init start stop
 
 end FloatArray

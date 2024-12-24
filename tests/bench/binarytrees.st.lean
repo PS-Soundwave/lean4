@@ -12,7 +12,7 @@ partial def make' (n d : UInt32) : Tree :=
 -- build a tree
 def make (d : UInt32) := make' d d
 
-def check : Tree → UInt32
+def check : Tree  UInt32
   | .nil => 0
   | .node l r => 1 + check l + check r
 
@@ -28,7 +28,7 @@ partial def sumT (d i t : UInt32) : UInt32 :=
     let a := check (make d)
     sumT d (i-1) (t + a)
 
-def main : List String → IO UInt32
+def main : List String  IO UInt32
   | [s] => do
     let n := s.toNat!
     let maxN := Nat.max (minN + 2) n

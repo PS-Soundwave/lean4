@@ -1,6 +1,6 @@
-inductive Vec (α : Type u) : Nat → Type u where
+inductive Vec (α : Type u) : Nat  Type u where
   | nil  : Vec α 0
-  | cons : α → {n : Nat} → Vec α n → Vec α (n+1)
+  | cons : α  {n : Nat}  Vec α n  Vec α (n+1)
 
 inductive Expr where
   | app2 (f : String) (args : Vec Expr 2)

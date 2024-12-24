@@ -15,9 +15,9 @@ Vectors
 A `Vec` is a list of size `n` whose elements belong to a type `α`.
 -/
 
-inductive Vec (α : Type u) : Nat → Type u
+inductive Vec (α : Type u) : Nat  Type u
   | nil : Vec α 0
-  | cons : α → Vec α n → Vec α (n+1)
+  | cons : α  Vec α n  Vec α (n+1)
 
 /-!
 We can overload the `List.cons` notation `::` and use it to create `Vec`s.
@@ -42,26 +42,26 @@ unfold/reduce it. For example, suppose Lean is trying to synthesize a value for 
 the typeclass resolution procedure can reduce `Ty.interp Ty.int` to `Int`, and use
 the builtin instance for `Add Int` as the solution.
 -/
-@[reducible] def Ty.interp : Ty → Type
+@[reducible] def Ty.interp : Ty  Type
   | int    => Int
   | bool   => Bool
-  | fn a r => a.interp → r.interp
+  | fn a r => a.interp  r.interp
 
 /-!
 Expressions are indexed by the types of the local variables, and the type of the expression itself.
 -/
-inductive HasType : Fin n → Vec Ty n → Ty → Type where
+inductive HasType : Fin n  Vec Ty n  Ty  Type where
   | stop : HasType 0 (ty :: ctx) ty
-  | pop  : HasType k ctx ty → HasType k.succ (u :: ctx) ty
+  | pop  : HasType k ctx ty  HasType k.succ (u :: ctx) ty
 
-inductive Expr : Vec Ty n → Ty → Type where
-  | var   : HasType i ctx ty → Expr ctx ty
-  | val   : Int → Expr ctx Ty.int
-  | lam   : Expr (a :: ctx) ty → Expr ctx (Ty.fn a ty)
-  | app   : Expr ctx (Ty.fn a ty) → Expr ctx a → Expr ctx ty
-  | op    : (a.interp → b.interp → c.interp) → Expr ctx a → Expr ctx b → Expr ctx c
-  | ife   : Expr ctx Ty.bool → Expr ctx a → Expr ctx a → Expr ctx a
-  | delay : (Unit → Expr ctx a) → Expr ctx a
+inductive Expr : Vec Ty n  Ty  Type where
+  | var   : HasType i ctx ty  Expr ctx ty
+  | val   : Int  Expr ctx Ty.int
+  | lam   : Expr (a :: ctx) ty  Expr ctx (Ty.fn a ty)
+  | app   : Expr ctx (Ty.fn a ty)  Expr ctx a  Expr ctx ty
+  | op    : (a.interp  b.interp  c.interp)  Expr ctx a  Expr ctx b  Expr ctx c
+  | ife   : Expr ctx Ty.bool  Expr ctx a  Expr ctx a  Expr ctx a
+  | delay : (Unit  Expr ctx a)  Expr ctx a
 
 /-!
 We use the command `open` to create the aliases `stop` and `pop` for `HasType.stop` and `HasType.pop` respectively.
@@ -102,20 +102,20 @@ indexed over the types in scope. Since an environment is just another form of li
 to the vector of local variable types, we overload again the notation `::` so that we can use the usual list syntax.
 Given a proof that a variable is defined in the context, we can then produce a value from the environment.
 -/
-inductive Env : Vec Ty n → Type where
+inductive Env : Vec Ty n  Type where
   | nil  : Env Vec.nil
-  | cons : Ty.interp a → Env ctx → Env (a :: ctx)
+  | cons : Ty.interp a  Env ctx  Env (a :: ctx)
 
 infix:67 " :: " => Env.cons
 
-def Env.lookup : HasType i ctx ty → Env ctx → ty.interp
+def Env.lookup : HasType i ctx ty  Env ctx  ty.interp
   | stop,  x :: xs => x
   | pop k, x :: xs => lookup k xs
 
 /-!
 Given this, an interpreter is a function which translates an `Expr` into a Lean value with respect to a specific environment.
 -/
-def Expr.interp (env : Env ctx) : Expr ctx ty → ty.interp
+def Expr.interp (env : Env ctx) : Expr ctx ty  ty.interp
   | var i     => env.lookup i
   | val x     => x
   | lam b     => fun x => b.interp (Env.cons x env)

@@ -139,7 +139,7 @@ def matchBinder (stx : Syntax) : MacroM (Array BinderSyntaxView) := do
 
 --------------------------------------------------------------------------------
 
-def BinderSyntaxView.mkBinder : BinderSyntaxView → MacroM Binder
+def BinderSyntaxView.mkBinder : BinderSyntaxView  MacroM Binder
 | {id, type, info, modifier?} => do
   match info with
   | .default        => `(binder| ($id : $type $[$modifier?]?))
@@ -147,7 +147,7 @@ def BinderSyntaxView.mkBinder : BinderSyntaxView → MacroM Binder
   | .strictImplicit => `(binder| ⦃$id : $type⦄)
   | .instImplicit   => `(binder| [$id : $type])
 
-def BinderSyntaxView.mkArgument : BinderSyntaxView → MacroM NamedArgument
+def BinderSyntaxView.mkArgument : BinderSyntaxView  MacroM NamedArgument
 | {id, ..} => `(Term.namedArgument| ($id := $id))
 
 def expandBinders (dbs : Array Binder) : MacroM (Array Binder × Array Term) := do

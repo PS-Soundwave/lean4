@@ -113,11 +113,11 @@ Also returns:
   * for each new atom `a` of the form `x / k`, for `k` a positive numeral, the facts that
     `k * a ≤ x < (k + 1) * a`
   * for each new atom of the form `((a - b : Nat) : Int)`, the fact:
-    `b ≤ a ∧ ((a - b : Nat) : Int) = a - b ∨ a < b ∧ ((a - b : Nat) : Int) = 0`
+    `b ≤ a ∧ ((a - b : Nat) : Int) = a - b  a < b ∧ ((a - b : Nat) : Int) = 0`
 
 We also transform the expression as we descend into it:
 * pushing coercions: `↑(x + y)`, `↑(x * y)`, `↑(x / k)`, `↑(x % k)`, `↑k`
-* unfolding `emod`: `x % k` → `x - x / k`
+* unfolding `emod`: `x % k`  `x - x / k`
 -/
 partial def asLinearComboImpl (e : Expr) : OmegaM (LinearCombo × OmegaM Expr × Std.HashSet Expr) := do
   trace[omega] "processing {e}"
@@ -167,7 +167,7 @@ partial def asLinearComboImpl (e : Expr) : OmegaM (LinearCombo × OmegaM Expr ×
     let r? ← commitWhen do
       let (xl, xprf, xfacts) ← asLinearCombo x
       let (yl, yprf, yfacts) ← asLinearCombo y
-      if xl.coeffs.isZero ∨ yl.coeffs.isZero then
+      if xl.coeffs.isZero  yl.coeffs.isZero then
         let prf : OmegaM Expr := do
           let h ← mkDecideProof (mkApp2 (.const ``Or [])
             (.app (.const ``Coeffs.isZero []) (toExpr xl.coeffs))
@@ -576,7 +576,7 @@ where
       |>.toList
       |> "\n".intercalate
 
-  prettyConstraint (e : String) : Constraint → String
+  prettyConstraint (e : String) : Constraint  String
     | ⟨none, none⟩ => s!"{e} is unconstrained" -- should not happen in error messages
     | ⟨none, some y⟩ => s!"{e} ≤ {y}"
     | ⟨some x, none⟩ => s!"{e} ≥ {x}"

@@ -1,8 +1,8 @@
 inductive Expr where
-  | nat  : Nat → Expr
-  | plus : Expr → Expr → Expr
-  | bool : Bool → Expr
-  | and  : Expr → Expr → Expr
+  | nat  : Nat  Expr
+  | plus : Expr  Expr  Expr
+  | bool : Bool  Expr
+  | and  : Expr  Expr  Expr
   deriving DecidableEq
 
 inductive Ty where
@@ -10,11 +10,11 @@ inductive Ty where
   | bool
   deriving DecidableEq
 
-inductive HasType : Expr → Ty → Prop
+inductive HasType : Expr  Ty  Prop
   | nat  : HasType (.nat v) .nat
-  | plus : HasType a .nat → HasType b .nat → HasType (.plus a b) .nat
+  | plus : HasType a .nat  HasType b .nat  HasType (.plus a b) .nat
   | bool : HasType (.bool v) .bool
-  | and  : HasType a .bool → HasType b .bool → HasType (.and a b) .bool
+  | and  : HasType a .bool  HasType b .bool  HasType (.and a b) .bool
 
 def Expr.typeCheck (e : Expr) : Option {t : Ty // HasType e t} :=
   match e with
@@ -34,7 +34,7 @@ theorem HasType.det (h₁ : HasType e t₁) (h₂ : HasType e t₂) : t₁ = t�
 
 -- TODO: for simplifying the following proof we need: ematching for forward reasoning, and `match` blast for case analysis
 
-theorem Expr.typeCheck_complete {e : Expr} : e.typeCheck = none → ¬ HasType e t := by
+theorem Expr.typeCheck_complete {e : Expr} : e.typeCheck = none  ¬ HasType e t := by
   induction e with simp [typeCheck]
   | plus a b iha ihb =>
     revert iha ihb

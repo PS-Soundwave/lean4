@@ -74,7 +74,7 @@ theorem nodup_range' (s n : Nat) (step := 1) (h : 0 < step := by simp) : Nodup (
 theorem map_sub_range' (a s n : Nat) (h : a ≤ s) :
     map (· - a) (range' s n step) = range' (s - a) n step := by
   conv => lhs; rw [← Nat.add_sub_cancel' h]
-  rw [← map_add_range', map_map, (?_ : _∘_ = _), map_id]
+  rw [← map_add_range', map_map, (?_ : __ = _), map_id]
   funext x; apply Nat.add_sub_cancel_left
 
 @[simp] theorem range'_eq_singleton {s n a : Nat} : range' s n = [a] ↔ s = a ∧ n = 1 := by
@@ -106,8 +106,8 @@ theorem range'_eq_append_iff : range' s n = xs ++ ys ↔ ∃ k, k ≤ n ∧ xs =
         simp_all
         omega
 
-@[simp] theorem find?_range'_eq_some {s n : Nat} {i : Nat} {p : Nat → Bool} :
-    (range' s n).find? p = some i ↔ p i ∧ i ∈ range' s n ∧ ∀ j, s ≤ j → j < i → !p j := by
+@[simp] theorem find?_range'_eq_some {s n : Nat} {i : Nat} {p : Nat  Bool} :
+    (range' s n).find? p = some i ↔ p i ∧ i ∈ range' s n ∧ ∀ j, s ≤ j  j < i  !p j := by
   rw [find?_eq_some_iff_append]
   simp only [Bool.not_eq_eq_eq_not, Bool.not_true, exists_and_right, mem_range'_1,
     and_congr_right_iff]
@@ -125,8 +125,8 @@ theorem range'_eq_append_iff : range' s n = xs ++ ys ↔ ∃ k, k ≤ n ∧ xs =
       intro a a₁ a₂
       exact h₃ a a₁ (by omega)
 
-theorem find?_range'_eq_none {s n : Nat} {p : Nat → Bool} :
-    (range' s n).find? p = none ↔ ∀ i, s ≤ i → i < s + n → !p i := by
+theorem find?_range'_eq_none {s n : Nat} {p : Nat  Bool} :
+    (range' s n).find? p = none ↔ ∀ i, s ≤ i  i < s + n  !p i := by
   simp
 
 theorem erase_range' :
@@ -182,12 +182,12 @@ theorem take_range (m n : Nat) : take m (range n) = range (min m n) := by
 theorem nodup_range (n : Nat) : Nodup (range n) := by
   simp +decide only [range_eq_range', nodup_range']
 
-@[simp] theorem find?_range_eq_some {n : Nat} {i : Nat} {p : Nat → Bool} :
-    (range n).find? p = some i ↔ p i ∧ i ∈ range n ∧ ∀ j, j < i → !p j := by
+@[simp] theorem find?_range_eq_some {n : Nat} {i : Nat} {p : Nat  Bool} :
+    (range n).find? p = some i ↔ p i ∧ i ∈ range n ∧ ∀ j, j < i  !p j := by
   simp [range_eq_range']
 
-theorem find?_range_eq_none {n : Nat} {p : Nat → Bool} :
-    (range n).find? p = none ↔ ∀ i, i < n → !p i := by
+theorem find?_range_eq_none {n : Nat} {p : Nat  Bool} :
+    (range n).find? p = none ↔ ∀ i, i < n  !p i := by
   simp
 
 theorem erase_range : (range n).erase i = range (min n i) ++ range' (i + 1) (n - (i + 1)) := by
@@ -276,12 +276,12 @@ theorem nodup_iota (n : Nat) : Nodup (iota n) :=
   rw [getLast_eq_head_reverse]
   simp
 
-theorem find?_iota_eq_none {n : Nat} {p : Nat → Bool} :
-    (iota n).find? p = none ↔ ∀ i, 0 < i → i ≤ n → !p i := by
+theorem find?_iota_eq_none {n : Nat} {p : Nat  Bool} :
+    (iota n).find? p = none ↔ ∀ i, 0 < i  i ≤ n  !p i := by
   simp
 
-@[simp] theorem find?_iota_eq_some {n : Nat} {i : Nat} {p : Nat → Bool} :
-    (iota n).find? p = some i ↔ p i ∧ i ∈ iota n ∧ ∀ j, i < j → j ≤ n → !p j := by
+@[simp] theorem find?_iota_eq_some {n : Nat} {i : Nat} {p : Nat  Bool} :
+    (iota n).find? p = some i ↔ p i ∧ i ∈ iota n ∧ ∀ j, i < j  j ≤ n  !p j := by
   rw [find?_eq_some_iff_append]
   simp only [iota_eq_reverse_range', reverse_eq_append_iff, reverse_cons, append_assoc, cons_append,
     nil_append, Bool.not_eq_eq_eq_not, Bool.not_true, exists_and_right, mem_reverse, mem_range'_1,
@@ -354,7 +354,7 @@ theorem fst_lt_add_of_mem_enumFrom {x : Nat × α} {n : Nat} {l : List α} (h : 
   rcases mem_iff_get.1 h with ⟨i, rfl⟩
   simpa using i.isLt
 
-theorem map_enumFrom (f : α → β) (n : Nat) (l : List α) :
+theorem map_enumFrom (f : α  β) (n : Nat) (l : List α) :
     map (Prod.map id f) (enumFrom n l) = enumFrom n (map f l) := by
   induction l generalizing n <;> simp_all
 
@@ -380,7 +380,7 @@ theorem mem_enumFrom {x : α} {i j : Nat} {xs : List α} (h : (i, x) ∈ xs.enum
       x = xs[i - j]'(by have := le_fst_of_mem_enumFrom h; have := fst_lt_add_of_mem_enumFrom h; omega) :=
   ⟨le_fst_of_mem_enumFrom h, fst_lt_add_of_mem_enumFrom h, snd_eq_of_mem_enumFrom h⟩
 
-theorem enumFrom_map (n : Nat) (l : List α) (f : α → β) :
+theorem enumFrom_map (n : Nat) (l : List α) (f : α  β) :
     enumFrom n (l.map f) = (enumFrom n l).map (Prod.map id f) := by
   induction l with
   | nil => rfl
@@ -480,7 +480,7 @@ theorem mem_enum {x : α} {i : Nat} {xs : List α} (h : (i, x) ∈ xs.enum) :
     i < xs.length ∧ x = xs[i]'(fst_lt_of_mem_enum h) :=
   by simpa using mem_enumFrom h
 
-theorem map_enum (f : α → β) (l : List α) : map (Prod.map id f) (enum l) = enum (map f l) :=
+theorem map_enum (f : α  β) (l : List α) : map (Prod.map id f) (enum l) = enum (map f l) :=
   map_enumFrom f 0 l
 
 @[simp] theorem enum_map_fst (l : List α) : map Prod.fst (enum l) = range l.length := by
@@ -490,7 +490,7 @@ theorem map_enum (f : α → β) (l : List α) : map (Prod.map id f) (enum l) = 
 theorem enum_map_snd (l : List α) : map Prod.snd (enum l) = l :=
   enumFrom_map_snd _ _
 
-theorem enum_map (l : List α) (f : α → β) : (l.map f).enum = l.enum.map (Prod.map id f) :=
+theorem enum_map (l : List α) (f : α  β) : (l.map f).enum = l.enum.map (Prod.map id f) :=
   enumFrom_map _ _ _
 
 theorem enum_append (xs ys : List α) : enum (xs ++ ys) = enum xs ++ enumFrom xs.length ys := by

@@ -9,16 +9,16 @@ import Init.Notation
 namespace Lake
 
 /-- A monad equipped with a dependently typed key-value store for a particular key. -/
-class MonadStore1Of {κ : Type u} (k : κ) (α : semiOutParam $ Type v) (m : Type v → Type w) where
+class MonadStore1Of {κ : Type u} (k : κ) (α : semiOutParam $ Type v) (m : Type v  Type w) where
   fetch? : m (Option α)
-  store : α → m PUnit
+  store : α  m PUnit
 
 export MonadStore1Of (store)
 
 /-- Similar to `MonadStore1Of`, but `α` is an `outParam` for convenience. -/
-class MonadStore1 {κ : Type u} (k : κ) (α : outParam $ Type v) (m : Type v → Type w) where
+class MonadStore1 {κ : Type u} (k : κ) (α : outParam $ Type v) (m : Type v  Type w) where
   fetch? : m (Option α)
-  store : α → m PUnit
+  store : α  m PUnit
 
 export MonadStore1 (fetch?)
 
@@ -27,9 +27,9 @@ instance [MonadStore1Of k α m] : MonadStore1 k α m where
   store := MonadStore1Of.store k
 
 /-- A monad equipped with a dependently typed key-object store. -/
-class MonadDStore (κ : Type u) (β : semiOutParam $ κ → Type v) (m : Type v → Type w) where
-  fetch? : (key : κ) → m (Option (β key))
-  store : (key : κ) → β key → m PUnit
+class MonadDStore (κ : Type u) (β : semiOutParam $ κ  Type v) (m : Type v  Type w) where
+  fetch? : (key : κ)  m (Option (β key))
+  store : (key : κ)  β key  m PUnit
 
 instance [MonadDStore κ β m] : MonadStore1Of k (β k) m where
   fetch? := MonadDStore.fetch? k

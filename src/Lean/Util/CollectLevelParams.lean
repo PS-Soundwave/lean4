@@ -17,17 +17,17 @@ structure State where
 
 instance : Inhabited State := ⟨{}⟩
 
-abbrev Visitor := State → State
+abbrev Visitor := State  State
 
 mutual
   partial def visitLevel (u : Level) : Visitor := fun s =>
     if !u.hasParam || s.visitedLevel.contains u then s
     else collect u { s with visitedLevel := s.visitedLevel.insert u }
 
-  partial def collect : Level → Visitor
+  partial def collect : Level  Visitor
     | .succ v    => visitLevel v
-    | .max u v   => visitLevel v ∘ visitLevel u
-    | .imax u v  => visitLevel v ∘ visitLevel u
+    | .max u v   => visitLevel v  visitLevel u
+    | .imax u v  => visitLevel v  visitLevel u
     | .param n   => fun s => { s with params := s.params.push n }
     | _          => id
 end
@@ -41,12 +41,12 @@ mutual
     else if s.visitedExpr.contains e then s
     else main e { s with visitedExpr := s.visitedExpr.insert e }
 
-  partial def main : Expr → Visitor
+  partial def main : Expr  Visitor
     | .proj _ _ s      => visitExpr s
-    | .forallE _ d b _ => visitExpr b ∘ visitExpr d
-    | .lam _ d b _     => visitExpr b ∘ visitExpr d
-    | .letE _ t v b _  => visitExpr b ∘ visitExpr v ∘ visitExpr t
-    | .app f a         => visitExpr a ∘ visitExpr f
+    | .forallE _ d b _ => visitExpr b  visitExpr d
+    | .lam _ d b _     => visitExpr b  visitExpr d
+    | .letE _ t v b _  => visitExpr b  visitExpr v  visitExpr t
+    | .app f a         => visitExpr a  visitExpr f
     | .mdata _ b       => visitExpr b
     | .const _ us      => visitLevels us
     | .sort u          => visitLevel u

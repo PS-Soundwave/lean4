@@ -29,7 +29,7 @@ structure ResolvableCompletionItemData extends CompletionItemData where
   id?  : Option CompletionIdentifier
   deriving FromJson, ToJson
 
-private partial def consumeImplicitPrefix (e : Expr) (k : Expr → MetaM α) : MetaM α := do
+private partial def consumeImplicitPrefix (e : Expr) (k : Expr  MetaM α) : MetaM α := do
   match e with
   | Expr.forallE n d b c =>
     -- We do not consume instance implicit arguments because the user probably wants be aware of this dependency

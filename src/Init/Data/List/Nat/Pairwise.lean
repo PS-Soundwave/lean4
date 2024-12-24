@@ -18,7 +18,7 @@ namespace List
   produces a sublist of `l`.  -/
 theorem map_getElem_sublist {l : List α} {is : List (Fin l.length)} (h : is.Pairwise (· < ·)) :
     is.map (l[·]) <+ l := by
-  suffices ∀ n l', l' = l.drop n → (∀ i ∈ is, n ≤ i) → map (l[·]) is <+ l'
+  suffices ∀ n l', l' = l.drop n  (∀ i ∈ is, n ≤ i)  map (l[·]) is <+ l'
     from this 0 l (by simp) (by simp)
   rintro n l' rfl his
   induction is generalizing n with

@@ -46,9 +46,9 @@ accumulating results on the way back up. If `preNode` returns `false`, the child
 node are skipped and `postNode` is invoked with an empty list of results.
 -/
 partial def InfoTree.visitM [Monad m]
-    (preNode  : ContextInfo → Info → (children : PersistentArray InfoTree) → m Bool := fun _ _ _ => pure true)
-    (postNode : ContextInfo → Info → (children : PersistentArray InfoTree) → List (Option α) → m α)
-    (ctx? : Option ContextInfo := none) : InfoTree → m (Option α) :=
+    (preNode  : ContextInfo  Info  (children : PersistentArray InfoTree)  m Bool := fun _ _ _ => pure true)
+    (postNode : ContextInfo  Info  (children : PersistentArray InfoTree)  List (Option α)  m α)
+    (ctx? : Option ContextInfo := none) : InfoTree  m (Option α) :=
   go ctx?
 where go
   | ctx?, context ctx t => go (ctx.mergeIntoOuter? ctx?) t
@@ -64,21 +64,21 @@ where go
 
 /-- `InfoTree.visitM` specialized to `Unit` return type -/
 def InfoTree.visitM' [Monad m]
-    (preNode  : ContextInfo → Info → (children : PersistentArray InfoTree) → m Bool := fun _ _ _ => pure true)
-    (postNode : ContextInfo → Info → (children : PersistentArray InfoTree) → m Unit := fun _ _ _ => pure ())
+    (preNode  : ContextInfo  Info  (children : PersistentArray InfoTree)  m Bool := fun _ _ _ => pure true)
+    (postNode : ContextInfo  Info  (children : PersistentArray InfoTree)  m Unit := fun _ _ _ => pure ())
     (ctx? : Option ContextInfo := none) (t : InfoTree) : m Unit :=
   t.visitM preNode (fun ci i cs _ => postNode ci i cs) ctx? |> discard
 
 /--
   Visit nodes bottom-up, passing in a surrounding context (the innermost one) and the union of nested results (empty at leaves). -/
-def InfoTree.collectNodesBottomUp (p : ContextInfo → Info → PersistentArray InfoTree → List α → List α) (i : InfoTree) : List α :=
+def InfoTree.collectNodesBottomUp (p : ContextInfo  Info  PersistentArray InfoTree  List α  List α) (i : InfoTree) : List α :=
   i.visitM (m := Id) (postNode := fun ci i cs as => p ci i cs (as.filterMap id).flatten) |>.getD []
 
 /--
   For every branch of the `InfoTree`, find the deepest node in that branch for which `p` returns
   `some _`  and return the union of all such nodes. The visitor `p` is given a node together with
   its innermost surrounding `ContextInfo`. -/
-partial def InfoTree.deepestNodes (p : ContextInfo → Info → PersistentArray InfoTree → Option α) (infoTree : InfoTree) : List α :=
+partial def InfoTree.deepestNodes (p : ContextInfo  Info  PersistentArray InfoTree  Option α) (infoTree : InfoTree) : List α :=
   infoTree.collectNodesBottomUp fun ctx i cs rs =>
     if rs.isEmpty then
       match p ctx i cs with
@@ -87,7 +87,7 @@ partial def InfoTree.deepestNodes (p : ContextInfo → Info → PersistentArray 
     else
       rs
 
-partial def InfoTree.foldInfo (f : ContextInfo → Info → α → α) (init : α) : InfoTree → α :=
+partial def InfoTree.foldInfo (f : ContextInfo  Info  α  α) (init : α) : InfoTree  α :=
   go none init
 where go ctx? a
   | context ctx t => go (ctx.mergeIntoOuter? ctx?) a t
@@ -106,7 +106,7 @@ Fold an info tree as follows, while ensuring that the correct `ContextInfo` is s
 
 This is like `InfoTree.foldInfo`, but it also passes the whole node to `f` instead of just the head.
 -/
-partial def InfoTree.foldInfoTree (init : α) (f : ContextInfo → InfoTree → α → α) : InfoTree → α :=
+partial def InfoTree.foldInfoTree (init : α) (f : ContextInfo  InfoTree  α  α) : InfoTree  α :=
   go none init
 where
   /-- `foldInfoTree.go` is like `foldInfoTree` but with an additional outer context parameter `ctx?`. -/
@@ -119,11 +119,11 @@ where
     ts.foldl (init := a) (go <| i.updateContext? ctx?)
   | hole _ => a
 
-def Info.isTerm : Info → Bool
+def Info.isTerm : Info  Bool
   | ofTermInfo _ => true
   | _ => false
 
-def Info.isCompletion : Info → Bool
+def Info.isCompletion : Info  Bool
   | ofCompletionInfo .. => true
   | _ => false
 
@@ -133,7 +133,7 @@ def InfoTree.getCompletionInfos (infoTree : InfoTree) : Array (ContextInfo × Co
     | Info.ofCompletionInfo info => result.push (ctx, info)
     | _ => result
 
-def Info.stx : Info → Syntax
+def Info.stx : Info  Syntax
   | ofTacticInfo i         => i.stx
   | ofTermInfo i           => i.stx
   | ofPartialTermInfo i    => i.stx
@@ -149,7 +149,7 @@ def Info.stx : Info → Syntax
   | ofDelabTermInfo i      => i.stx
   | ofChoiceInfo i         => i.stx
 
-def Info.lctx : Info → LocalContext
+def Info.lctx : Info  LocalContext
   | .ofTermInfo i           => i.lctx
   | .ofFieldInfo i          => i.lctx
   | .ofDelabTermInfo i      => i.lctx
@@ -194,7 +194,7 @@ def Info.occursInOrOnBoundary (i : Info) (hoverPos : String.Pos) : Bool := Id.ru
     | return false
   return headPos <= hoverPos && hoverPos <= tailPos
 
-def InfoTree.smallestInfo? (p : Info → Bool) (t : InfoTree) : Option (ContextInfo × Info) :=
+def InfoTree.smallestInfo? (p : Info  Bool) (t : InfoTree) : Option (ContextInfo × Info) :=
   let ts := t.deepestNodes fun ctx i _ => if p i then some (ctx, i) else none
 
   let infos := ts.map fun (ci, i) =>
@@ -330,7 +330,7 @@ where
       return (some f!"```lean\n{fi.fieldName} : {tpFmt}\n```", none)
     | _ => return (none, none)
 
-  isAtomicFormat : Format → Bool
+  isAtomicFormat : Format  Bool
     | Std.Format.text _    => true
     | Std.Format.group f _ => isAtomicFormat f
     | Std.Format.nest _ f  => isAtomicFormat f
@@ -390,7 +390,7 @@ partial def InfoTree.goalsAt? (text : FileMap) (t : InfoTree) (hoverPos : String
   let maxPrio? := gs.map (·.priority) |>.max?
   gs.filter (some ·.priority == maxPrio?)
 where
-  hasNestedTactic (pos tailPos) : InfoTree → Bool
+  hasNestedTactic (pos tailPos) : InfoTree  Bool
     | InfoTree.node i@(Info.ofTacticInfo _) cs => Id.run do
       if let `(by $_) := i.stx then
         return false  -- ignore term-nested proofs such as in `simp [show p by ...]`
@@ -412,7 +412,7 @@ partial def InfoTree.termGoalAt? (t : InfoTree) (hoverPos : String.Pos) : Option
   -- In the case `f a b`, where `f` is an identifier, the term goal at `f` should be the goal for the full application `f a b`.
   hoverableInfoAt? t hoverPos (includeStop := true) (omitAppFns := true)
 
-partial def InfoTree.hasSorry : InfoTree → IO Bool :=
+partial def InfoTree.hasSorry : InfoTree  IO Bool :=
   go none
 where go ci?
   | .context ci t => go (ci.mergeIntoOuter? ci?) t

@@ -1,32 +1,32 @@
 import Lean.Data.HashMap
 
 inductive NEList (α : Type)
-  | uno  : α → NEList α
-  | cons : α → NEList α → NEList α
+  | uno  : α  NEList α
+  | cons : α  NEList α  NEList α
 
-def NEList.contains [BEq α] : NEList α → α → Bool
+def NEList.contains [BEq α] : NEList α  α  Bool
   | uno  a,    x => a == x
   | cons a as, x => a == x || as.contains x
 
-def NEList.noDup [BEq α] : NEList α → Bool
+def NEList.noDup [BEq α] : NEList α  Bool
   | uno  a    => true
   | cons a as => ¬as.contains a && as.noDup
 
 @[specialize]
-def NEList.foldl (f : α → β → α) : (init : α) → NEList β → α
+def NEList.foldl (f : α  β  α) : (init : α)  NEList β  α
   | a, uno  b   => f a b
   | a, cons b l => foldl f (f a b) l
 
 @[specialize]
-def NEList.map (f : α → β) : NEList α → NEList β
+def NEList.map (f : α  β) : NEList α  NEList β
   | uno  a     => uno  (f a)
   | cons a  as => cons (f a) (map f as)
 
 inductive Literal
-  | bool  : Bool   → Literal
-  | int   : Int    → Literal
-  | float : Float  → Literal
-  | str   : String → Literal
+  | bool  : Bool    Literal
+  | int   : Int     Literal
+  | float : Float   Literal
+  | str   : String  Literal
 
 inductive BinOp
   | add | mul | eq | ne | lt | le | gt | ge
@@ -37,34 +37,34 @@ inductive UnOp
 mutual
 
   inductive Lambda
-    | mk : (l : NEList String) → l.noDup → Program → Lambda
+    | mk : (l : NEList String)  l.noDup  Program  Lambda
 
   inductive Expression
-    | lit   : Literal → Expression
-    | var   : String → Expression
-    | lam   : Lambda → Expression
-    | list  : List Literal → Expression
-    | app   : Expression → NEList Expression → Expression
-    | unOp  : UnOp  → Expression → Expression
-    | binOp : BinOp → Expression → Expression → Expression
+    | lit   : Literal  Expression
+    | var   : String  Expression
+    | lam   : Lambda  Expression
+    | list  : List Literal  Expression
+    | app   : Expression  NEList Expression  Expression
+    | unOp  : UnOp   Expression  Expression
+    | binOp : BinOp  Expression  Expression  Expression
 
   inductive Program
     | skip  : Program
-    | eval  : Expression → Program
-    | decl  : String  → Program → Program
-    | seq   : Program → Program → Program
-    | fork  : Expression → Program → Program → Program
-    | loop  : Expression → Program → Program
-    | print : Expression → Program
+    | eval  : Expression  Program
+    | decl  : String   Program  Program
+    | seq   : Program  Program  Program
+    | fork  : Expression  Program  Program  Program
+    | loop  : Expression  Program  Program
+    | print : Expression  Program
     deriving Inhabited
 
 end
 
 inductive Value
   | nil  : Value
-  | lit  : Literal → Value
-  | list : List Literal → Value
-  | lam  : Lambda → Value
+  | lit  : Literal  Value
+  | list : List Literal  Value
+  | lam  : Lambda  Value
   deriving Inhabited
 
 abbrev Context := Lean.HashMap String Value
@@ -72,14 +72,14 @@ abbrev Context := Lean.HashMap String Value
 inductive ErrorType
   | name | type | runTime
 
-def Literal.typeStr : Literal → String
+def Literal.typeStr : Literal  String
   | bool  _ => "bool"
   | int   _ => "int"
   | float _ => "float"
   | str   _ => "str"
 
 def removeRightmostZeros (s : String) : String :=
-  let rec aux (buff res : List Char) : List Char → List Char
+  let rec aux (buff res : List Char) : List Char  List Char
     | []      => res.reverse
     | a :: as =>
       if a != '0'
@@ -87,22 +87,22 @@ def removeRightmostZeros (s : String) : String :=
         else aux (a :: buff) res as
   ⟨aux [] [] s.data⟩
 
-protected def Literal.toString : Literal → String
+protected def Literal.toString : Literal  String
   | bool  b => toString b
   | int   i => toString i
   | float f => removeRightmostZeros $ toString f
   | str   s => s
 
-def Lambda.typeStr : Lambda → String
-  | mk l .. => (l.foldl (init := "") fun acc _ => acc ++ "_ → ") ++ "_"
+def Lambda.typeStr : Lambda  String
+  | mk l .. => (l.foldl (init := "") fun acc _ => acc ++ "_  ") ++ "_"
 
-def Value.typeStr : Value → String
+def Value.typeStr : Value  String
   | nil    => "nil"
   | lit  l => l.typeStr
   | list _ => "list"
   | lam  l => l.typeStr
 
-def Literal.eq : Literal → Literal → Bool
+def Literal.eq : Literal  Literal  Bool
   | bool  bₗ, bool  bᵣ => bₗ == bᵣ
   | int   iₗ, int   iᵣ => iₗ == iᵣ
   | float fₗ, float fᵣ => fₗ == fᵣ
@@ -111,7 +111,7 @@ def Literal.eq : Literal → Literal → Bool
   | str   sₗ, str   sᵣ => sₗ == sᵣ
   | _       , _        => false
 
-def listLiteralEq : List Literal → List Literal → Bool
+def listLiteralEq : List Literal  List Literal  Bool
   | [], [] => true
   | a :: a' :: as, b :: b' :: bs =>
     a.eq b && listLiteralEq (a' :: as) (b' :: bs)
@@ -123,11 +123,11 @@ def opError (app l r : String) : String :=
 def opError1 (app v : String) : String :=
   s!"I can't perform a '{app}' operation on '{v}'"
 
-def Value.not : Value → Except String Value
+def Value.not : Value  Except String Value
   | lit $ .bool b => return lit $ .bool !b
   | v             => throw $ opError1 "!" v.typeStr
 
-def Value.add : Value → Value → Except String Value
+def Value.add : Value  Value  Except String Value
   | lit $ .bool  bₗ, lit $ .bool  bᵣ => return lit $ .bool $ bₗ || bᵣ
   | lit $ .int   iₗ, lit $ .int   iᵣ => return lit $ .int  $ iₗ +  iᵣ
   | lit $ .float fₗ, lit $ .float fᵣ => return lit $ .float $ fₗ +  fᵣ
@@ -138,7 +138,7 @@ def Value.add : Value → Value → Except String Value
   | list         l,  lit          r  => return list  $ l.concat r
   | l,               r               => throw $ opError "+" l.typeStr r.typeStr
 
-def Value.mul : Value → Value → Except String Value
+def Value.mul : Value  Value  Except String Value
   | lit $ .bool  bₗ, lit $ .bool  bᵣ => return .lit $ .bool  $ bₗ && bᵣ
   | lit $ .int   iₗ, lit $ .int   iᵣ => return .lit $ .int   $ iₗ *  iᵣ
   | lit $ .float fₗ, lit $ .float fᵣ => return .lit $ .float $ fₗ *  fᵣ
@@ -146,7 +146,7 @@ def Value.mul : Value → Value → Except String Value
   | lit $ .float fₗ, lit $ .int   iᵣ => return .lit $ .float $ fₗ *  (.ofInt iᵣ)
   | l,               r               => throw $ opError "*" l.typeStr r.typeStr
 
-def Value.lt : Value → Value → Except String Value
+def Value.lt : Value  Value  Except String Value
   | lit $ .bool  bₗ, lit $ .bool  bᵣ => return lit $ .bool $ bₗ.toNat < bᵣ.toNat
   | lit $ .int   iₗ, lit $ .int   iᵣ => return lit $ .bool $ iₗ < iᵣ
   | lit $ .float fₗ, lit $ .float fᵣ => return lit $ .bool $ fₗ < fᵣ
@@ -156,7 +156,7 @@ def Value.lt : Value → Value → Except String Value
   | list lₗ, list lᵣ => return lit $ .bool $ lₗ.length < lᵣ.length
   | l,               r               => throw $ opError "<" l.typeStr r.typeStr
 
-def Value.le : Value → Value → Except String Value
+def Value.le : Value  Value  Except String Value
   | lit $ .bool  bₗ, lit $ .bool  bᵣ => return lit $ .bool $ bₗ.toNat ≤ bᵣ.toNat
   | lit $ .int   iₗ, lit $ .int   iᵣ => return lit $ .bool $ iₗ ≤ iᵣ
   | lit $ .float fₗ, lit $ .float fᵣ => return lit $ .bool $ fₗ ≤ fᵣ
@@ -166,7 +166,7 @@ def Value.le : Value → Value → Except String Value
   | list lₗ, list  lᵣ => return lit $ .bool $ lₗ.length ≤ lᵣ.length
   | l,         r      => throw $ opError "<=" l.typeStr r.typeStr
 
-def Value.gt : Value → Value → Except String Value
+def Value.gt : Value  Value  Except String Value
   | lit $ .bool  bₗ, lit $ .bool  bᵣ => return lit $ .bool $ bₗ.toNat > bᵣ.toNat
   | lit $ .int   iₗ, lit $ .int   iᵣ => return lit $ .bool $ iₗ > iᵣ
   | lit $ .float fₗ, lit $ .float fᵣ => return lit $ .bool $ fₗ > fᵣ
@@ -176,7 +176,7 @@ def Value.gt : Value → Value → Except String Value
   | list lₗ, list lᵣ => return lit $ .bool $ lₗ.length > lᵣ.length
   | l,       r       => throw $ opError ">" l.typeStr r.typeStr
 
-def Value.ge : Value → Value → Except String Value
+def Value.ge : Value  Value  Except String Value
   | lit $ .bool  bₗ, lit $ .bool  bᵣ => return lit $ .bool $ bₗ.toNat ≥ bᵣ.toNat
   | lit $ .int   iₗ, lit $ .int   iᵣ => return lit $ .bool $ iₗ ≥ iᵣ
   | lit $ .float fₗ, lit $ .float fᵣ => return lit $ .bool $ fₗ ≥ fᵣ
@@ -186,24 +186,24 @@ def Value.ge : Value → Value → Except String Value
   | list lₗ, list  lᵣ => return lit $ .bool $ lₗ.length ≥ lᵣ.length
   | l,       r        => throw $ opError ">=" l.typeStr r.typeStr
 
-def Value.eq : Value → Value → Except String Value
+def Value.eq : Value  Value  Except String Value
   | nil,     nil      => return lit $ .bool true
   | lit  lₗ, lit lᵣ   => return lit $ .bool $ lₗ.eq lᵣ
   | list lₗ, list  lᵣ => return lit $ .bool (listLiteralEq lₗ lᵣ)
   | lam .. , lam ..   => throw "I can't compare functions"
   | _,       _        => return lit $ .bool false
 
-def Value.ne : Value → Value → Except String Value
+def Value.ne : Value  Value  Except String Value
   | nil,     nil      => return lit $ .bool false
   | lit  lₗ, lit lᵣ   => return lit $ .bool $ !(lₗ.eq lᵣ)
   | list lₗ, list  lᵣ => return lit $ .bool !(listLiteralEq lₗ lᵣ)
   | lam ..,  lam ..   => throw "I can't compare functions"
   | _,       _        => return lit $ .bool true
 
-def Value.unOp : Value → UnOp → Except String Value
+def Value.unOp : Value  UnOp  Except String Value
   | v, .not => v.not
 
-def Value.binOp : Value → Value → BinOp → Except String Value
+def Value.binOp : Value  Value  BinOp  Except String Value
   | l, r, .add => l.add r
   | l, r, .mul => l.mul r
   | l, r, .lt  => l.lt r
@@ -221,7 +221,7 @@ mutual
   partial def unfoldExpressions (es : NEList Expression) : String :=
     (es.map exprToString).unfoldStrings
 
-  partial def exprToString : Expression → String
+  partial def exprToString : Expression  String
     | .var  n    => n
     | .lit  l    => l.toString
     | .list l    => toString $ l.map Literal.toString
@@ -241,7 +241,7 @@ end
 
 instance : ToString Expression := ⟨exprToString⟩
 
-def valToString : Value → String
+def valToString : Value  String
     | .nil    => "«nil»"
     | .lit  l => l.toString
     | .list l => toString $ l.map Literal.toString
@@ -250,7 +250,7 @@ def valToString : Value → String
 instance : ToString Value := ⟨valToString⟩
 
 def consume (p : Program) :
-    NEList String → NEList Expression →
+    NEList String  NEList Expression 
       Option ((Option (NEList String)) × Program)
   | .cons n ns, .cons e es => consume (.seq (.decl n (.eval e)) p) ns es
   | .cons n ns, .uno  e    => some (some ns, .seq (.decl n (.eval e)) p)
@@ -270,23 +270,23 @@ theorem noDupOfConsumeNoDup
 
 inductive Continuation
   | exit   : Continuation
-  | seq    : Program → Continuation → Continuation
-  | decl   : String → Continuation → Continuation
-  | fork   : Expression → Program → Program → Continuation → Continuation
-  | loop   : Expression → Program → Continuation → Continuation
-  | unOp   : UnOp → Expression → Continuation → Continuation
-  | binOp₁ : BinOp → Expression → Continuation → Continuation
-  | binOp₂ : BinOp → Value → Continuation → Continuation
-  | app    : Expression → NEList Expression → Continuation → Continuation
-  | block  : Context → Continuation → Continuation
-  | print  : Continuation → Continuation
+  | seq    : Program  Continuation  Continuation
+  | decl   : String  Continuation  Continuation
+  | fork   : Expression  Program  Program  Continuation  Continuation
+  | loop   : Expression  Program  Continuation  Continuation
+  | unOp   : UnOp  Expression  Continuation  Continuation
+  | binOp₁ : BinOp  Expression  Continuation  Continuation
+  | binOp₂ : BinOp  Value  Continuation  Continuation
+  | app    : Expression  NEList Expression  Continuation  Continuation
+  | block  : Context  Continuation  Continuation
+  | print  : Continuation  Continuation
 
 inductive State
-  | ret   : Value      → Context → Continuation → State
-  | prog  : Program    → Context → Continuation → State
-  | expr  : Expression → Context → Continuation → State
-  | error : ErrorType  → Context → String → State
-  | done  : Value      → Context → State
+  | ret   : Value       Context  Continuation  State
+  | prog  : Program     Context  Continuation  State
+  | expr  : Expression  Context  Continuation  State
+  | error : ErrorType   Context  String  State
+  | done  : Value       Context  State
 
 def cantEvalAsBool (e : Expression) (v : Value) : String :=
   s!"I can't evaluate '{e}' as a 'bool' because it reduces to '{v}', of " ++
@@ -303,11 +303,11 @@ def wrongNParameters (e : Expression) (allowed provided : Nat) : String :=
   s!"I can't apply {provided} arguments to '{e}' because the maximum " ++
     s!"allowed is {allowed}"
 
-def NEList.length : NEList α → Nat
+def NEList.length : NEList α  Nat
   | uno  _   => 1
   | cons _ l => 1 + l.length
 
-def State.step : State → State
+def State.step : State  State
   | prog .skip c k => ret .nil c k
   | prog (.eval e) c k => expr e c k
   | prog (.seq p₁ p₂) c k => prog p₁ c (.seq p₂ k)
@@ -361,23 +361,23 @@ def State.step : State → State
   | s@(error ..) => s
   | s@(done ..)  => s
 
-def State.isProg : State → Bool
+def State.isProg : State  Bool
   | prog .. => true
   | _       => false
 
-def State.isEnd : State → Bool
+def State.isEnd : State  Bool
   | done  .. => true
   | error .. => true
   | _        => false
 
-def State.stepN : State → Nat → State
+def State.stepN : State  Nat  State
   | s, 0     => s
   | s, n + 1 => s.step.stepN n
 
 notation s "^" "[" n "]" => State.stepN s n
 
 theorem State.retProgression :
-    ∃ n, (ret v c k^[n]).isEnd ∨ (ret v c k^[n]).isProg := by
+    ∃ n, (ret v c k^[n]).isEnd  (ret v c k^[n]).isProg := by
   induction k generalizing v c with
   | app e es k hi =>
     cases v with

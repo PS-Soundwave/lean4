@@ -8,14 +8,14 @@ def h (x : Nat) : Nat :=
   | x+1 => f x + r x + h x
          --^ textDocument/definition
 where
-  r : Nat → Nat
+  r : Nat  Nat
   | 0 => 1
            --v textDocument/definition
   | x + 1 => r x * h x
                  --^ textDocument/definition
 
 def f (x : Nat) : Nat :=
-  let rec g : Nat → Nat
+  let rec g : Nat  Nat
     | 0 => 1
                --v textDocument/definition
     | n+1 => 2 * g n

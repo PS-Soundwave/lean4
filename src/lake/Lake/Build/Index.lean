@@ -47,7 +47,7 @@ def ExternLib.recComputeDynlib (lib : ExternLib) : FetchM (Job Dynlib) := do
 -/
 
 /-- Recursive build function for anything in the Lake build index. -/
-def recBuildWithIndex : (info : BuildInfo) → FetchM (BuildData info.key)
+def recBuildWithIndex : (info : BuildInfo)  FetchM (BuildData info.key)
 | .moduleFacet mod facet => do
   if let some config := (← getWorkspace).findModuleFacetConfig? facet then
     config.build mod

@@ -1,9 +1,9 @@
 namespace SlimCheck
 
 inductive TestResult (p : Prop) where
-  | success : PSum Unit p → TestResult p
-  | gaveUp : Nat → TestResult p
-  | failure : ¬ p → List String → Nat → TestResult p
+  | success : PSum Unit p  TestResult p
+  | gaveUp : Nat  TestResult p
+  | failure : ¬ p  List String  Nat  TestResult p
   deriving Inhabited
 
 /-- Configuration for testing a property. -/
@@ -31,7 +31,7 @@ def NamedBinder (_n : String) (p : Prop) : Prop := p
 
 namespace TestResult
 
-def isFailure : TestResult p → Bool
+def isFailure : TestResult p  Bool
   | failure _ _ _ => true
   | _ => false
 
@@ -41,27 +41,27 @@ namespace Testable
 
 open TestResult
 
-def runProp (p : Prop) [Testable p] : Configuration → Bool → Gen (TestResult p) := Testable.run
+def runProp (p : Prop) [Testable p] : Configuration  Bool  Gen (TestResult p) := Testable.run
 
 variable {var : String}
 
-def addShrinks (n : Nat) : TestResult p → TestResult p
+def addShrinks (n : Nat) : TestResult p  TestResult p
   | TestResult.failure p xs m => TestResult.failure p xs (m + n)
   | p => p
 
 instance [Pure m] : Inhabited (OptionT m α) := ⟨(pure none : m (Option α))⟩
 
 class Shrinkable (α : Type u) where
-  shrink : (x : α) → List α := fun _ ↦ []
+  shrink : (x : α)  List α := fun _ ↦ []
 
 class SampleableExt (α : Sort u) where
   proxy : Type v
   [proxyRepr : Repr proxy]
   [shrink : Shrinkable proxy]
   sample : Gen proxy
-  interp : proxy → α
+  interp : proxy  α
 
-partial def minimizeAux [SampleableExt α] {β : α → Prop} [∀ x, Testable (β x)] (cfg : Configuration)
+partial def minimizeAux [SampleableExt α] {β : α  Prop} [∀ x, Testable (β x)] (cfg : Configuration)
     (var : String) (x : SampleableExt.proxy α) (n : Nat) :
     OptionT Gen (Σ x, TestResult (β (SampleableExt.interp x))) := do
   let candidates := SampleableExt.shrink.shrink x

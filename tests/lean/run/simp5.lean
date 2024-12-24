@@ -25,11 +25,11 @@ fun {α} a b c => of_eq_true (eq_self a)
 #guard_msgs in
 #print ex1'
 
-theorem ex2 (p : Nat → Bool) (x : Nat) (h : p x = true) : (if p x then 1 else 2) = 1 := by
+theorem ex2 (p : Nat  Bool) (x : Nat) (h : p x = true) : (if p x then 1 else 2) = 1 := by
   simp [h]
 
 /--
-info: theorem ex2 : ∀ (p : Nat → Bool) (x : Nat), p x = true → (if p x = true then 1 else 2) = 1 :=
+info: theorem ex2 : ∀ (p : Nat  Bool) (x : Nat), p x = true  (if p x = true then 1 else 2) = 1 :=
 fun p x h =>
   of_eq_true
     (Eq.trans

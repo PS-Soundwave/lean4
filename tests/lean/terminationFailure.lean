@@ -4,7 +4,7 @@ def f (x : Nat) : Nat :=
   else
     1
 where
-  g : Nat → Nat
+  g : Nat  Nat
   | 0 => 2
   | x => f x * 2
 

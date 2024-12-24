@@ -19,7 +19,7 @@ def sec (s : α × β) : β :=
 def f5 (s : Nat × Bool) : Bool :=
   if sec s then false else true
 
-def f6 (s : Nat × (Bool → Bool)) : Bool :=
+def f6 (s : Nat × (Bool  Bool)) : Bool :=
   if sec s true then false else true
 
 def f7 (s : List Bool) : Bool :=

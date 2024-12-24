@@ -1,8 +1,8 @@
-class HOp (α β γ) where hOp : α → β → γ
+class HOp (α β γ) where hOp : α  β  γ
 
-class LOp (α β) where lOp : α → β → β
+class LOp (α β) where lOp : α  β  β
 
-class Op (α) where op : α → α → α
+class Op (α) where op : α  α  α
 
 @[default_instance]
 instance inst1 [LOp α β] : HOp α β β := ⟨LOp.lOp⟩

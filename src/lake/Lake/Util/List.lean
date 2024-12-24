@@ -9,7 +9,7 @@ import Init.Data.List.Notation
 namespace Lake
 
 /-- Remove adjacent duplicates. -/
-def List.squeeze [BEq α] : List α → List α
+def List.squeeze [BEq α] : List α  List α
 | [] => []
 | x :: xs =>
   match List.squeeze xs with

@@ -227,10 +227,10 @@ structure DeleteFile where
 
 [reference](https://microsoft.github.io/language-server-protocol/specifications/lsp/3.17/specification/#resourceChanges) -/
 inductive DocumentChange where
-  | create : CreateFile       → DocumentChange
-  | rename : RenameFile       → DocumentChange
-  | delete : DeleteFile       → DocumentChange
-  | edit   : TextDocumentEdit → DocumentChange
+  | create : CreateFile        DocumentChange
+  | rename : RenameFile        DocumentChange
+  | delete : DeleteFile        DocumentChange
+  | edit   : TextDocumentEdit  DocumentChange
 
 instance : ToJson DocumentChange := ⟨fun
   | .create x => Json.setObjVal! (toJson x) "kind" "create"

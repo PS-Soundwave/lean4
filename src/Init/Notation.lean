@@ -10,6 +10,14 @@ import Init.Prelude
 import Init.Coe
 set_option linter.missingDocs true -- keep it documented
 
+/-
+The following codepoints have been used to replace default prelude notations:
+U+E000 (triple) - ~~~
+U+E001 - ∨
+U+E002 - →
+U+E003 - ∘
+-/
+
 namespace Lean
 
 /--
@@ -269,7 +277,7 @@ especially when proving properties about the `ofNat` function itself.
 -/
 syntax (name := rawNatLit) "nat_lit " num : term
 
-@[inherit_doc] infixr:90 " ∘ "  => Function.comp
+@[inherit_doc] infixr:90 "  "  => Function.comp
 @[inherit_doc] infixr:35 " × "  => Prod
 @[inherit_doc] infixr:35 " ×' " => PProd
 
@@ -287,7 +295,7 @@ syntax (name := rawNatLit) "nat_lit " num : term
 @[inherit_doc] infixr:80 " ^ "   => HPow.hPow
 @[inherit_doc] infixl:65 " ++ "  => HAppend.hAppend
 @[inherit_doc] prefix:75 "-"    => Neg.neg
-@[inherit_doc] prefix:100 "~~~"  => Complement.complement
+@[inherit_doc] prefix:100 ""  => Complement.complement
 
 /-!
   Remark: the infix commands above ensure a delaborator is generated for each relations.
@@ -333,7 +341,7 @@ macro_rules | `($x == $y) => `(binrel_no_prop% BEq.beq $x $y)
 @[inherit_doc] infixr:35 " /\\ " => And
 @[inherit_doc] infixr:35 " ∧ "   => And
 @[inherit_doc] infixr:30 " \\/ " => Or
-@[inherit_doc] infixr:30 " ∨  "  => Or
+@[inherit_doc] infixr:30 "   "  => Or
 @[inherit_doc] notation:max "¬" p:40 => Not p
 
 @[inherit_doc] infixl:35 " && " => and

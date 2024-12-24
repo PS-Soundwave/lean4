@@ -165,7 +165,7 @@ the goal fully, indicated by returning `none`.
 -/
 structure Pass where
   name : Name
-  run : MVarId → MetaM (Option MVarId)
+  run : MVarId  MetaM (Option MVarId)
 
 namespace Pass
 

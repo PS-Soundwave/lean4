@@ -1,7 +1,7 @@
 namespace Ex0
 
 -- NB: no parameter
-theorem elim_without_param {motive : Nat → Prop} (case1 : ∀ n, motive n) (n : Nat)  : motive n :=
+theorem elim_without_param {motive : Nat  Prop} (case1 : ∀ n, motive n) (n : Nat)  : motive n :=
   case1 _
 
 example (n : Nat) : n = n := by
@@ -21,7 +21,7 @@ end Ex0
 namespace Ex1
 
 -- NB: p before motive
-theorem elim_with_param (p : Bool) {motive : Nat → Prop} (case1 : ∀ n, motive n) (n : Nat)  : motive n :=
+theorem elim_with_param (p : Bool) {motive : Nat  Prop} (case1 : ∀ n, motive n) (n : Nat)  : motive n :=
   if p then case1 _ else case1 _
 
 example (n : Nat) : n = n := by
@@ -57,7 +57,7 @@ end Ex1
 namespace Ex2
 
 -- NB: p after motive
-theorem elim_with_param {motive : Nat → Prop} (case1 : ∀ n, motive n) (n : Nat) (p : Bool) : motive n :=
+theorem elim_with_param {motive : Nat  Prop} (case1 : ∀ n, motive n) (n : Nat) (p : Bool) : motive n :=
   if p then case1 _ else case1 _
 
 example (n : Nat) : n = n := by
@@ -100,8 +100,8 @@ namespace Ex3
 -- Mutual induction, multiple motives
 
 mutual
-inductive A : Type u where | mkA : B → A | A : A
-inductive B : Type u where | mkB : A → B
+inductive A : Type u where | mkA : B  A | A : A
+inductive B : Type u where | mkB : A  B
 end
 
 -- NB: A.rec is configured as elab_as_elim,
@@ -198,7 +198,7 @@ namespace Ex4
 set_option linter.unusedVariables false in
 example
   (α : Type u)
-  (ela : ∀ {motive : α → Prop} (case1 : ∀ (x : α), motive x) (x : α), motive x)
+  (ela : ∀ {motive : α  Prop} (case1 : ∀ (x : α), motive x) (x : α), motive x)
   (x : α)
   : x = x := by
   induction x using ela
@@ -211,8 +211,8 @@ namespace Ex5
 -- Multiple motives, different number of extra assumptions
 
 mutual
-inductive A : Type u where | mkA : B → A | A : A
-inductive B : Type u where | mkB : A → B
+inductive A : Type u where | mkA : B  A | A : A
+inductive B : Type u where | mkB : A  B
 end
 
 set_option linter.unusedVariables false in

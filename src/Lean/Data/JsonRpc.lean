@@ -189,7 +189,7 @@ instance : CoeOut (ResponseError Unit) Message :=
 instance : Coe String RequestID := ⟨RequestID.str⟩
 instance : Coe JsonNumber RequestID := ⟨RequestID.num⟩
 
-private def RequestID.lt : RequestID → RequestID → Bool
+private def RequestID.lt : RequestID  RequestID  Bool
   | RequestID.str a, RequestID.str b            => a < b
   | RequestID.num a, RequestID.num b            => a < b
   | RequestID.null,  RequestID.num _            => true

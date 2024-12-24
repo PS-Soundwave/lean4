@@ -61,7 +61,7 @@ info: [b * c, a * (b * c), d * (b * c)]
 warning: declaration uses 'sorry'
 -/
 #guard_msgs in
-example (a b c d : Nat) : b * (a * c) = d * (b * c) → False := by
+example (a b c d : Nat) : b * (a * c) = d * (b * c)  False := by
   rw [left_comm] -- Introduces a new (non-canonical) instance for `Mul Nat`
   grind_test -- State should have only 3 `*`-applications
   sorry
@@ -75,13 +75,13 @@ info: [@HMul.hMul Nat Nat Nat (@instHMul Nat instMulNat) b a, @HMul.hMul Nat Nat
 warning: declaration uses 'sorry'
 -/
 #guard_msgs in
-example (a b c d : Nat) : b * a = d * b → False := by
+example (a b c d : Nat) : b * a = d * b  False := by
   rw [CommMonoid.mul_comm d b] -- Introduces a new (non-canonical) instance for `Mul Nat`
   -- See target here
   guard_target =ₛ
     @HMul.hMul Nat Nat Nat (@instHMul Nat instMulNat) b a
     =
     @HMul.hMul Nat Nat Nat (@instHMul Nat (@Semigroup.toMul Nat (@Monoid.toSemigroup Nat (@CommMonoid.toMonoid Nat instCommMonoidNat)))) b d
-    → False
+     False
   grind_test -- State should have only 2 `*`-applications, and they use the same instance
   sorry

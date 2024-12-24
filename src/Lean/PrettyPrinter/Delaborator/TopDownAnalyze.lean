@@ -232,7 +232,7 @@ where
 def mvarName (mvar : Expr) : MetaM Name :=
   return (←  mvar.mvarId!.getDecl).userName
 
-def containsBadMax : Level → Bool
+def containsBadMax : Level  Bool
   | Level.succ u ..   => containsBadMax u
   | Level.max u v ..  => (u.hasParam && v.hasParam) || containsBadMax u || containsBadMax v
   | Level.imax u v .. => (u.hasParam && v.hasParam) || containsBadMax u || containsBadMax v
@@ -271,7 +271,7 @@ def tryUnify (e₁ e₂ : Expr) : AnalyzeM Unit := do
 partial def inspectOutParams (arg mvar : Expr) : AnalyzeM Unit := do
   let argType  ← inferType arg -- HAdd α α α
   let mvarType ← inferType mvar
-  let fType ← inferType argType.getAppFn -- Type → Type → outParam Type
+  let fType ← inferType argType.getAppFn -- Type  Type  outParam Type
   let mType ← inferType mvarType.getAppFn
   inspectAux fType mType 0 argType.getAppArgs mvarType.getAppArgs
 where
@@ -518,7 +518,7 @@ mutual
 
     collectTrivialBottomUps := do
       -- motivation: prevent levels from printing in
-      -- Boo.mk : {α : Type u_1} → {β : Type u_2} → α → β → Boo.{u_1, u_2} α β
+      -- Boo.mk : {α : Type u_1}  {β : Type u_2}  α  β  Boo.{u_1, u_2} α β
       let { args, mvars, bInfos, ..} ← read
       for h : i in [:args.size] do
         if bInfos[i]! == BinderInfo.default then

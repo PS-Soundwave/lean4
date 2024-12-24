@@ -2,10 +2,10 @@ import Lean
 
 universe u
 
-inductive Pred : ∀ (α : Type u), List α → Type (u+1)
-| foo {α : Type u} (l1 : List α) (l2 : List (Option α)) : Pred (Option α) l2 → Pred α l1
+inductive Pred : ∀ (α : Type u), List α  Type (u+1)
+| foo {α : Type u} (l1 : List α) (l2 : List (Option α)) : Pred (Option α) l2  Pred α l1
 
-axiom goal : forall (α : Type u) (xs : List (List α)) (h : Pred (List α) xs), xs ≠ [] → xs = xs
+axiom goal : forall (α : Type u) (xs : List (List α)) (h : Pred (List α) xs), xs ≠ []  xs = xs
 
 open Lean
 open Lean.Meta
@@ -25,18 +25,18 @@ pure ()
 set_option trace.Elab true
 
 /--
-info: [Elab] ⊢ ∀ (α : Type u) (xs : List (List α)), Pred (List α) xs → xs ≠ [] → xs = xs
+info: [Elab] ⊢ ∀ (α : Type u) (xs : List (List α)), Pred (List α) xs  xs ≠ []  xs = xs
 [Elab] α✝ : Type u
     xs✝ : List (List α✝)
     h✝ : Pred (List α✝) xs✝
-    ⊢ xs✝ ≠ [] → xs✝ = xs✝
+    ⊢ xs✝ ≠ []  xs✝ = xs✝
 [Elab] α✝ : Type u
     xs✝ : List (List α✝)
     h✝¹ : Pred (List α✝) xs✝
     α : Type u
     a✝ : List α
     h✝ : Pred α a✝
-    ⊢ List α✝ = α → HEq xs✝ a✝ → HEq h✝¹ h✝ → xs✝ ≠ [] → xs✝ = xs✝
+    ⊢ List α✝ = α  HEq xs✝ a✝  HEq h✝¹ h✝  xs✝ ≠ []  xs✝ = xs✝
 -/
 #guard_msgs in
 #eval tst1

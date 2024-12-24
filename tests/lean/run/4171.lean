@@ -28,13 +28,13 @@ open Opposite
 universe v v₁ v₂ u u₁ u₂
 
 class Quiver (V : Type u) where
-  Hom : V → V → Sort v
+  Hom : V  V  Sort v
 
 infixr:10 " ⟶ " => Quiver.Hom
 
 structure Prefunctor (V : Type u₁) [Quiver.{v₁} V] (W : Type u₂) [Quiver.{v₂} W] where
-  obj : V → W
-  map : ∀ {X Y : V}, (X ⟶ Y) → (obj X ⟶ obj Y)
+  obj : V  W
+  map : ∀ {X Y : V}, (X ⟶ Y)  (obj X ⟶ obj Y)
 namespace Quiver
 
 instance opposite {V} [Quiver V] : Quiver Vᵒᵖ :=
@@ -57,7 +57,7 @@ namespace CategoryTheory
 
 class CategoryStruct (obj : Type u) extends Quiver.{v + 1} obj : Type max u (v + 1) where
   id : ∀ X : obj, Hom X X
-  comp : ∀ {X Y Z : obj}, (X ⟶ Y) → (Y ⟶ Z) → (X ⟶ Z)
+  comp : ∀ {X Y Z : obj}, (X ⟶ Y)  (Y ⟶ Z)  (X ⟶ Z)
 
 scoped notation "𝟙" => CategoryStruct.id
 
@@ -314,7 +314,7 @@ universe v u
 namespace CategoryTheory
 
 class MonoidalCategoryStruct (C : Type u) [𝒞 : Category.{v} C] where
-  tensorObj : C → C → C
+  tensorObj : C  C  C
   whiskerLeft (X : C) {Y₁ Y₂ : C} (f : Y₁ ⟶ Y₂) : tensorObj X Y₁ ⟶ tensorObj X Y₂
   whiskerRight {X₁ X₂ : C} (f : X₁ ⟶ X₂) (Y : C) : tensorObj X₁ Y ⟶ tensorObj X₂ Y
   tensorHom {X₁ Y₁ X₂ Y₂ : C} (f : X₁ ⟶ Y₁) (g: X₂ ⟶ Y₂) : (tensorObj X₁ X₂ ⟶ tensorObj Y₁ Y₂) :=

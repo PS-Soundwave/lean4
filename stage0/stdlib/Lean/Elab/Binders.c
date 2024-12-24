@@ -7451,7 +7451,7 @@ static lean_object* _init_l___regBuiltin_Lean_Elab_Term_elabDepArrow_docString__
 _start:
 {
 lean_object* x_1; 
-x_1 = lean_mk_string_unchecked("The dependent arrow. `(x : α) → β` is equivalent to `∀ x : α, β`, but we usually\nreserve the latter for propositions. Also written as `Π x : α, β` (the \"Pi-type\")\nin the literature. ", 193, 182);
+x_1 = lean_mk_string_unchecked("The dependent arrow. `(x : α)  β` is equivalent to `∀ x : α, β`, but we usually\nreserve the latter for propositions. Also written as `Π x : α, β` (the \"Pi-type\")\nin the literature. ", 193, 182);
 return x_1;
 }
 }

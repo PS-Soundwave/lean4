@@ -53,7 +53,7 @@ private def mkInaccessibleUserNameAux (unicode : Bool) (name : Name) (idx : Nat)
   else
     name ++ Name.num `_inaccessible idx
 
-private def mkInaccessibleUserName (unicode : Bool) : Name → Name
+private def mkInaccessibleUserName (unicode : Bool) : Name  Name
   | .num p@(.str ..) idx =>
     mkInaccessibleUserNameAux unicode p idx
   | .num .anonymous idx =>
@@ -97,7 +97,7 @@ def sanitizeName (userName : Name) : StateM NameSanitizerState Name := do
   modify fun s => { s with userName2Sanitized := s.userName2Sanitized.insert userName san }
   pure san
 
-private partial def sanitizeSyntaxAux : Syntax → StateM NameSanitizerState Syntax
+private partial def sanitizeSyntaxAux : Syntax  StateM NameSanitizerState Syntax
   | stx@(Syntax.ident _ _ n _) => do
     let n ← match (← get).userName2Sanitized.find? n with
       | some n' => pure n'

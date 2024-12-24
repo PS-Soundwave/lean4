@@ -2,7 +2,7 @@ inductive Tree (α : Type) : Type where
 | leaf : Tree α
 | node (t : Tree α) (f : Tree α) : Tree α
 
-inductive Subtree : Tree α → Tree α → Prop where
+inductive Subtree : Tree α  Tree α  Prop where
 | left_head  (t f : Tree α) : Subtree t (Tree.node t f)
 | right_head (t f : Tree α) : Subtree f (Tree.node t f)
 

@@ -2,13 +2,13 @@ set_option pp.mvars false
 
 structure CatIsh where
   Obj : Type o
-  Hom : Obj → Obj → Type m
+  Hom : Obj  Obj  Type m
 
 infixr:75 " ~> " => (CatIsh.Hom _)
 
 structure FunctorIsh (C D : CatIsh) where
-  onObj : C.Obj → D.Obj
-  onHom : ∀ {s d : C.Obj}, (s ~> d) → (onObj s ~> onObj d)
+  onObj : C.Obj  D.Obj
+  onHom : ∀ {s d : C.Obj}, (s ~> d)  (onObj s ~> onObj d)
 
 abbrev Catish : CatIsh :=
   {

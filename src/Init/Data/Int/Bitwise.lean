@@ -17,9 +17,9 @@ Bitwise not
 Interprets the integer as an infinite sequence of bits in two's complement
 and complements each bit.
 ```
-~~~(0:Int) = -1
-~~~(1:Int) = -2
-~~~(-1:Int) = 0
+(0:Int) = -1
+(1:Int) = -2
+(-1:Int) = 0
 ```
 -/
 protected def not : Int -> Int
@@ -41,7 +41,7 @@ complement and shifts the value to the right.
 (-0b0111:Int) >>> 1 = -0b0100
 ```
 -/
-protected def shiftRight : Int → Nat → Int
+protected def shiftRight : Int  Nat  Int
   | Int.ofNat n, s => Int.ofNat (n >>> s)
   | Int.negSucc n, s => Int.negSucc (n >>> s)
 

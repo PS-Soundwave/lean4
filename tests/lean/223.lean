@@ -1,9 +1,9 @@
 universe u v
 
-inductive Imf {α : Type u} {β : Type v} (f : α → β) : β → Type (max u v)
-| mk : (a : α) → Imf f (f a)
+inductive Imf {α : Type u} {β : Type v} (f : α  β) : β  Type (max u v)
+| mk : (a : α)  Imf f (f a)
 
-def h {α β} {f : α → β} : {b : β} → Imf f b → α
+def h {α β} {f : α  β} : {b : β}  Imf f b  α
 | _, Imf.mk a => a
 
 #print h

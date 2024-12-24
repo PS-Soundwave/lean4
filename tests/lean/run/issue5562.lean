@@ -8,7 +8,7 @@ transparency `all`.
 open Lean Meta
 
 
-def T := Nat → Nat
+def T := Nat  Nat
 def x : T := fun n => n + 1
 
 -- All well:

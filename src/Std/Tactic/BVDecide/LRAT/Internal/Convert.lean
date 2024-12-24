@@ -26,7 +26,7 @@ def CNF.lift (cnf : CNF Nat) : CNF (PosFin (cnf.numLiterals + 1)) :=
   cnf.relabel (fun lit => ⟨lit.val + 1, by omega⟩)
 
 theorem CNF.unsat_of_lift_unsat (cnf : CNF Nat) :
-    (CNF.lift cnf).Unsat → cnf.Unsat := by
+    (CNF.lift cnf).Unsat  cnf.Unsat := by
   intro h2
   have h3 :=
     CNF.unsat_relabel_iff
@@ -94,7 +94,7 @@ theorem CNF.Clause.mem_lrat_of_mem (clause : CNF.Clause (PosFin n)) (h1 : l ∈ 
 
 theorem CNF.Clause.convertLRAT_sat_of_sat (clause : CNF.Clause (PosFin n))
     (h : Clause.convertLRAT' clause = some lratClause) :
-    clause.eval assign → assign ⊨ lratClause := by
+    clause.eval assign  assign ⊨ lratClause := by
   intro h2
   simp only [CNF.Clause.eval, List.any_eq_true, bne_iff_ne, ne_eq] at h2
   simp only [(· ⊨ ·), Clause.eval, List.any_eq_true, decide_eq_true_eq]
@@ -132,7 +132,7 @@ theorem CNF.convertLRAT_readyForRatAdd (cnf : CNF Nat) :
 
 theorem unsat_of_cons_none_unsat (clauses : List (Option (DefaultClause n))) :
     Unsatisfiable (PosFin n) (DefaultFormula.ofArray (none :: clauses).toArray)
-      →
+      
     Unsatisfiable (PosFin n) (DefaultFormula.ofArray clauses.toArray) := by
   intro h assign hassign
   apply h assign
@@ -142,7 +142,7 @@ theorem unsat_of_cons_none_unsat (clauses : List (Option (DefaultClause n))) :
 
 theorem CNF.unsat_of_convertLRAT_unsat (cnf : CNF Nat) :
     Unsatisfiable (PosFin (cnf.numLiterals + 1)) (CNF.convertLRAT cnf)
-      →
+      
     cnf.Unsat := by
   intro h1
   apply CNF.unsat_of_lift_unsat

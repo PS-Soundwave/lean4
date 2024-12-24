@@ -4,12 +4,12 @@ set_option relaxedAutoImplicit false
 def BV (n : Nat) := { a : Array Bool // a.size = n }
 
 def allZero (bv : BV n) : Prop :=
-  ∀ i, i < n → bv.val[i]! = false
+  ∀ i, i < n  bv.val[i]! = false
 
 def foo (b : BV n) (h : allZero b) : BV n :=
   b
 
-def optbind (x : Option α) (f : α → Option β) : Option β :=
+def optbind (x : Option α) (f : α  Option β) : Option β :=
   match x with
   | none   => none
   | some a => f a
@@ -18,7 +18,7 @@ instance : Monad Option where
   bind := optbind
   pure := some
 
-inductive Mem : α → List α → Prop
+inductive Mem : α  List α  Prop
   | head (a : α) (as : List α) : Mem a (a::as)
 
 def g1 {α : Type u} (a : α) : α :=
@@ -44,10 +44,10 @@ def g6 {α : Type u} (a : α) :=
   let x : β := a
   x
 
-inductive M (m : Type v → Type w) where
+inductive M (m : Type v  Type w) where
   | f (β : Type v) : M m
 
-variable {m : Type u → Type u}
+variable {m : Type u  Type u}
 
 def h1 (a : m α) := a
 

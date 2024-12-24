@@ -77,7 +77,7 @@ inductive BVBinOp where
 
 namespace BVBinOp
 
-def toString : BVBinOp → String
+def toString : BVBinOp  String
   | and => "&&"
   | or => "||"
   | xor => "^"
@@ -91,7 +91,7 @@ instance : ToString BVBinOp := ⟨toString⟩
 /--
 The semantics for `BVBinOp`.
 -/
-def eval : BVBinOp → (BitVec w → BitVec w → BitVec w)
+def eval : BVBinOp  (BitVec w  BitVec w  BitVec w)
   | and => (· &&& ·)
   | or => (· ||| ·)
   | xor => (· ^^^ ·)
@@ -100,13 +100,13 @@ def eval : BVBinOp → (BitVec w → BitVec w → BitVec w)
   | udiv => (· / ·)
   | umod => (· % · )
 
-@[simp] theorem eval_and : eval .and = ((· &&& ·) : BitVec w → BitVec w → BitVec w) := by rfl
-@[simp] theorem eval_or : eval .or = ((· ||| ·) : BitVec w → BitVec w → BitVec w) := by rfl
-@[simp] theorem eval_xor : eval .xor = ((· ^^^ ·) : BitVec w → BitVec w → BitVec w) := by rfl
-@[simp] theorem eval_add : eval .add = ((· + ·) : BitVec w → BitVec w → BitVec w) := by rfl
-@[simp] theorem eval_mul : eval .mul = ((· * ·) : BitVec w → BitVec w → BitVec w) := by rfl
-@[simp] theorem eval_udiv : eval .udiv = ((· / ·) : BitVec w → BitVec w → BitVec w) := by rfl
-@[simp] theorem eval_umod : eval .umod = ((· % ·) : BitVec w → BitVec w → BitVec w) := by rfl
+@[simp] theorem eval_and : eval .and = ((· &&& ·) : BitVec w  BitVec w  BitVec w) := by rfl
+@[simp] theorem eval_or : eval .or = ((· ||| ·) : BitVec w  BitVec w  BitVec w) := by rfl
+@[simp] theorem eval_xor : eval .xor = ((· ^^^ ·) : BitVec w  BitVec w  BitVec w) := by rfl
+@[simp] theorem eval_add : eval .add = ((· + ·) : BitVec w  BitVec w  BitVec w) := by rfl
+@[simp] theorem eval_mul : eval .mul = ((· * ·) : BitVec w  BitVec w  BitVec w) := by rfl
+@[simp] theorem eval_udiv : eval .udiv = ((· / ·) : BitVec w  BitVec w  BitVec w) := by rfl
+@[simp] theorem eval_umod : eval .umod = ((· % ·) : BitVec w  BitVec w  BitVec w) := by rfl
 
 end BVBinOp
 
@@ -153,7 +153,7 @@ inductive BVUnOp where
 
 namespace BVUnOp
 
-def toString : BVUnOp → String
+def toString : BVUnOp  String
   | not => "~"
   | shiftLeftConst n => s!"<< {n}"
   | shiftRightConst n => s!">> {n}"
@@ -166,34 +166,34 @@ instance : ToString BVUnOp := ⟨toString⟩
 /--
 The semantics for `BVUnOp`.
 -/
-def eval : BVUnOp → (BitVec w → BitVec w)
-  | not => (~~~ ·)
+def eval : BVUnOp  (BitVec w  BitVec w)
+  | not => ( ·)
   | shiftLeftConst n => (· <<< n)
   | shiftRightConst n => (· >>> n)
   | rotateLeft n => (BitVec.rotateLeft · n)
   | rotateRight n => (BitVec.rotateRight · n)
   | arithShiftRightConst n => (BitVec.sshiftRight · n)
 
-@[simp] theorem eval_not : eval .not = ((~~~ ·) : BitVec w → BitVec w) := by rfl
+@[simp] theorem eval_not : eval .not = (( ·) : BitVec w  BitVec w) := by rfl
 
 @[simp]
-theorem eval_shiftLeftConst : eval (shiftLeftConst n) = ((· <<< n) : BitVec w → BitVec w) := by
+theorem eval_shiftLeftConst : eval (shiftLeftConst n) = ((· <<< n) : BitVec w  BitVec w) := by
   rfl
 
 @[simp]
-theorem eval_shiftRightConst : eval (shiftRightConst n) = ((· >>> n) : BitVec w → BitVec w) := by
+theorem eval_shiftRightConst : eval (shiftRightConst n) = ((· >>> n) : BitVec w  BitVec w) := by
   rfl
 
 @[simp]
-theorem eval_rotateLeft : eval (rotateLeft n) = ((BitVec.rotateLeft · n) : BitVec w → BitVec w) := by
+theorem eval_rotateLeft : eval (rotateLeft n) = ((BitVec.rotateLeft · n) : BitVec w  BitVec w) := by
   rfl
 
 @[simp]
-theorem eval_rotateRight : eval (rotateRight n) = ((BitVec.rotateRight · n) : BitVec w → BitVec w) := by
+theorem eval_rotateRight : eval (rotateRight n) = ((BitVec.rotateRight · n) : BitVec w  BitVec w) := by
   rfl
 
 @[simp]
-theorem eval_arithShiftRightConst : eval (arithShiftRightConst n) = (BitVec.sshiftRight · n : BitVec w → BitVec w) := by
+theorem eval_arithShiftRightConst : eval (arithShiftRightConst n) = (BitVec.sshiftRight · n : BitVec w  BitVec w) := by
   rfl
 
 end BVUnOp
@@ -201,7 +201,7 @@ end BVUnOp
 /--
 All supported expressions involving `BitVec` and operations on them.
 -/
-inductive BVExpr : Nat → Type where
+inductive BVExpr : Nat  Type where
   /--
   A `BitVec` variable, referred to through an index.
   -/
@@ -253,7 +253,7 @@ inductive BVExpr : Nat → Type where
 
 namespace BVExpr
 
-def toString : BVExpr w → String
+def toString : BVExpr w  String
   | .var idx => s!"var{idx}"
   | .const val => ToString.toString val
   | .zeroExtend v expr => s!"(zext {v} {expr.toString})"
@@ -291,7 +291,7 @@ def Assignment.get (assign : Assignment) (idx : Nat) : PackedBitVec :=
 /--
 The semantics for `BVExpr`.
 -/
-def eval (assign : Assignment) : BVExpr w → BitVec w
+def eval (assign : Assignment) : BVExpr w  BitVec w
   | .var idx =>
     let ⟨bv⟩ := assign.get idx
     bv.truncate w
@@ -372,7 +372,7 @@ inductive BVBinPred where
 
 namespace BVBinPred
 
-def toString : BVBinPred → String
+def toString : BVBinPred  String
   | eq => "=="
   | ult => "<u"
 
@@ -381,12 +381,12 @@ instance : ToString BVBinPred := ⟨toString⟩
 /--
 The semantics for `BVBinPred`.
 -/
-def eval : BVBinPred → (BitVec w → BitVec w → Bool)
+def eval : BVBinPred  (BitVec w  BitVec w  Bool)
   | .eq => (· == ·)
   | .ult => BitVec.ult
 
-@[simp] theorem eval_eq : eval .eq = ((· == ·) : BitVec w → BitVec w → Bool) := by rfl
-@[simp] theorem eval_ult : eval .ult = (BitVec.ult : BitVec w → BitVec w → Bool) := by rfl
+@[simp] theorem eval_eq : eval .eq = ((· == ·) : BitVec w  BitVec w  Bool) := by rfl
+@[simp] theorem eval_ult : eval .ult = (BitVec.ult : BitVec w  BitVec w  Bool) := by rfl
 
 end BVBinPred
 
@@ -413,7 +413,7 @@ structure ExprPair where
   lhs : BVExpr w
   rhs : BVExpr w
 
-def toString : BVPred → String
+def toString : BVPred  String
   | bin lhs op rhs => s!"({lhs.toString} {op.toString} {rhs.toString})"
   | getLsbD expr idx => s!"{expr.toString}[{idx}]"
 
@@ -422,7 +422,7 @@ instance : ToString BVPred := ⟨toString⟩
 /--
 The semantics for `BVPred`.
 -/
-def eval (assign : BVExpr.Assignment) : BVPred → Bool
+def eval (assign : BVExpr.Assignment) : BVPred  Bool
   | bin lhs op rhs => op.eval (lhs.eval assign) (rhs.eval assign)
   | getLsbD expr idx => (expr.eval assign).getLsbD idx
 

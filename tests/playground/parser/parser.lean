@@ -16,7 +16,7 @@ match map.find k with
 | none    := map.insert k [v]
 | some vs := map.insert k (v::vs)
 
-def ofListAux {α : Type} : List (Name × α) → TokenMap α → TokenMap α
+def ofListAux {α : Type} : List (Name × α)  TokenMap α  TokenMap α
 | []          m := m
 | (⟨k,v⟩::xs) m := ofListAux xs (m.insert k v)
 
@@ -36,7 +36,7 @@ structure TokenConfig :=
 
 namespace TokenConfig
 
-def beq : TokenConfig → TokenConfig → Bool
+def beq : TokenConfig  TokenConfig  Bool
 | ⟨val₁, lbp₁⟩ ⟨val₂, lbp₂⟩ := val₁ == val₂ && lbp₁ == lbp₂
 
 instance : BEq TokenConfig :=
@@ -88,13 +88,13 @@ match d.errorMsg with
   let pos := cfg.fileMap.toPosition d.pos in
   cfg.filename ++ ":" ++ toString pos.line ++ ":" ++ toString pos.column ++ " " ++ msg
 
-def ParserFn := String → ParserData → ParserData
+def ParserFn := String  ParserData  ParserData
 
 instance : Inhabited ParserFn :=
 ⟨λ s, id⟩
 
 structure ParserInfo :=
-(updateTokens : Trie TokenConfig → Trie TokenConfig := λ tks, tks)
+(updateTokens : Trie TokenConfig  Trie TokenConfig := λ tks, tks)
 (firstTokens  : List TokenConfig := [])
 
 @[inline] def andthenFn (p q : ParserFn) : ParserFn
@@ -103,7 +103,7 @@ structure ParserInfo :=
   if d.hasError then d else q s d
 
 @[noinline] def andthenInfo (p q : ParserInfo) : ParserInfo :=
-{ updateTokens := q.updateTokens ∘ p.updateTokens,
+{ updateTokens := q.updateTokens  p.updateTokens,
   firstTokens  := p.firstTokens }
 
 def ParserData.mkNode (d : ParserData) (k : SyntaxNodeKind) (iniStackSz : Nat) : ParserData :=
@@ -136,7 +136,7 @@ match d with
   if d.hasError && d.pos == iniPos then q s (d.restore iniSz iniPos) else d
 
 @[noinline] def orelseInfo (p q : ParserInfo) : ParserInfo :=
-{ updateTokens := q.updateTokens ∘ p.updateTokens,
+{ updateTokens := q.updateTokens  p.updateTokens,
   firstTokens  := p.firstTokens ++ q.firstTokens }
 
 @[inline] def tryFn (p : ParserFn) : ParserFn
@@ -170,7 +170,7 @@ def ParserData.mkErrorAt (d : ParserData) (msg : String) (pos : String.Pos) : Pa
 match d with
 | ⟨stack, _, cache, _⟩ := ⟨stack, pos, cache, some msg⟩
 
-@[specialize] partial def manyAux (p : ParserFn) : String → ParserData → ParserData
+@[specialize] partial def manyAux (p : ParserFn) : String  ParserData  ParserData
 | s d :=
   let iniSz  := d.stackSize in
   let iniPos := d.pos in
@@ -185,7 +185,7 @@ match d with
   let d := manyAux p s d in
   d.mkNode nullKind iniSz
 
-@[specialize] private partial def sepByFnAux (p : ParserFn) (sep : ParserFn) (allowTrailingSep : Bool) (iniSz : Nat) : Bool → ParserFn
+@[specialize] private partial def sepByFnAux (p : ParserFn) (sep : ParserFn) (allowTrailingSep : Bool) (iniSz : Nat) : Bool  ParserFn
 | pOpt s d :=
   let sz  := d.stackSize in
   let pos := d.pos in
@@ -219,14 +219,14 @@ match d with
   sepByFnAux p sep allowTrailingSep iniSz false s d
 
 @[noinline] def sepByInfo (p sep : ParserInfo) : ParserInfo :=
-{ updateTokens := sep.updateTokens ∘ p.updateTokens,
+{ updateTokens := sep.updateTokens  p.updateTokens,
   firstTokens  := [] }
 
 @[noinline] def sepBy1Info (p sep : ParserInfo) : ParserInfo :=
-{ updateTokens := sep.updateTokens ∘ p.updateTokens,
+{ updateTokens := sep.updateTokens  p.updateTokens,
   firstTokens  := p.firstTokens }
 
-@[specialize] partial def satisfyFn (p : Char → Bool) (errorMsg : String := "unexpected character") : ParserFn
+@[specialize] partial def satisfyFn (p : Char  Bool) (errorMsg : String := "unexpected character") : ParserFn
 | s d :=
   let i := d.pos in
   if s.atEnd i then d.mkEOIError
@@ -235,7 +235,7 @@ match d with
     if p c then d.next s i
     else d.mkError errorMsg
 
-@[specialize] partial def takeUntilFn (p : Char → Bool) : ParserFn
+@[specialize] partial def takeUntilFn (p : Char  Bool) : ParserFn
 | s d :=
   let i := d.pos in
   if s.atEnd i then d
@@ -244,13 +244,13 @@ match d with
     if p c then d
     else takeUntilFn s (d.next s i)
 
-@[specialize] def takeWhileFn (p : Char → Bool) : ParserFn :=
+@[specialize] def takeWhileFn (p : Char  Bool) : ParserFn :=
 takeUntilFn (λ c, !p c)
 
-@[inline] def takeWhile1Fn (p : Char → Bool) (errorMsg : String) : ParserFn :=
+@[inline] def takeWhile1Fn (p : Char  Bool) (errorMsg : String) : ParserFn :=
 andthenFn (satisfyFn p errorMsg) (takeWhileFn p)
 
-partial def finishCommentBlock : Nat → ParserFn
+partial def finishCommentBlock : Nat  ParserFn
 | nesting s d :=
   let i := d.pos in
   if s.atEnd i then d.mkEOIError
@@ -433,7 +433,7 @@ def numberFnAux : ParserFn
     else
       d.mkError "expected numeral"
 
-def isIdCont : String → ParserData → Bool
+def isIdCont : String  ParserData  Bool
 | s d :=
   let i := d.pos in
   let c := s.get i in
@@ -484,7 +484,7 @@ else
   let atom                 := Syntax.ident (some info) rawVal val [] [] in
   d.pushSyntax atom
 
-partial def identFnAux (startPos : Nat) (tk : Option TokenConfig) : Name → ParserFn
+partial def identFnAux (startPos : Nat) (tk : Option TokenConfig) : Name  ParserFn
 | r s d :=
   let i := d.pos in
   if s.atEnd i then d.mkEOIError
@@ -574,7 +574,7 @@ match prevErrorMsg, d.errorMsg with
 def longestMatchMkResult (startSize : Nat) (d : ParserData) : ParserData :=
 if !d.hasError && d.stackSize > startSize + 1 then d.mkNode choiceKind startSize else d
 
-def longestMatchFnAux (startSize : Nat) (startPos : String.Pos) : List ParserFn → ParserFn
+def longestMatchFnAux (startSize : Nat) (startPos : String.Pos) : List ParserFn  ParserFn
 | []      := λ _ d, longestMatchMkResult startSize d
 | (p::ps) := λ s d,
    let d := longestMatchStep startSize startPos p s d in
@@ -595,7 +595,7 @@ let d         := if d.hasError then d.takeStack startSize else d.mkLongestNodeAl
 let d         := longestMatchStep startSize startPos q s d in
 longestMatchMkResult startSize d
 
-def longestMatchFn : List ParserFn → ParserFn
+def longestMatchFn : List ParserFn  ParserFn
 | []      := λ _ d, d.mkError "longest match: empty list"
 | [p]     := longestMatchFn₁ p
 | (p::ps) := λ s d,
@@ -616,10 +616,10 @@ structure AbsParser (ρ : Type) :=
 abbrev Parser := AbsParser ParserFn
 
 class ParserFnLift (ρ : Type) :=
-(lift {} : ParserFn → ρ)
-(map     : (ParserFn → ParserFn) → ρ → ρ)
-(map₂    : (ParserFn → ParserFn → ParserFn) → ρ → ρ → ρ)
-(mapList : (List ParserFn → ParserFn) → List ρ → ρ)
+(lift {} : ParserFn  ρ)
+(map     : (ParserFn  ParserFn)  ρ  ρ)
+(map₂    : (ParserFn  ParserFn  ParserFn)  ρ  ρ  ρ)
+(mapList : (List ParserFn  ParserFn)  List ρ  ρ)
 
 instance parserLiftInhabited {ρ : Type} [ParserFnLift ρ] : Inhabited ρ :=
 ⟨ParserFnLift.lift (default _)⟩
@@ -635,19 +635,19 @@ def liftParser {ρ : Type} [ParserFnLift ρ] (info : ParserInfo) (fn : ParserFn)
 { info := info, fn := ParserFnLift.lift fn }
 
 @[inline]
-def mapParser {ρ : Type} [ParserFnLift ρ] (infoFn : ParserInfo → ParserInfo) (pFn : ParserFn → ParserFn) : AbsParser ρ → AbsParser ρ :=
+def mapParser {ρ : Type} [ParserFnLift ρ] (infoFn : ParserInfo  ParserInfo) (pFn : ParserFn  ParserFn) : AbsParser ρ  AbsParser ρ :=
 λ p, { info := infoFn p.info, fn := ParserFnLift.map pFn p.fn }
 
 @[inline]
-def mapParser₂ {ρ : Type} [ParserFnLift ρ] (infoFn : ParserInfo → ParserInfo → ParserInfo) (pFn : ParserFn → ParserFn → ParserFn)
-               : AbsParser ρ → AbsParser ρ → AbsParser ρ :=
+def mapParser₂ {ρ : Type} [ParserFnLift ρ] (infoFn : ParserInfo  ParserInfo  ParserInfo) (pFn : ParserFn  ParserFn  ParserFn)
+               : AbsParser ρ  AbsParser ρ  AbsParser ρ :=
 λ p q, { info := infoFn p.info q.info, fn := ParserFnLift.map₂ pFn p.fn q.fn }
 
 def EnvParserFn (α : Type) (ρ : Type) :=
-α → ρ
+α  ρ
 
 def RecParserFn (α ρ : Type) :=
-EnvParserFn (α → ρ) ρ
+EnvParserFn (α  ρ) ρ
 
 instance envParserLift (α ρ : Type) [ParserFnLift ρ] : ParserFnLift (EnvParserFn α ρ) :=
 { lift    := λ p a, ParserFnLift.lift p,
@@ -656,7 +656,7 @@ instance envParserLift (α ρ : Type) [ParserFnLift ρ] : ParserFnLift (EnvParse
   mapList := λ m ps a, ParserFnLift.mapList m (ps.map (λ p, p a)) }
 
 instance recParserLift (α ρ : Type) [ParserFnLift ρ] : ParserFnLift (RecParserFn α ρ) :=
-inferInstanceAs (ParserFnLift (EnvParserFn (α → ρ) ρ))
+inferInstanceAs (ParserFnLift (EnvParserFn (α  ρ) ρ))
 
 namespace RecParserFn
 variable {α ρ : Type}
@@ -664,33 +664,33 @@ variable {α ρ : Type}
 @[inline] def recurse (a : α) : RecParserFn α ρ :=
 λ p, p a
 
-@[inline] def run [ParserFnLift ρ] (x : RecParserFn α ρ) (rec : α → RecParserFn α ρ) : ρ :=
+@[inline] def run [ParserFnLift ρ] (x : RecParserFn α ρ) (rec : α  RecParserFn α ρ) : ρ :=
 x (fix (λ f a, rec a f))
 
 end RecParserFn
 
-@[inline] def andthen {ρ : Type} [ParserFnLift ρ] : AbsParser ρ → AbsParser ρ → AbsParser ρ :=
+@[inline] def andthen {ρ : Type} [ParserFnLift ρ] : AbsParser ρ  AbsParser ρ  AbsParser ρ :=
 mapParser₂ andthenInfo andthenFn
 
 instance absParserAndThen {ρ : Type} [ParserFnLift ρ] : AndThen (AbsParser ρ) :=
 ⟨andthen⟩
 
-@[inline] def node {ρ : Type} [ParserFnLift ρ] (k : SyntaxNodeKind) : AbsParser ρ → AbsParser ρ :=
+@[inline] def node {ρ : Type} [ParserFnLift ρ] (k : SyntaxNodeKind) : AbsParser ρ  AbsParser ρ :=
 mapParser nodeInfo (nodeFn k)
 
-@[inline] def orelse {ρ : Type} [ParserFnLift ρ] : AbsParser ρ → AbsParser ρ → AbsParser ρ :=
+@[inline] def orelse {ρ : Type} [ParserFnLift ρ] : AbsParser ρ  AbsParser ρ  AbsParser ρ :=
 mapParser₂ orelseInfo orelseFn
 
 instance absParserOrElse {ρ : Type} [ParserFnLift ρ] : OrElse (AbsParser ρ) :=
 ⟨orelse⟩
 
-@[inline] def try {ρ : Type} [ParserFnLift ρ] : AbsParser ρ → AbsParser ρ :=
+@[inline] def try {ρ : Type} [ParserFnLift ρ] : AbsParser ρ  AbsParser ρ :=
 mapParser noFirstTokenInfo tryFn
 
-@[inline] def many {ρ : Type} [ParserFnLift ρ] : AbsParser ρ → AbsParser ρ :=
+@[inline] def many {ρ : Type} [ParserFnLift ρ] : AbsParser ρ  AbsParser ρ :=
 mapParser noFirstTokenInfo manyFn
 
-@[inline] def optional {ρ : Type} [ParserFnLift ρ] : AbsParser ρ → AbsParser ρ :=
+@[inline] def optional {ρ : Type} [ParserFnLift ρ] : AbsParser ρ  AbsParser ρ :=
 mapParser noFirstTokenInfo optionalFn
 
 @[inline] def many1 {ρ : Type} [ParserFnLift ρ] (p : AbsParser ρ) : AbsParser ρ :=
@@ -706,7 +706,7 @@ def longestMatchInfo {ρ : Type} (ps : List (AbsParser ρ)) : ParserInfo :=
 { updateTokens := λ trie, ps.foldl (λ trie p, p.info.updateTokens trie) trie,
   firstTokens  := ps.foldl (λ tks p, p.info.firstTokens ++ tks) [] }
 
-def liftLongestMatchFn {ρ : Type} [ParserFnLift ρ] : List (AbsParser ρ) → ρ
+def liftLongestMatchFn {ρ : Type} [ParserFnLift ρ] : List (AbsParser ρ)  ρ
 | []     := ParserFnLift.lift (longestMatchFn [])
 | [p]    := ParserFnLift.map  longestMatchFn₁ p.fn
 | [p, q] := ParserFnLift.map₂ longestMatchFn₂ p.fn q.fn
@@ -793,7 +793,7 @@ def tokenFn : BasicParserFn
       let d := tokenFnAux cfg s d in
       updateCache i d
 
-@[inline] def satisfySymbolFn (p : String → Bool) (errorMsg : String) : BasicParserFn
+@[inline] def satisfySymbolFn (p : String  Bool) (errorMsg : String) : BasicParserFn
 | cfg s d :=
   let startPos := d.pos in
   let d        := tokenFn cfg s d in
@@ -893,8 +893,8 @@ let frontendCfg        := mkFrontendConfig filename input in
 let tokens             := p.info.updateTokens {} in
 let cfg : ParserConfig := { tokens := tokens, .. frontendCfg } in
 let d : ParserData     := { stxStack := Array.empty, pos := 0, cache := {}, errorMsg := none } in
-let dummyCmdParser  : Unit → ParserFn := λ _ _ d, d.mkError "no command parser" in
-let dummyTermParser : ℕ → CmdParserFn ParserConfig := λ _ _ _ _ d, d.mkError "no term parser" in
+let dummyCmdParser  : Unit  ParserFn := λ _ _ d, d.mkError "no command parser" in
+let dummyTermParser : ℕ  CmdParserFn ParserConfig := λ _ _ _ _ d, d.mkError "no term parser" in
 let d := p.fn dummyTermParser cfg dummyCmdParser input d in
 if d.hasError then
   Except.error (d.toErrorMsg cfg)

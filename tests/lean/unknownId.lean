@@ -7,5 +7,5 @@ def f (bla : Nat) : Nat :=
 
 macro "boo" x:term : term => `(fun (bla : Nat) => $x + bla)
 
-def g : Nat → Nat :=
+def g : Nat  Nat :=
   boo foo

@@ -13,12 +13,12 @@ namespace Lean
 universe u
 
 class FromJson (α : Type u) where
-  fromJson? : Json → Except String α
+  fromJson? : Json  Except String α
 
 export FromJson (fromJson?)
 
 class ToJson (α : Type u) where
-  toJson : α → Json
+  toJson : α  Json
 
 export ToJson (toJson)
 
@@ -168,7 +168,7 @@ def getObjValAs? (j : Json) (α : Type u) [FromJson α] (k : String) : Except St
 def setObjValAs! (j : Json) {α : Type u} [ToJson α] (k : String) (v : α) : Json :=
   j.setObjVal! k <| toJson v
 
-def opt [ToJson α] (k : String) : Option α → List (String × Json)
+def opt [ToJson α] (k : String) : Option α  List (String × Json)
   | none   => []
   | some o => [⟨k, toJson o⟩]
 

@@ -4,18 +4,18 @@ inductive SimpleInd
   | B
 deriving Ord
 
-mutual 
+mutual
 inductive Foo
-  | A : Int → (3 = 3) → String → Foo
-  | B : Bar → Foo
+  | A : Int  (3 = 3)  String  Foo
+  | B : Bar  Foo
 deriving Ord
 inductive Bar
   | C
-  | D : Foo → Bar
+  | D : Foo  Bar
 deriving Ord
 end
 
-inductive ManyConstructors | A | B | C | D | E | F | G | H | I | J | K | L 
+inductive ManyConstructors | A | B | C | D | E | F | G | H | I | J | K | L
   | M | N | O | P | Q | R | S | T | U | V | W | X | Y | Z
 deriving Ord
 
@@ -37,6 +37,6 @@ structure Fixed (α : Type u) where
   val : Int
 deriving Ord
 
-inductive Fixed' : Type → Type 1 where
-  | mk : Int → Fixed' α
+inductive Fixed' : Type  Type 1 where
+  | mk : Int  Fixed' α
 deriving Ord

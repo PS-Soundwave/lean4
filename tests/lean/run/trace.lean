@@ -21,7 +21,7 @@ withTraceNode `module (fun _ => return "message") do
   tst1;
   pure ()
 
-partial def ack : Nat → Nat → Nat
+partial def ack : Nat  Nat  Nat
 | 0,   n   => n+1
 | m+1, 0   => ack m 1
 | m+1, n+1 => ack m (ack (m+1) n)

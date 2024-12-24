@@ -2,9 +2,9 @@ namespace Bla
 
 inductive Nat where
   | z : Nat
-  | s : Nat → Nat
+  | s : Nat  Nat
 
-def add : Nat → Nat → Nat
+def add : Nat  Nat  Nat
   | a, Nat.z => a
   | a, Nat.s b => Nat.s (add a b)
 

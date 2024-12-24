@@ -1,4 +1,4 @@
-def Array.swaps (a : Array α) : List (Fin a.size × Fin a.size) → Array α
+def Array.swaps (a : Array α) : List (Fin a.size × Fin a.size)  Array α
   | [] => a
   | (i, j) :: ijs =>
     have : (a.swap i j).size = a.size := a.size_swap _ _

@@ -93,7 +93,7 @@ where
       pure e
 
 /-- Refine `F` over `PSum.casesOn` -/
-private partial def processSumCasesOn (x F val : Expr) (k : (x : Expr) → (F : Expr) → (val : Expr) → TermElabM Expr) : TermElabM Expr := do
+private partial def processSumCasesOn (x F val : Expr) (k : (x : Expr)  (F : Expr)  (val : Expr)  TermElabM Expr) : TermElabM Expr := do
   if x.isFVar && val.isAppOfArity ``PSum.casesOn 6 && val.getArg! 3 == x && (val.getArg! 4).isLambda && (val.getArg! 5).isLambda then
     let args := val.getAppArgs
     let α := args[0]!
@@ -116,7 +116,7 @@ private partial def processSumCasesOn (x F val : Expr) (k : (x : Expr) → (F : 
     k x F val
 
 /-- Refine `F` over `PSigma.casesOn` -/
-private partial def processPSigmaCasesOn (x F val : Expr) (k : (F : Expr) → (val : Expr) → TermElabM Expr) : TermElabM Expr := do
+private partial def processPSigmaCasesOn (x F val : Expr) (k : (F : Expr)  (val : Expr)  TermElabM Expr) : TermElabM Expr := do
   if x.isFVar && val.isAppOfArity ``PSigma.casesOn 5 && val.getArg! 3 == x && (val.getArg! 4).isLambda && (val.getArg! 4).bindingBody!.isLambda then
     let args := val.getAppArgs
     let [_, u, v] := val.getAppFn.constLevels! | unreachable!

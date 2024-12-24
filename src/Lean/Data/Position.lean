@@ -16,7 +16,7 @@ structure Position where
   deriving Inhabited, DecidableEq, Repr, ToJson, FromJson
 
 namespace Position
-protected def lt : Position → Position → Bool
+protected def lt : Position  Position  Bool
   | ⟨l₁, c₁⟩, ⟨l₂, c₂⟩ => Prod.lexLt (l₁, c₁) (l₂, c₂)
 
 instance : ToFormat Position :=
@@ -41,7 +41,7 @@ structure FileMap where
   positions : Array String.Pos
   deriving Inhabited
 
-class MonadFileMap (m : Type → Type) where
+class MonadFileMap (m : Type  Type) where
   getFileMap : m FileMap
 
 export MonadFileMap (getFileMap)

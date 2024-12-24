@@ -7,7 +7,7 @@ inductive Tok where
   | minus
   | times
   | divide
-  | num : Nat → Tok
+  | num : Nat  Tok
   deriving Repr
 
 structure Token where
@@ -16,8 +16,8 @@ structure Token where
   deriving Repr
 
 inductive LexErr where
-  | unexpected : Char → LexErr
-  | notDigit : Char → LexErr
+  | unexpected : Char  LexErr
+  | notDigit : Char  LexErr
   deriving Repr
 
 def Char.digit? (char : Char) : Option Nat :=

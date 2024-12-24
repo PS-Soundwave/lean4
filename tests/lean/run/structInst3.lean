@@ -4,10 +4,10 @@ universe u
 namespace Ex1
 
 structure A (α : Type u) :=
-(x : α) (f : α → α := λ x => x)
+(x : α) (f : α  α := λ x => x)
 
 structure B (α : Type u) extends A α :=
-(y : α := f (f x)) (g : α → α → α := λ x y => f x)
+(y : α := f (f x)) (g : α  α  α := λ x y => f x)
 
 structure C (α : Type u) extends B α :=
 (z : α := g x y) (x := f z)

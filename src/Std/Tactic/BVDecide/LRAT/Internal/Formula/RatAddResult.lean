@@ -49,7 +49,7 @@ theorem insertRatUnits_postcondition {n : Nat} (f : DefaultFormula n)
 theorem nodup_insertRatUnits {n : Nat} (f : DefaultFormula n)
     (hf : f.ratUnits = #[] ∧ f.assignments.size = n) (units : CNF.Clause (PosFin n)) :
     ∀ i : Fin (f.insertRatUnits units).1.ratUnits.size, ∀ j : Fin (f.insertRatUnits units).1.ratUnits.size,
-      i ≠ j → (f.insertRatUnits units).1.ratUnits[i] ≠ (f.insertRatUnits units).1.ratUnits[j] := by
+      i ≠ j  (f.insertRatUnits units).1.ratUnits[i] ≠ (f.insertRatUnits units).1.ratUnits[j] := by
   intro i j i_ne_j
   rcases hi : (insertRatUnits f units).fst.ratUnits[i] with ⟨li, bi⟩
   rcases hj : (insertRatUnits f units).fst.ratUnits[j] with ⟨lj, bj⟩
@@ -183,7 +183,7 @@ theorem performRatCheck_fold_formula_eq {n : Nat} (f : DefaultFormula n)
   let motive (_idx : Nat) (acc : DefaultFormula n × Bool) := acc.1 = f
   have h_base : motive 0 (f, true) := rfl
   have h_inductive (idx : Fin ratHints.size) (acc : DefaultFormula n × Bool) :
-    motive idx.1 acc → motive (idx.1 + 1) (if acc.2 then performRatCheck acc.1 p ratHints[idx] else (acc.1, false)) := by
+    motive idx.1 acc  motive (idx.1 + 1) (if acc.2 then performRatCheck acc.1 p ratHints[idx] else (acc.1, false)) := by
     intro ih
     rw [ih]
     split

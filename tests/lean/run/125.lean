@@ -2,8 +2,8 @@ class HasElems (α : Type) : Type := (elems : Array α)
 def elems (α : Type) [HasElems α] : Array α := HasElems.elems
 
 inductive Foo : Type
-| mk1 : Bool → Foo
-| mk2 : Bool → Foo
+| mk1 : Bool  Foo
+| mk2 : Bool  Foo
 
 open Foo
 
@@ -25,7 +25,7 @@ instance : Repr Foo := ⟨fun s _ => fooRepr s⟩
 #guard_msgs in
 #eval #[false, true].map Foo.mk1
 
-def Foo.toBool : Foo → Bool
+def Foo.toBool : Foo  Bool
 | Foo.mk1 b => b
 | Foo.mk2 b => b
 

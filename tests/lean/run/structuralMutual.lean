@@ -10,25 +10,25 @@ well-founded recursion if structural recursion fails somehow.
 
 mutual
 inductive A
-  | self : A → A
-  | other : B → A
+  | self : A  A
+  | other : B  A
   | empty
 inductive B
-  | self : B → B
-  | other : A → B
+  | self : B  B
+  | other : A  B
   | empty
 end
 
 -- A simple mutually recursive function definition
 
 mutual
-def A.size : A → Nat
+def A.size : A  Nat
   | .self a => a.size + 1
   | .other b => b.size + 1
   | .empty => 0
 termination_by structural x => x
 
-def B.size : B → Nat
+def B.size : B  Nat
   | .self b => b.size + 1
   | .other a => a.size + 1
   | .empty => 0
@@ -86,12 +86,12 @@ theorem ex1 (a : A) (h : (A.other (B.other a)).size = 2) : a.size = 0 := by
 -- And it computes in type just fine
 
 mutual
-def A.subs : (a : A) → (Fin a.size → A ⊕ B)
+def A.subs : (a : A)  (Fin a.size  A ⊕ B)
   | .self a => Fin.lastCases (.inl a) (a.subs)
   | .other b => Fin.lastCases (.inr b) (b.subs)
   | .empty => Fin.elim0
 termination_by structural x => x
-def B.subs : (b : B) → (Fin b.size → A ⊕ B)
+def B.subs : (b : B)  (Fin b.size  A ⊕ B)
   | .self b => Fin.lastCases (.inr b) (b.subs)
   | .other a => Fin.lastCases (.inl a) (a.subs)
   | .empty => Fin.elim0
@@ -101,12 +101,12 @@ end
 -- We can define mutually recursive theorems as well
 
 mutual
-def A.hasNoBEmpty : A → Prop
+def A.hasNoBEmpty : A  Prop
   | .self a => a.hasNoBEmpty
   | .other b => b.hasNoBEmpty
   | .empty => True
 termination_by structural x => x
-def B.hasNoBEmpty : B → Prop
+def B.hasNoBEmpty : B  Prop
   | .self b => b.hasNoBEmpty
   | .other a => a.hasNoBEmpty
   | .empty => False
@@ -118,13 +118,13 @@ end
 mutual
 open Classical
 noncomputable
-def A.hasNoAEmpty : A → Prop
+def A.hasNoAEmpty : A  Prop
   | .self a => a.hasNoAEmpty
   | .other b => b.oddCount > 0
   | .empty => False
 termination_by structural x => x
 noncomputable
-def B.oddCount : B → Nat
+def B.oddCount : B  Nat
   | .self b => b.oddCount + 1
   | .other a => if a.hasNoAEmpty then 0 else 1
   | .empty => 0
@@ -134,12 +134,12 @@ end
 
 mutual
 open Classical
-def A.type.{u} : A → Type u
+def A.type.{u} : A  Type u
   | .self a => Unit × a.type
   | .other b => Unit × b.type
   | .empty => PUnit
 termination_by structural x => x
-def B.type.{u} : B → Type u
+def B.type.{u} : B  Type u
   | .self b => PUnit × b.type
   | .other a => PUnit × a.type
   | .empty => PUnit
@@ -157,12 +157,12 @@ and for `B.odderCount` is
 #guard_msgs in
 mutual
 open Classical
-def A.strangeType : A → Type
+def A.strangeType : A  Type
   | .self a => Unit × a.strangeType
   | .other b => Fin b.odderCount
   | .empty => Unit
 termination_by structural x => x
-def B.odderCount : B → Nat
+def B.odderCount : B  Nat
   | .self b => b.odderCount + 1
   | .other a => if Nonempty a.strangeType then 0 else 1
   | .empty => 0
@@ -174,35 +174,35 @@ namespace Index
 /-! An example where the data type has parameters and indices -/
 
 mutual
-inductive A (m : Nat) : Nat → Type
-  | self : A m n → A m (n+m)
-  | other : B m n → A m (n+m)
+inductive A (m : Nat) : Nat  Type
+  | self : A m n  A m (n+m)
+  | other : B m n  A m (n+m)
   | empty : A m 0
-inductive B (m : Nat) : Nat → Type
-  | self : B m n → B m (n+m)
-  | other : A m n → B m (n+m)
+inductive B (m : Nat) : Nat  Type
+  | self : B m n  B m (n+m)
+  | other : A m n  B m (n+m)
   | empty : B m 0
 end
 
 mutual
-def A.size {m n : Nat} : A m n → Nat
+def A.size {m n : Nat} : A m n  Nat
   | .self a => a.size + m
   | .other b => b.size + m
   | .empty => 0
 termination_by structural x => x
-def B.size {m n : Nat} : B m n → Nat
+def B.size {m n : Nat} : B m n  Nat
   | .self b => b.size + m
   | .other a => a.size + m
   | .empty => 0
 end
 
 mutual
-theorem A.size_eq_index (m n : Nat) : (a : A m n) → a.size = n
+theorem A.size_eq_index (m n : Nat) : (a : A m n)  a.size = n
   | .self a => by dsimp [A.size]; rw[ A.size_eq_index]
   | .other b => by dsimp [A.size]; rw [B.size_eq_index]
   | .empty => rfl
 termination_by structural x => x
-theorem B.size_eq_index (m n : Nat) : (b : B m n) → b.size = n
+theorem B.size_eq_index (m n : Nat) : (b : B m n)  b.size = n
   | .self b => by dsimp [B.size]; rw [B.size_eq_index]
   | .other a => by dsimp [B.size]; rw [A.size_eq_index]
   | .empty => rfl
@@ -218,23 +218,23 @@ namespace EvenOdd
 -- (The functions don't actually implement even/odd, but that isn't the point here.)
 
 mutual
-  def Even : Nat → Prop
+  def Even : Nat  Prop
     | 0 => True
     | n+1 => ¬ Odd n
   termination_by structural x => x
 
-  def Odd : Nat → Prop
+  def Odd : Nat  Prop
     | 0 => False
     | n+1 => ¬ Even n
 end
 
 mutual
-  def isEven : Nat → Bool
+  def isEven : Nat  Bool
     | 0 => true
     | n+1 => ! isOdd n
   termination_by structural x => x
 
-  def isOdd : Nat → Bool
+  def isOdd : Nat  Bool
     | 0 => false
     | n+1 => ! isEven n
 end
@@ -245,8 +245,8 @@ theorem isEven_eq_2 (n : Nat) : isEven (n+1) = ! isOdd n := rfl
 #guard_msgs in
 #check isEven.eq_1
 
-theorem eq_true_of_not_eq_false {b : Bool} : (! b) = false → b = true := by simp
-theorem eq_false_of_not_eq_true {b : Bool} : (! b) = true → b = false := by simp
+theorem eq_true_of_not_eq_false {b : Bool} : (! b) = false  b = true := by simp
+theorem eq_false_of_not_eq_true {b : Bool} : (! b) = true  b = false := by simp
 
 /--
 info: n : Nat
@@ -266,30 +266,30 @@ namespace MutualIndNonMutualFun
 
 mutual
 inductive A
-  | self : A → A
-  | other : B → A
+  | self : A  A
+  | other : B  A
   | empty
 inductive B
-  | self : B → B
-  | other : A → B
+  | self : B  B
+  | other : A  B
   | empty
 end
 
 -- Structural recursion ignoring some types of the mutual inductive
 
-def A.self_size : A → Nat
+def A.self_size : A  Nat
   | .self a => a.self_size + 1
   | .other _ => 0
   | .empty => 0
 termination_by structural x => x
 
-def B.self_size : B → Nat
+def B.self_size : B  Nat
   | .self b => b.self_size + 1
   | .other _ => 0
   | .empty => 0
 termination_by structural x => x
 
-def A.self_size_with_param : Nat → A → Nat
+def A.self_size_with_param : Nat  A  Nat
   | n, .self a => a.self_size_with_param n + n
   | _, .other _ => 0
   | _, .empty => 0
@@ -298,16 +298,16 @@ termination_by structural _ x => x
 -- Structural recursion with more than one function per types of the mutual inductive
 
 mutual
-def A.weird_size1 : A → Nat
+def A.weird_size1 : A  Nat
   | .self a => a.weird_size2 + 1
   | .other _ => 0
   | .empty => 0
 termination_by structural x => x
-def A.weird_size2 : A → Nat
+def A.weird_size2 : A  Nat
   | .self a => a.weird_size3 + 1
   | .other _ => 0
   | .empty => 0
-def A.weird_size3 : A → Nat
+def A.weird_size3 : A  Nat
   | .self a => a.weird_size1 + 1
   | .other _ => 0
   | .empty => 0
@@ -330,7 +330,7 @@ namespace DifferentTypes
 -- Check error message when argument types are not mutually recursive
 
 inductive A
-  | self : A → A
+  | self : A  A
   | empty
 
 /--
@@ -340,11 +340,11 @@ Skipping arguments of type Nat, as DifferentTypes.A.with_nat has no compatible a
 -/
 #guard_msgs in
 mutual
-def A.with_nat : A → Nat
+def A.with_nat : A  Nat
   | .self a => a.with_nat + Nat.foo 1
   | .empty => 0
 termination_by structural x => x
-def Nat.foo : Nat → Nat
+def Nat.foo : Nat  Nat
   | n+1 => Nat.foo n
   | 0 => A.empty.with_nat
 end
@@ -355,23 +355,23 @@ namespace FixedIndex
 
 /- Do we run into problems if one of the indices is part of the “fixed prefix”? -/
 
-inductive T : Nat → Type
+inductive T : Nat  Type
   | a : T 37
-  | b : T n → T n
+  | b : T n  T n
 
-def T.size (n : Nat) (start : Nat) : T n → Nat
+def T.size (n : Nat) (start : Nat) : T n  Nat
   | a => start
   | b t => 1 + T.size n start t
 termination_by structural t => t
 
 namespace Mutual
 mutual
-def T.size1 (n : Nat) (start : Nat) : T n → Nat
+def T.size1 (n : Nat) (start : Nat) : T n  Nat
   | .a => 0
   | .b t => 1 + T.size2 n start t
 termination_by structural t => t
 
-def T.size2 (n : Nat) (start : Nat) : T n → Nat
+def T.size2 (n : Nat) (start : Nat) : T n  Nat
   | .a => 0
   | .b t => 1 + T.size1 n start t
 end
@@ -381,11 +381,11 @@ end Mutual
 namespace Mutual2
 
 mutual
-inductive  A : Nat → Type
+inductive  A : Nat  Type
   | a : A n
-  | b : B → A n → A n
+  | b : B  A n  A n
 inductive  B : Type
-  | a : ((n : Nat) → A n) → B
+  | a : ((n : Nat)  A n)  B
 end
 
 -- In this test A and B have `n start` as fixed prefix, but only
@@ -393,12 +393,12 @@ end
 
 set_option linter.constructorNameAsVariable false in
 mutual
-def A.size (n : Nat) (start : Nat) : A n → Nat
+def A.size (n : Nat) (start : Nat) : A n  Nat
   | .a => 0
   | .b b a => 1 + B.size n start b + A.size n start a
 termination_by structural t => t
 
-def B.size (n : Nat) (start : Nat) : B → Nat
+def B.size (n : Nat) (start : Nat) : B  Nat
   | .a a => 1 + A.size n start (a n)
 end
 
@@ -409,9 +409,9 @@ namespace Mutual3
 mutual
 inductive  A (n : Nat) : Type
   | a : A n
-  | b : B n → A n
+  | b : B n  A n
 inductive  B (n : Nat) : Type
-  | a : A n → B n
+  | a : A n  B n
 end
 
 /--
@@ -427,12 +427,12 @@ error: cannot use specified parameter for structural recursion:
 #guard_msgs in
 set_option linter.constructorNameAsVariable false in
 mutual
-def A.size (n : Nat) (m : Nat) : A n → Nat
+def A.size (n : Nat) (m : Nat) : A n  Nat
   | .a => 0
   | .b b => 1 + B.size m n b
 termination_by structural t => t
 
-def B.size (n : Nat) (m : Nat) : B m → Nat
+def B.size (n : Nat) (m : Nat) : B m  Nat
   | .a a => 1 + A.size m n a
 end
 
@@ -444,7 +444,7 @@ error: cannot use specified parameter for structural recursion:
     T 37
 -/
 #guard_msgs in
-def T.size2 : T 37 → Nat
+def T.size2 : T 37  Nat
   | a => 0
   | b t => 1 + T.size2 t
 termination_by structural t => t
@@ -455,9 +455,9 @@ namespace IndexIsParameter
 
 -- Not actual mutual, but since I was at it
 
-inductive T (n : Nat) : Nat → Type where
+inductive T (n : Nat) : Nat  Type where
   | z : T n n
-  | n : T n n → T n n
+  | n : T n n  T n n
 
 /--
 error: cannot use specified parameter for structural recursion:
@@ -470,7 +470,7 @@ error: cannot use specified parameter for structural recursion:
   which does not come before the varying parameters and before the indices of the recursion parameter.
 -/
 #guard_msgs in
-def T.a {n : Nat} : T n n → Nat
+def T.a {n : Nat} : T n n  Nat
   | .z => 0
   | .n t => t.a + 1
 termination_by structural t => t
@@ -486,7 +486,7 @@ namespace DifferentParameters
 
 inductive T (n : Nat) : Type where
   | z : T n
-  | n : T n → T n
+  | n : T n  T n
 
 /--
 error: failed to infer structural recursion:
@@ -495,11 +495,11 @@ Skipping arguments of type T 42, as DifferentParameters.T.a has no compatible ar
 -/
 #guard_msgs in
 mutual
-def T.a : T 23 → Nat
+def T.a : T 23  Nat
   | .z => 0
   | .n t => t.a + 1 + T.b .z
 termination_by structural t => t
-def T.b : T 42 → Nat
+def T.b : T 42  Nat
   | .z => 0
   | .n t => t.b + 1 + T.a .z
 end
@@ -511,7 +511,7 @@ namespace ManyCombinations
 
 inductive Nattish
   | zero
-  | cons : (Nat → Nattish) → Nattish
+  | cons : (Nat  Nattish)  Nattish
 
 /--
 error: fail to show termination for
@@ -578,16 +578,16 @@ end ManyCombinations
 namespace WithTuple
 
 inductive Tree (α : Type) where
-  | node : α → (Tree α × Tree α) → Tree α
+  | node : α  (Tree α × Tree α)  Tree α
 
 mutual
 
-def Tree.map (f : α → β) (x : Tree α): Tree β :=
+def Tree.map (f : α  β) (x : Tree α): Tree β :=
   match x with
     | node x arrs => node (f x) $ Tree.map_tup f arrs
 termination_by structural x
 
-def Tree.map_tup (f : α → β) (x : Tree α × Tree α): (Tree β × Tree β) :=
+def Tree.map_tup (f : α  β) (x : Tree α × Tree α): (Tree β × Tree β) :=
   match x with
     | (t₁,t₂) => (Tree.map f t₁, Tree.map f t₂)
 termination_by structural x
@@ -599,21 +599,21 @@ end WithTuple
 namespace WithArray
 
 inductive Tree (α : Type) where
-  | node : α → Array (Tree α) → Tree α
+  | node : α  Array (Tree α)  Tree α
 
 mutual
 
-def Tree.map (f : α → β) (x : Tree α): Tree β :=
+def Tree.map (f : α  β) (x : Tree α): Tree β :=
   match x with
     | node x arr₁ => node (f x) $ Tree.map_arr f arr₁
 termination_by structural x
 
-def Tree.map_arr (f : α → β) (x : Array (Tree α)): Array (Tree β) :=
+def Tree.map_arr (f : α  β) (x : Array (Tree α)): Array (Tree β) :=
   match x with
     | .mk arr₁ => .mk (Tree.map_list f arr₁)
 termination_by structural x
 
-def Tree.map_list (f : α → β) (x : List (Tree α)): List (Tree β) :=
+def Tree.map_list (f : α  β) (x : List (Tree α)): List (Tree β) :=
   match x with
     | [] => []
     | h₁::t₁ => (Tree.map f h₁)::Tree.map_list f t₁
@@ -628,26 +628,26 @@ namespace FunIndTests
 -- out nicely
 
 /--
-info: A.size.induct (motive_1 : A → Prop) (motive_2 : B → Prop) (case1 : ∀ (a : A), motive_1 a → motive_1 a.self)
-  (case2 : ∀ (b : B), motive_2 b → motive_1 (A.other b)) (case3 : motive_1 A.empty)
-  (case4 : ∀ (b : B), motive_2 b → motive_2 b.self) (case5 : ∀ (a : A), motive_1 a → motive_2 (B.other a))
+info: A.size.induct (motive_1 : A  Prop) (motive_2 : B  Prop) (case1 : ∀ (a : A), motive_1 a  motive_1 a.self)
+  (case2 : ∀ (b : B), motive_2 b  motive_1 (A.other b)) (case3 : motive_1 A.empty)
+  (case4 : ∀ (b : B), motive_2 b  motive_2 b.self) (case5 : ∀ (a : A), motive_1 a  motive_2 (B.other a))
   (case6 : motive_2 B.empty) (a✝ : A) : motive_1 a✝
 -/
 #guard_msgs in
 #check A.size.induct
 
 /--
-info: A.subs.induct (motive_1 : A → Prop) (motive_2 : B → Prop) (case1 : ∀ (a : A), motive_1 a → motive_1 a.self)
-  (case2 : ∀ (b : B), motive_2 b → motive_1 (A.other b)) (case3 : motive_1 A.empty)
-  (case4 : ∀ (b : B), motive_2 b → motive_2 b.self) (case5 : ∀ (a : A), motive_1 a → motive_2 (B.other a))
+info: A.subs.induct (motive_1 : A  Prop) (motive_2 : B  Prop) (case1 : ∀ (a : A), motive_1 a  motive_1 a.self)
+  (case2 : ∀ (b : B), motive_2 b  motive_1 (A.other b)) (case3 : motive_1 A.empty)
+  (case4 : ∀ (b : B), motive_2 b  motive_2 b.self) (case5 : ∀ (a : A), motive_1 a  motive_2 (B.other a))
   (case6 : motive_2 B.empty) (a : A) : motive_1 a
 -/
 #guard_msgs in
 #check A.subs.induct
 
 /--
-info: MutualIndNonMutualFun.A.self_size.induct (motive : MutualIndNonMutualFun.A → Prop)
-  (case1 : ∀ (a : MutualIndNonMutualFun.A), motive a → motive a.self)
+info: MutualIndNonMutualFun.A.self_size.induct (motive : MutualIndNonMutualFun.A  Prop)
+  (case1 : ∀ (a : MutualIndNonMutualFun.A), motive a  motive a.self)
   (case2 : ∀ (a : MutualIndNonMutualFun.B), motive (MutualIndNonMutualFun.A.other a))
   (case3 : motive MutualIndNonMutualFun.A.empty) (a✝ : MutualIndNonMutualFun.A) : motive a✝
 -/
@@ -655,8 +655,8 @@ info: MutualIndNonMutualFun.A.self_size.induct (motive : MutualIndNonMutualFun.A
 #check MutualIndNonMutualFun.A.self_size.induct
 
 /--
-info: MutualIndNonMutualFun.A.self_size_with_param.induct (motive : Nat → MutualIndNonMutualFun.A → Prop)
-  (case1 : ∀ (n : Nat) (a : MutualIndNonMutualFun.A), motive n a → motive n a.self)
+info: MutualIndNonMutualFun.A.self_size_with_param.induct (motive : Nat  MutualIndNonMutualFun.A  Prop)
+  (case1 : ∀ (n : Nat) (a : MutualIndNonMutualFun.A), motive n a  motive n a.self)
   (case2 : ∀ (x : Nat) (a : MutualIndNonMutualFun.B), motive x (MutualIndNonMutualFun.A.other a))
   (case3 : ∀ (x : Nat), motive x MutualIndNonMutualFun.A.empty) (a✝ : Nat) (a✝¹ : MutualIndNonMutualFun.A) :
   motive a✝ a✝¹
@@ -665,39 +665,39 @@ info: MutualIndNonMutualFun.A.self_size_with_param.induct (motive : Nat → Mutu
 #check MutualIndNonMutualFun.A.self_size_with_param.induct
 
 /--
-info: A.hasNoBEmpty.induct (motive_1 : A → Prop) (motive_2 : B → Prop) (case1 : ∀ (a : A), motive_1 a → motive_1 a.self)
-  (case2 : ∀ (b : B), motive_2 b → motive_1 (A.other b)) (case3 : motive_1 A.empty)
-  (case4 : ∀ (b : B), motive_2 b → motive_2 b.self) (case5 : ∀ (a : A), motive_1 a → motive_2 (B.other a))
+info: A.hasNoBEmpty.induct (motive_1 : A  Prop) (motive_2 : B  Prop) (case1 : ∀ (a : A), motive_1 a  motive_1 a.self)
+  (case2 : ∀ (b : B), motive_2 b  motive_1 (A.other b)) (case3 : motive_1 A.empty)
+  (case4 : ∀ (b : B), motive_2 b  motive_2 b.self) (case5 : ∀ (a : A), motive_1 a  motive_2 (B.other a))
   (case6 : motive_2 B.empty) (a✝ : A) : motive_1 a✝
 -/
 #guard_msgs in
 #check A.hasNoBEmpty.induct
 
 /--
-info: EvenOdd.isEven.induct (motive_1 motive_2 : Nat → Prop) (case1 : motive_1 0)
-  (case2 : ∀ (n : Nat), motive_2 n → motive_1 n.succ) (case3 : motive_2 0)
-  (case4 : ∀ (n : Nat), motive_1 n → motive_2 n.succ) (a✝ : Nat) : motive_1 a✝
+info: EvenOdd.isEven.induct (motive_1 motive_2 : Nat  Prop) (case1 : motive_1 0)
+  (case2 : ∀ (n : Nat), motive_2 n  motive_1 n.succ) (case3 : motive_2 0)
+  (case4 : ∀ (n : Nat), motive_1 n  motive_2 n.succ) (a✝ : Nat) : motive_1 a✝
 -/
 #guard_msgs in
 #check EvenOdd.isEven.induct
 
 /--
-info: WithTuple.Tree.map.induct {α : Type} (motive_1 : WithTuple.Tree α → Prop)
-  (motive_2 : WithTuple.Tree α × WithTuple.Tree α → Prop)
+info: WithTuple.Tree.map.induct {α : Type} (motive_1 : WithTuple.Tree α  Prop)
+  (motive_2 : WithTuple.Tree α × WithTuple.Tree α  Prop)
   (case1 :
-    ∀ (x : α) (arrs : WithTuple.Tree α × WithTuple.Tree α), motive_2 arrs → motive_1 (WithTuple.Tree.node x arrs))
-  (case2 : ∀ (t₁ t₂ : WithTuple.Tree α), motive_1 t₁ → motive_1 t₂ → motive_2 (t₁, t₂)) (x : WithTuple.Tree α) :
+    ∀ (x : α) (arrs : WithTuple.Tree α × WithTuple.Tree α), motive_2 arrs  motive_1 (WithTuple.Tree.node x arrs))
+  (case2 : ∀ (t₁ t₂ : WithTuple.Tree α), motive_1 t₁  motive_1 t₂  motive_2 (t₁, t₂)) (x : WithTuple.Tree α) :
   motive_1 x
 -/
 #guard_msgs in
 #check WithTuple.Tree.map.induct
 
 /--
-info: WithArray.Tree.map.induct {α : Type} (motive_1 : WithArray.Tree α → Prop) (motive_2 : Array (WithArray.Tree α) → Prop)
-  (motive_3 : List (WithArray.Tree α) → Prop)
-  (case1 : ∀ (x : α) (arr₁ : Array (WithArray.Tree α)), motive_2 arr₁ → motive_1 (WithArray.Tree.node x arr₁))
-  (case2 : ∀ (arr₁ : List (WithArray.Tree α)), motive_3 arr₁ → motive_2 { toList := arr₁ }) (case3 : motive_3 [])
-  (case4 : ∀ (h₁ : WithArray.Tree α) (t₁ : List (WithArray.Tree α)), motive_1 h₁ → motive_3 t₁ → motive_3 (h₁ :: t₁))
+info: WithArray.Tree.map.induct {α : Type} (motive_1 : WithArray.Tree α  Prop) (motive_2 : Array (WithArray.Tree α)  Prop)
+  (motive_3 : List (WithArray.Tree α)  Prop)
+  (case1 : ∀ (x : α) (arr₁ : Array (WithArray.Tree α)), motive_2 arr₁  motive_1 (WithArray.Tree.node x arr₁))
+  (case2 : ∀ (arr₁ : List (WithArray.Tree α)), motive_3 arr₁  motive_2 { toList := arr₁ }) (case3 : motive_3 [])
+  (case4 : ∀ (h₁ : WithArray.Tree α) (t₁ : List (WithArray.Tree α)), motive_1 h₁  motive_3 t₁  motive_3 (h₁ :: t₁))
   (x : WithArray.Tree α) : motive_1 x
 -/
 #guard_msgs in

@@ -9,7 +9,7 @@ structure B (α : Type) where
 structure S : Nat where -- error expected Type
 (x : Nat)
 
-structure S extends Nat → Nat where -- error expected structure
+structure S extends Nat  Nat where -- error expected structure
 (x : Nat)
 set_option structureDiamondWarning true in
 structure S' extends A Nat, B Nat where -- error field `x` already declared

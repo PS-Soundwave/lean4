@@ -20,11 +20,11 @@ some types that become propositions, and all propositions are erased.
 
 For example, suppose we have
 ```
-def f (α : Sort u) (x : α → α → Sort v) (a b : α) (h : x a b) ...
+def f (α : Sort u) (x : α  α  Sort v) (a b : α) (h : x a b) ...
 ```
 The LCNF type for this universe polymorphic declaration is
 ```
-def f (α : Sort u) (x : α → α → Sort v) (a b : α) (h : x ◾ ◾) ...
+def f (α : Sort u) (x : α  α  Sort v) (a b : α) (h : x ◾ ◾) ...
 ```
 Now, if we instantiate with `v` with the universe `0`, we have that `x ◾ ◾` is also a proposition
 and should be erased.
@@ -32,13 +32,13 @@ and should be erased.
 2- We may also get "erasure confusion" when instantiating
 polymorphic code with types and type formers. For example, suppose we have
 ```
-structure S (α : Type u) (β : Type v) (f : α → β) where
+structure S (α : Type u) (β : Type v) (f : α  β) where
   a : α
   b : β := f a
 ```
 The LCNF type for `S.mk` is
 ```
-S.mk : {α : Type u} → {β : Type v} → {f : α → β} → α → β → S α β ◾
+S.mk : {α : Type u}  {β : Type v}  {f : α  β}  α  β  S α β ◾
 ```
 Note that `f` was erased from the resulting type `S α β ◾` because it is
 not a type former. Now, suppose we have the valid Lean declaration
@@ -87,7 +87,7 @@ def mkForallParams (params : Array Param) (type : Expr) : InferTypeM Expr :=
   let xs := params.map fun p => .fvar p.fvarId
   mkForallFVars xs type |>.run {}
 
-@[inline] def withLocalDecl (binderName : Name) (type : Expr) (binderInfo : BinderInfo) (k : Expr → InferTypeM α) : InferTypeM α := do
+@[inline] def withLocalDecl (binderName : Name) (type : Expr) (binderInfo : BinderInfo) (k : Expr  InferTypeM α) : InferTypeM α := do
   let fvarId ← mkFreshFVarId
   withReader (fun lctx => lctx.mkLocalDecl fvarId binderName type binderInfo) do
     k (.fvar fvarId)
@@ -161,7 +161,7 @@ mutual
     return fType.instantiateRevRange j args.size args |>.headBeta
 
   partial def inferProjType (structName : Name) (idx : Nat) (s : FVarId) : InferTypeM Expr := do
-    let failed {α} : Unit → InferTypeM α := fun _ =>
+    let failed {α} : Unit  InferTypeM α := fun _ =>
       throwError "invalid projection{indentExpr (mkProj structName idx (mkFVar s))}"
     let structType := (← getType s).headBeta
     if structType.isErased then

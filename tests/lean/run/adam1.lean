@@ -3,10 +3,10 @@ inductive BinOp where
   | times
 
 inductive Expr where
-  | const : Nat → Expr
-  | binOp : BinOp → Expr → Expr → Expr
+  | const : Nat  Expr
+  | binOp : BinOp  Expr  Expr  Expr
 
-def BinOp.denote (op : BinOp) : Nat → Nat → Nat :=
+def BinOp.denote (op : BinOp) : Nat  Nat  Nat :=
   match op with
   | plus  => Nat.add
   | times => Nat.mul
@@ -44,8 +44,8 @@ example : e₁.denote = 18 :=
   rfl
 
 inductive Instr where
-  | const : Nat → Instr
-  | binOp : BinOp → Instr
+  | const : Nat  Instr
+  | binOp : BinOp  Instr
 
 abbrev Prog := List Instr
 abbrev Stack := List Nat

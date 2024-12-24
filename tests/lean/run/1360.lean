@@ -1,4 +1,4 @@
 example: True :=
-  let f: {n: Nat} → Nat
+  let f: {n: Nat}  Nat
   | _ => 0
   trivial

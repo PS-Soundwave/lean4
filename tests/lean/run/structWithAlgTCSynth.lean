@@ -14,10 +14,10 @@ section Mathlib.Logic.Relator
 namespace Relator
 
 variable {α : Sort u₁} {β : Sort u₂} {γ : Sort v₁} {δ : Sort v₂}
-variable (R : α → β → Prop) (S : γ → δ → Prop)
+variable (R : α  β  Prop) (S : γ  δ  Prop)
 
-def LiftFun (f : α → γ) (g : β → δ) : Prop :=
-  ∀⦃a b⦄, R a b → S (f a) (g b)
+def LiftFun (f : α  γ) (g : β  δ) : Prop :=
+  ∀⦃a b⦄, R a b  S (f a) (g b)
 
 infixr:40 " ⇒ " => LiftFun
 
@@ -29,26 +29,26 @@ section Mathlib.Data.Quot
 
 namespace Quot
 
-variable {ra : α → α → Prop} {rb : β → β → Prop} {φ : Quot ra → Quot rb → Sort _}
+variable {ra : α  α  Prop} {rb : β  β  Prop} {φ : Quot ra  Quot rb  Sort _}
 
 @[inherit_doc]
 local notation:arg "⟦" a "⟧" => Quot.mk _ a
 
 @[elab_as_elim]
-protected theorem induction_on {α : Sort u} {r : α → α → Prop} {β : Quot r → Prop} (q : Quot r)
+protected theorem induction_on {α : Sort u} {r : α  α  Prop} {β : Quot r  Prop} (q : Quot r)
     (h : ∀ a, β (Quot.mk r a)) : β q :=
   ind h q
 
-protected def map (f : α → β) (h : (ra ⇒ rb) f f) : Quot ra → Quot rb :=
+protected def map (f : α  β) (h : (ra ⇒ rb) f f) : Quot ra  Quot rb :=
   (Quot.lift fun x ↦ ⟦f x⟧) fun x y (h₁ : ra x y) ↦ Quot.sound <| h h₁
 
-protected def lift₂ (f : α → β → γ) (hr : ∀ a b₁ b₂, s b₁ b₂ → f a b₁ = f a b₂)
-    (hs : ∀ a₁ a₂ b, r a₁ a₂ → f a₁ b = f a₂ b) (q₁ : Quot r) (q₂ : Quot s) : γ :=
+protected def lift₂ (f : α  β  γ) (hr : ∀ a b₁ b₂, s b₁ b₂  f a b₁ = f a b₂)
+    (hs : ∀ a₁ a₂ b, r a₁ a₂  f a₁ b = f a₂ b) (q₁ : Quot r) (q₂ : Quot s) : γ :=
   Quot.lift (fun a ↦ Quot.lift (f a) (hr a))
     (fun a₁ a₂ ha ↦ funext fun q ↦ Quot.induction_on q fun b ↦ hs a₁ a₂ b ha) q₁ q₂
 
-protected def map₂ (f : α → β → γ) (hr : ∀ a b₁ b₂, s b₁ b₂ → t (f a b₁) (f a b₂))
-    (hs : ∀ a₁ a₂ b, r a₁ a₂ → t (f a₁ b) (f a₂ b)) (q₁ : Quot r) (q₂ : Quot s) : Quot t :=
+protected def map₂ (f : α  β  γ) (hr : ∀ a b₁ b₂, s b₁ b₂  t (f a b₁) (f a b₂))
+    (hs : ∀ a₁ a₂ b, r a₁ a₂  t (f a₁ b) (f a₂ b)) (q₁ : Quot r) (q₂ : Quot s) : Quot t :=
   Quot.lift₂ (fun a b ↦ Quot.mk t <| f a b) (fun a b₁ b₂ hb ↦ Quot.sound (hr a b₁ b₂ hb))
     (fun a₁ a₂ b ha ↦ Quot.sound (hs a₁ a₂ b ha)) q₁ q₂
 
@@ -58,14 +58,14 @@ namespace Quotient
 
 variable [sa : Setoid α] [sb : Setoid β]
 
-variable {φ : Quotient sa → Quotient sb → Sort _}
+variable {φ : Quotient sa  Quotient sb  Sort _}
 
 notation:arg "⟦" a "⟧" => Quotient.mk _ a
 
 variable {γ : Sort _} [sc : Setoid γ]
 
-protected def map₂ (f : α → β → γ) (h : ((· ≈ ·) ⇒ (· ≈ ·) ⇒ (· ≈ ·)) f f) :
-    Quotient sa → Quotient sb → Quotient sc :=
+protected def map₂ (f : α  β  γ) (h : ((· ≈ ·) ⇒ (· ≈ ·) ⇒ (· ≈ ·)) f f) :
+    Quotient sa  Quotient sb  Quotient sc :=
   Quotient.lift₂ (fun x y ↦ ⟦f x y⟧) fun _ _ _ _ h₁ h₂ ↦ Quot.sound <| h h₁ h₂
 
 variable {s₁ : Setoid α} {s₂ : Setoid β} {s₃ : Setoid γ}
@@ -73,11 +73,11 @@ variable {s₁ : Setoid α} {s₂ : Setoid β} {s₃ : Setoid γ}
 protected def mk'' (a : α) : Quotient s₁ :=
   Quot.mk s₁.1 a
 
-protected def map' (f : α → β) (h : (s₁.r ⇒ s₂.r) f f) : Quotient s₁ → Quotient s₂ :=
+protected def map' (f : α  β) (h : (s₁.r ⇒ s₂.r) f f) : Quotient s₁  Quotient s₂ :=
   Quot.map f h
 
-protected def map₂' (f : α → β → γ) (h : (s₁.r ⇒ s₂.r ⇒ s₃.r) f f) :
-    Quotient s₁ → Quotient s₂ → Quotient s₃ :=
+protected def map₂' (f : α  β  γ) (h : (s₁.r ⇒ s₂.r ⇒ s₃.r) f f) :
+    Quotient s₁  Quotient s₂  Quotient s₃ :=
   Quotient.map₂ f h
 
 end Quotient
@@ -99,8 +99,8 @@ section Mathlib.Logic.Function.Basic
 
 namespace Function
 
-variable {α : Sort u} {β : α → Sort v} {α' : Sort w} [DecidableEq α] [DecidableEq α']
-  {f g : (a : α) → β a} {a : α} {b : β a}
+variable {α : Sort u} {β : α  Sort v} {α' : Sort w} [DecidableEq α] [DecidableEq α']
+  {f g : (a : α)  β a} {a : α} {b : β a}
 
 def update (f : ∀ a, β a) (a' : α) (v : β a') (a : α) : β a :=
   if h : a = a' then Eq.ndrec v h.symm else f a
@@ -112,10 +112,10 @@ end Mathlib.Logic.Function.Basic
 section Mathlib.Algebra.Group.Defs
 
 class HSMul (α : Type u) (β : Type v) (γ : outParam (Type w)) where
-  hSMul : α → β → γ
+  hSMul : α  β  γ
 
 class SMul (M : Type _) (α : Type _) where
-  smul : M → α → α
+  smul : M  α  α
 
 infixr:73 " • " => HSMul.hSMul
 
@@ -123,7 +123,7 @@ instance instHSMul [SMul α β] : HSMul α β β where
   hSMul := SMul.smul
 
 class Inv (α : Type u) where
-  inv : α → α
+  inv : α  α
 
 postfix:max "⁻¹" => Inv.inv
 
@@ -147,16 +147,16 @@ class AddZeroClass (M : Type u) extends Zero M, Add M where
   zero_add : ∀ a : M, 0 + a = a
   add_zero : ∀ a : M, a + 0 = a
 
-def npowRec [One M] [Mul M] : Nat → M → M
+def npowRec [One M] [Mul M] : Nat  M  M
   | 0, _ => 1
   | n + 1, a => a * npowRec n a
 
-def nsmulRec [Zero M] [Add M] : Nat → M → M
+def nsmulRec [Zero M] [Add M] : Nat  M  M
   | 0, _ => 0
   | n + 1, a => a + nsmulRec n a
 
 class AddMonoid (M : Type u) extends AddSemigroup M, AddZeroClass M where
-  nsmul : Nat → M → M := nsmulRec
+  nsmul : Nat  M  M := nsmulRec
   nsmul_zero : ∀ x, nsmul 0 x = 0 := by intros; rfl
   nsmul_succ : ∀ (n : Nat) (x), nsmul (n + 1) x = x + nsmul n x := by intros; rfl
 
@@ -164,7 +164,7 @@ attribute [instance 150] AddSemigroup.toAdd
 attribute [instance 50] AddZeroClass.toAdd
 
 class Monoid (M : Type u) extends Semigroup M, MulOneClass M where
-  npow : Nat → M → M := npowRec
+  npow : Nat  M  M := npowRec
   npow_zero : ∀ x, npow 0 x = 1 := by intros; rfl
   npow_succ : ∀ (n : Nat) (x), npow (n + 1) x = x * npow n x := by intros; rfl
 
@@ -178,11 +178,11 @@ class AddCommMonoid (M : Type u) extends AddMonoid M, AddCommSemigroup M
 
 class CommMonoid (M : Type u) extends Monoid M, CommSemigroup M
 
-def zpowRec {M : Type _} [One M] [Mul M] [Inv M] : Int → M → M
+def zpowRec {M : Type _} [One M] [Mul M] [Inv M] : Int  M  M
   | Int.ofNat n, a => npowRec n a
   | Int.negSucc n, a => (npowRec n.succ a)⁻¹
 
-def zsmulRec {M : Type _} [Zero M] [Add M] [Neg M] : Int → M → M
+def zsmulRec {M : Type _} [Zero M] [Add M] [Neg M] : Int  M  M
   | Int.ofNat n, a => nsmulRec n a
   | Int.negSucc n, a => -nsmulRec n.succ a
 
@@ -201,7 +201,7 @@ def DivInvMonoid.div' {G : Type u} [Monoid G] [Inv G] (a b : G) : G := a * b⁻�
 class DivInvMonoid (G : Type u) extends Monoid G, Inv G, Div G where
   div := DivInvMonoid.div'
   div_eq_mul_inv : ∀ a b : G, a / b = a * b⁻¹ := by intros; rfl
-  zpow : Int → G → G := zpowRec
+  zpow : Int  G  G := zpowRec
   zpow_zero' : ∀ a : G, zpow 0 a = 1 := by intros; rfl
   zpow_succ' (n : Nat) (a : G) : zpow (Int.ofNat n.succ) a = a * zpow (Int.ofNat n) a := by
     intros; rfl
@@ -212,7 +212,7 @@ def SubNegMonoid.sub' {G : Type u} [AddMonoid G] [Neg G] (a b : G) : G := a + -b
 class SubNegMonoid (G : Type u) extends AddMonoid G, Neg G, Sub G where
   sub := SubNegMonoid.sub'
   sub_eq_add_neg : ∀ a b : G, a - b = a + -b := by intros; rfl
-  zsmul : Int → G → G := zsmulRec
+  zsmul : Int  G  G := zsmulRec
   zsmul_zero' : ∀ a : G, zsmul 0 a = 0 := by intros; rfl
   zsmul_succ' (n : Nat) (a : G) : zsmul (Int.ofNat n.succ) a = a + zsmul (Int.ofNat n) a := by
     intros; rfl
@@ -228,7 +228,7 @@ class SubNegZeroMonoid (G : Type _) extends SubNegMonoid G, NegZeroClass G
 
 class SubtractionMonoid (G : Type u) extends SubNegMonoid G, InvolutiveNeg G where
   neg_add_rev (a b : G) : -(a + b) = -b + -a
-  neg_eq_of_add (a b : G) : a + b = 0 → -a = b
+  neg_eq_of_add (a b : G) : a + b = 0  -a = b
 
 class Group (G : Type u) extends DivInvMonoid G where
   mul_left_inv : ∀ a : G, a⁻¹ * a = 1
@@ -249,7 +249,7 @@ end Mathlib.Algebra.Group.Defs
 
 section Mathlib.Data.Pi.Algebra
 
-variable {I : Type u} {f : I → Type v₁}
+variable {I : Type u} {f : I  Type v₁}
 
 namespace Pi
 
@@ -442,10 +442,10 @@ end Mathlib.Algebra.Ring.Defs
 
 section Mathlib.Data.FunLike.Basic
 
-class FunLike (F : Sort _) (α : outParam (Sort _)) (β : outParam <| α → Sort _) where
-  coe : F → ∀ a : α, β a
+class FunLike (F : Sort _) (α : outParam (Sort _)) (β : outParam <| α  Sort _) where
+  coe : F  ∀ a : α, β a
 
-variable (F α : Sort _) (β : α → Sort _)
+variable (F α : Sort _) (β : α  Sort _)
 
 namespace FunLike
 
@@ -496,7 +496,7 @@ section Mathlib.Algebra.Group.Pi
 
 variable {I : Type u}
 
-variable {f : I → Type v}
+variable {f : I  Type v}
 
 namespace Pi
 
@@ -559,17 +559,17 @@ end Mathlib.GroupTheory.Submonoid.Basic
 section Mathlib.Algebra.Hom.Ring
 
 structure RingHom (α : Type _) (β : Type _) where
-  toFun : α → β
+  toFun : α  β
 
-infixr:25 " →+* " => RingHom
+infixr:25 " +* " => RingHom
 
 namespace RingHom
 
-def id (α : Type _) : α →+* α := by
+def id (α : Type _) : α +* α := by
   refine { toFun := _root_.id.. }
 
-def comp (g : β →+* γ) (f : α →+* β) : α →+* γ :=
-  { toFun := g.toFun ∘ f.toFun }
+def comp (g : β +* γ) (f : α +* β) : α +* γ :=
+  { toFun := g.toFun  f.toFun }
 
 end RingHom
 
@@ -593,7 +593,7 @@ end Mathlib.GroupTheory.Subgroup.Basic
 section Mathlib.Algebra.Quotient
 
 class HasQuotient (A : outParam <| Type u) (B : Type v) where
-  quotient' : B → Type max u v
+  quotient' : B  Type max u v
 
 @[reducible]
 def HasQuotient.Quotient (A : outParam <| Type u) {B : Type v}
@@ -617,30 +617,30 @@ end Mathlib.Algebra.Module.Submodule.Basic
 section Mathlib.Data.Finsupp.Defs
 
 structure Finsupp (α : Type _) (M : Type _) [Zero M] where
-  toFun : α → M
+  toFun : α  M
 
-infixr:25 " →₀ " => Finsupp
+infixr:25 " ₀ " => Finsupp
 
 namespace Finsupp
 
-instance funLike [Zero M] : FunLike (α →₀ M) α fun _ => M :=
+instance funLike [Zero M] : FunLike (α ₀ M) α fun _ => M :=
   ⟨toFun⟩
 
-instance zero [Zero M] : Zero (α →₀ M) :=
+instance zero [Zero M] : Zero (α ₀ M) :=
   ⟨⟨0⟩⟩
 
-def single [Zero M] (a : α) (b : M) : α →₀ M where
+def single [Zero M] (a : α) (b : M) : α ₀ M where
   toFun :=
     have : DecidableEq α := sorry
     Pi.single a b
 
-def onFinset [Zero M] (f : α → M) : α →₀ M where
+def onFinset [Zero M] (f : α  M) : α ₀ M where
   toFun := f
 
-def mapRange [Zero M] [Zero N] (f : M → N) (hf : f 0 = 0) (g : α →₀ M) : α →₀ N :=
-  onFinset (f ∘ g)
+def mapRange [Zero M] [Zero N] (f : M  N) (hf : f 0 = 0) (g : α ₀ M) : α ₀ N :=
+  onFinset (f  g)
 
-def zipWith [Zero M] [Zero N] [Zero P] (f : M → N → P) (hf : f 0 0 = 0) (g₁ : α →₀ M) (g₂ : α →₀ N) : α →₀ P :=
+def zipWith [Zero M] [Zero N] [Zero P] (f : M  N  P) (hf : f 0 0 = 0) (g₁ : α ₀ M) (g₂ : α ₀ N) : α ₀ P :=
   onFinset
     (fun a => f (g₁ a) (g₂ a))
 
@@ -648,30 +648,30 @@ section AddZeroClass
 
 variable [AddZeroClass M]
 
-instance add : Add (α →₀ M) :=
+instance add : Add (α ₀ M) :=
   ⟨zipWith (· + ·) sorry⟩
 
 end AddZeroClass
 
-instance hasNatScalar [AddMonoid M] : SMul Nat (α →₀ M) :=
+instance hasNatScalar [AddMonoid M] : SMul Nat (α ₀ M) :=
   ⟨fun n v => v.mapRange ((· • ·) n) sorry⟩
 
-instance addCommMonoid [AddCommMonoid M] : AddCommMonoid (α →₀ M) where
+instance addCommMonoid [AddCommMonoid M] : AddCommMonoid (α ₀ M) where
   add_assoc := sorry
   zero_add := sorry
   add_zero := sorry
   add_comm := sorry
 
-instance neg [NegZeroClass G] : Neg (α →₀ G) :=
+instance neg [NegZeroClass G] : Neg (α ₀ G) :=
   ⟨mapRange Neg.neg sorry⟩
 
-instance sub [SubNegZeroMonoid G] : Sub (α →₀ G) :=
+instance sub [SubNegZeroMonoid G] : Sub (α ₀ G) :=
   ⟨zipWith Sub.sub sorry⟩
 
-instance hasIntScalar [AddGroup G] : SMul Int (α →₀ G) :=
+instance hasIntScalar [AddGroup G] : SMul Int (α ₀ G) :=
   ⟨fun n v => v.mapRange ((· • ·) n) sorry⟩
 
-instance addCommGroup [AddCommGroup G] : AddCommGroup (α →₀ G) := {
+instance addCommGroup [AddCommGroup G] : AddCommGroup (α ₀ G) := {
   addCommMonoid with
   add_left_neg := sorry,
   sub_eq_add_neg := sorry,
@@ -685,7 +685,7 @@ section Mathlib.Algebra.BigOperators.Finsupp
 
 namespace Finsupp
 
-def sum [Zero M] [AddCommMonoid N] (f : α →₀ M) (g : α → M → N) : N := 0
+def sum [Zero M] [AddCommMonoid N] (f : α ₀ M) (g : α  M  N) : N := 0
 
 end Finsupp
 
@@ -695,7 +695,7 @@ section Mathlib.Data.Finsupp.Basic
 
 namespace Finsupp
 
-instance smulZeroClass [Zero M] [SMulZeroClass R M] : SMulZeroClass R (α →₀ M) where
+instance smulZeroClass [Zero M] [SMulZeroClass R M] : SMulZeroClass R (α ₀ M) where
   smul a v := v.mapRange ((· • ·) a) sorry
 
 end Finsupp
@@ -705,16 +705,16 @@ end Mathlib.Data.Finsupp.Basic
 section Mathlib.Algebra.Algebra.Basic
 
 class Algebra (R : Type u) (A : Type v) [CommSemiring R] [Semiring A] extends SMul R A,
-  R →+* A where
+  R +* A where
 
-def algebraMap (R : Type u) (A : Type v) [CommSemiring R] [Semiring A] [Algebra R A] : R →+* A :=
+def algebraMap (R : Type u) (A : Type v) [CommSemiring R] [Semiring A] [Algebra R A] : R +* A :=
   Algebra.toRingHom
 
-def RingHom.toAlgebra' {R S} [CommSemiring R] [Semiring S] (i : R →+* S) : Algebra R S where
+def RingHom.toAlgebra' {R S} [CommSemiring R] [Semiring S] (i : R +* S) : Algebra R S where
   smul c x := i.toFun c * x
   toRingHom := i
 
-def RingHom.toAlgebra {R S} [CommSemiring R] [CommSemiring S] (i : R →+* S) : Algebra R S :=
+def RingHom.toAlgebra {R S} [CommSemiring R] [CommSemiring S] (i : R +* S) : Algebra R S :=
   i.toAlgebra'
 
 namespace Algebra
@@ -748,10 +748,10 @@ section
 variable [Semiring k]
 
 def AddMonoidAlgebra :=
-  G →₀ k
+  G ₀ k
 
 instance AddMonoidAlgebra.addCommMonoid : AddCommMonoid (AddMonoidAlgebra k G) :=
-  inferInstanceAs (AddCommMonoid (G →₀ k))
+  inferInstanceAs (AddCommMonoid (G ₀ k))
 
 end
 
@@ -863,7 +863,7 @@ variable {k G}
 
 section Algebra
 
-def singleZeroRingHom [Semiring k] [AddMonoid G] : k →+* AddMonoidAlgebra k G where
+def singleZeroRingHom [Semiring k] [AddMonoid G] : k +* AddMonoidAlgebra k G where
   toFun a := single 0 a
 
 instance algebra [CommSemiring R] [Semiring k] [Algebra R k] [AddMonoid G] :
@@ -897,10 +897,10 @@ protected def Con.Quotient [Mul M] (c : Con M) :=
 protected def AddCon.Quotient [Add M] (c : AddCon M) :=
   Quotient c.toSetoid
 
-def Con.toQuotient [Mul M] {c : Con M} : M → c.Quotient :=
+def Con.toQuotient [Mul M] {c : Con M} : M  c.Quotient :=
   Quotient.mk''
 
-def AddCon.toQuotient [Add M] {c : AddCon M} : M → c.Quotient :=
+def AddCon.toQuotient [Add M] {c : AddCon M} : M  c.Quotient :=
   Quotient.mk''
 
 instance (priority := 10) [Mul M] {c : Con M} : CoeTC M c.Quotient :=
@@ -973,7 +973,7 @@ instance hasQuotient : HasQuotient M (Submodule R M) :=
 
 namespace Quotient
 
-def mk {p : Submodule R M} : M → M ⧸ p :=
+def mk {p : Submodule R M} : M  M ⧸ p :=
   Quotient.mk''
 
 variable {S : Type _} [SMul S R] [SMul S M] [IsScalarTower S R M] (P : Submodule R M)
@@ -1103,7 +1103,7 @@ instance commRing (I : Ideal R) : CommRing (R ⧸ I) :=
     inferInstanceAs (CommRing (Quotient.ringCon I).Quotient)
 
 /-- The ring homomorphism from a ring `R` to a quotient ring `R/I`. -/
-def mk (I : Ideal R) : R →+* R ⧸ I where
+def mk (I : Ideal R) : R +* R ⧸ I where
   toFun a := Submodule.Quotient.mk a
 
 end Ideal.Quotient
@@ -1124,21 +1124,21 @@ namespace RingQuot
 such that the equivalence relation generated by `Rel r` has `x ~ y` if and only if
 `x - y` is in the ideal generated by elements `a - b` such that `r a b`.
 -/
-inductive Rel (r : R → R → Prop) : R → R → Prop
+inductive Rel (r : R  R  Prop) : R  R  Prop
   | of ⦃x y : R⦄ (h : r x y) : Rel r x y
-  | add_left ⦃a b c⦄ : Rel r a b → Rel r (a + c) (b + c)
-  | mul_left ⦃a b c⦄ : Rel r a b → Rel r (a * c) (b * c)
-  | mul_right ⦃a b c⦄ : Rel r b c → Rel r (a * b) (a * c)
+  | add_left ⦃a b c⦄ : Rel r a b  Rel r (a + c) (b + c)
+  | mul_left ⦃a b c⦄ : Rel r a b  Rel r (a * c) (b * c)
+  | mul_right ⦃a b c⦄ : Rel r b c  Rel r (a * b) (a * c)
 
 end RingQuot
 
 /-- The quotient of a ring by an arbitrary relation. -/
-structure RingQuot (r : R → R → Prop) where
+structure RingQuot (r : R  R  Prop) where
   toQuot : Quot (RingQuot.Rel r)
 
 namespace RingQuot
 
-variable (r : R → R → Prop)
+variable (r : R  R  Prop)
 
 private def zero : RingQuot r :=
   ⟨Quot.mk _ 0⟩
@@ -1146,26 +1146,26 @@ private def zero : RingQuot r :=
 private def one : RingQuot r :=
   ⟨Quot.mk _ 1⟩
 
-private def add : RingQuot r → RingQuot r → RingQuot r
+private def add : RingQuot r  RingQuot r  RingQuot r
   | ⟨a⟩, ⟨b⟩ => ⟨Quot.map₂ (· + ·) sorry sorry a b⟩
 
-private def mul : RingQuot r → RingQuot r → RingQuot r
+private def mul : RingQuot r  RingQuot r  RingQuot r
   | ⟨a⟩, ⟨b⟩ => ⟨Quot.map₂ (· * ·) sorry sorry a b⟩
 
-private def neg {R : Type uR} [Ring R] (r : R → R → Prop) : RingQuot r → RingQuot r
+private def neg {R : Type uR} [Ring R] (r : R  R  Prop) : RingQuot r  RingQuot r
   | ⟨a⟩ => ⟨Quot.map (fun a ↦ -a) sorry a⟩
 
-private def sub {R : Type uR} [Ring R] (r : R → R → Prop) :
-  RingQuot r → RingQuot r → RingQuot r
+private def sub {R : Type uR} [Ring R] (r : R  R  Prop) :
+  RingQuot r  RingQuot r  RingQuot r
   | ⟨a⟩, ⟨b⟩ => ⟨Quot.map₂ Sub.sub sorry sorry a b⟩
 
-private def npow (n : Nat) : RingQuot r → RingQuot r
+private def npow (n : Nat) : RingQuot r  RingQuot r
   | ⟨a⟩ =>
     ⟨Quot.lift (fun a ↦ Quot.mk (RingQuot.Rel r) (a ^ n))
         (fun a b (h : Rel r a b) ↦ sorry)
         a⟩
 
-private def smul [Algebra S R] (n : S) : RingQuot r → RingQuot r
+private def smul [Algebra S R] (n : S) : RingQuot r  RingQuot r
   | ⟨a⟩ => ⟨Quot.map (fun a ↦ n • a) sorry a⟩
 
 instance : Zero (RingQuot r) :=
@@ -1183,16 +1183,16 @@ instance : Mul (RingQuot r) :=
 instance : Pow (RingQuot r) Nat :=
   ⟨fun x n ↦ npow r n x⟩
 
-instance {R : Type uR} [Ring R] (r : R → R → Prop) : Neg (RingQuot r) :=
+instance {R : Type uR} [Ring R] (r : R  R  Prop) : Neg (RingQuot r) :=
   ⟨neg r⟩
 
-instance {R : Type uR} [Ring R] (r : R → R → Prop) : Sub (RingQuot r) :=
+instance {R : Type uR} [Ring R] (r : R  R  Prop) : Sub (RingQuot r) :=
   ⟨sub r⟩
 
 instance [Algebra S R] : SMul S (RingQuot r) :=
   ⟨smul r⟩
 
-instance instAddCommMonoid (r : R → R → Prop) : AddCommMonoid (RingQuot r) where
+instance instAddCommMonoid (r : R  R  Prop) : AddCommMonoid (RingQuot r) where
   add := (· + ·)
   zero := 0
   add_assoc := sorry
@@ -1203,7 +1203,7 @@ instance instAddCommMonoid (r : R → R → Prop) : AddCommMonoid (RingQuot r) w
   nsmul_zero := sorry
   nsmul_succ := sorry
 
-instance instMonoidWithZero (r : R → R → Prop) : MonoidWithZero (RingQuot r) where
+instance instMonoidWithZero (r : R  R  Prop) : MonoidWithZero (RingQuot r) where
   mul_assoc := sorry
   one_mul := sorry
   mul_one := sorry
@@ -1213,7 +1213,7 @@ instance instMonoidWithZero (r : R → R → Prop) : MonoidWithZero (RingQuot r)
   npow_zero := sorry
   npow_succ := sorry
 
-instance instSemiring (r : R → R → Prop) : Semiring (RingQuot r) :=
+instance instSemiring (r : R  R  Prop) : Semiring (RingQuot r) :=
   { instAddCommMonoid r, instMonoidWithZero r with
     left_distrib := sorry
     right_distrib := sorry
@@ -1221,7 +1221,7 @@ instance instSemiring (r : R → R → Prop) : Semiring (RingQuot r) :=
     nsmul_zero := sorry
     nsmul_succ := sorry }
 
-instance instRing {R : Type uR} [Ring R] (r : R → R → Prop) : Ring (RingQuot r) :=
+instance instRing {R : Type uR} [Ring R] (r : R  R  Prop) : Ring (RingQuot r) :=
   { RingQuot.instSemiring r with
     neg := Neg.neg
     add_left_neg := sorry
@@ -1232,15 +1232,15 @@ instance instRing {R : Type uR} [Ring R] (r : R → R → Prop) : Ring (RingQuot
     zsmul_succ' := sorry
     zsmul_neg' := sorry }
 
-instance instCommSemiring {R : Type uR} [CommSemiring R] (r : R → R → Prop) :
+instance instCommSemiring {R : Type uR} [CommSemiring R] (r : R  R  Prop) :
   CommSemiring (RingQuot r) :=
   { RingQuot.instSemiring r with
     mul_comm := sorry }
 
-instance {R : Type uR} [CommRing R] (r : R → R → Prop) : CommRing (RingQuot r) :=
+instance {R : Type uR} [CommRing R] (r : R  R  Prop) : CommRing (RingQuot r) :=
   { RingQuot.instRing r, RingQuot.instCommSemiring r with }
 
-instance instAlgebraRingQuot [Algebra S R] (r : R → R → Prop) : Algebra S (RingQuot r) where
+instance instAlgebraRingQuot [Algebra S R] (r : R  R  Prop) : Algebra S (RingQuot r) where
   smul := (· • ·)
   toFun r := ⟨Quot.mk _ ((algebraMap S R).toFun r)⟩
 
@@ -1273,7 +1273,7 @@ end Mathlib.Data.Nat.Basic
 section Mathlib.Data.MvPolynomial.Basic
 
 def MvPolynomial (σ : Type _) (R : Type _) [CommSemiring R] :=
-  AddMonoidAlgebra R (σ → Nat)
+  AddMonoidAlgebra R (σ  Nat)
 
 namespace MvPolynomial
 
@@ -1297,7 +1297,7 @@ end Mathlib.Data.MvPolynomial.CommRing
 
 variable (R : Type u) [CommSemiring R] (M : Type v)
 
-inductive r : (MvPolynomial M R) → (MvPolynomial M R) → Prop
+inductive r : (MvPolynomial M R)  (MvPolynomial M R)  Prop
 
 def Quot_r := RingQuot (r R M)
 

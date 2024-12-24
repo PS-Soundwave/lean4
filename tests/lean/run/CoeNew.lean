@@ -11,10 +11,10 @@ instance natToBool : Coe Nat Bool :=
   | _ => true }
 
 structure ConstantFunction (α β : Type) :=
-(f : α → β)
+(f : α  β)
 (h : ∀ a₁ a₂, f a₁ = f a₂)
 
-instance constantFunctionCoe {α β : Type} : CoeFun (ConstantFunction α β) (fun _ => α → β) :=
+instance constantFunctionCoe {α β : Type} : CoeFun (ConstantFunction α β) (fun _ => α  β) :=
 { coe := fun c => c.f }
 
 set_option pp.explicit true

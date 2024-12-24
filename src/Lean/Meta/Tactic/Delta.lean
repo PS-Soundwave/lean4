@@ -9,7 +9,7 @@ import Lean.Meta.Tactic.Replace
 
 namespace Lean.Meta
 
-def delta? (e : Expr) (p : Name → Bool := fun _ => true) : CoreM (Option Expr) :=
+def delta? (e : Expr) (p : Name  Bool := fun _ => true) : CoreM (Option Expr) :=
   matchConst e.getAppFn (fun _ => return none) fun fInfo fLvls => do
     if p fInfo.name && fInfo.hasValue && fInfo.levelParams.length == fLvls.length then
       let f ← instantiateValueLevelParams fInfo fLvls
@@ -18,7 +18,7 @@ def delta? (e : Expr) (p : Name → Bool := fun _ => true) : CoreM (Option Expr)
       return none
 
 /-- Low-level delta expansion. It is used to implement equation lemmas and elimination principles for recursive definitions. -/
-def deltaExpand (e : Expr) (p : Name → Bool) : CoreM Expr :=
+def deltaExpand (e : Expr) (p : Name  Bool) : CoreM Expr :=
   Core.transform e fun e => do
     match (← delta? e p) with
     | some e' => return .visit e'
@@ -27,7 +27,7 @@ def deltaExpand (e : Expr) (p : Name → Bool) : CoreM Expr :=
 /--
 Delta expand declarations that satisfy `p` at `mvarId` type.
 -/
-def _root_.Lean.MVarId.deltaTarget (mvarId : MVarId) (p : Name → Bool) : MetaM MVarId :=
+def _root_.Lean.MVarId.deltaTarget (mvarId : MVarId) (p : Name  Bool) : MetaM MVarId :=
   mvarId.withContext do
     mvarId.checkNotAssigned `delta
     mvarId.change (← deltaExpand (← mvarId.getType) p) (checkDefEq := false)
@@ -35,7 +35,7 @@ def _root_.Lean.MVarId.deltaTarget (mvarId : MVarId) (p : Name → Bool) : MetaM
 /--
 Delta expand declarations that satisfy `p` at `fvarId` type.
 -/
-def _root_.Lean.MVarId.deltaLocalDecl (mvarId : MVarId) (fvarId : FVarId) (p : Name → Bool) : MetaM MVarId :=
+def _root_.Lean.MVarId.deltaLocalDecl (mvarId : MVarId) (fvarId : FVarId) (p : Name  Bool) : MetaM MVarId :=
   mvarId.withContext do
     mvarId.checkNotAssigned `delta
     mvarId.changeLocalDecl fvarId (← deltaExpand (← mvarId.getType) p) (checkDefEq := false)

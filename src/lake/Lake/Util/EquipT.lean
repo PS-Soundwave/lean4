@@ -13,10 +13,10 @@ A monad transformer that equips a monad with a value.
 This is a generalization of `ReaderT` where the value is not
 necessarily directly readable through the monad.
 -/
-def EquipT (ρ : Type u) (m : Type v → Type w) (α : Type v) :=
-  ρ → m α
+def EquipT (ρ : Type u) (m : Type v  Type w) (α : Type v) :=
+  ρ  m α
 
-variable {ρ : Type u} {m : Type v → Type w}
+variable {ρ : Type u} {m : Type v  Type w}
 
 instance {α : Type v} [Inhabited (m α)] : Inhabited (EquipT ρ m α) where
   default := fun _ => default
@@ -28,7 +28,7 @@ def run {α : Type v} (self : EquipT ρ m α) (r : ρ) : m α :=
   self r
 
 @[inline] protected
-def map [Functor m] {α β : Type v} (f : α → β) (self : EquipT ρ m α) : EquipT ρ m β :=
+def map [Functor m] {α β : Type v} (f : α  β) (self : EquipT ρ m α) : EquipT ρ m β :=
   fun fetch => Functor.map f (self fetch)
 
 instance [Functor m] : Functor (EquipT ρ m) where
@@ -42,11 +42,11 @@ instance [Pure m] : Pure (EquipT ρ m) where
   pure := EquipT.pure
 
 @[inline] protected
-def compose {α₁ α₂ β : Type v} (f : m α₁ → (Unit → m α₂) → m β) (x₁ : EquipT ρ m α₁) (x₂ : Unit → EquipT ρ m α₂) : EquipT ρ m β :=
+def compose {α₁ α₂ β : Type v} (f : m α₁  (Unit  m α₂)  m β) (x₁ : EquipT ρ m α₁) (x₂ : Unit  EquipT ρ m α₂) : EquipT ρ m β :=
   fun fetch => f (x₁ fetch) (fun _ => x₂ () fetch)
 
 @[inline] protected
-def seq [Seq m] {α β : Type v} : EquipT ρ m (α → β) → (Unit → EquipT ρ m α) → EquipT ρ m β :=
+def seq [Seq m] {α β : Type v} : EquipT ρ m (α  β)  (Unit  EquipT ρ m α)  EquipT ρ m β :=
   EquipT.compose Seq.seq
 
 instance [Seq m] : Seq (EquipT ρ m) where
@@ -55,7 +55,7 @@ instance [Seq m] : Seq (EquipT ρ m) where
 instance [Applicative m] : Applicative (EquipT ρ m)  := {}
 
 @[inline] protected
-def bind [Bind m] {α β : Type v} (self : EquipT ρ m α) (f : α → EquipT ρ m β) : EquipT ρ m β :=
+def bind [Bind m] {α β : Type v} (self : EquipT ρ m α) (f : α  EquipT ρ m β) : EquipT ρ m β :=
   fun fetch => bind (self fetch) fun a => f a fetch
 
 instance [Bind m] : Bind (EquipT ρ m) where
@@ -78,7 +78,7 @@ def failure [Alternative m] {α : Type v} : EquipT ρ m α :=
   fun _ => failure
 
 @[inline] protected
-def orElse [Alternative m] {α : Type v} : EquipT ρ m α → (Unit → EquipT ρ m α) → EquipT ρ m α :=
+def orElse [Alternative m] {α : Type v} : EquipT ρ m α  (Unit  EquipT ρ m α)  EquipT ρ m α :=
   EquipT.compose Alternative.orElse
 
 instance [Alternative m] : Alternative (EquipT ρ m) where
@@ -90,7 +90,7 @@ def throw {ε : Type v} [MonadExceptOf ε m] {α : Type v} (e : ε) : EquipT ρ 
   fun _ => throw e
 
 @[inline] protected
-def tryCatch {ε : Type v} [MonadExceptOf ε m] {α : Type v} (self : EquipT ρ m α) (c : ε → EquipT ρ m α) : EquipT ρ m α :=
+def tryCatch {ε : Type v} [MonadExceptOf ε m] {α : Type v} (self : EquipT ρ m α) (c : ε  EquipT ρ m α) : EquipT ρ m α :=
   fun f => tryCatchThe ε (self f) fun e => (c e) f
 
 instance (ε) [MonadExceptOf ε m] : MonadExceptOf ε (EquipT ρ m) where

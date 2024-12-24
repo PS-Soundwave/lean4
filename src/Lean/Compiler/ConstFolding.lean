@@ -13,8 +13,8 @@ namespace Lean.Compiler
 def mkLcProof (p : Expr) :=
   mkApp (mkConst ``lcProof []) p
 
-abbrev BinFoldFn := Bool → Expr → Expr → Option Expr
-abbrev UnFoldFn  := Bool → Expr → Option Expr
+abbrev BinFoldFn := Bool  Expr  Expr  Option Expr
+abbrev UnFoldFn  := Bool  Expr  Option Expr
 
 def mkUIntTypeName (nbytes : Nat) : Name :=
   Name.mkSimple ("UInt" ++ toString nbytes)
@@ -36,18 +36,18 @@ def isOfNat (fn : Name) : Bool :=
 def isToNat (fn : Name) : Bool :=
   numScalarTypes.any (fun info => info.toNatFn == fn)
 
-def getInfoFromFn (fn : Name) : List NumScalarTypeInfo → Option NumScalarTypeInfo
+def getInfoFromFn (fn : Name) : List NumScalarTypeInfo  Option NumScalarTypeInfo
   | []          => none
   | info::infos =>
     if info.ofNatFn == fn then some info
     else getInfoFromFn fn infos
 
-def getInfoFromVal : Expr → Option NumScalarTypeInfo
+def getInfoFromVal : Expr  Option NumScalarTypeInfo
   | Expr.app (Expr.const fn _) _ => getInfoFromFn fn numScalarTypes
   | _                            => none
 
 @[export lean_get_num_lit]
-def getNumLit : Expr → Option Nat
+def getNumLit : Expr  Option Nat
   | Expr.lit (Literal.natVal n)  => some n
   | Expr.app (Expr.const fn _) a => if isOfNat fn then getNumLit a else none
   | _                            => none
@@ -58,7 +58,7 @@ def mkUIntLit (info : NumScalarTypeInfo) (n : Nat) : Expr :=
 def mkUInt32Lit (n : Nat) : Expr :=
   mkUIntLit {nbits := 32} n
 
-def foldBinUInt (fn : NumScalarTypeInfo → Bool → Nat → Nat → Nat) (beforeErasure : Bool) (a₁ a₂ : Expr) : Option Expr := do
+def foldBinUInt (fn : NumScalarTypeInfo  Bool  Nat  Nat  Nat) (beforeErasure : Bool) (a₁ a₂ : Expr) : Option Expr := do
   let n₁   ← getNumLit a₁
   let n₂   ← getNumLit a₂
   let info ← getInfoFromVal a₁
@@ -77,7 +77,7 @@ def preUIntBinFoldFns : List (Name × BinFoldFn) :=
 def uintBinFoldFns : List (Name × BinFoldFn) :=
   numScalarTypes.foldl (fun r info => r ++ (preUIntBinFoldFns.map (fun ⟨suffix, fn⟩ => (info.id ++ suffix, fn)))) []
 
-def foldNatBinOp (fn : Nat → Nat → Nat) (a₁ a₂ : Expr) : Option Expr := do
+def foldNatBinOp (fn : Nat  Nat  Nat) (a₁ a₂ : Expr) : Option Expr := do
   let n₁   ← getNumLit a₁
   let n₂   ← getNumLit a₂
   return mkRawNatLit (fn n₁ n₂)
@@ -114,7 +114,7 @@ def toDecidableExpr (beforeErasure : Bool) (pred : Expr) (r : Bool) : Expr :=
   | true,  true  => mkDecIsTrue pred (mkLcProof pred)
   | true,  false => mkDecIsFalse pred (mkLcProof pred)
 
-def foldNatBinPred (mkPred : Expr → Expr → Expr) (fn : Nat → Nat → Bool)
+def foldNatBinPred (mkPred : Expr  Expr  Expr) (fn : Nat  Nat  Bool)
     (beforeErasure : Bool) (a₁ a₂ : Expr) : Option Expr := do
   let n₁   ← getNumLit a₁
   let n₂   ← getNumLit a₂
@@ -124,7 +124,7 @@ def foldNatDecEq := foldNatBinPred mkNatEq (fun a b => a = b)
 def foldNatDecLt := foldNatBinPred mkNatLt (fun a b => a < b)
 def foldNatDecLe := foldNatBinPred mkNatLe (fun a b => a ≤ b)
 
-def foldNatBinBoolPred (fn : Nat → Nat → Bool) (a₁ a₂ : Expr) : Option Expr := do
+def foldNatBinBoolPred (fn : Nat  Nat  Bool) (a₁ a₂ : Expr) : Option Expr := do
   let n₁   ← getNumLit a₁
   let n₂   ← getNumLit a₂
   if fn n₁ n₂ then
@@ -150,7 +150,7 @@ def natFoldFns : List (Name × BinFoldFn) :=
    (``Nat.ble,   foldNatBle)
 ]
 
-def getBoolLit : Expr → Option Bool
+def getBoolLit : Expr  Option Bool
   | Expr.const ``Bool.true _  => some true
   | Expr.const ``Bool.false _ => some false
   | _                         => none

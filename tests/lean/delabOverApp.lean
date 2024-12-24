@@ -7,10 +7,10 @@ For example, checking to see that the algorithm for app unexpanders handles over
 Technically these are not examples of overapplied functions,
 but in principle these are two-argument functions that return functions.
 -/
-def add (f g : Nat → Nat) : Nat → Nat := fun x => f x + g x
-def mul (f g : Nat → Nat) : Nat → Nat := fun x => f x * g x
+def add (f g : Nat  Nat) : Nat  Nat := fun x => f x + g x
+def mul (f g : Nat  Nat) : Nat  Nat := fun x => f x * g x
 
-variable (f g : Nat → Nat)
+variable (f g : Nat  Nat)
 
 infixl:65 " +' " => add
 

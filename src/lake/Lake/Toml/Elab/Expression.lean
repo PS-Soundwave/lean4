@@ -187,7 +187,7 @@ partial def mkSimpleTable (items : Array Keyval) : Table :=
     | .nil => t
     | .cons k ks => insert t kRef k ks v
 where
-  simpVal : Value → Value
+  simpVal : Value  Value
     | .table ref t => .table ref <| t.items.foldl (init := {}) fun t ⟨k,v⟩ =>
       match k.components with
       | .nil => t

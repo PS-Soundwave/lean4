@@ -62,16 +62,16 @@ macro_rules | `(test) => `(3)
      --^ textDocument/definition
 
 class Foo2 where
-  foo : Nat → Nat
+  foo : Nat  Nat
   foo' : Nat
 
 class Foo3 [Foo2] where
-  foo : [Foo2] → Nat
+  foo : [Foo2]  Nat
 
-class inductive Foo4 : Nat → Type where
-| mk : Nat → Foo4 0
+class inductive Foo4 : Nat  Type where
+| mk : Nat  Foo4 0
 
-def Foo4.foo : [Foo4 n] → Nat
+def Foo4.foo : [Foo4 n]  Nat
 | .mk n => n
 
 class Foo5 where

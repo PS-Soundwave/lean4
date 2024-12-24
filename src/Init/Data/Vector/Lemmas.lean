@@ -85,14 +85,14 @@ theorem toArray_mk (a : Array α) (h : a.size = n) : (Vector.mk a h).toArray = a
 @[simp] theorem indexOf?_mk [BEq α] (a : Array α) (h : a.size = n) (x : α) :
     (Vector.mk a h).indexOf? x = (a.indexOf? x).map (Fin.cast h) := rfl
 
-@[simp] theorem mk_isEqv_mk (r : α → α → Bool) (a b : Array α) (ha : a.size = n) (hb : b.size = n) :
+@[simp] theorem mk_isEqv_mk (r : α  α  Bool) (a b : Array α) (ha : a.size = n) (hb : b.size = n) :
     Vector.isEqv (Vector.mk a ha) (Vector.mk b hb) r = Array.isEqv a b r := by
   simp [Vector.isEqv, Array.isEqv, ha, hb]
 
 @[simp] theorem mk_isPrefixOf_mk [BEq α] (a b : Array α) (ha : a.size = n) (hb : b.size = m) :
     (Vector.mk a ha).isPrefixOf (Vector.mk b hb) = a.isPrefixOf b := rfl
 
-@[simp] theorem map_mk (a : Array α) (h : a.size = n) (f : α → β) :
+@[simp] theorem map_mk (a : Array α) (h : a.size = n) (f : α  β) :
     (Vector.mk a h).map f = Vector.mk (a.map f) (by simp [h]) := rfl
 
 @[simp] theorem reverse_mk (a : Array α) (h : a.size = n) :
@@ -125,20 +125,20 @@ theorem toArray_mk (a : Array α) (h : a.size = n) : (Vector.mk a h).toArray = a
 @[simp] theorem take_mk (a : Array α) (h : a.size = n) (m) :
     (Vector.mk a h).take m = Vector.mk (a.take m) (by simp [h]) := rfl
 
-@[simp] theorem mk_zipWith_mk (f : α → β → γ) (a : Array α) (b : Array β)
+@[simp] theorem mk_zipWith_mk (f : α  β  γ) (a : Array α) (b : Array β)
       (ha : a.size = n) (hb : b.size = n) : zipWith (Vector.mk a ha) (Vector.mk b hb) f =
         Vector.mk (Array.zipWith a b f) (by simp [ha, hb]) := rfl
 
-@[simp] theorem anyM_mk [Monad m] (p : α → m Bool) (a : Array α) (h : a.size = n) :
+@[simp] theorem anyM_mk [Monad m] (p : α  m Bool) (a : Array α) (h : a.size = n) :
     (Vector.mk a h).anyM p = a.anyM p := rfl
 
-@[simp] theorem allM_mk [Monad m] (p : α → m Bool) (a : Array α) (h : a.size = n) :
+@[simp] theorem allM_mk [Monad m] (p : α  m Bool) (a : Array α) (h : a.size = n) :
     (Vector.mk a h).allM p = a.allM p := rfl
 
-@[simp] theorem any_mk (p : α → Bool) (a : Array α) (h : a.size = n) :
+@[simp] theorem any_mk (p : α  Bool) (a : Array α) (h : a.size = n) :
     (Vector.mk a h).any p = a.any p := rfl
 
-@[simp] theorem all_mk (p : α → Bool) (a : Array α) (h : a.size = n) :
+@[simp] theorem all_mk (p : α  Bool) (a : Array α) (h : a.size = n) :
     (Vector.mk a h).all p = a.all p := rfl
 
 /-! ### toArray lemmas -/
@@ -177,10 +177,10 @@ theorem toArray_mk (a : Array α) (h : a.size = n) : (Vector.mk a h).toArray = a
 @[simp] theorem toArray_extract (a : Vector α n) (start stop) :
     (a.extract start stop).toArray = a.toArray.extract start stop := rfl
 
-@[simp] theorem toArray_map (f : α → β) (a : Vector α n) :
+@[simp] theorem toArray_map (f : α  β) (a : Vector α n) :
     (a.map f).toArray = a.toArray.map f := rfl
 
-@[simp] theorem toArray_ofFn (f : Fin n → α) : (Vector.ofFn f).toArray = Array.ofFn f := rfl
+@[simp] theorem toArray_ofFn (f : Fin n  α) : (Vector.ofFn f).toArray = Array.ofFn f := rfl
 
 @[simp] theorem toArray_pop (a : Vector α n) : a.pop.toArray = a.toArray.pop := rfl
 
@@ -222,25 +222,25 @@ theorem toArray_mk (a : Array α) (h : a.size = n) : (Vector.mk a h).toArray = a
 
 @[simp] theorem toArray_take (a : Vector α n) (m) : (a.take m).toArray = a.toArray.take m := rfl
 
-@[simp] theorem toArray_zipWith (f : α → β → γ) (a : Vector α n) (b : Vector β n) :
+@[simp] theorem toArray_zipWith (f : α  β  γ) (a : Vector α n) (b : Vector β n) :
     (Vector.zipWith a b f).toArray = Array.zipWith a.toArray b.toArray f := rfl
 
-@[simp] theorem anyM_toArray [Monad m] (p : α → m Bool) (v : Vector α n) :
+@[simp] theorem anyM_toArray [Monad m] (p : α  m Bool) (v : Vector α n) :
     v.toArray.anyM p = v.anyM p := by
   cases v
   simp
 
-@[simp] theorem allM_toArray [Monad m] (p : α → m Bool) (v : Vector α n) :
+@[simp] theorem allM_toArray [Monad m] (p : α  m Bool) (v : Vector α n) :
     v.toArray.allM p = v.allM p := by
   cases v
   simp
 
-@[simp] theorem any_toArray (p : α → Bool) (v : Vector α n) :
+@[simp] theorem any_toArray (p : α  Bool) (v : Vector α n) :
     v.toArray.any p = v.any p := by
   cases v
   simp
 
-@[simp] theorem all_toArray (p : α → Bool) (v : Vector α n) :
+@[simp] theorem all_toArray (p : α  Bool) (v : Vector α n) :
     v.toArray.all p = v.all p := by
   cases v
   simp
@@ -257,7 +257,7 @@ theorem toArray_mk (a : Array α) (h : a.size = n) : (Vector.mk a h).toArray = a
 Vectors `a` and `b` are equal to each other if their elements are equal for each valid index.
 -/
 @[ext]
-protected theorem ext {a b : Vector α n} (h : (i : Nat) → (_ : i < n) → a[i] = b[i]) : a = b := by
+protected theorem ext {a b : Vector α n} (h : (i : Nat)  (_ : i < n)  a[i] = b[i]) : a = b := by
   apply Vector.toArray_inj.1
   apply Array.ext
   · rw [a.size_toArray, b.size_toArray]
@@ -310,10 +310,10 @@ theorem toList_extract (a : Vector α n) (start stop) :
     (a.extract start stop).toList = (a.toList.drop start).take (stop - start) := by
   simp
 
-theorem toList_map (f : α → β) (a : Vector α n) :
+theorem toList_map (f : α  β) (a : Vector α n) :
     (a.map f).toList = a.toList.map f := by simp
 
-theorem toList_ofFn (f : Fin n → α) : (Vector.ofFn f).toList = List.ofFn f := by simp
+theorem toList_ofFn (f : Fin n  α) : (Vector.ofFn f).toList = List.ofFn f := by simp
 
 theorem toList_pop (a : Vector α n) : a.pop.toList = a.toList.dropLast := rfl
 
@@ -342,25 +342,25 @@ theorem toList_swap (a : Vector α n) (i j) (hi hj) :
 @[simp] theorem toList_take (a : Vector α n) (m) : (a.take m).toList = a.toList.take m := by
   simp [List.take_of_length_le]
 
-@[simp] theorem toList_zipWith (f : α → β → γ) (a : Vector α n) (b : Vector β n) :
+@[simp] theorem toList_zipWith (f : α  β  γ) (a : Vector α n) (b : Vector β n) :
     (Vector.zipWith a b f).toArray = Array.zipWith a.toArray b.toArray f := rfl
 
-@[simp] theorem anyM_toList [Monad m] (p : α → m Bool) (v : Vector α n) :
+@[simp] theorem anyM_toList [Monad m] (p : α  m Bool) (v : Vector α n) :
     v.toList.anyM p = v.anyM p := by
   cases v
   simp
 
-@[simp] theorem allM_toList [Monad m] [LawfulMonad m] (p : α → m Bool) (v : Vector α n) :
+@[simp] theorem allM_toList [Monad m] [LawfulMonad m] (p : α  m Bool) (v : Vector α n) :
     v.toList.allM p = v.allM p := by
   cases v
   simp
 
-@[simp] theorem any_toList (p : α → Bool) (v : Vector α n) :
+@[simp] theorem any_toList (p : α  Bool) (v : Vector α n) :
     v.toList.any p = v.any p := by
   cases v
   simp
 
-@[simp] theorem all_toList (p : α → Bool) (v : Vector α n) :
+@[simp] theorem all_toList (p : α  Bool) (v : Vector α n) :
     v.toList.all p = v.all p := by
   cases v
   simp
@@ -451,7 +451,7 @@ theorem singleton_inj : #v[a] = #v[b] ↔ a = b := by
 theorem mkVector_succ : mkVector (n + 1) a = (mkVector n a).push a := by
   simp [mkVector, Array.mkArray_succ]
 
-theorem mkVector_inj : mkVector n a = mkVector n b ↔ n = 0 ∨ a = b := by
+theorem mkVector_inj : mkVector n a = mkVector n b ↔ n = 0  a = b := by
   simp [← toArray_inj, toArray_mkVector, Array.mkArray_inj]
 
 /-! ## L[i] and L[i]? -/
@@ -539,7 +539,7 @@ theorem getElem?_singleton (a : α) (i : Nat) : #v[a][i]? = if i = 0 then some a
 
 @[simp] theorem not_mem_empty (a : α) : ¬ a ∈ #v[] := nofun
 
-@[simp] theorem mem_push {a : Vector α n} {x y : α} : x ∈ a.push y ↔ x ∈ a ∨ x = y := by
+@[simp] theorem mem_push {a : Vector α n} {x y : α} : x ∈ a.push y ↔ x ∈ a  x = y := by
   cases a
   simp
 
@@ -564,11 +564,11 @@ theorem exists_mem_of_size_pos (l : Vector α n) (h : 0 < n) : ∃ x, x ∈ l :=
 theorem size_zero_iff_forall_not_mem {l : Vector α n} : n = 0 ↔ ∀ a, a ∉ l := by
   simpa using List.eq_nil_iff_forall_not_mem (l := l.toList)
 
-@[simp] theorem mem_dite_empty_left {x : α} [Decidable p] {l : ¬ p → Vector α 0} :
+@[simp] theorem mem_dite_empty_left {x : α} [Decidable p] {l : ¬ p  Vector α 0} :
     (x ∈ if h : p then #v[] else l h) ↔ ∃ h : ¬ p, x ∈ l h := by
   split <;> simp_all
 
-@[simp] theorem mem_dite_empty_right {x : α} [Decidable p] {l : p → Vector α 0} :
+@[simp] theorem mem_dite_empty_right {x : α} [Decidable p] {l : p  Vector α 0} :
     (x ∈ if h : p then l h else #v[]) ↔ ∃ h : p, x ∈ l h := by
   split <;> simp_all
 
@@ -586,23 +586,23 @@ theorem eq_of_mem_singleton (h : a ∈ #v[b]) : a = b := by
 @[simp] theorem mem_singleton {a b : α} : a ∈ #v[b] ↔ a = b :=
   ⟨eq_of_mem_singleton, (by simp [·])⟩
 
-theorem forall_mem_push {p : α → Prop} {xs : Vector α n} {a : α} :
-    (∀ x, x ∈ xs.push a → p x) ↔ p a ∧ ∀ x, x ∈ xs → p x := by
+theorem forall_mem_push {p : α  Prop} {xs : Vector α n} {a : α} :
+    (∀ x, x ∈ xs.push a  p x) ↔ p a ∧ ∀ x, x ∈ xs  p x := by
   cases xs
   simp [or_comm, forall_eq_or_imp]
 
-theorem forall_mem_ne {a : α} {l : Vector α n} : (∀ a' : α, a' ∈ l → ¬a = a') ↔ a ∉ l :=
+theorem forall_mem_ne {a : α} {l : Vector α n} : (∀ a' : α, a' ∈ l  ¬a = a') ↔ a ∉ l :=
   ⟨fun h m => h _ m rfl, fun h _ m e => h (e.symm ▸ m)⟩
 
-theorem forall_mem_ne' {a : α} {l : Vector α n} : (∀ a' : α, a' ∈ l → ¬a' = a) ↔ a ∉ l :=
+theorem forall_mem_ne' {a : α} {l : Vector α n} : (∀ a' : α, a' ∈ l  ¬a' = a) ↔ a ∉ l :=
   ⟨fun h m => h _ m rfl, fun h _ m e => h (e.symm ▸ m)⟩
 
-theorem exists_mem_empty (p : α → Prop) : ¬ (∃ x, ∃ _ : x ∈ #v[], p x) := nofun
+theorem exists_mem_empty (p : α  Prop) : ¬ (∃ x, ∃ _ : x ∈ #v[], p x) := nofun
 
-theorem forall_mem_empty (p : α → Prop) : ∀ (x) (_ : x ∈ #v[]), p x := nofun
+theorem forall_mem_empty (p : α  Prop) : ∀ (x) (_ : x ∈ #v[]), p x := nofun
 
-theorem exists_mem_push {p : α → Prop} {a : α} {xs : Vector α n} :
-    (∃ x, ∃ _ : x ∈ xs.push a, p x) ↔ p a ∨ ∃ x, ∃ _ : x ∈ xs, p x := by
+theorem exists_mem_push {p : α  Prop} {a : α} {xs : Vector α n} :
+    (∃ x, ∃ _ : x ∈ xs.push a, p x) ↔ p a  ∃ x, ∃ _ : x ∈ xs, p x := by
   simp only [mem_push, exists_prop]
   constructor
   · rintro ⟨x, (h | rfl), h'⟩
@@ -612,19 +612,19 @@ theorem exists_mem_push {p : α → Prop} {a : α} {xs : Vector α n} :
     · exact ⟨a, by simp, h⟩
     · exact ⟨x, .inl h, h'⟩
 
-theorem forall_mem_singleton {p : α → Prop} {a : α} : (∀ (x) (_ : x ∈ #v[a]), p x) ↔ p a := by
+theorem forall_mem_singleton {p : α  Prop} {a : α} : (∀ (x) (_ : x ∈ #v[a]), p x) ↔ p a := by
   simp only [mem_singleton, forall_eq]
 
 theorem mem_empty_iff (a : α) : a ∈ (#v[] : Vector α 0) ↔ False := by simp
 
 theorem mem_singleton_self (a : α) : a ∈ #v[a] := by simp
 
-theorem mem_of_mem_push_of_mem {a b : α} {l : Vector α n} : a ∈ l.push b → b ∈ l → a ∈ l := by
+theorem mem_of_mem_push_of_mem {a b : α} {l : Vector α n} : a ∈ l.push b  b ∈ l  a ∈ l := by
   rcases l with ⟨l, rfl⟩
   simpa using Array.mem_of_mem_push_of_mem
 
 theorem eq_or_ne_mem_of_mem {a b : α} {l : Vector α n} (h' : a ∈ l.push b) :
-    a = b ∨ (a ≠ b ∧ a ∈ l) := by
+    a = b  (a ≠ b ∧ a ∈ l) := by
   if h : a = b then
     exact .inl h
   else
@@ -646,10 +646,10 @@ theorem not_mem_of_not_mem_push {a b : α} {l : Vector α n} (h : a ∉ l.push b
   simp only [mem_push, not_or] at h
   exact h.1
 
-theorem not_mem_push_of_ne_of_not_mem {a y : α} {l : Vector α n} : a ≠ y → a ∉ l → a ∉ l.push y :=
-  mt ∘ mem_of_ne_of_mem
+theorem not_mem_push_of_ne_of_not_mem {a y : α} {l : Vector α n} : a ≠ y  a ∉ l  a ∉ l.push y :=
+  mt  mem_of_ne_of_mem
 
-theorem ne_and_not_mem_of_not_mem_push {a y : α} {l : Vector α n} : a ∉ l.push y → a ≠ y ∧ a ∉ l := by
+theorem ne_and_not_mem_of_not_mem_push {a y : α} {l : Vector α n} : a ∉ l.push y  a ≠ y ∧ a ∉ l := by
   simp +contextual
 
 theorem getElem_of_mem {a} {l : Vector α n} (h : a ∈ l) : ∃ (i : Nat) (h : i < n), l[i]'h = a := by
@@ -668,21 +668,21 @@ theorem mem_iff_getElem {a} {l : Vector α n} : a ∈ l ↔ ∃ (i : Nat) (h : i
 theorem mem_iff_getElem? {a} {l : Vector α n} : a ∈ l ↔ ∃ i : Nat, l[i]? = some a := by
   simp [getElem?_eq_some_iff, mem_iff_getElem]
 
-theorem forall_getElem {l : Vector α n} {p : α → Prop} :
-    (∀ (i : Nat) h, p (l[i]'h)) ↔ ∀ a, a ∈ l → p a := by
+theorem forall_getElem {l : Vector α n} {p : α  Prop} :
+    (∀ (i : Nat) h, p (l[i]'h)) ↔ ∀ a, a ∈ l  p a := by
   rcases l with ⟨l, rfl⟩
   simp [Array.forall_getElem]
 
 /-! ### Decidability of bounded quantifiers -/
 
-instance {xs : Vector α n} {p : α → Prop} [DecidablePred p] :
-    Decidable (∀ x, x ∈ xs → p x) :=
+instance {xs : Vector α n} {p : α  Prop} [DecidablePred p] :
+    Decidable (∀ x, x ∈ xs  p x) :=
   decidable_of_iff (∀ (i : Nat) h, p (xs[i]'h)) (by
     simp only [mem_iff_getElem, forall_exists_index]
     exact
       ⟨by rintro w _ i h rfl; exact w i h, fun w i h => w _ i h rfl⟩)
 
-instance {xs : Vector α n} {p : α → Prop} [DecidablePred p] :
+instance {xs : Vector α n} {p : α  Prop} [DecidablePred p] :
     Decidable (∃ x, x ∈ xs ∧ p x) :=
   decidable_of_iff (∃ (i : Nat), ∃ (h : i < n), p (xs[i]'h)) (by
     simp [mem_iff_getElem]
@@ -691,84 +691,84 @@ instance {xs : Vector α n} {p : α → Prop} [DecidablePred p] :
 
 /-! ### any / all -/
 
-theorem any_iff_exists {p : α → Bool} {xs : Vector α n} :
+theorem any_iff_exists {p : α  Bool} {xs : Vector α n} :
     xs.any p ↔ ∃ (i : Nat) (_ : i < n), p xs[i] := by
   rcases xs with ⟨xs, rfl⟩
   simp [Array.any_iff_exists]
 
-theorem all_iff_forall {p : α → Bool} {xs : Vector α n} :
+theorem all_iff_forall {p : α  Bool} {xs : Vector α n} :
     xs.all p ↔ ∀ (i : Nat) (_ : i < n), p xs[i] := by
   rcases xs with ⟨xs, rfl⟩
   simp [Array.all_iff_forall]
 
-theorem any_eq_true {p : α → Bool} {xs : Vector α n} :
+theorem any_eq_true {p : α  Bool} {xs : Vector α n} :
     xs.any p = true ↔ ∃ (i : Nat) (_ : i < n), p xs[i] := by
   simp [any_iff_exists]
 
-theorem any_eq_false {p : α → Bool} {xs : Vector α n} :
+theorem any_eq_false {p : α  Bool} {xs : Vector α n} :
     xs.any p = false ↔ ∀ (i : Nat) (_ : i < n), ¬p xs[i] := by
   rw [Bool.eq_false_iff, Ne, any_eq_true]
   simp
 
-theorem allM_eq_not_anyM_not [Monad m] [LawfulMonad m] {p : α → m Bool} {xs : Vector α n} :
+theorem allM_eq_not_anyM_not [Monad m] [LawfulMonad m] {p : α  m Bool} {xs : Vector α n} :
     xs.allM p = (! ·) <$> xs.anyM ((! ·) <$> p ·) := by
   rcases xs with ⟨xs, rfl⟩
   simp [Array.allM_eq_not_anyM_not]
 
-theorem all_eq_not_any_not {p : α → Bool} {xs : Vector α n} :
+theorem all_eq_not_any_not {p : α  Bool} {xs : Vector α n} :
     xs.all p = !(xs.any (!p ·)) := by
   rcases xs with ⟨xs, rfl⟩
   simp [Array.all_eq_not_any_not]
 
-@[simp] theorem all_eq_true {p : α → Bool} {xs : Vector α n} :
+@[simp] theorem all_eq_true {p : α  Bool} {xs : Vector α n} :
     xs.all p = true ↔ ∀ (i : Nat) (_ : i < n), p xs[i] := by
   simp [all_iff_forall]
 
-@[simp] theorem all_eq_false {p : α → Bool} {xs : Vector α n} :
+@[simp] theorem all_eq_false {p : α  Bool} {xs : Vector α n} :
     xs.all p = false ↔ ∃ (i : Nat) (_ : i < n), ¬p xs[i] := by
   rw [Bool.eq_false_iff, Ne, all_eq_true]
   simp
 
-theorem all_eq_true_iff_forall_mem {xs : Vector α n} : xs.all p ↔ ∀ x, x ∈ xs → p x := by
+theorem all_eq_true_iff_forall_mem {xs : Vector α n} : xs.all p ↔ ∀ x, x ∈ xs  p x := by
   rcases xs with ⟨xs, rfl⟩
   simp only [all_mk, Array.all_eq_true_iff_forall_mem]
   simp
 
 /-- Variant of `any_eq_true` in terms of membership rather than an array index. -/
-theorem any_eq_true' {p : α → Bool} {xs : Vector α n} :
+theorem any_eq_true' {p : α  Bool} {xs : Vector α n} :
     xs.any p = true ↔ (∃ x, x ∈ xs ∧ p x) := by
   rcases xs with ⟨xs, rfl⟩
   simp only [any_mk, Array.any_eq_true']
   simp
 
 /-- Variant of `any_eq_false` in terms of membership rather than an array index. -/
-theorem any_eq_false' {p : α → Bool} {xs : Vector α n} :
-    xs.any p = false ↔ ∀ x, x ∈ xs → ¬p x := by
+theorem any_eq_false' {p : α  Bool} {xs : Vector α n} :
+    xs.any p = false ↔ ∀ x, x ∈ xs  ¬p x := by
   rcases xs with ⟨xs, rfl⟩
   simp only [any_mk, Array.any_eq_false']
   simp
 
 /-- Variant of `all_eq_true` in terms of membership rather than an array index. -/
-theorem all_eq_true' {p : α → Bool} {xs : Vector α n} :
-    xs.all p = true ↔ ∀ x, x ∈ xs → p x := by
+theorem all_eq_true' {p : α  Bool} {xs : Vector α n} :
+    xs.all p = true ↔ ∀ x, x ∈ xs  p x := by
   rcases xs with ⟨xs, rfl⟩
   simp only [all_mk, Array.all_eq_true']
   simp
 
 /-- Variant of `all_eq_false` in terms of membership rather than an array index. -/
-theorem all_eq_false' {p : α → Bool} {xs : Vector α n} :
+theorem all_eq_false' {p : α  Bool} {xs : Vector α n} :
     xs.all p = false ↔ ∃ x, x ∈ xs ∧ ¬p x := by
   rcases xs with ⟨xs, rfl⟩
   simp only [all_mk, Array.all_eq_false']
   simp
 
-theorem any_eq {xs : Vector α n} {p : α → Bool} : xs.any p = decide (∃ i : Nat, ∃ h, p (xs[i]'h)) := by
+theorem any_eq {xs : Vector α n} {p : α  Bool} : xs.any p = decide (∃ i : Nat, ∃ h, p (xs[i]'h)) := by
   by_cases h : xs.any p
   · simp_all [any_eq_true]
   · simp_all [any_eq_false]
 
 /-- Variant of `any_eq` in terms of membership rather than an array index. -/
-theorem any_eq' {xs : Vector α n} {p : α → Bool} : xs.any p = decide (∃ x, x ∈ xs ∧ p x) := by
+theorem any_eq' {xs : Vector α n} {p : α  Bool} : xs.any p = decide (∃ x, x ∈ xs ∧ p x) := by
   by_cases h : xs.any p
   · simp_all [any_eq_true']
   · simp only [Bool.not_eq_true] at h
@@ -776,7 +776,7 @@ theorem any_eq' {xs : Vector α n} {p : α → Bool} : xs.any p = decide (∃ x,
     simp only [any_eq_false'] at h
     simpa using h
 
-theorem all_eq {xs : Vector α n} {p : α → Bool} : xs.all p = decide (∀ i, (_ : i < n) → p xs[i]) := by
+theorem all_eq {xs : Vector α n} {p : α  Bool} : xs.all p = decide (∀ i, (_ : i < n)  p xs[i]) := by
   by_cases h : xs.all p
   · simp_all [all_eq_true]
   · simp only [Bool.not_eq_true] at h
@@ -785,17 +785,17 @@ theorem all_eq {xs : Vector α n} {p : α → Bool} : xs.all p = decide (∀ i, 
     simpa using h
 
 /-- Variant of `all_eq` in terms of membership rather than an array index. -/
-theorem all_eq' {xs : Vector α n} {p : α → Bool} : xs.all p = decide (∀ x, x ∈ xs → p x) := by
+theorem all_eq' {xs : Vector α n} {p : α  Bool} : xs.all p = decide (∀ x, x ∈ xs  p x) := by
   rcases xs with ⟨xs, rfl⟩
   simp only [all_mk, Array.all_eq']
   simp
 
-theorem decide_exists_mem {xs : Vector α n} {p : α → Prop} [DecidablePred p] :
+theorem decide_exists_mem {xs : Vector α n} {p : α  Prop} [DecidablePred p] :
     decide (∃ x, x ∈ xs ∧ p x) = xs.any p := by
   simp [any_eq']
 
-theorem decide_forall_mem {xs : Vector α n} {p : α → Prop} [DecidablePred p] :
-    decide (∀ x, x ∈ xs → p x) = xs.all p := by
+theorem decide_forall_mem {xs : Vector α n} {p : α  Prop} [DecidablePred p] :
+    decide (∀ x, x ∈ xs  p x) = xs.all p := by
   simp [all_eq']
 
 theorem any_beq [BEq α] {xs : Vector α n} {a : α} : (xs.any fun x => a == x) = xs.contains a := by
@@ -817,7 +817,7 @@ theorem all_bne' [BEq α] [PartialEquivBEq α] {xs : Vector α n} :
   simp only [bne_comm, all_bne]
 
 theorem mem_of_contains_eq_true [BEq α] [LawfulBEq α] {a : α} {as : Vector α n} :
-    as.contains a = true → a ∈ as := by
+    as.contains a = true  a ∈ as := by
   rcases as with ⟨as, rfl⟩
   simp [Array.mem_of_contains_eq_true]
 
@@ -837,12 +837,12 @@ theorem contains_iff [BEq α] [LawfulBEq α] {a : α} {as : Vector α n} :
     as.contains a = decide (a ∈ as) := by
   rw [Bool.eq_iff_iff, contains_iff, decide_eq_true_iff]
 
-@[simp] theorem any_push [BEq α] {as : Vector α n} {a : α} {p : α → Bool} :
+@[simp] theorem any_push [BEq α] {as : Vector α n} {a : α} {p : α  Bool} :
     (as.push a).any p = (as.any p || p a) := by
   rcases as with ⟨as, rfl⟩
   simp [Array.any_push]
 
-@[simp] theorem all_push [BEq α] {as : Vector α n} {a : α} {p : α → Bool} :
+@[simp] theorem all_push [BEq α] {as : Vector α n} {a : α} {p : α  Bool} :
     (as.push a).all p = (as.all p && p a) := by
   rcases as with ⟨as, rfl⟩
   simp [Array.all_push]
@@ -900,7 +900,7 @@ theorem mem_set (v : Vector α n) (i : Nat) (hi : i < n) (a : α) :
   simp [mem_iff_getElem]
   exact ⟨i, (by simpa using hi), by simp⟩
 
-theorem mem_or_eq_of_mem_set {v : Vector α n} {i : Nat} {a b : α} {w : i < n} (h : a ∈ v.set i b) : a ∈ v ∨ a = b := by
+theorem mem_or_eq_of_mem_set {v : Vector α n} {i : Nat} {a b : α} {w : i < n} (h : a ∈ v.set i b) : a ∈ v  a = b := by
   cases v
   simpa using Array.mem_or_eq_of_mem_set (by simpa using h)
 
@@ -1025,13 +1025,13 @@ theorem mem_setIfInBounds (v : Vector α n) (i : Nat) (hi : i < n) (a : α) :
 
 /-! Content below this point has not yet been aligned with `List` and `Array`. -/
 
-@[simp] theorem getElem_ofFn {α n} (f : Fin n → α) (i : Nat) (h : i < n) :
+@[simp] theorem getElem_ofFn {α n} (f : Fin n  α) (i : Nat) (h : i < n) :
     (Vector.ofFn f)[i] = f ⟨i, by simpa using h⟩ := by
   simp [ofFn]
 
 /-- The empty vector maps to the empty vector. -/
 @[simp]
-theorem map_empty (f : α → β) : map f #v[] = #v[] := by
+theorem map_empty (f : α  β) : map f #v[] = #v[] := by
   rw [map, mk.injEq]
   exact Array.map_empty f
 
@@ -1090,14 +1090,14 @@ theorem getElem_append_right {a : Vector α n} {b : Vector α m} {i : Nat} (h : 
 
 /-! ### map -/
 
-@[simp] theorem getElem_map (f : α → β) (a : Vector α n) (i : Nat) (hi : i < n) :
+@[simp] theorem getElem_map (f : α  β) (a : Vector α n) (i : Nat) (hi : i < n) :
     (a.map f)[i] = f a[i] := by
   cases a
   simp
 
 /-! ### zipWith -/
 
-@[simp] theorem getElem_zipWith (f : α → β → γ) (a : Vector α n) (b : Vector β n) (i : Nat)
+@[simp] theorem getElem_zipWith (f : α  β  γ) (a : Vector α n) (b : Vector β n) (i : Nat)
     (hi : i < n) : (zipWith a b f)[i] = f a[i] b[i] := by
   cases a
   cases b
@@ -1167,7 +1167,7 @@ theorem swap_comm (a : Vector α n) {i j : Nat} {hi hj} :
 
 /-! ### Decidable quantifiers. -/
 
-theorem forall_zero_iff {P : Vector α 0 → Prop} :
+theorem forall_zero_iff {P : Vector α 0  Prop} :
     (∀ v, P v) ↔ P #v[] := by
   constructor
   · intro h
@@ -1176,7 +1176,7 @@ theorem forall_zero_iff {P : Vector α 0 → Prop} :
     obtain (rfl : v = #v[]) := (by ext i h; simp at h)
     apply h
 
-theorem forall_cons_iff {P : Vector α (n + 1) → Prop} :
+theorem forall_cons_iff {P : Vector α (n + 1)  Prop} :
     (∀ v : Vector α (n + 1), P v) ↔ (∀ (x : α) (v : Vector α n), P (v.push x)) := by
   constructor
   · intro h _ _
@@ -1186,21 +1186,21 @@ theorem forall_cons_iff {P : Vector α (n + 1) → Prop} :
     rw [w]
     apply h
 
-instance instDecidableForallVectorZero (P : Vector α 0 → Prop) :
+instance instDecidableForallVectorZero (P : Vector α 0  Prop) :
     ∀ [Decidable (P #v[])], Decidable (∀ v, P v)
   | .isTrue h => .isTrue fun ⟨v, s⟩ => by
     obtain (rfl : v = .empty) := (by ext i h₁ h₂; exact s; cases h₂)
     exact h
   | .isFalse h => .isFalse (fun w => h (w _))
 
-instance instDecidableForallVectorSucc (P : Vector α (n+1) → Prop)
+instance instDecidableForallVectorSucc (P : Vector α (n+1)  Prop)
     [Decidable (∀ (x : α) (v : Vector α n), P (v.push x))] : Decidable (∀ v, P v) :=
   decidable_of_iff' (∀ x (v : Vector α n), P (v.push x)) forall_cons_iff
 
-instance instDecidableExistsVectorZero (P : Vector α 0 → Prop) [Decidable (P #v[])] :
+instance instDecidableExistsVectorZero (P : Vector α 0  Prop) [Decidable (P #v[])] :
     Decidable (∃ v, P v) :=
   decidable_of_iff (¬ ∀ v, ¬ P v) Classical.not_forall_not
 
-instance instDecidableExistsVectorSucc (P : Vector α (n+1) → Prop)
+instance instDecidableExistsVectorSucc (P : Vector α (n+1)  Prop)
     [Decidable (∀ (x : α) (v : Vector α n), ¬ P (v.push x))] : Decidable (∃ v, P v) :=
   decidable_of_iff (¬ ∀ v, ¬ P v) Classical.not_forall_not

@@ -6,7 +6,7 @@ The functions inserted for the coercions are supposed to be inlined immediately 
 
 set_option pp.mvars false
 
-variable (p : Nat → Prop) (m : IO (Subtype p))
+variable (p : Nat  Prop) (m : IO (Subtype p))
 
 /-!
 `Lean.Internal.liftCoeM`
@@ -25,7 +25,7 @@ It used to be responsible for hinting that the LHSs of equalities were defeq, li
 It was checking that `Eq (some true)` and `Eq _` were defeq monads. The defeq check caused `_` to be solved as `some true`.
 -/
 /--
-error: invalid dotted identifier notation, expected type is not of the form (... → C ...) where C is a constant
+error: invalid dotted identifier notation, expected type is not of the form (...  C ...) where C is a constant
   ?_
 -/
 #guard_msgs in

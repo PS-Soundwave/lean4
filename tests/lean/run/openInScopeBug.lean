@@ -1,5 +1,5 @@
-opaque f : Nat → Nat
-opaque g : Nat → Nat
+opaque f : Nat  Nat
+opaque g : Nat  Nat
 
 namespace Foo
 

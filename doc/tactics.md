@@ -20,16 +20,16 @@ all local variables in scope.
 
 In the following example, we prove the same simple theorem using different tactics.
 The keyword `by` instructs Lean to use the tactic DSL to construct a term.
-Our initial goal is a hole with type `p ∨ q → q ∨ p`. The tactic `intro h`
+Our initial goal is a hole with type `p  q  q  p`. The tactic `intro h`
 fills this hole using the term `fun h => ?m` where `?m` is a new hole we need to solve.
-This hole has type `q ∨ p`, and the local context contains `h : p ∨ q`.
+This hole has type `q  p`, and the local context contains `h : p  q`.
 The tactic `cases` fills the hole using `Or.casesOn h (fun h1 => ?m1) (fun h2 => ?m2)`
 where `?m1` and `?m2` are new holes. The tactic `apply Or.inr` fills the hole `?m1`
 with the application `Or.inr ?m3`, and `exact h1` fills `?m3` with `h1`.
 The tactic `assumption` tries to fill a hole by searching the local context for a term with the same type.
 
 ```lean
-theorem ex1 : p ∨ q → q ∨ p := by
+theorem ex1 : p  q  q  p := by
   intro h
   cases h with
   | inl h1 =>
@@ -41,13 +41,13 @@ theorem ex1 : p ∨ q → q ∨ p := by
 
 #print ex1
 /-
-theorem ex1 : {p q : Prop} → p ∨ q → q ∨ p :=
-fun {p q : Prop} (h : p ∨ q) =>
+theorem ex1 : {p q : Prop}  p  q  q  p :=
+fun {p q : Prop} (h : p  q) =>
   Or.casesOn h (fun (h1 : p) => Or.inr h1) fun (h2 : q) => Or.inl h2
 -/
 
 -- You can use `match-with` in tactics.
-theorem ex2 : p ∨ q → q ∨ p := by
+theorem ex2 : p  q  q  p := by
   intro h
   match h with
   | Or.inl _  => apply Or.inr; assumption
@@ -55,7 +55,7 @@ theorem ex2 : p ∨ q → q ∨ p := by
 
 -- As we have the `fun+match` syntax sugar for terms,
 -- we have the `intro+match` syntax sugar
-theorem ex3 : p ∨ q → q ∨ p := by
+theorem ex3 : p  q  q  p := by
   intro
   | Or.inl h1 =>
     apply Or.inr
@@ -71,7 +71,7 @@ discharge different goals.
 Here is an unstructured version of the example above.
 
 ```lean
-theorem ex1 : p ∨ q → q ∨ p := by
+theorem ex1 : p  q  q  p := by
   intro h
   cases h
   apply Or.inr
@@ -80,7 +80,7 @@ theorem ex1 : p ∨ q → q ∨ p := by
   assumption
   done -- fails with an error here if there are unsolvable goals
 
-theorem ex2 : p ∨ q → q ∨ p := by
+theorem ex2 : p  q  q  p := by
   intro h
   cases h
   focus -- instructs Lean to `focus` on the first goal,
@@ -91,7 +91,7 @@ theorem ex2 : p ∨ q → q ∨ p := by
     apply Or.inl
     assumption
 
-theorem ex3 : p ∨ q → q ∨ p := by
+theorem ex3 : p  q  q  p := by
   intro h
   cases h
   -- You can still use curly braces and semicolons instead of
@@ -107,7 +107,7 @@ theorem ex3 : p ∨ q → q ∨ p := by
 -- Many tactics tag subgoals. The tactic `cases` tag goals using constructor names.
 -- The tactic `case tag => tactics` instructs Lean to solve the goal
 -- with the matching tag.
-theorem ex4 : p ∨ q → q ∨ p := by
+theorem ex4 : p  q  q  p := by
   intro h
   cases h
   case inr =>
@@ -118,7 +118,7 @@ theorem ex4 : p ∨ q → q ∨ p := by
     assumption
 
 -- Same example for curly braces and semicolons aficionados
-theorem ex5 : p ∨ q → q ∨ p := by {
+theorem ex5 : p  q  q  p := by {
   intro h;
   cases h;
   case inr => {
@@ -141,7 +141,7 @@ TODO
 As a convenience, pattern-matching has been integrated into tactics such as `intro` and `funext`.
 
 ```lean
-theorem ex1 : s ∧ q ∧ r → p ∧ r → q ∧ p := by
+theorem ex1 : s ∧ q ∧ r  p ∧ r  q ∧ p := by
   intro ⟨_, ⟨hq, _⟩⟩ ⟨hp, _⟩
   exact ⟨hq, hp⟩
 
@@ -163,10 +163,10 @@ multiple targets (aka major premises).
 ```lean
 /-
 theorem Nat.mod.inductionOn
-      {motive : Nat → Nat → Sort u}
+      {motive : Nat  Nat  Sort u}
       (x y  : Nat)
-      (ind  : ∀ x y, 0 < y ∧ y ≤ x → motive (x - y) y → motive x y)
-      (base : ∀ x y, ¬(0 < y ∧ y ≤ x) → motive x y)
+      (ind  : ∀ x y, 0 < y ∧ y ≤ x  motive (x - y) y  motive x y)
+      (base : ∀ x y, ¬(0 < y ∧ y ≤ x)  motive x y)
       : motive x y :=
 -/
 
@@ -176,7 +176,7 @@ theorem ex (x : Nat) {y : Nat} (h : y > 0) : x % y < y := by
     rw [Nat.mod_eq_sub_mod h₁.2]
     exact ih h
   | base x y h₁ =>
-     have : ¬ 0 < y ∨ ¬ y ≤ x := Iff.mp (Decidable.not_and_iff_or_not ..) h₁
+     have : ¬ 0 < y  ¬ y ≤ x := Iff.mp (Decidable.not_and_iff_or_not ..) h₁
      match this with
      | Or.inl h₁ => exact absurd h h₁
      | Or.inr h₁ =>
@@ -217,7 +217,7 @@ def binToChar (n : Nat) : Option Char :=
   | 1 => some '1'
   | _ => none
 
-example (n : Nat) : (binToChar n).isSome -> n = 0 ∨ n = 1 := by
+example (n : Nat) : (binToChar n).isSome -> n = 0  n = 1 := by
   simp only [binToChar]
   split
   next => exact fun _ => Or.inl rfl
@@ -242,9 +242,9 @@ example (n : Nat) : (n = 0) -> (binToChar n = some '0') := by
 The `match-with` expression implements dependent pattern matching. You can use it to create concise proofs.
 
 ```lean
-inductive Mem : α → List α → Prop where
+inductive Mem : α  List α  Prop where
   | head (a : α) (as : List α)   : Mem a (a::as)
-  | tail (a b : α) (bs : List α) : Mem a bs → Mem a (b::bs)
+  | tail (a b : α) (bs : List α) : Mem a bs  Mem a (b::bs)
 
 infix:50 (priority := high) "∈" => Mem
 
@@ -260,9 +260,9 @@ In the tactic DSL, the right-hand-side of each alternative in a `match-with` is 
 Here is a similar proof using the tactic DSL.
 
 ```lean
-# inductive Mem : α → List α → Prop where
+# inductive Mem : α  List α  Prop where
 #  | head (a : α) (as : List α)   : Mem a (a::as)
-#  | tail (a b : α) (bs : List α) : Mem a bs → Mem a (b::bs)
+#  | tail (a b : α) (bs : List α) : Mem a bs  Mem a (b::bs)
 # infix:50 (priority := high) "∈" => Mem
 theorem mem_split {a : α} {as : List α} (h : a ∈ as) : ∃ s t, as = s ++ a :: t := by
   match a, as, h with
@@ -278,9 +278,9 @@ We can use `match-with` nested in tactics.
 Here is a similar proof that uses the `induction` tactic instead of recursion.
 
 ```lean
-# inductive Mem : α → List α → Prop where
+# inductive Mem : α  List α  Prop where
 #  | head (a : α) (as : List α)   : Mem a (a::as)
-#  | tail (a b : α) (bs : List α) : Mem a bs → Mem a (b::bs)
+#  | tail (a b : α) (bs : List α) : Mem a bs  Mem a (b::bs)
 # infix:50 (priority := high) "∈" => Mem
 theorem mem_split {a : α} {as : List α} (h : a ∈ as) : ∃ s t, as = s ++ a :: t := by
   induction as with
@@ -299,9 +299,9 @@ we define a simple `obtain` tactic using macros. We say it is simple because it 
 discriminant. Later, we show how to create more complex automation using macros.
 
 ```lean
-# inductive Mem : α → List α → Prop where
+# inductive Mem : α  List α  Prop where
 #  | head (a : α) (as : List α)   : Mem a (a::as)
-#  | tail (a b : α) (bs : List α) : Mem a bs → Mem a (b::bs)
+#  | tail (a b : α) (bs : List α) : Mem a bs  Mem a (b::bs)
 # infix:50 (priority := high) "∈" => Mem
 macro "obtain " p:term " from " d:term : tactic =>
   `(tactic| match $d:term with | $p:term => ?_)

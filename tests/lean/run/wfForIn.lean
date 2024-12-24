@@ -1,7 +1,7 @@
 inductive Term where
   | app (f : String) (args : List Term)
 
-def printFns : Term → IO Unit
+def printFns : Term  IO Unit
   | Term.app f args => do
      IO.println f
      for h : arg in args do

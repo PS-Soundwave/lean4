@@ -24,14 +24,14 @@ namespace AsyncList
 instance : Inhabited (AsyncList ε α) := ⟨nil⟩
 
 -- TODO(WN): tail-recursion without forcing sync?
-partial def append : AsyncList ε α → AsyncList ε α → AsyncList ε α
+partial def append : AsyncList ε α  AsyncList ε α  AsyncList ε α
   | cons hd tl, s => cons hd (append tl s)
   | delayed ttl, s => delayed (ttl.map $ Except.map (append · s))
   | nil, s => s
 
 instance : Append (AsyncList ε α) := ⟨append⟩
 
-def ofList : List α → AsyncList ε α :=
+def ofList : List α  AsyncList ε α :=
   List.foldr AsyncList.cons AsyncList.nil
 
 instance : Coe (List α) (AsyncList ε α) := ⟨ofList⟩
@@ -56,7 +56,7 @@ partial def unfoldAsync (f : StateT σ (EIO ε) $ Option α) (init : σ)
 
 /-- The computed, synchronous list. If an async tail was present, returns also
 its terminating value. -/
-partial def getAll : AsyncList ε α → List α × Option ε
+partial def getAll : AsyncList ε α  List α × Option ε
   | cons hd tl =>
     let ⟨l, e?⟩ := tl.getAll
     ⟨hd :: l, e?⟩
@@ -68,7 +68,7 @@ partial def getAll : AsyncList ε α → List α × Option ε
 
 /-- Spawns a `Task` returning the prefix of elements up to (including) the first element for which `p` is true.
 When `p` is not true of any element, it returns the entire list. -/
-partial def waitUntil (p : α → Bool) : AsyncList ε α → Task (List α × Option ε)
+partial def waitUntil (p : α  Bool) : AsyncList ε α  Task (List α × Option ε)
   | cons hd tl =>
     if !p hd then
       (tl.waitUntil p).map fun ⟨l, e?⟩ => ⟨hd :: l, e?⟩
@@ -81,13 +81,13 @@ partial def waitUntil (p : α → Bool) : AsyncList ε α → Task (List α × O
       | .error e => .pure ⟨[], some e⟩
 
 /-- Spawns a `Task` waiting on all elements. -/
-def waitAll : AsyncList ε α → Task (List α × Option ε) :=
+def waitAll : AsyncList ε α  Task (List α × Option ε) :=
   waitUntil (fun _ => false)
 
 /-- Spawns a `Task` acting like `List.find?` but which will wait for tail evaluation
 when necessary to traverse the list. If the tail terminates before a matching element
 is found, the task throws the terminating value. -/
-partial def waitFind? (p : α → Bool) : AsyncList ε α → Task (Except ε (Option α))
+partial def waitFind? (p : α  Bool) : AsyncList ε α  Task (Except ε (Option α))
   | nil => .pure <| .ok none
   | cons hd tl =>
     if p hd then .pure <| Except.ok <| some hd
@@ -98,7 +98,7 @@ partial def waitFind? (p : α → Bool) : AsyncList ε α → Task (Except ε (O
       | .error e => .pure <| .error e
 
 /-- Retrieve the already-computed prefix of the list. If computation has finished with an error, return it as well. -/
-partial def getFinishedPrefix : AsyncList ε α → BaseIO (List α × Option ε)
+partial def getFinishedPrefix : AsyncList ε α  BaseIO (List α × Option ε)
   | cons hd tl => do
     let ⟨tl, e?⟩ ← tl.getFinishedPrefix
     pure ⟨hd :: tl, e?⟩
@@ -114,7 +114,7 @@ def waitHead? (as : AsyncList ε α) : Task (Except ε (Option α)) :=
   as.waitFind? fun _ => true
 
 /-- Cancels all tasks in the list. -/
-partial def cancel : AsyncList ε α → BaseIO Unit
+partial def cancel : AsyncList ε α  BaseIO Unit
   | cons _ tl => tl.cancel
   | nil => pure ()
   | delayed tl => do

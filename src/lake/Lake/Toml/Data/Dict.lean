@@ -18,7 +18,7 @@ open Lean
 namespace Lake.Toml
 
 /- An insertion-ordered key-value mapping backed by a red-black tree. -/
-structure RBDict (α : Type u) (β : Type v) (cmp : α → α → Ordering)  where
+structure RBDict (α : Type u) (β : Type v) (cmp : α  α  Ordering)  where
   items : Array (α × β)
   indices : RBMap α Nat cmp
   deriving Inhabited
@@ -72,7 +72,7 @@ def findEntry? (k : α) (t : RBDict α β cmp) : Option (α × β) := do
 def push (k : α) (v : β) (t : RBDict α β cmp) : RBDict α β cmp :=
   {items := t.items.push ⟨k,v⟩, indices := t.indices.insert k t.items.size}
 
-@[specialize] def alter (k : α) (f : Option β → β) (t : RBDict α β cmp) : RBDict α β cmp :=
+@[specialize] def alter (k : α) (f : Option β  β) (t : RBDict α β cmp) : RBDict α β cmp :=
    if let some i := t.findIdx? k then
     {t with items := t.items.modify i fun (k, v) => (k, f (some v))}
   else
@@ -109,11 +109,11 @@ instance : HAppend (RBDict α β cmp) (Array (α × β)) (RBDict α β cmp) := �
 
 instance : Append (RBDict α β cmp) := ⟨RBDict.append⟩
 
-@[inline] def map (f : α → β → γ) (t : RBDict α β cmp) : RBDict α γ cmp :=
+@[inline] def map (f : α  β  γ) (t : RBDict α β cmp) : RBDict α γ cmp :=
   {t with items := t.items.map fun ⟨k, v⟩ => ⟨k, f k v⟩}
 
-@[inline] def filter (p : α → β → Bool) (t : RBDict α β cmp) : RBDict α β cmp :=
+@[inline] def filter (p : α  β  Bool) (t : RBDict α β cmp) : RBDict α β cmp :=
   t.items.foldl (init := {}) fun t (k, v) => if p k v then t.push k v else t
 
-@[inline] def filterMap (f : α → β → Option γ) (t : RBDict α β cmp) : RBDict α γ cmp :=
+@[inline] def filterMap (f : α  β  Option γ) (t : RBDict α β cmp) : RBDict α γ cmp :=
   t.items.foldl (init := {}) fun t ⟨k, v⟩ => if let some v := f k v then t.push k v else t

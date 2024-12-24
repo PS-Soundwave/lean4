@@ -73,8 +73,8 @@ theorem gcd_rec (m n : Nat) : gcd m n = gcd (n % m) m :=
   | 0 => by have := (mod_zero n).symm; rwa [gcd, gcd_zero_right]
   | _ + 1 => by simp [gcd_succ]
 
-@[elab_as_elim] theorem gcd.induction {P : Nat → Nat → Prop} (m n : Nat)
-    (H0 : ∀n, P 0 n) (H1 : ∀ m n, 0 < m → P (n % m) m → P m n) : P m n :=
+@[elab_as_elim] theorem gcd.induction {P : Nat  Nat  Prop} (m n : Nat)
+    (H0 : ∀n, P 0 n) (H1 : ∀ m n, 0 < m  P (n % m) m  P m n) : P m n :=
   Nat.strongRecOn (motive := fun m => ∀ n, P m n) m
     (fun
     | 0, _ => H0
@@ -94,7 +94,7 @@ theorem gcd_le_left (n) (h : 0 < m) : gcd m n ≤ m := le_of_dvd h <| gcd_dvd_le
 
 theorem gcd_le_right (n) (h : 0 < n) : gcd m n ≤ n := le_of_dvd h <| gcd_dvd_right m n
 
-theorem dvd_gcd : k ∣ m → k ∣ n → k ∣ gcd m n := by
+theorem dvd_gcd : k ∣ m  k ∣ n  k ∣ gcd m n := by
   induction m, n using gcd.induction with intro km kn
   | H0 n => rw [gcd_zero_left]; exact kn
   | H1 n m _ IH => rw [gcd_rec]; exact IH ((dvd_mod_iff km).2 kn) km
@@ -158,9 +158,9 @@ theorem eq_zero_of_gcd_eq_zero_right {m n : Nat} (H : gcd m n = 0) : n = 0 := by
   rw [gcd_comm] at H
   exact eq_zero_of_gcd_eq_zero_left H
 
-theorem gcd_ne_zero_left : m ≠ 0 → gcd m n ≠ 0 := mt eq_zero_of_gcd_eq_zero_left
+theorem gcd_ne_zero_left : m ≠ 0  gcd m n ≠ 0 := mt eq_zero_of_gcd_eq_zero_left
 
-theorem gcd_ne_zero_right : n ≠ 0 → gcd m n ≠ 0 := mt eq_zero_of_gcd_eq_zero_right
+theorem gcd_ne_zero_right : n ≠ 0  gcd m n ≠ 0 := mt eq_zero_of_gcd_eq_zero_right
 
 theorem gcd_div {m n k : Nat} (H1 : k ∣ m) (H2 : k ∣ n) :
     gcd (m / k) (n / k) = gcd m n / k :=
@@ -228,7 +228,7 @@ theorem gcd_eq_zero_iff {i j : Nat} : gcd i j = 0 ↔ i = 0 ∧ j = 0 :=
 
 /-- Characterization of the value of `Nat.gcd`. -/
 theorem gcd_eq_iff {a b : Nat} :
-    gcd a b = g ↔ g ∣ a ∧ g ∣ b ∧ (∀ c, c ∣ a → c ∣ b → c ∣ g) := by
+    gcd a b = g ↔ g ∣ a ∧ g ∣ b ∧ (∀ c, c ∣ a  c ∣ b  c ∣ g) := by
   constructor
   · rintro rfl
     exact ⟨gcd_dvd_left _ _, gcd_dvd_right _ _, fun _ => Nat.dvd_gcd⟩

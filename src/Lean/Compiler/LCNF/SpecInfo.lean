@@ -89,7 +89,7 @@ builtin_initialize specExtension : SimplePersistentEnvExtension SpecEntry SpecSt
 
 /--
 Return `true` if `type` is a type tagged with `@[nospecialize]` or an arrow that produces this kind of type.
-For example, this function returns true for `Inhabited Nat`, and `Nat → Inhabited Nat`.
+For example, this function returns true for `Inhabited Nat`, and `Nat  Inhabited Nat`.
 -/
 private def isNoSpecType (env : Environment) (type : Expr) : Bool :=
   match type with
@@ -109,7 +109,7 @@ The motivation is to minimize the number of code specializations that have littl
 performance. For example, let's consider the function.
 ```
 def liftMacroM
-    {α : Type} {m : Type → Type}
+    {α : Type} {m : Type  Type}
     [Monad m] [MonadMacroAdapter m] [MonadEnv m] [MonadRecDepth m] [MonadError m]
     [MonadResolveName m] [MonadTrace m] [MonadOptions m] [AddMessageContext m] [MonadLiftT IO m] (x : MacroM α) : m α := do
 ```

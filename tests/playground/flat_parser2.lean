@@ -16,7 +16,7 @@ structure FileMap :=
 (lines   : Array Nat)
 
 namespace FileMap
-private def fromStringAux (s : String) : Nat → Nat → Nat → pos → Array Nat → Array Nat → FileMap
+private def fromStringAux (s : String) : Nat  Nat  Nat  pos  Array Nat  Array Nat  FileMap
 | 0     offset line i offsets lines := ⟨offsets.push offset, lines.push line⟩
 | (k+1) offset line i offsets lines :=
   if s.utf8AtEnd i then ⟨offsets.push offset, lines.push line⟩
@@ -31,7 +31,7 @@ def fromString (s : String) : FileMap :=
 fromStringAux s s.length 0 1 0 (Array.nil.push 0) (Array.nil.push 1)
 
 /- Remark: `offset is in [(offsets.get b), (offsets.get e)]` and `b < e` -/
-private def toPositionAux (offsets : Array Nat) (lines : Array Nat) (offset : Nat) : Nat → Nat → Nat → Position
+private def toPositionAux (offsets : Array Nat) (lines : Array Nat) (offset : Nat) : Nat  Nat  Nat  Position
 | 0     b e := ⟨offset, 1⟩ -- unreachable
 | (k+1) b e :=
   let offsetB := offsets.read' b in
@@ -42,7 +42,7 @@ private def toPositionAux (offsets : Array Nat) (lines : Array Nat) (offset : Na
        else if offset > offsetM then toPositionAux k m e
        else toPositionAux k b m
 
-def toPosition : FileMap → Nat → Position
+def toPosition : FileMap  Nat  Position
 | ⟨offsets, lines⟩ offset := toPositionAux offsets lines offset offsets.size 0 (offsets.size-1)
 end FileMap
 
@@ -75,7 +75,7 @@ inductive Result (α : Type)
 | ok       (a : α)        (i : pos) (cache : ParserCache) (State : ParserState) (eps : Bool) : Result
 | error {} (msg : String) (i : pos) (cache : ParserCache) (stx : Syntax)         (eps : Bool) : Result
 
-inductive Result.IsOk {α : Type} : Result α → Prop
+inductive Result.IsOk {α : Type} : Result α  Prop
 | mk (a : α) (i : pos) (cache : ParserCache) (State : ParserState) (eps : Bool) : Result.IsOk (Result.ok a i cache State eps)
 
 theorem errorIsNotOk {α : Type} {msg : String} {i : pos} {cache : ParserCache} {stx : Syntax} {eps : Bool}
@@ -97,7 +97,7 @@ match r with
 | ⟨Result.error _ _ _ _ _, h⟩ := unreachableError h
 
 def parserCoreM (α : Type) :=
-resultOk → Result α
+resultOk  Result α
 abbrev parserCore := parserCoreM Syntax
 
 @[inline] def parserCoreM.pure {α : Type} (a : α) : parserCoreM α :=
@@ -109,7 +109,7 @@ abbrev parserCore := parserCoreM Syntax
 @[inline_if_reduce] def strictOr  (b₁ b₂ : Bool) := b₁ || b₂
 @[inline_if_reduce] def strictAnd (b₁ b₂ : Bool) := b₁ && b₂
 
-@[inline] def parserCoreM.bind {α β : Type} (x : parserCoreM α) (f : α → parserCoreM β) : parserCoreM β :=
+@[inline] def parserCoreM.bind {α β : Type} (x : parserCoreM α) (f : α  parserCoreM β) : parserCoreM β :=
 λ r,
   match x r with
   | Result.ok a i c s e₁ :=
@@ -127,15 +127,15 @@ instance : Inhabited parserCore :=
 @[inline] def parserCoreM.error {α : Type} (msg : String) : parserCoreM α :=
 λ r, mkError r msg
 
-@[inline] def error {α : Type} {m : Type → Type} [HasMonadLiftT parserCoreM m] (msg : String) : m α :=
+@[inline] def error {α : Type} {m : Type  Type} [HasMonadLiftT parserCoreM m] (msg : String) : m α :=
 monadLift $ parserCoreM.error msg
 
-abbrev BasicParserM : Type → Type              := ReaderT ParserConfig parserCoreM
+abbrev BasicParserM : Type  Type              := ReaderT ParserConfig parserCoreM
 abbrev basicParser : Type                       := BasicParserM Syntax
-abbrev CommandParserM (ρ : Type) : Type → Type := ReaderT ρ (ReaderT parserCore parserCoreM)
-abbrev TermParserM : Type → Type               := ReaderT (Nat → parserCore) (CommandParserM ParserConfig)
+abbrev CommandParserM (ρ : Type) : Type  Type := ReaderT ρ (ReaderT parserCore parserCoreM)
+abbrev TermParserM : Type  Type               := ReaderT (Nat  parserCore) (CommandParserM ParserConfig)
 abbrev termParser : Type                        := TermParserM Syntax
-abbrev trailingTermParser : Type               := Syntax → termParser
+abbrev trailingTermParser : Type               := Syntax  termParser
 
 structure CommandParserConfig extends ParserConfig :=
 (leadingTermParsers  : TokenMap termParser)
@@ -199,7 +199,7 @@ private def trailing (cfg : CommandParserConfig) : trailingTermParser :=
 private def leading (cfg : CommandParserConfig) : termParser :=
 λ p _ _ r, p 0 r -- TODO(Leo)
 
-def dummy : Nat → parserCore :=
+def dummy : Nat  parserCore :=
 λ _ r, mkError r "dummy"
 
 def pratt (leadingP : termParser) (trailingP : trailingTermParser) (p : termParser) : commandParserCore :=
@@ -220,10 +220,10 @@ leading
 
 
 
-@[inline] def toParserCore (termP : Nat → Parser) (cmdP : parserCore) : Nat → parserCore :=
+@[inline] def toParserCore (termP : Nat  Parser) (cmdP : parserCore) : Nat  parserCore :=
 fix (λ recF rbp cfg r, termP rbp cmdP recF cfg r)
 
-@[inline] def Parser.run (x : Parser) (termP : Nat → Parser) (cmdP : parserCore) : parserCore :=
+@[inline] def Parser.run (x : Parser) (termP : Nat  Parser) (cmdP : parserCore) : parserCore :=
 x cmdP (toParserCore termP cmdP)
 
 
@@ -236,7 +236,7 @@ def parserCore.run (cmdP : parserCore) (termP : parserCore) : parserCore :=
 
 
 
-def aux (f : Nat → parserCore) : Nat → parserCore
+def aux (f : Nat  parserCore) : Nat  parserCore
 
 structure CommandParserConfig extends recParserConfig :=
 (leadingTermParsers  : TokenMap Parser)
@@ -253,9 +253,9 @@ abbrev commandParser := CommandParserM Syntax
 -- abbrev
 
 
--- def parserM (α : Type) := recParsers → parserCoreM α
+-- def parserM (α : Type) := recParsers  parserCoreM α
 abbreviation Parser := parserM Syntax
-abbreviation trailingParser := Syntax → Parser
+abbreviation trailingParser := Syntax  Parser
 
 @[inline] def command.Parser : Parser := λ cfg, cfg.cmdParser cfg
 
@@ -285,7 +285,7 @@ instance : Alternative parserM :=
   failure        := @flatParser.failure,
   ..flatParser.Monad }
 
-def setSilentError {α : Type} : Result α → Result α
+def setSilentError {α : Type} : Result α  Result α
 | (Result.error i c msg stx _) := Result.error i c msg stx tt
 | other                        := other
 
@@ -308,15 +308,15 @@ cfg.input.utf8Next i
 @[inline] def inputSize (cfg : ParserConfig) : Nat :=
 cfg.input.length
 
-@[inline] def currPos : resultOk → pos
+@[inline] def currPos : resultOk  pos
 | ⟨Result.ok _ i _ _ _, _⟩    := i
 | ⟨Result.error _ _ _ _ _, h⟩ := unreachableError h
 
-@[inline] def currState : resultOk → ParserState
+@[inline] def currState : resultOk  ParserState
 | ⟨Result.ok _ _ _ s _, _⟩    := s
 | ⟨Result.error _ _ _ _ _, h⟩ := unreachableError h
 
-@[inline] def satisfy (p : Char → Bool) : parserM Char :=
+@[inline] def satisfy (p : Char  Bool) : parserM Char :=
 λ _ cfg r,
   match r with
   | ⟨Result.ok _ i ch st e, _⟩ :=
@@ -329,7 +329,7 @@ cfg.input.length
 def any : parserM Char :=
 satisfy (λ _, tt)
 
-@[specialize] def takeUntilAux (p : Char → Bool) (cfg : ParserConfig) : Nat → resultOk → Result Unit
+@[specialize] def takeUntilAux (p : Char  Bool) (cfg : ParserConfig) : Nat  resultOk  Result Unit
 | 0     r := r.val
 | (n+1) r :=
   match r with
@@ -340,7 +340,7 @@ satisfy (λ _, tt)
          else takeUntilAux n (mkResultOk (next cfg i) ch st tt)
   | ⟨Result.error _ _ _ _ _, h⟩ := unreachableError h
 
-@[specialize] def takeUntil (p : Char → Bool) : parserM Unit :=
+@[specialize] def takeUntil (p : Char  Bool) : parserM Unit :=
 λ ps cfg r, takeUntilAux p cfg (inputSize cfg) r
 
 def takeUntilNewLine : parserM Unit :=
@@ -352,7 +352,7 @@ takeUntil (λ c, !c.isWhitespace)
 -- setOption Trace.Compiler.boxed True
 --- setOption pp.implicit True
 
-def strAux (cfg : ParserConfig) (str : String) (error : String) : Nat → resultOk → pos → Result Unit
+def strAux (cfg : ParserConfig) (str : String) (error : String) : Nat  resultOk  pos  Result Unit
 | 0     r j := mkError r error
 | (n+1) r j :=
   if str.utf8AtEnd j then r.val
@@ -369,7 +369,7 @@ def strAux (cfg : ParserConfig) (str : String) (error : String) : Nat → result
 @[inline] def str (s : String) : parserM Unit :=
 λ ps cfg r, strAux cfg s ("expected " ++ repr s) (inputSize cfg) r 0
 
-@[specialize] def manyAux (p : parserM Unit) : Nat → Bool → parserM Unit
+@[specialize] def manyAux (p : parserM Unit) : Nat  Bool  parserM Unit
 | 0     fst := pure ()
 | (k+1) fst := λ ps cfg r,
   let i₀ := currPos r in
@@ -397,17 +397,17 @@ match r with
 | Result.error msg i _ _ _ := "Error at " ++ toString i ++ ": " ++ msg
 
 /-
-mutual def recCmd, recTerm (parseCmd : Parser) (parseTerm : Nat → Parser) (parseLvl : Nat → parserCore)
-with recCmd  : Nat → parserCore
+mutual def recCmd, recTerm (parseCmd : Parser) (parseTerm : Nat  Parser) (parseLvl : Nat  parserCore)
+with recCmd  : Nat  parserCore
 | 0     cfg r := mkError r "Parser: no progress"
 | (n+1) cfg r := parseCmd ⟨recCmd n, parseLvl, recTerm n⟩ cfg r
-with recTerm : Nat → Nat → parserCore
+with recTerm : Nat  Nat  parserCore
 | 0     rbp cfg r := mkError r "Parser: no progress"
 | (n+1) rbp cfg r := parseTerm rbp ⟨recCmd n, parseLvl, recTerm n⟩ cfg r
 -/
 
 /-
-def runParser (x : Parser) (parseCmd : Parser) (parseLvl : Nat → Parser) (parseTerm : Nat → Parser)
+def runParser (x : Parser) (parseCmd : Parser) (parseLvl : Nat  Parser) (parseTerm : Nat  Parser)
                (input : Iterator) (cfg : ParserConfig) : Result Syntax :=
 let it := input in
 let n  := it.remaining in
@@ -424,12 +424,12 @@ structure parsingTables :=
 (trailingTermParsers : TokenMap trailingParser)
 
 abbreviation CommandParserM (α : Type) :=
-parsingTables → parserM α
+parsingTables  parserM α
 
 end flatParser
 end Lean
 
-def mkBigString : Nat → String → String
+def mkBigString : Nat  String  String
 | 0     s := s
 | (n+1) s := mkBigString n (s ++ "-- new comment\n")
 

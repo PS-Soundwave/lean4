@@ -1,4 +1,4 @@
-def map (f : Nat → Nat) (xs : List Nat) :=
+def map (f : Nat  Nat) (xs : List Nat) :=
   xs.map f
 
 set_option trace.Compiler.saveMono true

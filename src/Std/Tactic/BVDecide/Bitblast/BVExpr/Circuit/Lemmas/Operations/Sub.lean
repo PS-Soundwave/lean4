@@ -22,7 +22,7 @@ namespace bitblast
 
 variable [Hashable α] [DecidableEq α]
 
-theorem denote_blastSub (aig : AIG α) (lhs rhs : BitVec w) (assign : α → Bool)
+theorem denote_blastSub (aig : AIG α) (lhs rhs : BitVec w) (assign : α  Bool)
       (input : BinaryRefVec aig w)
       (hleft : ∀ (idx : Nat) (hidx : idx < w), ⟦aig, input.lhs.get idx hidx, assign⟧ = lhs.getLsbD idx)
       (hright : ∀ (idx : Nat) (hidx : idx < w), ⟦aig, input.rhs.get idx hidx, assign⟧ = rhs.getLsbD idx) :

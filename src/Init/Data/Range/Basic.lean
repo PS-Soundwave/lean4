@@ -26,7 +26,7 @@ universe u v
 @[simp] def size (r : Range) : Nat := (r.stop - r.start + r.step - 1) / r.step
 
 @[inline] protected def forIn' [Monad m] (range : Range) (init : β)
-    (f : (i : Nat) → i ∈ range → β → m (ForInStep β)) : m β :=
+    (f : (i : Nat)  i ∈ range  β  m (ForInStep β)) : m β :=
   let rec @[specialize] loop (b : β) (i : Nat)
       (hs : (i - range.start) % range.step = 0) (hl : range.start ≤ i := by omega) : m β := do
     if h : i < range.stop then
@@ -45,7 +45,7 @@ instance : ForIn' m Range Nat inferInstance where
 
 -- No separate `ForIn` instance is required because it can be derived from `ForIn'`.
 
-@[inline] protected def forM [Monad m] (range : Range) (f : Nat → m PUnit) : m PUnit :=
+@[inline] protected def forM [Monad m] (range : Range) (f : Nat  m PUnit) : m PUnit :=
   let rec @[specialize] loop (i : Nat): m PUnit := do
     if i < range.stop then
       f i

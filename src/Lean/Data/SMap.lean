@@ -41,15 +41,15 @@ def empty : SMap α β := {}
 @[inline] def fromHashMap (m : Std.HashMap α β) (stage₁ := true) : SMap α β :=
   { map₁ := m, stage₁ := stage₁ }
 
-@[specialize] def insert : SMap α β → α → β → SMap α β
+@[specialize] def insert : SMap α β  α  β  SMap α β
   | ⟨true, m₁, m₂⟩, k, v  => ⟨true, m₁.insert k v, m₂⟩
   | ⟨false, m₁, m₂⟩, k, v => ⟨false, m₁, m₂.insert k v⟩
 
-@[specialize] def insert' : SMap α β → α → β → SMap α β
+@[specialize] def insert' : SMap α β  α  β  SMap α β
   | ⟨true, m₁, m₂⟩, k, v  => ⟨true, m₁.insert k v, m₂⟩
   | ⟨false, m₁, m₂⟩, k, v => ⟨false, m₁, m₂.insert k v⟩
 
-@[specialize] def find? : SMap α β → α → Option β
+@[specialize] def find? : SMap α β  α  Option β
   | ⟨true, m₁, _⟩, k   => m₁[k]?
   | ⟨false, m₁, m₂⟩, k => (m₂.find? k).orElse fun _ => m₁[k]?
 
@@ -61,17 +61,17 @@ def empty : SMap α β := {}
   | some b => b
   | none   => panic! "key is not in the map"
 
-@[specialize] def contains : SMap α β → α → Bool
+@[specialize] def contains : SMap α β  α  Bool
   | ⟨true, m₁, _⟩, k   => m₁.contains k
   | ⟨false, m₁, m₂⟩, k => m₁.contains k || m₂.contains k
 
 /-- Similar to `find?`, but searches for result in the hashmap first.
    So, the result is correct only if we never "overwrite" `map₁` entries using `map₂`. -/
-@[specialize] def find?' : SMap α β → α → Option β
+@[specialize] def find?' : SMap α β  α  Option β
   | ⟨true, m₁, _⟩, k   => m₁[k]?
   | ⟨false, m₁, m₂⟩, k => m₁[k]?.orElse fun _ => m₂.find? k
 
-def forM [Monad m] (s : SMap α β) (f : α → β → m PUnit) : m PUnit := do
+def forM [Monad m] (s : SMap α β) (f : α  β  m PUnit) : m PUnit := do
   s.map₁.forM f
   s.map₂.forM f
 
@@ -85,15 +85,15 @@ instance : ForIn m (SMap α β) (α × β) where
 def switch (m : SMap α β) : SMap α β :=
   if m.stage₁ then { m with stage₁ := false } else m
 
-@[inline] def foldStage2 {σ : Type w} (f : σ → α → β → σ) (s : σ) (m : SMap α β) : σ :=
+@[inline] def foldStage2 {σ : Type w} (f : σ  α  β  σ) (s : σ) (m : SMap α β) : σ :=
   m.map₂.foldl f s
 
 /-- Monadic fold over a staged map. -/
-def foldM {m : Type w → Type w} [Monad m]
-    (f : σ → α → β → m σ) (init : σ) (map : SMap α β) : m σ := do
+def foldM {m : Type w  Type w} [Monad m]
+    (f : σ  α  β  m σ) (init : σ) (map : SMap α β) : m σ := do
   map.map₂.foldlM f (← map.map₁.foldM f init)
 
-def fold {σ : Type w} (f : σ → α → β → σ) (init : σ) (m : SMap α β) : σ :=
+def fold {σ : Type w} (f : σ  α  β  σ) (init : σ) (m : SMap α β) : σ :=
   m.map₂.foldl f $ m.map₁.fold f init
 
 def numBuckets (m : SMap α β) : Nat :=

@@ -35,7 +35,7 @@ def f.eq_2_ := 10 -- Should be ok
 #guard_msgs in
 #check f.eq_def
 
-def nonrecfun : Bool → Nat
+def nonrecfun : Bool  Nat
   | false => 0
   | true => 0
 
@@ -57,7 +57,7 @@ info: nonrecfun.eq_def (x✝ : Bool) :
 #guard_msgs in
 #check nonrecfun.eq_2
 
-def fact : Nat → Nat
+def fact : Nat  Nat
   | 0 => 1
   | n+1 => (n+1) * fact n
 
@@ -83,7 +83,7 @@ info: fact.eq_def (x✝ : Nat) :
 #guard_msgs (error) in
 #check fact.eq_3
 
-def fact' : Nat → Nat
+def fact' : Nat  Nat
   | 0 => 1
   | n+1 => (n+1) * fact' n
 

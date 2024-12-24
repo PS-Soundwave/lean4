@@ -13,10 +13,10 @@ end Mathlib.Algebra.Group.ZeroOne
 section Mathlib.Algebra.Group.Defs
 
 class HSMul (α : Type u) (β : Type v) (γ : outParam (Type w)) where
-  hSMul : α → β → γ
+  hSMul : α  β  γ
 
 class SMul (M : Type u) (α : Type v) where
-  smul : M → α → α
+  smul : M  α  α
 
 infixr:73 " • " => SMul.smul
 
@@ -85,23 +85,23 @@ end Mathlib.Algebra.Group.Defs
 section Mathlib.Algebra.Group.Hom.Defs
 
 structure AddMonoidHom (M : Type u) (N : Type v) [AddMonoid M] [AddMonoid N] where
-  toFun : M → N
+  toFun : M  N
   map_add' : ∀ x y, toFun (x + y) = toFun x + toFun y
 
-infixr:25 " →+ " => AddMonoidHom
+infixr:25 " + " => AddMonoidHom
 
 namespace AddMonoidHom
 
 variable {M : Type u} {N : Type v}
 
-instance [AddMonoid M] [AddMonoid N] : CoeFun (M →+ N) (fun _ => M → N) where
+instance [AddMonoid M] [AddMonoid N] : CoeFun (M + N) (fun _ => M  N) where
   coe := toFun
 
 section
 
 variable [AddMonoid M] [AddGroup N]
 
-def mk' (f : M → N) (map_add : ∀ a b : M, f (a + b) = f a + f b) : M →+ N where
+def mk' (f : M  N) (map_add : ∀ a b : M, f (a + b) = f a + f b) : M + N where
   toFun := f
   map_add' := map_add
 
@@ -111,13 +111,13 @@ section
 
 variable [AddGroup M] [AddGroup N]
 
-theorem map_zero (f : M →+ N) : f 0 = 0 := by
+theorem map_zero (f : M + N) : f 0 = 0 := by
   have := calc f 0 + f 0
             = f (0 + 0) := by rw [f.map_add']
           _ = 0 + f 0 := by rw [zero_add, zero_add]
   exact add_right_cancel this
 
-theorem map_neg (f : M →+ N) (m : M) : f (-m) = - (f m) := by
+theorem map_neg (f : M + N) (m : M) : f (-m) = - (f m) := by
   apply eq_neg_of_add_eq_zero_left
   rw [← f.map_add']
   simp only [neg_add_cancel, f.map_zero]
@@ -168,13 +168,13 @@ end Mathlib.Algebra.Module.Defs
 section Mathlib.Combinatorics.Quiver.Basic
 
 class Quiver (V : Type u₁) where
-  Hom : V → V → Sort v₁
+  Hom : V  V  Sort v₁
 
 infixr:10 " ⟶ " => Quiver.Hom
 
 structure Prefunctor (V : Type u₁) [Quiver.{v₁} V] (W : Type u₂) [Quiver.{v₂} W] where
-  obj : V → W
-  map : ∀ {X Y : V}, (X ⟶ Y) → (obj X ⟶ obj Y)
+  obj : V  W
+  map : ∀ {X Y : V}, (X ⟶ Y)  (obj X ⟶ obj Y)
 
 end Mathlib.Combinatorics.Quiver.Basic
 
@@ -184,7 +184,7 @@ namespace CategoryTheory
 
 class CategoryStruct (obj : Type u₁) extends Quiver.{v₁ + 1} obj : Type max u₁ (v₁ + 1) where
   id : ∀ X : obj, Hom X X
-  comp : ∀ {X Y Z : obj}, (X ⟶ Y) → (Y ⟶ Z) → (X ⟶ Z)
+  comp : ∀ {X Y Z : obj}, (X ⟶ Y)  (Y ⟶ Z)  (X ⟶ Z)
 
 scoped notation "𝟙" => CategoryStruct.id  -- type as \b1
 scoped infixr:80 " ≫ " => CategoryStruct.comp -- type as \gg
@@ -313,10 +313,10 @@ open AddMonoidHom
 
 variable {C : Type u₁} [Category.{v₁} C] [Preadditive C]
 
-def leftComp {P Q : C} (R : C) (f : P ⟶ Q) : (Q ⟶ R) →+ (P ⟶ R) :=
+def leftComp {P Q : C} (R : C) (f : P ⟶ Q) : (Q ⟶ R) + (P ⟶ R) :=
   mk' (fun g => f ≫ g) fun g g' => by simp only [comp_add]
 
-def rightComp (P : C) {Q R : C} (g : Q ⟶ R) : (P ⟶ Q) →+ (P ⟶ R) :=
+def rightComp (P : C) {Q R : C} (g : Q ⟶ R) : (P ⟶ Q) + (P ⟶ R) :=
   mk' (fun f => f ≫ g) fun f f' => by simp only [add_comp]
 
 variable {P Q R : C} (f : P ⟶ Q) (g : Q ⟶ R)

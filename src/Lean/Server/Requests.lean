@@ -123,16 +123,16 @@ def asTask (t : RequestM α) : RequestM (RequestTask α) := do
   let rc ← readThe RequestContext
   EIO.asTask <| t.run rc
 
-def mapTask (t : Task α) (f : α → RequestM β) : RequestM (RequestTask β) := do
+def mapTask (t : Task α) (f : α  RequestM β) : RequestM (RequestTask β) := do
   let rc ← readThe RequestContext
   EIO.mapTask (f · rc) t
 
-def bindTask (t : Task α) (f : α → RequestM (RequestTask β)) : RequestM (RequestTask β) := do
+def bindTask (t : Task α) (f : α  RequestM (RequestTask β)) : RequestM (RequestTask β) := do
   let rc ← readThe RequestContext
   EIO.bindTask t (f · rc)
 
-def waitFindSnapAux (notFoundX : RequestM α) (x : Snapshot → RequestM α)
-    : Except IO.Error (Option Snapshot) → RequestM α
+def waitFindSnapAux (notFoundX : RequestM α) (x : Snapshot  RequestM α)
+    : Except IO.Error (Option Snapshot)  RequestM α
   /- The elaboration task that we're waiting for may be aborted if the file contents change.
   In that case, we reply with the `fileChanged` error by default. Thanks to this, the server doesn't
   get bogged down in requests for an old state of the document. -/
@@ -143,17 +143,17 @@ def waitFindSnapAux (notFoundX : RequestM α) (x : Snapshot → RequestM α)
 /-- Create a task which waits for the first snapshot matching `p`, handles various errors,
 and if a matching snapshot was found executes `x` with it. If not found, the task executes
 `notFoundX`. -/
-def withWaitFindSnap (doc : EditableDocument) (p : Snapshot → Bool)
+def withWaitFindSnap (doc : EditableDocument) (p : Snapshot  Bool)
     (notFoundX : RequestM β)
-    (x : Snapshot → RequestM β)
+    (x : Snapshot  RequestM β)
     : RequestM (RequestTask β) := do
   let findTask := doc.cmdSnaps.waitFind? p
   mapTask findTask <| waitFindSnapAux notFoundX x
 
 /-- See `withWaitFindSnap`. -/
-def bindWaitFindSnap (doc : EditableDocument) (p : Snapshot → Bool)
+def bindWaitFindSnap (doc : EditableDocument) (p : Snapshot  Bool)
     (notFoundX : RequestM (RequestTask β))
-    (x : Snapshot → RequestM (RequestTask β))
+    (x : Snapshot  RequestM (RequestTask β))
     : RequestM (RequestTask β) := do
   let findTask := doc.cmdSnaps.waitFind? p
   bindTask findTask <| waitFindSnapAux notFoundX x
@@ -162,7 +162,7 @@ def bindWaitFindSnap (doc : EditableDocument) (p : Snapshot → Bool)
 If no such snapshot exists, the request fails with an error. -/
 def withWaitFindSnapAtPos
     (lspPos : Lsp.Position)
-    (f : Snapshots.Snapshot → RequestM α)
+    (f : Snapshots.Snapshot  RequestM α)
     : RequestM (RequestTask α) := do
   let doc ← readDoc
   let pos := doc.meta.text.lspPosToUtf8Pos lspPos
@@ -172,7 +172,7 @@ def withWaitFindSnapAtPos
 
 open Language.Lean in
 /-- Finds the first `CommandParsedSnapshot` fulfilling `p`, asynchronously. -/
-partial def findCmdParsedSnap (doc : EditableDocument) (p : CommandParsedSnapshot → Bool) :
+partial def findCmdParsedSnap (doc : EditableDocument) (p : CommandParsedSnapshot  Bool) :
     Task (Option CommandParsedSnapshot) := Id.run do
   let some headerParsed := doc.initSnap.result?
     | .pure none
@@ -198,7 +198,7 @@ See `SnapshotTree.findInfoTreeAtPos` for details on how the search is done.
 -/
 partial def findInfoTreeAtPos
     (doc : EditableDocument)
-    (isMatchingSnapshot : Lean.CommandParsedSnapshot → Bool)
+    (isMatchingSnapshot : Lean.CommandParsedSnapshot  Bool)
     (pos : String.Pos)
     : Task (Option Elab.InfoTree) :=
   findCmdParsedSnap doc (isMatchingSnapshot ·) |>.bind (sync := true) fun
@@ -220,7 +220,7 @@ See `SnapshotTree.findInfoTreeAtPos` for details on how the search is done.
 -/
 def findCmdDataAtPos
     (doc : EditableDocument)
-    (isMatchingSnapshot : Lean.CommandParsedSnapshot → Bool)
+    (isMatchingSnapshot : Lean.CommandParsedSnapshot  Bool)
     (pos : String.Pos)
     : Task (Option (Syntax × Elab.InfoTree)) :=
   findCmdParsedSnap doc (isMatchingSnapshot ·) |>.bind (sync := true) fun
@@ -279,8 +279,8 @@ section HandlerTable
 open Lsp
 
 structure RequestHandler where
-  fileSource : Json → Except RequestError Lsp.DocumentUri
-  handle : Json → RequestM (RequestTask Json)
+  fileSource : Json  Except RequestError Lsp.DocumentUri
+  handle : Json  RequestM (RequestTask Json)
 
 builtin_initialize requestHandlers : IO.Ref (PersistentHashMap String RequestHandler) ←
   IO.mkRef {}
@@ -300,7 +300,7 @@ as LSP error responses. -/
 def registerLspRequestHandler (method : String)
     paramType [FromJson paramType] [FileSource paramType]
     respType [ToJson respType]
-    (handler : paramType → RequestM (RequestTask respType)) : IO Unit := do
+    (handler : paramType  RequestM (RequestTask respType)) : IO Unit := do
   if !(← Lean.initializing) then
     throw <| IO.userError s!"Failed to register LSP request handler for '{method}': only possible during initialization"
   if (← requestHandlers.get).contains method then
@@ -327,7 +327,7 @@ For more details on the registration of a handler, see `registerLspRequestHandle
 def chainLspRequestHandler (method : String)
     paramType [FromJson paramType]
     respType [FromJson respType] [ToJson respType]
-    (handler : paramType → RequestTask respType → RequestM (RequestTask respType)) : IO Unit := do
+    (handler : paramType  RequestTask respType  RequestM (RequestTask respType)) : IO Unit := do
   if !(← Lean.initializing) then
     throw <| IO.userError s!"Failed to chain LSP request handler for '{method}': only possible during initialization"
   if let some oldHandler ← lookupLspRequestHandler method then

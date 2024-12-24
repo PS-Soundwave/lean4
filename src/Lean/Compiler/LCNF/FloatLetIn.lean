@@ -38,7 +38,7 @@ inductive Decision where
   unknown
 deriving Hashable, BEq, Inhabited, Repr
 
-def Decision.ofAlt : Alt → Decision
+def Decision.ofAlt : Alt  Decision
 | .alt name _ _ => .arm name
 | .default _ => .default
 

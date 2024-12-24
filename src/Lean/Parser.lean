@@ -75,7 +75,7 @@ def mkAntiquot.parenthesizer (name : String) (kind : SyntaxNodeKind) (anonymous 
 open Lean.Parser
 
 @[export lean_pretty_printer_parenthesizer_interpret_parser_descr]
-unsafe def interpretParserDescr : ParserDescr → CoreM Parenthesizer
+unsafe def interpretParserDescr : ParserDescr  CoreM Parenthesizer
   | ParserDescr.const n                             => getConstAlias parenthesizerAliasesRef n
   | ParserDescr.unary n d                           => return (← getUnaryAlias parenthesizerAliasesRef n) (← interpretParserDescr d)
   | ParserDescr.binary n d₁ d₂                      => return (← getBinaryAlias parenthesizerAliasesRef n) (← interpretParserDescr d₁) (← interpretParserDescr d₂)
@@ -107,7 +107,7 @@ def mkAntiquot.formatter (name : String) (kind : SyntaxNodeKind) (anonymous := t
 open Lean.Parser
 
 @[export lean_pretty_printer_formatter_interpret_parser_descr]
-unsafe def interpretParserDescr : ParserDescr → CoreM Formatter
+unsafe def interpretParserDescr : ParserDescr  CoreM Formatter
   | ParserDescr.const n                             => getConstAlias formatterAliasesRef n
   | ParserDescr.unary n d                           => return (← getUnaryAlias formatterAliasesRef n) (← interpretParserDescr d)
   | ParserDescr.binary n d₁ d₂                      => return (← getBinaryAlias formatterAliasesRef n) (← interpretParserDescr d₁) (← interpretParserDescr d₂)

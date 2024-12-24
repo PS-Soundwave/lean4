@@ -158,7 +158,7 @@ instance : FromJson PackageEntry := ⟨PackageEntry.fromJson?⟩
 @[inline] def inDirectory (pkgDir : FilePath) (entry : PackageEntry) : PackageEntry :=
   {entry with src := match entry.src with | .path dir => .path (pkgDir / dir) | s => s}
 
-def ofV6 : PackageEntryV6 → PackageEntry
+def ofV6 : PackageEntryV6  PackageEntry
 | .path name _opts inherited dir =>
   {name, inherited, src := .path dir}
 | .git name _opts inherited url rev inputRev? subDir? =>

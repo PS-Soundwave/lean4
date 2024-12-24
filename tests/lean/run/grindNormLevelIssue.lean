@@ -16,6 +16,6 @@ info: [g (a, b), g (g (a, b))]
 warning: declaration uses 'sorry'
 -/
 #guard_msgs in
-example {β : Type v} {α : Type u} (a c : α) (b d : β) : g.{max u v + 1} (a, b) = (c, d) → g (g.{max (u+1) (v+1)} (a, b)) = (c, d) → False := by
+example {β : Type v} {α : Type u} (a c : α) (b d : β) : g.{max u v + 1} (a, b) = (c, d)  g (g.{max (u+1) (v+1)} (a, b)) = (c, d)  False := by
   grind_test
   sorry

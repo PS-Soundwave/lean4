@@ -1,11 +1,11 @@
-inductive ListSplit {α : Type u} : List α → Type u
+inductive ListSplit {α : Type u} : List α  Type u
   | split l₁ l₂ : ListSplit (l₁ ++ l₂)
 
-def splitList {α : Type _} : (l : List α) → ListSplit l
+def splitList {α : Type _} : (l : List α)  ListSplit l
   | [] => ListSplit.split [] []
   | h :: t => ListSplit.split [h] t
 
-def len : List α → Nat
+def len : List α  Nat
   | [] => 0
   | a :: [] => 1
   | l =>

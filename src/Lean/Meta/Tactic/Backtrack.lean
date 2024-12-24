@@ -12,7 +12,7 @@ import Lean.Meta.Tactic.IndependentOf
 # `backtrack`
 
 A meta-tactic for running backtracking search, given a non-deterministic tactic
-`alternatives : MVarId → Nondet MetaM (List MVarId)`.
+`alternatives : MVarId  Nondet MetaM (List MVarId)`.
 
 `backtrack alternatives goals` will recursively try to solve all goals in `goals`,
 and the subgoals generated, backtracking as necessary.
@@ -50,15 +50,15 @@ structure BacktrackConfig where
   Returning `none` will proceed to generating alternative without changing goals.
   Failure will cause backtracking.
   (defaults to `none`) -/
-  proc : List MVarId → List MVarId → MetaM (Option (List MVarId)) := fun _ _ => pure none
+  proc : List MVarId  List MVarId  MetaM (Option (List MVarId)) := fun _ _ => pure none
   /-- If `suspend g`, then we do not consider alternatives for `g`,
   but return `g` as a new subgoal. (defaults to `false`) -/
-  suspend : MVarId → MetaM Bool := fun _ => pure false
+  suspend : MVarId  MetaM Bool := fun _ => pure false
   /-- `discharge g` is called on goals for which there were no alternatives.
   If `none` we return `g` as a new subgoal.
   If `some l`, we replace `g` by `l` in the list of active goals, and recurse.
   If failure, we backtrack. (defaults to failure) -/
-  discharge : MVarId → MetaM (Option (List MVarId)) := fun _ => failure
+  discharge : MVarId  MetaM (Option (List MVarId)) := fun _ => failure
   /--
   If we solve any "independent" goals, don't fail.
   See `Lean.MVarId.independent?` for the definition of independence.
@@ -79,14 +79,14 @@ private def ppMVarIds (gs : List MVarId) : MetaM (List Format) := gs.mapM ppMVar
 
 /-- Run a monadic function on every element of a list,
 returning the list of elements on which the function fails, and the list of successful results. -/
-def tryAllM [Monad m] [Alternative m] (L : List α) (f : α → m β) : m (List α × List β) := do
+def tryAllM [Monad m] [Alternative m] (L : List α) (f : α  m β) : m (List α × List β) := do
   let R ← L.mapM (fun a => (Sum.inr <$> f a) <|> (pure (Sum.inl a)))
   return (R.filterMap (fun s => match s with | .inl a => a | _ => none),
     R.filterMap (fun s => match s with | .inr b => b | _ => none))
 
 variable (cfg : BacktrackConfig)
 variable (trace : Name := .anonymous)
-variable (next : MVarId → (List MVarId → MetaM (Option (List MVarId))) → MetaM (List MVarId))
+variable (next : MVarId  (List MVarId  MetaM (Option (List MVarId)))  MetaM (List MVarId))
 
 /--
 * `n : Nat` steps remaining.
@@ -199,7 +199,7 @@ Returns a list of subgoals which were "suspended" via the `suspend` or
 will either return an empty list or fail.
 -/
 def backtrack (cfg : BacktrackConfig := {}) (trace : Name := .anonymous)
-    (next : MVarId → MetaM (Meta.Iterator (List MVarId)))
+    (next : MVarId  MetaM (Meta.Iterator (List MVarId)))
     (goals : List MVarId) : MetaM (List MVarId) := do
   let resolve g f := do (←next g).firstM f
   Backtrack.processIndependentGoals cfg trace resolve goals goals goals

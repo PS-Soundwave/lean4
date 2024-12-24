@@ -1,15 +1,15 @@
 --
 
 structure S  :=
-(g {α} : α → α)
+(g {α} : α  α)
 
-def f (h : Nat → ({α : Type} → α → α) × Bool) : Nat :=
+def f (h : Nat  ({α : Type}  α  α) × Bool) : Nat :=
 (h 0).1 1
 
 def tst : Nat :=
 f fun n => (fun x => x, true)
 
-def ex : id (Nat → Nat) :=
+def ex : id (Nat  Nat) :=
 by {
   intro;
   assumption
@@ -25,9 +25,9 @@ set_option pp.all true in
 
 #check g.proof_1
 
-theorem ex1 {p q r s : Prop} : p ∧ q ∧ r ∧ s → r ∧ s ∧ q ∧ p :=
+theorem ex1 {p q r s : Prop} : p ∧ q ∧ r ∧ s  r ∧ s ∧ q ∧ p :=
   fun ⟨hp, hq, hr, hs⟩ => ⟨hr, hs, hq, hp⟩
 
-theorem ex2 {p q r s : Prop} : p ∧ q ∧ r ∧ s → r ∧ s ∧ q ∧ p := by
+theorem ex2 {p q r s : Prop} : p ∧ q ∧ r ∧ s  r ∧ s ∧ q ∧ p := by
   intro ⟨hp, hq, hr, hs⟩
   exact ⟨hr, hs, hq, hp⟩

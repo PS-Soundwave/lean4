@@ -30,7 +30,7 @@ def rewriteLocalDecl (stx : Syntax) (symm : Bool) (fvarId : FVarId) (config : Re
   let replaceResult ← (← getMainGoal).replaceLocalDecl fvarId rwResult.eNew rwResult.eqProof
   replaceMainGoal (replaceResult.mvarId :: rwResult.mvarIds)
 
-def withRWRulesSeq (token : Syntax) (rwRulesSeqStx : Syntax) (x : (symm : Bool) → (term : Syntax) → TacticM Unit) : TacticM Unit := do
+def withRWRulesSeq (token : Syntax) (rwRulesSeqStx : Syntax) (x : (symm : Bool)  (term : Syntax)  TacticM Unit) : TacticM Unit := do
   let lbrak := rwRulesSeqStx[0]
   let rules := rwRulesSeqStx[1].getArgs
   -- show initial state up to (incl.) `[`
@@ -55,7 +55,7 @@ def withRWRulesSeq (token : Syntax) (rwRulesSeqStx : Syntax) (x : (symm : Bool) 
             let some eqThms ← getEqnsFor? declName | x symm term
             let hint := if eqThms.size = 1 then m!"" else
               m!" Try rewriting with '{Name.str declName unfoldThmSuffix}'."
-            let rec go : List Name →  TacticM Unit
+            let rec go : List Name   TacticM Unit
               | [] => throwError "failed to rewrite using equation theorems for '{declName}'.{hint}"
               -- Remark: we prefix `eqThm` with `_root_` to ensure it is resolved correctly.
               -- See test: `rwPrioritizesLCtxOverEnv.lean`

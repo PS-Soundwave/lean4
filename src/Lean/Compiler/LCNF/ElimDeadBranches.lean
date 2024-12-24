@@ -41,7 +41,7 @@ namespace Value
 -- TODO: parameterize
 def maxValueDepth := 8
 
-protected partial def beq : Value → Value → Bool
+protected partial def beq : Value  Value  Bool
 | bot, bot => true
 | top, top => true
 | ctor i1 vs1 , ctor i2 vs2 =>
@@ -136,7 +136,7 @@ Note that both `top` and `bot` will always true here. For bot this is
 because we have no information about the `Value` so just to be sure
 we don't claim the absence of a certain constructor.
 -/
-partial def containsCtor : Value → Name → Bool
+partial def containsCtor : Value  Name  Bool
 | .top .., _ => true
 | .bot .., _ => true -- we don't know so better be safe than sorry
 | .ctor i ..,  j => i == j
@@ -145,7 +145,7 @@ partial def containsCtor : Value → Name → Bool
 /--
 Obtain the arguments of a certain constructor within the `Value`.
 -/
-partial def getCtorArgs : Value → Name → Option (Array Value)
+partial def getCtorArgs : Value  Name  Option (Array Value)
 | .ctor i args ..,  j => if i == j then some args else none
 | .choice vs .., j => do
   for variant in vs do
@@ -166,16 +166,16 @@ where
       .top
     else
       .ctor ``Nat.succ #[goBig orig (curr - 1)]
-  goSmall : Nat → Value
+  goSmall : Nat  Value
   | 0 => .ctor ``Nat.zero #[]
   | n + 1 => .ctor ``Nat.succ #[goSmall n]
 
-def ofLCNFLit : LCNF.LitValue → Value
+def ofLCNFLit : LCNF.LitValue  Value
 | .natVal n => ofNat n
 -- TODO: We could make this much more precise but the payoff is questionable
 | .strVal .. => .top
 
-partial def proj : Value → Nat → Value
+partial def proj : Value  Nat  Value
 | .ctor _ vs , i => vs.getD i bot
 | .choice vs, i => vs.foldl (fun r v => merge r (proj v i)) bot
 | v, _ => v
@@ -184,7 +184,7 @@ partial def proj : Value → Nat → Value
 We say that a `Value` is a literal iff it is only a tree of `Value.ctor`
 nodes.
 -/
-partial def isLiteral : Value → Bool
+partial def isLiteral : Value  Bool
 | .ctor _ vs => vs.all isLiteral
 | _ => false
 
@@ -204,7 +204,7 @@ partial def getLiteral (v : Value) : CompilerM (Option ((Array CodeDecl) × FVar
   else
     return none
 where
-  go : Value → CompilerM ((Array CodeDecl) × FVarId)
+  go : Value  CompilerM ((Array CodeDecl) × FVarId)
   | .ctor `Nat.zero #[] .. => do
     let decl ← mkAuxLetDecl <| .value <| .natVal <| 0
     return (#[.let decl], decl.fvarId)
@@ -221,7 +221,7 @@ where
     return (decls.push <| .let letDecl, letDecl.fvarId)
   | _ => unreachable!
 
-  getNatConstant : Value → Nat
+  getNatConstant : Value  Nat
   | .ctor `Nat.zero #[] .. => 0
   | .ctor `Nat.succ #[val] .. => getNatConstant val + 1
   | _ => panic! "Not a well formed Nat constant Value"
@@ -321,7 +321,7 @@ def findFunVal? (declName : Name) : InterpM (Option Value) := do
 /--
 Run `f` on the variable `Assignment` of the current function.
 -/
-def modifyAssignment (f : Assignment → Assignment) : InterpM Unit := do
+def modifyAssignment (f : Assignment  Assignment) : InterpM Unit := do
   let ctx ← read
   let currFnIdx := ctx.currFnIdx
   modify fun s => { s with assignments := s.assignments.modify currFnIdx f }
@@ -392,7 +392,7 @@ def updateFunDeclParamsAssignment (params : Array Param) (args : Array Arg) : In
       updateVarAssignment param.fvarId .top
   return ret
 
-private partial def resetNestedFunDeclParams : Code → InterpM Unit
+private partial def resetNestedFunDeclParams : Code  InterpM Unit
 | .let _ k => resetNestedFunDeclParams k
 | .jp decl k | .fun decl k => do
   decl.params.forM (resetVarAssignment ·.fvarId)
@@ -406,7 +406,7 @@ private partial def resetNestedFunDeclParams : Code → InterpM Unit
 /--
 The actual abstract interpreter on a block of `Code`.
 -/
-partial def interpCode : Code → InterpM Unit
+partial def interpCode : Code  InterpM Unit
 | .let decl k => do
   let val ← interpLetValue decl.value
   updateVarAssignment decl.fvarId val

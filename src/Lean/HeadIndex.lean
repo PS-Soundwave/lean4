@@ -33,7 +33,7 @@ inductive HeadIndex where
   deriving Inhabited, BEq, Repr
 
 /-- Hash code for a `HeadIndex` value. -/
-protected def HeadIndex.hash : HeadIndex → UInt64
+protected def HeadIndex.hash : HeadIndex  UInt64
   | fvar fvarId         => mixHash 11 <| hash fvarId
   | mvar mvarId         => mixHash 13 <| hash mvarId
   | const constName     => mixHash 17 <| hash constName
@@ -51,7 +51,7 @@ namespace Expr
 def headNumArgs (e : Expr) : Nat :=
   go e 0
 where
-  go : Expr → Nat → Nat
+  go : Expr  Nat  Nat
   | app f _, n        => go f (n + 1)
   | letE _ _ _ b _, n => go b n
   | mdata _ e, n      => go e n
@@ -65,7 +65,7 @@ where
   f 0
   ```
 -/
-private def toHeadIndexQuick? : Expr → Option HeadIndex
+private def toHeadIndexQuick? : Expr  Option HeadIndex
   | mvar mvarId             => HeadIndex.mvar mvarId
   | fvar fvarId             => HeadIndex.fvar fvarId
   | const constName _       => HeadIndex.const constName
@@ -85,7 +85,7 @@ private def toHeadIndexQuick? : Expr → Option HeadIndex
   The performance of the `letE` alternative can be improved, but this function should not be in the hotpath
   since `toHeadIndexQuick?` succeeds most of the time.
 -/
-private partial def toHeadIndexSlow : Expr → HeadIndex
+private partial def toHeadIndexSlow : Expr  HeadIndex
   | mvar mvarId             => HeadIndex.mvar mvarId
   | fvar fvarId             => HeadIndex.fvar fvarId
   | const constName _       => HeadIndex.const constName

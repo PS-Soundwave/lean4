@@ -15,12 +15,12 @@ namespace Borrow
 namespace OwnedSet
 abbrev Key := FunId × Index
 
-def beq : Key → Key → Bool
+def beq : Key  Key  Bool
   | (f₁, x₁), (f₂, x₂) => f₁ == f₂ && x₁ == x₂
 
 instance : BEq Key := ⟨beq⟩
 
-def getHash : Key → UInt64
+def getHash : Key  UInt64
   | (f, x) => mixHash (hash f) (hash x)
 instance : Hashable Key := ⟨getHash⟩
 end OwnedSet
@@ -41,7 +41,7 @@ inductive Key where
   | jp   (name : FunId) (jpid : JoinPointId)
   deriving BEq
 
-def getHash : Key → UInt64
+def getHash : Key  UInt64
   | Key.decl n  => hash n
   | Key.jp n id => mixHash (hash n) (hash id)
 
@@ -78,7 +78,7 @@ def initBorrow (ps : Array Param) : Array Param :=
 def initBorrowIfNotExported (exported : Bool) (ps : Array Param) : Array Param :=
   if exported then ps else initBorrow ps
 
-partial def visitFnBody (fnid : FunId) : FnBody → StateM ParamMap Unit
+partial def visitFnBody (fnid : FunId) : FnBody  StateM ParamMap Unit
   | FnBody.jdecl j xs v b  => do
     modify fun m => m.insert (ParamMap.Key.jp fnid j) (initBorrow xs)
     visitFnBody fnid v
@@ -105,7 +105,7 @@ def mkInitParamMap (env : Environment) (decls : Array Decl) : ParamMap :=
    recursive functions. -/
 namespace ApplyParamMap
 
-partial def visitFnBody (fn : FunId) (paramMap : ParamMap) : FnBody → FnBody
+partial def visitFnBody (fn : FunId) (paramMap : ParamMap) : FnBody  FnBody
   | FnBody.jdecl j _  v b =>
     let v := visitFnBody fn paramMap v
     let b := visitFnBody fn paramMap b
@@ -240,7 +240,7 @@ def ownArgsIfParam (xs : Array Arg) : M Unit := do
     | Arg.var x => if ctx.paramSet.contains x.idx then ownVar x
     | _ => pure ()
 
-def collectExpr (z : VarId) : Expr → M Unit
+def collectExpr (z : VarId) : Expr  M Unit
   | Expr.reset _ x      => ownVar z *> ownVar x
   | Expr.reuse x _ _ ys => ownVar z *> ownVar x *> ownArgsIfParam ys
   | Expr.ctor _ xs      => ownVar z *> ownArgsIfParam xs
@@ -267,7 +267,7 @@ def preserveTailCall (x : VarId) (v : Expr) (b : FnBody) : M Unit := do
 def updateParamSet (ctx : BorrowInfCtx) (ps : Array Param) : BorrowInfCtx :=
   { ctx with paramSet := ps.foldl (fun s p => s.insert p.x.idx) ctx.paramSet }
 
-partial def collectFnBody : FnBody → M Unit
+partial def collectFnBody : FnBody  M Unit
   | FnBody.jdecl j ys v b => do
     withReader (fun ctx => updateParamSet ctx ys) (collectFnBody v)
     let ctx ← read
@@ -282,7 +282,7 @@ partial def collectFnBody : FnBody → M Unit
   | FnBody.case _ _ _ alts => alts.forM fun alt => collectFnBody alt.body
   | e                      => do unless e.isTerminal do collectFnBody e.body
 
-partial def collectDecl : Decl → M Unit
+partial def collectDecl : Decl  M Unit
   | .fdecl (f := f) (xs := ys) (body := b) .. =>
     withReader (fun ctx => let ctx := updateParamSet ctx ys; { ctx with currFn := f }) do
       collectFnBody b

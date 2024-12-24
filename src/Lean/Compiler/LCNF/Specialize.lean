@@ -96,7 +96,7 @@ and `List.forM` applications in the following example:
         fun _f.72 _y.69 _y.70 :=
           let _x.71 := @IO.println Nat _x.9 _y.69 _y.70 -- (*)
           _x.71
-        let _x.65 := @List.forM (fun α => PUnit → EStateM.Result IO.Error PUnit α) _x.2 Nat xs _f.72 a.7 -- (*)
+        let _x.65 := @List.forM (fun α => PUnit  EStateM.Result IO.Error PUnit α) _x.2 Nat xs _f.72 a.7 -- (*)
         ...
       ...
 ```
@@ -117,7 +117,7 @@ The keys for these two applications are the terms.
 and
 ```
 @List.forM
-  (fun α => PUnit → EStateM.Result IO.Error PUnit α)
+  (fun α => PUnit  EStateM.Result IO.Error PUnit α)
   (@instMonadEIO IO.Error) Nat lcErased
   (fun _y.69 _y.70 =>
    let _x.71 := @IO.println Nat instToStringNat _y.69 _y.70;

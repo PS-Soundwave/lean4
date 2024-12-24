@@ -116,9 +116,9 @@ structure Context where
   suppressElabErrors : Bool := false
 
 abbrev CommandElabM := ReaderT Context $ StateRefT State $ EIO Exception
-abbrev CommandElab  := Syntax → CommandElabM Unit
+abbrev CommandElab  := Syntax  CommandElabM Unit
 structure Linter where
-  run : Syntax → CommandElabM Unit
+  run : Syntax  CommandElabM Unit
   name : Name := by exact decl_name%
 
 /-
@@ -134,7 +134,7 @@ instance : Monad CommandElabM := let i := inferInstanceAs (Monad CommandElabM); 
 Like `Core.tryCatchRuntimeEx`; runtime errors are generally used to abort term elaboration, so we do
 want to catch and process them at the command level.
 -/
-@[inline] protected def tryCatch (x : CommandElabM α) (h : Exception → CommandElabM α) :
+@[inline] protected def tryCatch (x : CommandElabM α) (h : Exception  CommandElabM α) :
     CommandElabM α := do
   try
     x
@@ -300,13 +300,13 @@ Interrupt and abort exceptions are caught but not logged.
   EIO.catchExceptions (withLogging x ctx ref) (fun _ => pure ())
 
 @[inherit_doc Core.wrapAsync]
-def wrapAsync (act : Unit → CommandElabM α) : CommandElabM (EIO Exception α) := do
+def wrapAsync (act : Unit  CommandElabM α) : CommandElabM (EIO Exception α) := do
   return act () |>.run (← read) |>.run' (← get)
 
 open Language in
 @[inherit_doc Core.wrapAsyncAsSnapshot]
 -- `CoreM` and `CommandElabM` are too different to meaningfully share this code
-def wrapAsyncAsSnapshot (act : Unit → CommandElabM Unit)
+def wrapAsyncAsSnapshot (act : Unit  CommandElabM Unit)
     (desc : String := by exact decl_name%.toString) :
     CommandElabM (BaseIO SnapshotTree) := do
   let t ← wrapAsync fun _ => do
@@ -401,7 +401,7 @@ def withoutCommandIncrementality (cond : Bool) (act : CommandElabM α) : Command
     return !cond
   }) act
 
-private def elabCommandUsing (s : State) (stx : Syntax) : List (KeyedDeclsAttribute.AttributeEntry CommandElab) → CommandElabM Unit
+private def elabCommandUsing (s : State) (stx : Syntax) : List (KeyedDeclsAttribute.AttributeEntry CommandElab)  CommandElabM Unit
   | []                => withInfoTreeContext (mkInfoTree := mkInfoTree `no_elab stx) <| throwError "unexpected syntax{indentD stx}"
   | (elabFn::elabFns) =>
     catchInternalId unsupportedSyntaxExceptionId
@@ -579,7 +579,7 @@ def elabCommandTopLevel (stx : Syntax) : CommandElabM Unit := withRef stx do pro
     addTraceAsMessages
 
 /-- Adapt a syntax transformation to a regular, command-producing elaborator. -/
-def adaptExpander (exp : Syntax → CommandElabM Syntax) : CommandElab := fun stx => do
+def adaptExpander (exp : Syntax  CommandElabM Syntax) : CommandElab := fun stx => do
   let stx' ← exp stx
   withMacroExpansion stx stx' <| elabCommand stx'
 
@@ -599,7 +599,7 @@ def mkMetaContext : Meta.Context := {
 
 open Lean.Parser.Term in
 /-- Return identifier names in the given bracketed binder. -/
-def getBracketedBinderIds : Syntax → CommandElabM (Array Name)
+def getBracketedBinderIds : Syntax  CommandElabM (Array Name)
   | `(bracketedBinderF|($ids* $[: $ty?]? $(_annot?)?)) => return ids.map Syntax.getId
   | `(bracketedBinderF|{$ids* $[: $ty?]?})             => return ids.map Syntax.getId
   | `(bracketedBinderF|⦃$ids* : $_⦄)                   => return ids.map Syntax.getId
@@ -674,7 +674,7 @@ import Lean
 
 open Lean Elab Command Meta
 
-variable {α : Type u} {f : α → α}
+variable {α : Type u} {f : α  α}
 variable (n : Nat)
 
 #eval
@@ -683,7 +683,7 @@ variable (n : Nat)
       IO.println s!"{← ppExpr x} : {← ppExpr (← inferType x)}"
 ```
 -/
-def runTermElabM (elabFn : Array Expr → TermElabM α) : CommandElabM α := do
+def runTermElabM (elabFn : Array Expr  TermElabM α) : CommandElabM α := do
   let scope ← getScope
   liftTermElabM <|
     Term.withAutoBoundImplicit <|
@@ -713,14 +713,14 @@ In particular, the current scope is always the first element.
 def getScopes : CommandElabM (List Scope) := do
   pure (← get).scopes
 
-def modifyScope (f : Scope → Scope) : CommandElabM Unit :=
+def modifyScope (f : Scope  Scope) : CommandElabM Unit :=
   modify fun s => { s with
     scopes := match s.scopes with
       | h::t => f h :: t
       | []   => unreachable!
   }
 
-def withScope (f : Scope → Scope) (x : CommandElabM α) : CommandElabM α := do
+def withScope (f : Scope  Scope) (x : CommandElabM α) : CommandElabM α := do
   match (← get).scopes with
   | [] => x
   | h :: t =>

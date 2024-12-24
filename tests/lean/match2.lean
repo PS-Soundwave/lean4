@@ -1,6 +1,6 @@
 #print "---- Op"
 
-inductive Op : Nat → Nat → Type
+inductive Op : Nat  Nat  Type
   | mk : ∀ n, Op n n
 
 structure Node : Type where
@@ -22,7 +22,7 @@ def mkNode (n : Nat) : Node := { id₁ := n, id₂ := n, o := Op.mk _ }
 
 #print "---- Foo 1"
 
-inductive Foo : Bool → Type
+inductive Foo : Bool  Type
   | bar : Foo false
   | baz : Foo false
 
@@ -80,11 +80,11 @@ match b, x with
 | b, x       => false
 
 def h6' {b : Bool} (x : Foo b) : Bool :=
-match (generalizing := true) (motive := (b : Bool) → Foo b → Bool) b, x  with
+match (generalizing := true) (motive := (b : Bool)  Foo b  Bool) b, x  with
 | _, Foo.bar => true
 | b, x       => false
 
 def h6'' {b : Bool} (x : Foo b) : Bool :=
-match (generalizing := false) (motive := (b : Bool) → Foo b → Bool) b, x  with
+match (generalizing := false) (motive := (b : Bool)  Foo b  Bool) b, x  with
 | _, Foo.bar => true
 | b, x       => false

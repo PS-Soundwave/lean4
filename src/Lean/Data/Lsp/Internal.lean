@@ -42,12 +42,12 @@ inductive RefIdentJsonRepr
   deriving FromJson, ToJson
 
 /-- Converts `id` to its compact serialization representation. -/
-def toJsonRepr : (id : RefIdent) → RefIdentJsonRepr
+def toJsonRepr : (id : RefIdent)  RefIdentJsonRepr
   | const moduleName identName => .c moduleName identName
   | fvar moduleName id => .f moduleName id
 
 /-- Converts `repr` to `RefIdent`. -/
-def fromJsonRepr : (repr : RefIdentJsonRepr) → RefIdent
+def fromJsonRepr : (repr : RefIdentJsonRepr)  RefIdent
   | .c m n => const m n
   | .f m i => fvar m i
 

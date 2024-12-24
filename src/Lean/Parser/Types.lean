@@ -85,7 +85,7 @@ structure Error where
 
 namespace Error
 
-private def expectedToString : List String → String
+private def expectedToString : List String  String
   | []       => ""
   | [e]      => e
   | [e1, e2] => e1 ++ " or " ++ e2
@@ -326,7 +326,7 @@ def toErrorMsg (ctx : InputContext) (s : ParserState) : String := Id.run do
 
 end ParserState
 
-def ParserFn := ParserContext → ParserState → ParserState
+def ParserFn := ParserContext  ParserState  ParserState
 
 instance : Inhabited ParserFn where
   default := fun _ s => s
@@ -334,23 +334,23 @@ instance : Inhabited ParserFn where
 inductive FirstTokens where
   | epsilon   : FirstTokens
   | unknown   : FirstTokens
-  | tokens    : List Token → FirstTokens
-  | optTokens : List Token → FirstTokens
+  | tokens    : List Token  FirstTokens
+  | optTokens : List Token  FirstTokens
   deriving Inhabited
 
 namespace FirstTokens
 
-def seq : FirstTokens → FirstTokens → FirstTokens
+def seq : FirstTokens  FirstTokens  FirstTokens
   | epsilon,      tks          => tks
   | optTokens s₁, optTokens s₂ => optTokens (s₁ ++ s₂)
   | optTokens s₁, tokens s₂    => tokens (s₁ ++ s₂)
   | tks,          _            => tks
 
-def toOptional : FirstTokens → FirstTokens
+def toOptional : FirstTokens  FirstTokens
   | tokens tks => optTokens tks
   | tks        => tks
 
-def merge : FirstTokens → FirstTokens → FirstTokens
+def merge : FirstTokens  FirstTokens  FirstTokens
   | epsilon,      tks          => toOptional tks
   | tks,          epsilon      => toOptional tks
   | tokens s₁,    tokens s₂    => tokens (s₁ ++ s₂)
@@ -359,7 +359,7 @@ def merge : FirstTokens → FirstTokens → FirstTokens
   | optTokens s₁, tokens s₂    => optTokens (s₁ ++ s₂)
   | _,            _            => unknown
 
-def toStr : FirstTokens → String
+def toStr : FirstTokens  String
   | epsilon       => "epsilon"
   | unknown       => "unknown"
   | tokens tks    => toString tks
@@ -371,8 +371,8 @@ instance : ToString FirstTokens where
 end FirstTokens
 
 structure ParserInfo where
-  collectTokens : List Token → List Token := id
-  collectKinds  : SyntaxNodeKindSet → SyntaxNodeKindSet := id
+  collectTokens : List Token  List Token := id
+  collectKinds  : SyntaxNodeKindSet  SyntaxNodeKindSet := id
   firstTokens   : FirstTokens := FirstTokens.unknown
   deriving Inhabited
 
@@ -385,12 +385,12 @@ abbrev TrailingParser := Parser
 
 /-- Create a simple parser combinator that inherits the `info` of the nested parser. -/
 @[inline]
-def withFn (f : ParserFn → ParserFn) (p : Parser) : Parser := { p with fn := f p.fn }
+def withFn (f : ParserFn  ParserFn) (p : Parser) : Parser := { p with fn := f p.fn }
 
-def adaptCacheableContextFn (f : CacheableParserContext → CacheableParserContext) (p : ParserFn) : ParserFn := fun c s =>
+def adaptCacheableContextFn (f : CacheableParserContext  CacheableParserContext) (p : ParserFn) : ParserFn := fun c s =>
   p { c with toCacheableParserContext := f c.toCacheableParserContext } s
 
-def adaptCacheableContext (f : CacheableParserContext → CacheableParserContext) : Parser → Parser :=
+def adaptCacheableContext (f : CacheableParserContext  CacheableParserContext) : Parser  Parser :=
   withFn (adaptCacheableContextFn f)
 
 private def withStackDrop (drop : Nat) (p : ParserFn) : ParserFn := fun c s =>
@@ -408,10 +408,10 @@ def withResetCacheFn (p : ParserFn) : ParserFn := withStackDrop 0 fun c s =>
   { s' with cache.parserCache := parserCache }
 
 @[inherit_doc withResetCacheFn]
-def withResetCache : Parser → Parser := withFn withResetCacheFn
+def withResetCache : Parser  Parser := withFn withResetCacheFn
 
 /-- Run `p` under the given context transformation with a fresh cache (see also `withResetCacheFn`). -/
-def adaptUncacheableContextFn (f : ParserContextCore → ParserContextCore) (p : ParserFn) : ParserFn :=
+def adaptUncacheableContextFn (f : ParserContextCore  ParserContextCore) (p : ParserFn) : ParserFn :=
   withResetCacheFn (fun c s => p ⟨f c.toParserContextCore⟩ s)
 
 /--
@@ -434,7 +434,7 @@ def withCacheFn (parserName : Name) (p : ParserFn) : ParserFn := fun c s => Id.r
   { s with cache.parserCache := s.cache.parserCache.insert key ⟨s.stxStack.back, s.lhsPrec, s.pos, s.errorMsg⟩ }
 
 @[inherit_doc withCacheFn, builtin_doc]
-def withCache (parserName : Name) : Parser → Parser := withFn (withCacheFn parserName)
+def withCache (parserName : Name) : Parser  Parser := withFn (withCacheFn parserName)
 
 def ParserFn.run (p : ParserFn) (ictx : InputContext) (pmctx : ParserModuleContext) (tokens : TokenTable) (s : ParserState) : ParserState :=
   p { pmctx with

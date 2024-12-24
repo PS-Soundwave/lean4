@@ -51,21 +51,21 @@ inductive Syntax
 instance : Inhabited Syntax :=
 ⟨Syntax.missing⟩
 
-def SyntaxNodeKind.fix : SyntaxNodeKind → IO SyntaxNodeKind
+def SyntaxNodeKind.fix : SyntaxNodeKind  IO SyntaxNodeKind
 | {name := n, ..} := do
   m ← nameToKindTable.get,
   match m.find n with
   | some id := pure {name := n, id := id}
   | none    := throw $ IO.userError ("Error unknown Syntax kind '" ++ toString n ++ "'")
 
-partial def Syntax.fixKinds : Syntax → IO Syntax
+partial def Syntax.fixKinds : Syntax  IO Syntax
 | (Syntax.node k args scopes) := do
   k ← k.fix,
   args ← args.mmap Syntax.fixKinds,
   pure (Syntax.node k args scopes)
 | other                       := pure other
 
-inductive IsNode : Syntax → Prop
+inductive IsNode : Syntax  Prop
 | mk (kind : SyntaxNodeKind) (args : Array Syntax) (scopes : MacroScopes) : IsNode (Syntax.node kind args scopes)
 
 def SyntaxNode : Type := {s : Syntax // IsNode s }
@@ -78,12 +78,12 @@ def unreachIsNodeMissing {α : Type} (h : IsNode Syntax.missing) : α := False.e
 def unreachIsNodeAtom {α : Type} {info val} (h : IsNode (Syntax.atom info val)) : α := False.elim (notIsNodeAtom h)
 def unreachIsNodeIdent {α : Type} {info rawVal val preresolved scopes} (h : IsNode (Syntax.ident info rawVal val preresolved scopes)) : α := False.elim (match h with end)
 
-@[inline] def toSyntaxNode {α : Type} (s : Syntax) (base : α) (fn : SyntaxNode → α) : α :=
+@[inline] def toSyntaxNode {α : Type} (s : Syntax) (base : α) (fn : SyntaxNode  α) : α :=
 match s with
 | Syntax.node kind args scopes := fn ⟨Syntax.node kind args scopes, IsNode.mk kind args scopes⟩
 | other := base
 
-@[inline] def toSyntaxNodeOf {α : Type} (kind : SyntaxNodeKind) (s : Syntax) (base : α) (fn : SyntaxNode → α) : α :=
+@[inline] def toSyntaxNodeOf {α : Type} (kind : SyntaxNodeKind) (s : Syntax) (base : α) (fn : SyntaxNode  α) : α :=
 match s with
 | Syntax.node k args scopes :=
   if k == kind then fn ⟨Syntax.node kind args scopes, IsNode.mk kind args scopes⟩
@@ -112,14 +112,14 @@ def mkLetLhsIdKind : IO SyntaxNodeKind  := nextKind `letLhsId
 def mkLetLhsPatternKind : IO SyntaxNodeKind  := nextKind `letLhsPattern
 @[init mkLetLhsPatternKind] constant letLhsPatternKind  : SyntaxNodeKind := default _
 
-@[inline] def withArgs {α : Type} (n : SyntaxNode) (fn : Array Syntax → α) : α :=
+@[inline] def withArgs {α : Type} (n : SyntaxNode) (fn : Array Syntax  α) : α :=
 match n with
 | ⟨Syntax.node _ args _, _⟩   := fn args
 | ⟨Syntax.missing, h⟩         := unreachIsNodeMissing h
 | ⟨Syntax.atom _ _, h⟩        := unreachIsNodeAtom h
 | ⟨Syntax.ident _ _ _ _ _, h⟩ := unreachIsNodeIdent h
 
-@[inline] def updateArgs (n : SyntaxNode) (fn : Array Syntax → Array Syntax) : Syntax :=
+@[inline] def updateArgs (n : SyntaxNode) (fn : Array Syntax  Array Syntax) : Syntax :=
 match n with
 | ⟨Syntax.node kind args scopes, _⟩ := Syntax.node kind (fn args) scopes
 | ⟨Syntax.missing, h⟩               := unreachIsNodeMissing h
@@ -132,7 +132,7 @@ Syntax.node notKind [tk, c].toArray []
 @[inline] def mkNot (c : Syntax) : Syntax :=
 mkNotAux (mkAtom "not") c
 
-@[inline] def withNot {α : Type} (n : SyntaxNode) (fn : Syntax → α) : α :=
+@[inline] def withNot {α : Type} (n : SyntaxNode) (fn : Syntax  α) : α :=
 withArgs n $ λ args, fn (args.get 1)
 
 @[inline] def updateNot (src : SyntaxNode) (c : Syntax) : Syntax :=
@@ -144,7 +144,7 @@ Syntax.node ifKind [ifTk, condNode, thenTk, thenNode, elseTk, elseNode].toArray 
 @[inline] def mkIf (c t e : Syntax) : Syntax :=
 mkIfAux (mkAtom "if") c (mkAtom "then") t (mkAtom "else") e
 
-@[inline] def withIf {α : Type} (n : SyntaxNode) (fn : Syntax → Syntax → Syntax → α) : α :=
+@[inline] def withIf {α : Type} (n : SyntaxNode) (fn : Syntax  Syntax  Syntax  α) : α :=
 withArgs n $ λ args, fn (args.get 1) (args.get 3) (args.get 5)
 
 @[inline] def updateIf (src : SyntaxNode) (c t e : Syntax) : Syntax :=
@@ -160,7 +160,7 @@ Syntax.node letKind [letTk, lhs, assignTk, val, inTk, body].toArray []
 @[inline] def mkLet (lhs : Syntax) (val : Syntax) (body : Syntax) : Syntax :=
 mkLetAux (mkAtom "let") lhs (mkAtom ":=") val (mkAtom "in") body
 
-@[inline] def withLet {α : Type} (n : SyntaxNode) (fn : Syntax → Syntax → Syntax → α) : α :=
+@[inline] def withLet {α : Type} (n : SyntaxNode) (fn : Syntax  Syntax  Syntax  α) : α :=
 withArgs n $ λ args, fn (args.get 1) (args.get 3) (args.get 5)
 
 @[inline] def updateLet (src : SyntaxNode) (lhs val body : Syntax) : Syntax :=
@@ -173,7 +173,7 @@ updateArgs src $ λ args,
 @[inline] def mkLetLhsId (id : Syntax) (binders : Syntax) (type : Syntax) : Syntax :=
 Syntax.node letLhsIdKind [id, binders, type].toArray []
 
-@[inline] def withLetLhsId {α : Type} (n : SyntaxNode) (fn : Syntax → Syntax → Syntax → α) : α :=
+@[inline] def withLetLhsId {α : Type} (n : SyntaxNode) (fn : Syntax  Syntax  Syntax  α) : α :=
 withArgs n $ λ args, fn (args.get 0) (args.get 1) (args.get 2)
 
 @[inline] def updateLhsId (src : SyntaxNode) (id binders type : Syntax) : Syntax :=
@@ -186,10 +186,10 @@ updateArgs src $ λ args,
 @[inline] def mkLetLhsPattern (pattern : Syntax) : Syntax :=
 Syntax.node letLhsPatternKind [pattern].toArray []
 
-@[inline] def withLetLhsPattern {α : Type} (n : SyntaxNode) (fn : Syntax → α) : α :=
+@[inline] def withLetLhsPattern {α : Type} (n : SyntaxNode) (fn : Syntax  α) : α :=
 withArgs n $ λ args, fn (args.get 0)
 
-@[inline] def withOptionSome {α : Type} (n : SyntaxNode) (fn : Syntax → α) : α :=
+@[inline] def withOptionSome {α : Type} (n : SyntaxNode) (fn : Syntax  α) : α :=
 withArgs n $ λ args, fn (args.get 0)
 
 def Syntax.getNumChildren (n : Syntax) : Nat :=
@@ -204,11 +204,11 @@ def mkOptionSome (s : Syntax) := Syntax.node optionSomeKind [s].toArray []
 abbrev FrontendConfig := Bool   -- placeholder
 abbrev Message        := String -- placeholder
 abbrev TransformM     := ReaderT FrontendConfig $ ExceptT Message Id
-abbrev Transformer    := SyntaxNode → TransformM (Option Syntax)
+abbrev Transformer    := SyntaxNode  TransformM (Option Syntax)
 
 def noExpansion : TransformM (Option Syntax) := pure none
 
-@[inline] def Syntax.case {α : Type} (n : Syntax) (k : SyntaxNodeKind) (fn : SyntaxNode → TransformM (Option α)) : TransformM (Option α) :=
+@[inline] def Syntax.case {α : Type} (n : Syntax) (k : SyntaxNodeKind) (fn : SyntaxNode  TransformM (Option α)) : TransformM (Option α) :=
 match n with
 | Syntax.node k' args s := if k == k' then fn ⟨Syntax.node k' args s, IsNode.mk _ _ _⟩ else pure none
 | _                     := pure none
@@ -243,7 +243,7 @@ def letTransformer : Transformer :=
    -- TODO
    noExpansion)
 
-@[inline] def Syntax.isNode {α : Type} (n : Syntax) (fn : SyntaxNodeKind → SyntaxNode → TransformM (Option α)) : TransformM (Option α) :=
+@[inline] def Syntax.isNode {α : Type} (n : Syntax) (fn : SyntaxNodeKind  SyntaxNode  TransformM (Option α)) : TransformM (Option α) :=
 match n with
 | Syntax.node k args s := fn k ⟨Syntax.node k args s, IsNode.mk _ _ _⟩
 | other                := pure none

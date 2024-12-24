@@ -31,7 +31,7 @@ theorem foo2 : 10 = 10 :=
   rfl
 
 /--
-info: def foo2.aux : Nat → Nat :=
+info: def foo2.aux : Nat  Nat :=
 fun x => x + 1
 -/
 #guard_msgs in
@@ -47,7 +47,7 @@ theorem ugly : Nat := 10
 
 /--
 error: type of theorem 'g' is not a proposition
-  Nat → Nat
+  Nat  Nat
 -/
 #guard_msgs (error) in
 mutual

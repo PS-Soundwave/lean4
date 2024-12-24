@@ -14,7 +14,7 @@ allocprof msg₂ (timeit msg₁ p)
 
 def node.arity := 4
 
-def mkStx : ℕ → Syntax
+def mkStx : ℕ  Syntax
 | 0 := review leaf {}
 | (n+1) := review node $ ⟨(List.replicate node.arity Syntax.missing).map (λ _, mkStx n)⟩
 

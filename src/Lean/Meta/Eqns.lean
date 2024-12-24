@@ -92,7 +92,7 @@ builtin_initialize registerReservedNamePredicate fun env n =>
     && !isMatcherCore env p
   | _ => false
 
-def GetEqnsFn := Name → MetaM (Option (Array Name))
+def GetEqnsFn := Name  MetaM (Option (Array Name))
 
 private builtin_initialize getEqnsFnsRef : IO.Ref (List GetEqnsFn) ← IO.mkRef []
 
@@ -118,7 +118,7 @@ f [] = []
 ```
 and
 ```
-(x : Nat) → (xs : List Nat) → f (x :: xs) = (x+1) :: f xs
+(x : Nat)  (xs : List Nat)  f (x :: xs) = (x+1) :: f xs
 ```
 -/
 def registerGetEqnsFn (f : GetEqnsFn) : IO Unit := do
@@ -224,7 +224,7 @@ def generateEagerEqns (declName : Name) : MetaM Unit := do
   if eqnAffectingOptions.any fun o => o.get opts != o.defValue then
     let _ ← getEqnsFor?Core declName
 
-def GetUnfoldEqnFn := Name → MetaM (Option Name)
+def GetUnfoldEqnFn := Name  MetaM (Option Name)
 
 private builtin_initialize getUnfoldEqnFnsRef : IO.Ref (List GetUnfoldEqnFn) ← IO.mkRef []
 
@@ -246,7 +246,7 @@ def f (xs : List Nat) : List Nat :=
 ```
 should have the theorem
 ```
-(xs : Nat) →
+(xs : Nat) 
   f xs =
     match xs with
     | [] => []

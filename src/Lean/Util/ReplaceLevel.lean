@@ -9,7 +9,7 @@ import Lean.Expr
 namespace Lean
 namespace Level
 
-partial def replace (f? : Level → Option Level) (u : Level) : Level :=
+partial def replace (f? : Level  Option Level) (u : Level) : Level :=
   match f? u with
   | some v => v
   | none   => match u with
@@ -36,7 +36,7 @@ unsafe def cache (i : USize) (key : Expr) (result : Expr) : ReplaceM Expr := do
   modify fun s => { keys := s.keys.uset i key lcProof, results := s.results.uset i result lcProof };
   pure result
 
-unsafe def replaceUnsafeM (f? : Level → Option Level) (size : USize) (e : Expr) : ReplaceM Expr := do
+unsafe def replaceUnsafeM (f? : Level  Option Level) (size : USize) (e : Expr) : ReplaceM Expr := do
   let rec visit (e : Expr) := do
     let c ← get
     let h := ptrAddrUnsafe e
@@ -59,13 +59,13 @@ unsafe def initCache : State :=
   { keys    := mkArray cacheSize.toNat (cast lcProof ()), -- `()` is not a valid `Expr`
     results := mkArray cacheSize.toNat default }
 
-unsafe def replaceUnsafe (f? : Level → Option Level) (e : Expr) : Expr :=
+unsafe def replaceUnsafe (f? : Level  Option Level) (e : Expr) : Expr :=
   (replaceUnsafeM f? cacheSize e).run' initCache
 
 end ReplaceLevelImpl
 
 @[implemented_by ReplaceLevelImpl.replaceUnsafe]
-partial def replaceLevel (f? : Level → Option Level) : Expr → Expr
+partial def replaceLevel (f? : Level  Option Level) : Expr  Expr
   | e@(Expr.forallE _ d b _)   => let d := replaceLevel f? d; let b := replaceLevel f? b; e.updateForallE! d b
   | e@(Expr.lam _ d b _)       => let d := replaceLevel f? d; let b := replaceLevel f? b; e.updateLambdaE! d b
   | e@(Expr.mdata _ b)         => let b := replaceLevel f? b; e.updateMData! b

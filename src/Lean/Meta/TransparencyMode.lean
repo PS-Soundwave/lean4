@@ -9,7 +9,7 @@ namespace Lean.Meta
 
 namespace TransparencyMode
 
-def hash : TransparencyMode → UInt64
+def hash : TransparencyMode  UInt64
   | all       => 7
   | default   => 11
   | reducible => 13
@@ -17,7 +17,7 @@ def hash : TransparencyMode → UInt64
 
 instance : Hashable TransparencyMode := ⟨hash⟩
 
-def lt : TransparencyMode → TransparencyMode → Bool
+def lt : TransparencyMode  TransparencyMode  Bool
   | reducible, default   => true
   | reducible, all       => true
   | reducible, instances => true

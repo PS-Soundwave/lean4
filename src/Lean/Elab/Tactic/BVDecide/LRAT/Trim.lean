@@ -50,7 +50,7 @@ structure State where
   -/
   mapped : Std.HashMap Nat Nat := {}
 
-abbrev M : Type → Type := ReaderT Context <| ExceptT String <| StateM State
+abbrev M : Type  Type := ReaderT Context <| ExceptT String <| StateM State
 
 namespace M
 

@@ -25,13 +25,13 @@ example (x : (α × β) × γ) : True := by
   guard_hyp c : γ
   trivial
 
-example : @Inhabited.{1} α × Option β ⊕ γ → True := by
+example : @Inhabited.{1} α × Option β ⊕ γ  True := by
   rintro (⟨⟨a⟩, _ | b⟩ | c)
   · guard_hyp a : α; trivial
   · guard_hyp a : α; guard_hyp b : β; trivial
   · guard_hyp c : γ; trivial
 
-example : cond false Nat Int → cond true Int Nat → Nat ⊕ Unit → True := by
+example : cond false Nat Int  cond true Int Nat  Nat ⊕ Unit  True := by
   rintro (x y : Int) (z | u)
   · guard_hyp x : Int; guard_hyp y : Int; guard_hyp z : Nat; trivial
   · guard_hyp x : Int; guard_hyp y : Int; guard_hyp u : Unit; trivial
@@ -69,12 +69,12 @@ example : True := by
   trivial
 
 example : True := by
-  obtain (h : True) | ⟨⟨⟩⟩ : True ∨ False
+  obtain (h : True) | ⟨⟨⟩⟩ : True  False
   · exact Or.inl trivial
   guard_hyp h : True; trivial
 
 example : True := by
-  obtain h | ⟨⟨⟩⟩ : True ∨ False := Or.inl trivial
+  obtain h | ⟨⟨⟩⟩ : True  False := Or.inl trivial
   guard_hyp h : True; trivial
 
 example : True := by
@@ -98,7 +98,7 @@ example (x y : α ⊕ β) : True := by
   · guard_hyp b : β; guard_hyp c : α; trivial
   · guard_hyp b : β; guard_hyp d : β; trivial
 
-example (i j : Nat) : (Σ' x, i ≤ x ∧ x ≤ j) → i ≤ j := by
+example (i j : Nat) : (Σ' x, i ≤ x ∧ x ≤ j)  i ≤ j := by
   intro h
   rcases h' : h with ⟨x, h₀, h₁⟩
   guard_hyp h' : h = ⟨x, h₀, h₁⟩
@@ -112,7 +112,7 @@ example (x : Quot fun _ _ : α => True) (h : x = x): x = x := by
   exact h
 
 example (n : Nat) : True := by
-  obtain _one_lt_n | _n_le_one : 1 < n + 1 ∨ n + 1 ≤ 1 := Nat.lt_or_ge 1 (n + 1)
+  obtain _one_lt_n | _n_le_one : 1 < n + 1  n + 1 ≤ 1 := Nat.lt_or_ge 1 (n + 1)
   {trivial}; trivial
 
 example (n : Nat) : True := by
@@ -136,32 +136,32 @@ example (h : ∃ x : Nat, x = x ∧ 1 = 1) : True := by
   guard_hyp h : 1 = 1
   trivial
 
-example (h : True ∨ True ∨ True) : True := by
+example (h : True  True  True) : True := by
   rcases h with - | - | -
   iterate 3 · check_num_hyps 0; trivial
 
-example (h : True ∨ True ∨ True) : True := by
+example (h : True  True  True) : True := by
   rcases h with -|-|-
   iterate 3 · check_num_hyps 0; trivial
 
-example : Bool → False → True
+example : Bool  False  True
 | false => by rintro ⟨⟩
 | true => by rintro ⟨⟩
 
-example : (b : Bool) → cond b False False → True := by
+example : (b : Bool)  cond b False False  True := by
   rintro ⟨⟩ ⟨⟩
 
-structure Baz {α : Type _} (f : α → α) : Prop where
+structure Baz {α : Type _} (f : α  α) : Prop where
   [inst : Nonempty α]
-  h : f ∘ f = id
+  h : f  f = id
 
-example {α} (f : α → α) (h : Baz f) : True := by rcases h with ⟨_⟩; trivial
+example {α} (f : α  α) (h : Baz f) : True := by rcases h with ⟨_⟩; trivial
 
-example {α} (f : α → α) (h : Baz f) : True := by rcases h with @⟨_, _⟩; trivial
+example {α} (f : α  α) (h : Baz f) : True := by rcases h with @⟨_, _⟩; trivial
 
-inductive Test : Nat → Prop
+inductive Test : Nat  Prop
   | a (n) : Test (2 + n)
-  | b {n} : n > 5 → Test (n * n)
+  | b {n} : n > 5  Test (n * n)
 
 example {n} (h : Test n) : n = n := by
   have : True := by
@@ -176,13 +176,13 @@ example {n} (h : Test n) : n = n := by
     · guard_hyp b : n > 5
       trivial
 
-example (h : a ≤ 2 ∨ 2 < a) : True := by
-  obtain ha1 | ha2 : a ≤ 2 ∨ 3 ≤ a := h
+example (h : a ≤ 2  2 < a) : True := by
+  obtain ha1 | ha2 : a ≤ 2  3 ≤ a := h
   · guard_hyp ha1 : a ≤ 2; trivial
   · guard_hyp ha2 : 3 ≤ a; trivial
 
-example (h : a ≤ 2 ∨ 2 < a) : True := by
-  obtain ha1 | ha2 : a ≤ 2 ∨ 3 ≤ a := id h
+example (h : a ≤ 2  2 < a) : True := by
+  obtain ha1 | ha2 : a ≤ 2  3 ≤ a := id h
   · guard_hyp ha1 : a ≤ 2; trivial
   · guard_hyp ha2 : 3 ≤ a; trivial
 
@@ -194,11 +194,11 @@ example (a : Nat) : True := by
 inductive BaseType : Type where
   | one
 
-inductive BaseTypeHom : BaseType → BaseType → Type where
+inductive BaseTypeHom : BaseType  BaseType  Type where
   | loop : BaseTypeHom one one
   | id (X : BaseType) : BaseTypeHom X X
 
-example : BaseTypeHom one one → Unit := by rintro ⟨_⟩ <;> constructor
+example : BaseTypeHom one one  Unit := by rintro ⟨_⟩ <;> constructor
 
 axiom test_sorry {α} : α
 example (b c : Nat) : True := by

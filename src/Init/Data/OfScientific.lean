@@ -49,7 +49,7 @@ instance : OfScientific Float where
 def Float.ofNat (n : Nat) : Float :=
   OfScientific.ofScientific n false 0
 
-def Float.ofInt : Int → Float
+def Float.ofInt : Int  Float
   | Int.ofNat n => Float.ofNat n
   | Int.negSucc n => Float.neg (Float.ofNat (Nat.succ n))
 
@@ -80,7 +80,7 @@ instance : OfScientific Float32 where
 def Float32.ofNat (n : Nat) : Float32 :=
   OfScientific.ofScientific n false 0
 
-def Float32.ofInt : Int → Float
+def Float32.ofInt : Int  Float
   | Int.ofNat n => Float.ofNat n
   | Int.negSucc n => Float.neg (Float.ofNat (Nat.succ n))
 

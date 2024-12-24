@@ -1,4 +1,4 @@
-@[coe] def Bool.toNat' : Bool → Nat
+@[coe] def Bool.toNat' : Bool  Nat
   | true => 1
   | false => 0
 
@@ -25,8 +25,8 @@ set_option linter.missingDocs false
 
 variable (an bn cn dn : Nat) (az bz cz dz : Int)
 
-example : (an : Int) = bn → an = bn := by intro h; exact_mod_cast h
-example : an = bn → (an : Int) = bn := by intro h; exact_mod_cast h
+example : (an : Int) = bn  an = bn := by intro h; exact_mod_cast h
+example : an = bn  (an : Int) = bn := by intro h; exact_mod_cast h
 
 example : (an : Int) < bn ↔ an < bn := by norm_cast
 example : (an : Int) ≠ (bn : Int) ↔ an ≠ bn := by norm_cast

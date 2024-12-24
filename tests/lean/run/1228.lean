@@ -2,7 +2,7 @@ inductive Foo (n : Nat) : Type
 | foo (t: Foo n): Foo n
 
 namespace Foo
-  inductive Bar: Foo n → Prop
+  inductive Bar: Foo n  Prop
 
   theorem ex₁ {s: Foo n} (H: s.Bar): True := by
     cases h₁ : s

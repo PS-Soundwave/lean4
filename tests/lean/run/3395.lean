@@ -1,5 +1,5 @@
 structure S where
-  f : Nat → Nat
+  f : Nat  Nat
 
 example (h : g 1 = x) : { f := g : S }.f 1 = x := by
   unfold S.f

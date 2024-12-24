@@ -25,7 +25,7 @@ namespace Lake
 
 class CheckExists.{u} (i : Type u) where
   /-- Check whether there already exists an artifact for the given target info. -/
-  checkExists : i → BaseIO Bool
+  checkExists : i  BaseIO Bool
 
 export CheckExists (checkExists)
 
@@ -36,9 +36,9 @@ instance : CheckExists FilePath where
 /-! ## Trace Abstraction -/
 --------------------------------------------------------------------------------
 
-class ComputeTrace (α : Type u) (m : outParam $ Type v → Type w) (τ : Type v) where
+class ComputeTrace (α : Type u) (m : outParam $ Type v  Type w) (τ : Type v) where
   /-- Compute the trace of an object in its preferred monad. -/
-  computeTrace : α → m τ
+  computeTrace : α  m τ
 
 /-- Compute the trace of an object in a supporting monad. -/
 @[inline] def computeTrace [ComputeTrace α m τ] [MonadLiftT m n] (a : α) : n τ :=
@@ -54,7 +54,7 @@ instance inhabitedOfNilTrace [NilTrace α] : Inhabited α := ⟨nilTrace⟩
 
 class MixTrace.{u} (α : Type u) where
   /-- Combine two traces. The result should be dirty if either of the inputs is dirty. -/
-  mixTrace : α → α → α
+  mixTrace : α  α  α
 
 export MixTrace (mixTrace)
 
@@ -141,9 +141,9 @@ instance : FromJson Hash := ⟨Hash.fromJson?⟩
 
 end Hash
 
-class ComputeHash (α : Type u) (m : outParam $ Type → Type v)  where
+class ComputeHash (α : Type u) (m : outParam $ Type  Type v)  where
   /-- Compute the hash of an object in its preferred monad. -/
-  computeHash : α → m Hash
+  computeHash : α  m Hash
 
 instance [ComputeHash α m] : ComputeTrace α m Hash := ⟨ComputeHash.computeHash⟩
 
@@ -225,7 +225,7 @@ end MTime
 
 class GetMTime (α : Type u) where
   /-- Return the modification time of an object. -/
-  getMTime : α → IO MTime
+  getMTime : α  IO MTime
 
 export GetMTime (getMTime)
 instance [GetMTime α] : ComputeTrace α IO MTime := ⟨getMTime⟩

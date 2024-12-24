@@ -8,20 +8,20 @@ open Lean Compiler Meta
 def test (declName : Name) : MetaM Unit := do
   IO.println s!"{declName} : {← ppExpr (← getDeclLCNFType declName)}"
 
-inductive Vec (α : Type u) : Nat → Type u
+inductive Vec (α : Type u) : Nat  Type u
   | nil : Vec α 0
-  | cons : α → Vec α n → Vec α (n+1)
+  | cons : α  Vec α n  Vec α (n+1)
 
-def Vec.zip : Vec α n → Vec β n → Vec (α × β) n
+def Vec.zip : Vec α n  Vec β n  Vec (α × β) n
   | .cons a as, .cons b bs => .cons (a, b) (zip as bs)
   | .nil, .nil => .nil
 
-def Tuple (α : Type u) : Nat → Type u
+def Tuple (α : Type u) : Nat  Type u
   | 0   => PUnit
   | 1   => α
   | n+2 => α × Tuple α n
 
-def mkConstTuple (a : α) : (n : Nat) → Tuple α n
+def mkConstTuple (a : α) : (n : Nat)  Tuple α n
   | 0   => ⟨⟩
   | 1   => a
   | n+2 => (a, mkConstTuple a n)
@@ -33,37 +33,37 @@ def mkConstTuple (a : α) : (n : Nat) → Tuple α n
 #eval test ``Eq.rec
 #eval test ``GetElem.getElem
 
-inductive HList {α : Type v} (β : α → Type u) : List α → Type (max u v)
+inductive HList {α : Type v} (β : α  Type u) : List α  Type (max u v)
   | nil  : HList β []
-  | cons : β i → HList β is → HList β (i::is)
+  | cons : β i  HList β is  HList β (i::is)
 
 infix:67 " :: " => HList.cons
 
-inductive Member : α → List α → Type _
+inductive Member : α  List α  Type _
   | head : Member a (a::as)
-  | tail : Member a bs → Member a (b::bs)
+  | tail : Member a bs  Member a (b::bs)
 
-def HList.get : HList β is → Member i is → β i
+def HList.get : HList β is  Member i is  β i
   | a::as, .head => a
   | _::as, .tail h => as.get h
 
 inductive Ty where
   | nat
-  | fn : Ty → Ty → Ty
+  | fn : Ty  Ty  Ty
 
-abbrev Ty.denote : Ty → Type
+abbrev Ty.denote : Ty  Type
   | nat    => Nat
-  | fn a b => a.denote → b.denote
+  | fn a b => a.denote  b.denote
 
-inductive Term : List Ty → Ty → Type
-  | var   : Member ty ctx → Term ctx ty
-  | const : Nat → Term ctx .nat
-  | plus  : Term ctx .nat → Term ctx .nat → Term ctx .nat
-  | app   : Term ctx (.fn dom ran) → Term ctx dom → Term ctx ran
-  | lam   : Term (dom :: ctx) ran → Term ctx (.fn dom ran)
-  | «let» : Term ctx ty₁ → Term (ty₁ :: ctx) ty₂ → Term ctx ty₂
+inductive Term : List Ty  Ty  Type
+  | var   : Member ty ctx  Term ctx ty
+  | const : Nat  Term ctx .nat
+  | plus  : Term ctx .nat  Term ctx .nat  Term ctx .nat
+  | app   : Term ctx (.fn dom ran)  Term ctx dom  Term ctx ran
+  | lam   : Term (dom :: ctx) ran  Term ctx (.fn dom ran)
+  | «let» : Term ctx ty₁  Term (ty₁ :: ctx) ty₂  Term ctx ty₂
 
-def Term.denote : Term ctx ty → HList Ty.denote ctx → ty.denote
+def Term.denote : Term ctx ty  HList Ty.denote ctx  ty.denote
   | var h,     env => env.get h
   | const n,   _   => n
   | plus a b,  env => a.denote env + b.denote env
@@ -71,7 +71,7 @@ def Term.denote : Term ctx ty → HList Ty.denote ctx → ty.denote
   | lam b,     env => fun x => b.denote (x :: env)
   | «let» a b, env => b.denote (a.denote env :: env)
 
-def Term.constFold : Term ctx ty → Term ctx ty
+def Term.constFold : Term ctx ty  Term ctx ty
   | const n   => const n
   | var h     => var h
   | app f a   => app f.constFold a.constFold
@@ -98,6 +98,6 @@ def Term.constFold : Term ctx ty → Term ctx ty
 
 structure Magma where
   carrier : Type
-  mul : carrier → carrier → carrier
+  mul : carrier  carrier  carrier
 
 #eval test ``Magma.mul

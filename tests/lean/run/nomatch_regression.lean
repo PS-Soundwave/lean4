@@ -9,17 +9,17 @@ inductive RBNode (α : Type u) where
 namespace RBNode
 open RBColor
 
-inductive Balanced : RBNode α → RBColor → Nat → Prop where
+inductive Balanced : RBNode α  RBColor  Nat  Prop where
   | protected nil : Balanced nil black 0
-  | protected red : Balanced x black n → Balanced y black n → Balanced (node red x v y) red n
-  | protected black : Balanced x c₁ n → Balanced y c₂ n → Balanced (node black x v y) black (n + 1)
+  | protected red : Balanced x black n  Balanced y black n  Balanced (node red x v y) red n
+  | protected black : Balanced x c₁ n  Balanced y c₂ n  Balanced (node black x v y) black (n + 1)
 
-@[inline] def balance1 : RBNode α → α → RBNode α → RBNode α
+@[inline] def balance1 : RBNode α  α  RBNode α  RBNode α
   | node red (node red a x b) y c, z, d
   | node red a x (node red b y c), z, d => node red (node black a x b) y (node black c z d)
   | a,                             x, b => node black a x b
 
-@[inline] def balance2 : RBNode α → α → RBNode α → RBNode α
+@[inline] def balance2 : RBNode α  α  RBNode α  RBNode α
   | a, x, node red (node red b y c) z d
   | a, x, node red b y (node red c z d) => node red (node black a x b) y (node black c z d)
   | a, x, b                             => node black a x b
@@ -28,11 +28,11 @@ theorem balance1_eq {l : RBNode α} {v : α} {r : RBNode α}
     (hl : l.Balanced c n) : balance1 l v r = node black l v r := by
   unfold balance1; split <;> first | rfl | exact nomatch hl
 
-@[inline] def isBlack : RBNode α → RBColor
+@[inline] def isBlack : RBNode α  RBColor
   | node c .. => c
   | _         => red
 
-def setRed : RBNode α → RBNode α
+def setRed : RBNode α  RBNode α
   | node _ a v b => node red a v b
   | nil          => nil
 
@@ -52,11 +52,11 @@ def balRight (l : RBNode α) (v : α) (r : RBNode α) : RBNode α :=
     | node red a x (node black b y c) => node red (balance1 (setRed a) x b) y (node black c v r)
     | l                               => node red l v r -- unreachable
 
-@[simp] def size : RBNode α → Nat
+@[simp] def size : RBNode α  Nat
   | nil => 0
   | node _ x _ y => x.size + y.size + 1
 
-def append : RBNode α → RBNode α → RBNode α
+def append : RBNode α  RBNode α  RBNode α
   | nil, x | x, nil => x
   | node red a x b, node red c y d =>
     match append b c with
@@ -70,7 +70,7 @@ def append : RBNode α → RBNode α → RBNode α
   | node red a x b, c@(node black ..) => node red a x (append b c)
 termination_by x y => x.size + y.size
 
-def del (cut : α → Ordering) : RBNode α → RBNode α
+def del (cut : α  Ordering) : RBNode α  RBNode α
   | nil          => nil
   | node _ a y b =>
     match cut y with
@@ -82,16 +82,16 @@ def del (cut : α → Ordering) : RBNode α → RBNode α
       | red => node red a y (del cut b)
     | .eq => append a b
 
-inductive RedRed (p : Prop) : RBNode α → Nat → Prop where
-  | balanced : Balanced t c n → RedRed p t n
-  | redred : p → Balanced a c₁ n → Balanced b c₂ n → RedRed p (node red a x b) n
+inductive RedRed (p : Prop) : RBNode α  Nat  Prop where
+  | balanced : Balanced t c n  RedRed p t n
+  | redred : p  Balanced a c₁ n  Balanced b c₂ n  RedRed p (node red a x b) n
 
 def DelProp (p : RBColor) (t : RBNode α) (n : Nat) : Prop :=
   match p with
   | black => ∃ n', n = n' + 1 ∧ RedRed True t n'
   | red => ∃ c, Balanced t c n
 
-protected theorem RedRed.of_red : RedRed p (node red a x b) n →
+protected theorem RedRed.of_red : RedRed p (node red a x b) n 
     ∃ c₁ c₂, Balanced a c₁ n ∧ Balanced b c₂ n
   | .balanced (.red ha hb) | .redred _ ha hb => ⟨_, _, ha, hb⟩
 
@@ -149,17 +149,17 @@ protected theorem Balanced.balLeft (hl : l.RedRed True n) (hr : r.Balanced cr (n
       | .red (.black ha hb) (.black hc hd) =>
         let ⟨c, h⟩ := RedRed.balance2 hb (.redred trivial hc hd); .redred rfl (.black hl ha) h
 
-protected theorem RedRed.imp (h : p → q) : RedRed p t n → RedRed q t n
+protected theorem RedRed.imp (h : p  q) : RedRed p t n  RedRed q t n
   | .balanced h => .balanced h
   | .redred hp ha hb => .redred (h hp) ha hb
 
-protected theorem RedRed.of_false (h : ¬p) : RedRed p t n → ∃ c, Balanced t c n
+protected theorem RedRed.of_false (h : ¬p) : RedRed p t n  ∃ c, Balanced t c n
   | .balanced h => ⟨_, h⟩
   | .redred hp .. => nomatch h hp
 
 protected theorem Balanced.append {l r : RBNode α}
     (hl : l.Balanced c₁ n) (hr : r.Balanced c₂ n) :
-    (l.append r).RedRed (c₁ = black → c₂ ≠ black) n := by
+    (l.append r).RedRed (c₁ = black  c₂ ≠ black) n := by
   unfold append; split
   · exact .balanced hr
   · exact .balanced hl

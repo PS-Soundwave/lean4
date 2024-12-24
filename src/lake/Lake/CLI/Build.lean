@@ -14,7 +14,7 @@ open Lean (Name)
 
 structure BuildSpec where
   info : BuildInfo
-  getBuildJob : BuildData info.key → OpaqueJob
+  getBuildJob : BuildData info.key  OpaqueJob
 
 @[inline] def BuildData.toJob
   [FamilyOut BuildData k (Job α)] (data : BuildData k)

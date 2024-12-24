@@ -64,7 +64,7 @@ def mkToJsonBodyForInduct (ctx : Context) (header : Header) (indName : Name) : T
 where
   mkAlts
     (indVal : InductiveVal)
-    (rhs : ConstructorVal → Array (Ident × Expr) → Option (Array Name) → TermElabM Term): TermElabM (Array (TSyntax ``matchAlt)) := do
+    (rhs : ConstructorVal  Array (Ident × Expr)  Option (Array Name)  TermElabM Term): TermElabM (Array (TSyntax ``matchAlt)) := do
       let mut alts := #[]
       for ctorName in indVal.ctors do
         let ctorInfo ← getConstInfoCtor ctorName

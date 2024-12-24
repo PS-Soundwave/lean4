@@ -250,7 +250,7 @@ def run (x : M α) : CompilerM α :=
   x |>.run' {}
 
 /--
-Return true iff `type` is `Sort _` or `As → Sort _`.
+Return true iff `type` is `Sort _` or `As  Sort _`.
 -/
 private partial def isTypeFormerType (type : Expr) : M Bool := do
   match quick (← getEnv) type with
@@ -263,7 +263,7 @@ private partial def isTypeFormerType (type : Expr) : M Bool := do
     modify fun s => { s with isTypeFormerTypeCache := s.isTypeFormerTypeCache.insert type result }
     return result
 where
-  quick (env : Environment) : Expr → LBool
+  quick (env : Environment) : Expr  LBool
   | .forallE _ _ b _ => quick env b
   | .mdata _ b => quick env b
   | .letE .. => .undef

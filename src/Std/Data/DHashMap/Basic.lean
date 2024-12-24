@@ -28,7 +28,7 @@ set_option autoImplicit false
 
 universe u v w
 
-variable {α : Type u} {β : α → Type v} {δ : Type w} {m : Type w → Type w} [Monad m]
+variable {α : Type u} {β : α  Type v} {δ : Type w} {m : Type w  Type w} [Monad m]
 
 variable {_ : BEq α} {_ : Hashable α}
 
@@ -58,7 +58,7 @@ be used in nested inductive types. For these use cases, `Std.Data.DHashMap.Raw` 
 `Std.Data.DHashMap.Raw.WF` unbundle the invariant from the hash map. When in doubt, prefer
 `DHashMap` over `DHashMap.Raw`.
 -/
-def DHashMap (α : Type u) (β : α → Type v) [BEq α] [Hashable α] := { m : DHashMap.Raw α β // m.WF }
+def DHashMap (α : Type u) (β : α  Type v) [BEq α] [Hashable α] := { m : DHashMap.Raw α β // m.WF }
 
 namespace DHashMap
 
@@ -184,20 +184,20 @@ section Unverified
 
 /-! We currently do not provide lemmas for the functions below. -/
 
-@[inline, inherit_doc Raw.filter] def filter (f : (a : α) → β a → Bool)
+@[inline, inherit_doc Raw.filter] def filter (f : (a : α)  β a  Bool)
     (m : DHashMap α β) : DHashMap α β :=
   ⟨Raw₀.filter f ⟨m.1, m.2.size_buckets_pos⟩, .filter₀ m.2⟩
 
-@[inline, inherit_doc Raw.foldM] def foldM (f : δ → (a : α) → β a → m δ)
+@[inline, inherit_doc Raw.foldM] def foldM (f : δ  (a : α)  β a  m δ)
     (init : δ) (b : DHashMap α β) : m δ :=
   b.1.foldM f init
 
-@[inline, inherit_doc Raw.fold] def fold (f : δ → (a : α) → β a → δ)
+@[inline, inherit_doc Raw.fold] def fold (f : δ  (a : α)  β a  δ)
     (init : δ) (b : DHashMap α β) : δ :=
   b.1.fold f init
 
 /-- Partition a hashset into two hashsets based on a predicate. -/
-@[inline] def partition (f : (a : α) → β a → Bool)
+@[inline] def partition (f : (a : α)  β a  Bool)
     (m : DHashMap α β) : DHashMap α β × DHashMap α β :=
   m.fold (init := (∅, ∅)) fun ⟨l, r⟩  a b =>
     if f a b then
@@ -205,12 +205,12 @@ section Unverified
     else
       (l, r.insert a b)
 
-@[inline, inherit_doc Raw.forM] def forM (f : (a : α) → β a → m PUnit)
+@[inline, inherit_doc Raw.forM] def forM (f : (a : α)  β a  m PUnit)
     (b : DHashMap α β) : m PUnit :=
   b.1.forM f
 
 @[inline, inherit_doc Raw.forIn] def forIn
-    (f : (a : α) → β a → δ → m (ForInStep δ)) (init : δ) (b : DHashMap α β) : m δ :=
+    (f : (a : α)  β a  δ  m (ForInStep δ)) (init : δ) (b : DHashMap α β) : m δ :=
   b.1.forIn f init
 
 instance [BEq α] [Hashable α] : ForM m (DHashMap α β) ((a : α) × β a) where
@@ -255,7 +255,7 @@ It is currently implemented in terms of `get?`, `erase`, and `insert`,
 but will later become a primitive operation.
 (It is provided already to help avoid non-linear code.)
 -/
-@[inline] def modify [LawfulBEq α] (m : DHashMap α β) (a : α) (f : β a → β a) : DHashMap α β :=
+@[inline] def modify [LawfulBEq α] (m : DHashMap α β) (a : α) (f : β a  β a) : DHashMap α β :=
   match m.get? a with
   | none => m
   | some b => m.erase a |>.insert a (f b)
@@ -269,7 +269,7 @@ It is currently implemented in terms of `get?`, `erase`, and `insert`,
 but will later become a primitive operation.
 (It is provided already to help avoid non-linear code.)
 -/
-@[inline] def alter [LawfulBEq α] (m : DHashMap α β) (a : α) (f : Option (β a) → Option (β a)) : DHashMap α β :=
+@[inline] def alter [LawfulBEq α] (m : DHashMap α β) (a : α) (f : Option (β a)  Option (β a)) : DHashMap α β :=
   match m.get? a with
   | none =>
     match f none with
@@ -323,7 +323,7 @@ instance [BEq α] [Hashable α] : Union (DHashMap α β) := ⟨union⟩
     (m : DHashMap α β) : Nat :=
   Raw.Internal.numBuckets m.1
 
-instance [BEq α] [Hashable α] [Repr α] [(a : α) → Repr (β a)] : Repr (DHashMap α β) where
+instance [BEq α] [Hashable α] [Repr α] [(a : α)  Repr (β a)] : Repr (DHashMap α β) where
   reprPrec m prec := Repr.addAppParen ("Std.DHashMap.ofList " ++ reprArg m.toList) prec
 
 end Unverified

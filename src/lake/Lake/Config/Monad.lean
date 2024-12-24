@@ -17,7 +17,7 @@ Definitions and helpers for interacting with the Lake configuration monads.
 namespace Lake
 
 /-- A monad equipped with a (read-only) detected environment for Lake. -/
-abbrev MonadLakeEnv (m : Type → Type u) :=
+abbrev MonadLakeEnv (m : Type  Type u) :=
   MonadReaderOf Lake.Env m
 
 /-- A transformer to equip a monad with a `Lake.Env`. -/
@@ -27,7 +27,7 @@ abbrev LakeEnvT := ReaderT Lake.Env
   ReaderT.run self env
 
 /-- A monad equipped with a (read-only) Lake `Workspace`. -/
-class MonadWorkspace (m : Type → Type u) where
+class MonadWorkspace (m : Type  Type u) where
   getWorkspace : m Workspace
 
 export MonadWorkspace (getWorkspace)
@@ -39,7 +39,7 @@ instance [MonadStateOf Workspace m] : MonadWorkspace m where
   getWorkspace := get
 
 /-- A monad equipped with a (read-only) Lake context. -/
-abbrev MonadLake (m : Type → Type u) :=
+abbrev MonadLake (m : Type  Type u) :=
   MonadReaderOf Lake.Context m
 
 /-- Make a `Lake.Context` from a `Workspace`. -/

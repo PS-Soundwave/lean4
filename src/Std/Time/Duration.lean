@@ -31,7 +31,7 @@ structure Duration where
   /--
   Proof that the duration is valid, ensuring that the `second` and `nano` values are correctly related.
   -/
-  proof : (second.val ≥ 0 ∧ nano.val ≥ 0) ∨ (second.val ≤ 0 ∧ nano.val ≤ 0)
+  proof : (second.val ≥ 0 ∧ nano.val ≥ 0)  (second.val ≤ 0 ∧ nano.val ≤ 0)
   deriving Repr
 
 instance : ToString Duration where
@@ -87,7 +87,7 @@ def ofNanoseconds (s : Nanosecond.Offset) : Duration := by
   next n => exact Or.inr (And.intro (Int.ediv_le_ediv (by decide) n) (mod_nonpos 1000000000 n (by decide)))
   next n => exact Or.inl (And.intro (Int.ediv_nonneg n (by decide)) (Int.tmod_nonneg 1000000000 n))
   where
-    mod_nonpos : ∀ {a : Int} (b : Int), (a ≤ 0) → (b ≥ 0) → 0 ≥ a.tmod b
+    mod_nonpos : ∀ {a : Int} (b : Int), (a ≤ 0)  (b ≥ 0)  0 ≥ a.tmod b
     | .negSucc m, .ofNat n, _, _ => Int.neg_le_neg (Int.tmod_nonneg (↑n) (Int.ofNat_le.mpr (Nat.zero_le (m + 1))))
     | 0, n, _, _ => Int.eq_iff_le_and_ge.mp (Int.zero_tmod n) |>.left
 
@@ -333,16 +333,16 @@ instance : Coe Second.Offset Duration where
   coe := ofSeconds
 
 instance : Coe Minute.Offset Duration where
-  coe := ofSeconds ∘ Minute.Offset.toSeconds
+  coe := ofSeconds  Minute.Offset.toSeconds
 
 instance : Coe Hour.Offset Duration where
-  coe := ofSeconds ∘ Hour.Offset.toSeconds
+  coe := ofSeconds  Hour.Offset.toSeconds
 
 instance : Coe Week.Offset Duration where
-  coe := ofSeconds ∘ Day.Offset.toSeconds ∘ Week.Offset.toDays
+  coe := ofSeconds  Day.Offset.toSeconds  Week.Offset.toDays
 
 instance : Coe Day.Offset Duration where
-  coe := ofSeconds ∘ Day.Offset.toSeconds
+  coe := ofSeconds  Day.Offset.toSeconds
 
 instance : HMul Int Duration Duration where
   hMul i d := Duration.ofNanoseconds <| Nanosecond.Offset.ofInt (d.toNanoseconds.val * i)

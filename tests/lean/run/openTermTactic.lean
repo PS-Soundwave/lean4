@@ -29,9 +29,9 @@ def foo (e : InductiveWithAVeryLongName) : Type :=
   open InductiveWithAVeryLongName in
   match e with
     | c1 => Nat
-    | c2 => Nat → Nat
-    | c3 => Nat → Nat → Nat
-    | c4 => Nat → Nat → Nat → Nat
-    | c5 => Nat → Nat → Nat → Nat → Nat
-    | c6 => Nat → Nat → Nat → Nat → Nat → Nat
-    | c7 => Nat → Nat → Nat → Nat → Nat → Nat → Nat
+    | c2 => Nat  Nat
+    | c3 => Nat  Nat  Nat
+    | c4 => Nat  Nat  Nat  Nat
+    | c5 => Nat  Nat  Nat  Nat  Nat
+    | c6 => Nat  Nat  Nat  Nat  Nat  Nat
+    | c7 => Nat  Nat  Nat  Nat  Nat  Nat  Nat

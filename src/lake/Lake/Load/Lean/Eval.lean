@@ -41,7 +41,7 @@ where
 /-- Construct a `DNameMap` from the declarations tagged with `attr`. -/
 def mkTagMap
 (env : Environment) (attr : OrderedTagAttribute)
-[Monad m] (f : (n : Name) → m (β n)) : m (DNameMap β) :=
+[Monad m] (f : (n : Name)  m (β n)) : m (DNameMap β) :=
   let entries := attr.getAllEntries env
   entries.foldlM (init := {}) fun map declName =>
     return map.insert declName <| ← f declName
@@ -49,7 +49,7 @@ def mkTagMap
 /-- Construct a `OrdNameMap` from the declarations tagged with `attr`. -/
 def mkOrdTagMap
 (env : Environment) (attr : OrderedTagAttribute)
-[Monad m] (f : (n : Name) → m β) : m (OrdNameMap β) :=
+[Monad m] (f : (n : Name)  m β) : m (OrdNameMap β) :=
   let entries := attr.getAllEntries env
   entries.foldlM (init := .mkEmpty entries.size) fun map declName =>
     return map.insert declName <| ← f declName

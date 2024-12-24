@@ -1,4 +1,4 @@
-id fun x => x : ?m → ?m
+id fun x => x : ?m  ?m
 0 : Nat
 f 1 fun x => x : Nat
 0 : Nat
@@ -25,6 +25,6 @@ p ∧ ¬q : Prop
 ¬p = q : Prop
 ¬p = q : Prop
 id ¬p : Prop
-Nat → ∀ (a : Nat), a = a : Prop
+Nat  ∀ (a : Nat), a = a : Prop
 id.{u} {α : Sort u} (a : α) : α
 precissues.lean:41:10-41:14: error: unexpected token 'foo!'; expected command

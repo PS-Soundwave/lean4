@@ -82,10 +82,10 @@ theorem go_denote_mem_prefix (aig : AIG α) (distance : Nat) (input : AIG.RefVec
     apply go_le_size
 
 theorem go_denote_eq (aig : AIG α) (distance : Nat) (input : AIG.RefVec aig w)
-    (assign : α → Bool) (curr : Nat) (hcurr : curr ≤ w) (s : AIG.RefVec aig curr) :
+    (assign : α  Bool) (curr : Nat) (hcurr : curr ≤ w) (s : AIG.RefVec aig curr) :
     ∀ (idx : Nat) (hidx1 : idx < w),
         curr ≤ idx
-          →
+          
         ⟦
           (go aig input distance curr hcurr s).aig,
           (go aig input distance curr hcurr s).vec.get idx hidx1,
@@ -151,7 +151,7 @@ end blastShiftLeftConst
 
 @[simp]
 theorem denote_blastShiftLeftConst (aig : AIG α) (target : ShiftTarget aig w)
-    (assign : α → Bool) :
+    (assign : α  Bool) :
     ∀ (idx : Nat) (hidx : idx < w),
         ⟦
           (blastShiftLeftConst aig target).aig,
@@ -172,7 +172,7 @@ theorem denote_blastShiftLeftConst (aig : AIG α) (target : ShiftTarget aig w)
 namespace blastShiftLeft
 
 theorem twoPowShift_eq (aig : AIG α) (target : TwoPowShiftTarget aig w) (lhs : BitVec w)
-    (rhs : BitVec target.n) (assign : α → Bool)
+    (rhs : BitVec target.n) (assign : α  Bool)
     (hleft : ∀ (idx : Nat) (hidx : idx < w), ⟦aig, target.lhs.get idx hidx, assign⟧ = lhs.getLsbD idx)
     (hright : ∀ (idx : Nat) (hidx : idx < target.n), ⟦aig, target.rhs.get idx hidx, assign⟧ = rhs.getLsbD idx) :
     ∀ (idx : Nat) (hidx : idx < w),
@@ -235,7 +235,7 @@ theorem twoPowShift_eq (aig : AIG α) (target : TwoPowShiftTarget aig w) (lhs : 
 
 theorem go_denote_eq (aig : AIG α) (distance : AIG.RefVec aig n) (curr : Nat)
       (hcurr : curr ≤ n - 1) (acc : AIG.RefVec aig w)
-    (lhs : BitVec w) (rhs : BitVec n) (assign : α → Bool)
+    (lhs : BitVec w) (rhs : BitVec n) (assign : α  Bool)
     (hacc : ∀ (idx : Nat) (hidx : idx < w), ⟦aig, acc.get idx hidx, assign⟧ = (BitVec.shiftLeftRec lhs rhs curr).getLsbD idx)
     (hright : ∀ (idx : Nat) (hidx : idx < n), ⟦aig, distance.get idx hidx, assign⟧ = rhs.getLsbD idx) :
     ∀ (idx : Nat) (hidx : idx < w),
@@ -271,7 +271,7 @@ termination_by n - 1 - curr
 end blastShiftLeft
 
 theorem denote_blastShiftLeft (aig : AIG α) (target : ArbitraryShiftTarget aig w0)
-    (lhs : BitVec w0) (rhs : BitVec target.n) (assign : α → Bool)
+    (lhs : BitVec w0) (rhs : BitVec target.n) (assign : α  Bool)
     (hleft : ∀ (idx : Nat) (hidx : idx < w0), ⟦aig, target.target.get idx hidx, assign⟧ = lhs.getLsbD idx)
     (hright : ∀ (idx : Nat) (hidx : idx < target.n), ⟦aig, target.distance.get idx hidx, assign⟧ = rhs.getLsbD idx) :
     ∀ (idx : Nat) (hidx : idx < w0),

@@ -1,7 +1,7 @@
 
 universe u
 
-def len {α : Type u} : List α → List α → Nat
+def len {α : Type u} : List α  List α  Nat
 | [],    bs => bs.length
 | a::as, bs => len as bs + 1
 

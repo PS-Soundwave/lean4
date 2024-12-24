@@ -1,6 +1,6 @@
 structure Ty where
   ctx : Type
-  ty : ctx → Type
+  ty : ctx  Type
 structure Tm where
   ty : Ty
   tm : ∀ {Γ}, ty.ty Γ

@@ -1,10 +1,10 @@
 import Lean
 
-inductive Vec (α : Type u) : Nat → Type u
+inductive Vec (α : Type u) : Nat  Type u
   | nil  : Vec α 0
-  | cons : α → Vec α n → Vec α (n+1)
+  | cons : α  Vec α n  Vec α (n+1)
 
-def Vec.map (f : α → β) : Vec α n → Vec β n
+def Vec.map (f : α  β) : Vec α n  Vec β n
   | nil => nil
   | cons a as => cons (f a) (map f as)
 

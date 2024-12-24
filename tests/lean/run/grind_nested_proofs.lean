@@ -17,6 +17,6 @@ info: [Lean.Grind.nestedProof (i < a.toList.length) (_example.proof_1 i j a b h1
 warning: declaration uses 'sorry'
 -/
 #guard_msgs in
-example (i j : Nat) (a b : Array Nat) (h1 : j < a.size) (h : j < b.size) (h2 : i ≤ j) : a[i] < a[j] + b[j] → i = j → a = b → False := by
+example (i j : Nat) (a b : Array Nat) (h1 : j < a.size) (h : j < b.size) (h2 : i ≤ j) : a[i] < a[j] + b[j]  i = j  a = b  False := by
   grind_test
   sorry

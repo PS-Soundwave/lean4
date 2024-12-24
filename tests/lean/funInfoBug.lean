@@ -3,7 +3,7 @@ import Lean.Data.AssocList
 def l : List (Prod Nat Nat) := [(1, 1), (2, 2)]
 #eval l -- works
 
-def Lean.AssocList.ToList : AssocList α β → List (α × β)
+def Lean.AssocList.ToList : AssocList α β  List (α × β)
   | AssocList.nil => []
   | AssocList.cons k v t => (k, v) :: ToList t
 

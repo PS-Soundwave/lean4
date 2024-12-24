@@ -1,7 +1,7 @@
 structure S where
-  fn1 : Nat → IO Unit
-  fn2 : Bool → IO Unit
-  pred : String → Bool
+  fn1 : Nat  IO Unit
+  fn2 : Bool  IO Unit
+  pred : String  Bool
 
 def f (s : S) : IO Unit := do
   s.fn1 10

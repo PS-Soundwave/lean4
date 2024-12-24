@@ -26,7 +26,7 @@ abbrev M := ReaderT Environment (StateM NameSet)
 @[inline] def collect (f : FunId) : M Unit :=
   modify fun s => s.insert f
 
-partial def collectFnBody : FnBody → M Unit
+partial def collectFnBody : FnBody  M Unit
   | .vdecl _ _ v b   =>
     match v with
     | .fap f _ => collect f *> collectFnBody b
@@ -42,7 +42,7 @@ def collectInitDecl (fn : Name) : M Unit := do
   | some initFn => collect initFn
   | _           => pure ()
 
-def collectDecl : Decl → M NameSet
+def collectDecl : Decl  M NameSet
   | .fdecl (f := f) (body := b) .. => collectInitDecl f *> CollectUsedDecls.collectFnBody b *> get
   | .extern (f := f) .. => collectInitDecl f *> get
 
@@ -55,7 +55,7 @@ abbrev VarTypeMap  := Std.HashMap VarId IRType
 abbrev JPParamsMap := Std.HashMap JoinPointId (Array Param)
 
 namespace CollectMaps
-abbrev Collector := (VarTypeMap × JPParamsMap) → (VarTypeMap × JPParamsMap)
+abbrev Collector := (VarTypeMap × JPParamsMap)  (VarTypeMap × JPParamsMap)
 @[inline] def collectVar (x : VarId) (t : IRType) : Collector
   | (vs, js) => (vs.insert x t, js)
 def collectParams (ps : Array Param) : Collector :=
@@ -64,14 +64,14 @@ def collectParams (ps : Array Param) : Collector :=
   | (vs, js) => (vs, js.insert j xs)
 
 /-- `collectFnBody` assumes the variables in -/
-partial def collectFnBody : FnBody → Collector
-  | .vdecl x t _ b    => collectVar x t ∘ collectFnBody b
-  | .jdecl j xs v b   => collectJP j xs ∘ collectParams xs ∘ collectFnBody v ∘ collectFnBody b
+partial def collectFnBody : FnBody  Collector
+  | .vdecl x t _ b    => collectVar x t  collectFnBody b
+  | .jdecl j xs v b   => collectJP j xs  collectParams xs  collectFnBody v  collectFnBody b
   | .case _ _ _ alts  => fun s => alts.foldl (fun s alt => collectFnBody alt.body s) s
   | e                 => if e.isTerminal then id else collectFnBody e.body
 
-def collectDecl : Decl → Collector
-  | .fdecl (xs := xs) (body := b) .. => collectParams xs ∘ collectFnBody b
+def collectDecl : Decl  Collector
+  | .fdecl (xs := xs) (body := b) .. => collectParams xs  collectFnBody b
   | _ => id
 
 end CollectMaps

@@ -20,7 +20,7 @@ Executes `f` with the corresponding module name for each `.lean` file contained 
 For example, if `dir` contains `A/B/C.lean`, `f` is called with `A.B.C`.
 -/
 partial def forEachModuleInDir [Monad m] [MonadLiftT IO m]
-    (dir : FilePath) (f : Lean.Name → m PUnit) : m PUnit := do
+    (dir : FilePath) (f : Lean.Name  m PUnit) : m PUnit := do
   for entry in (← dir.readDir) do
     if (← liftM (m := IO) <| entry.path.isDir) then
       let n := Lean.Name.mkSimple entry.fileName
@@ -34,7 +34,7 @@ def realPathNormalized (p : FilePath) : IO FilePath :=
 def modToFilePath (base : FilePath) (mod : Name) (ext : String) : FilePath :=
   go mod |>.addExtension ext
 where
-  go : Name → FilePath
+  go : Name  FilePath
   | Name.str p h => go p / h
   | Name.anonymous => base
   | Name.num _ _ => panic! "ill-formed import"

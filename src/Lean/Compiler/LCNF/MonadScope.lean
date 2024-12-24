@@ -10,13 +10,13 @@ namespace Lean.Compiler.LCNF
 
 abbrev Scope := FVarIdSet
 
-class MonadScope (m : Type → Type) where
+class MonadScope (m : Type  Type) where
   getScope : m Scope
-  withScope : (Scope → Scope) → m α → m α
+  withScope : (Scope  Scope)  m α  m α
 
 export MonadScope (getScope withScope)
 
-abbrev ScopeT (m : Type → Type) := ReaderT Scope m
+abbrev ScopeT (m : Type  Type) := ReaderT Scope m
 
 instance [Monad m] : MonadScope (ScopeT m) where
   getScope  := read

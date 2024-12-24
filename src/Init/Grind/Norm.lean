@@ -41,11 +41,11 @@ attribute [grind_norm] not_true
 attribute [grind_norm] not_false_eq_true
 
 -- Implication as a clause
-@[grind_norm] theorem imp_eq (p q : Prop) : (p → q) = (¬ p ∨ q) := by
+@[grind_norm] theorem imp_eq (p q : Prop) : (p  q) = (¬ p  q) := by
   by_cases p <;> by_cases q <;> simp [*]
 
 -- And
-@[grind_norm↓] theorem not_and (p q : Prop) : (¬(p ∧ q)) = (¬p ∨ ¬q) := by
+@[grind_norm↓] theorem not_and (p q : Prop) : (¬(p ∧ q)) = (¬p  ¬q) := by
   by_cases p <;> by_cases q <;> simp [*]
 attribute [grind_norm] and_true true_and and_false false_and and_assoc
 
@@ -59,11 +59,11 @@ attribute [grind_norm] ite_true ite_false
   by_cases p <;> simp [*]
 
 -- Forall
-@[grind_norm↓] theorem not_forall (p : α → Prop) : (¬∀ x, p x) = ∃ x, ¬p x := by simp
+@[grind_norm↓] theorem not_forall (p : α  Prop) : (¬∀ x, p x) = ∃ x, ¬p x := by simp
 attribute [grind_norm] forall_and
 
 -- Exists
-@[grind_norm↓] theorem not_exists (p : α → Prop) : (¬∃ x, p x) = ∀ x, ¬p x := by simp
+@[grind_norm↓] theorem not_exists (p : α  Prop) : (¬∃ x, p x) = ∀ x, ¬p x := by simp
 attribute [grind_norm] exists_const exists_or
 
 -- Bool cond

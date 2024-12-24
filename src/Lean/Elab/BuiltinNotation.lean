@@ -254,7 +254,7 @@ partial def mkMPairs (elems : Array Term) : MacroM Term :=
 
 
 open Parser in
-partial def hasCDot : Syntax → Bool
+partial def hasCDot : Syntax  Bool
   | Syntax.node _ k args =>
     if k == ``Term.paren || k == ``Term.typeAscription || k == ``Term.tuple then false
     else if k == ``Term.cdot then true
@@ -287,7 +287,7 @@ where
   If `stx` is a `·`, we create a fresh identifier, store it in the
   extra state, and return it. Otherwise, we just return `stx`.
   -/
-  go : Syntax → StateT (Array Ident) MacroM Syntax
+  go : Syntax  StateT (Array Ident) MacroM Syntax
   | stx@`(($(_))) => pure stx
   | stx@`(·) => do
     let name ← MonadQuotation.addMacroScope <| Name.mkSimple s!"x{(← get).size + 1}"
@@ -387,7 +387,7 @@ private def isSubstCandidate (lhs rhs : Expr) : MetaM Bool :=
   Given an expression `e` that is the elaboration of `stx`, if `e` is a free variable, then return `k stx`.
   Otherwise, return `(fun x => k x) e`
 -/
-private def withLocalIdentFor (stx : Term) (e : Expr) (k : Term → TermElabM Expr) : TermElabM Expr := do
+private def withLocalIdentFor (stx : Term) (e : Expr) (k : Term  TermElabM Expr) : TermElabM Expr := do
   if e.isFVar then
     k stx
   else
@@ -520,7 +520,7 @@ def elabUnsafe : TermElab := fun stx expectedType? =>
     if let `(Lean.Parser.Term.doSeq| $e:term) := cmds then
       if e matches `(Lean.Parser.Term.doSeq| fun $[$_args]* => $_) then
         let tac ← unsafe evalTerm
-          (Option Expr → TermElabM Expr)
+          (Option Expr  TermElabM Expr)
           (Lean.mkForall `x .default
             (mkApp (Lean.mkConst ``Option) (Lean.mkConst ``Expr))
             (mkApp (Lean.mkConst ``TermElabM) (Lean.mkConst ``Expr))) e

@@ -1,4 +1,4 @@
-def showChars : Nat → String → String.Pos → IO Unit
+def showChars : Nat  String  String.Pos  IO Unit
 | 0,     _, _   => pure ()
 | n+1,   s, idx => do
   unless s.atEnd idx  do

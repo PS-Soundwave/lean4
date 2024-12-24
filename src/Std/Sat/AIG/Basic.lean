@@ -47,7 +47,7 @@ cache for `xs : Array (Decl α)`, that is, whenever `cache.find? decl` returns a
 `xs : Array Decl`, `xs[index] = decl`. Note that this predicate does not force the cache to be
 complete, if there is no entry in the cache for some node, it can still exist in the AIG.
 -/
-inductive Cache.WF : Array (Decl α) → HashMap (Decl α) Nat → Prop where
+inductive Cache.WF : Array (Decl α)  HashMap (Decl α) Nat  Prop where
   /--
   An empty `Cache` is valid for any `Array Decl` as it never has a hit.
   -/
@@ -185,7 +185,7 @@ An `Array Decl` is a Direct Acyclic Graph (DAG) if a gate at index `i` only poin
 -/
 def IsDAG (α : Type) (decls : Array (Decl α)) : Prop :=
   ∀ {i lhs rhs linv rinv} (h : i < decls.size),
-      decls[i] = .gate lhs rhs linv rinv → lhs < i ∧ rhs < i
+      decls[i] = .gate lhs rhs linv rinv  lhs < i ∧ rhs < i
 
 /--
 The empty array is a DAG.
@@ -367,10 +367,10 @@ structure ExtendTarget (aig : AIG α) (newWidth : Nat) where
 /--
 Evaluate an `AIG.Entrypoint` using some assignment for atoms.
 -/
-def denote (assign : α → Bool) (entry : Entrypoint α) : Bool :=
+def denote (assign : α  Bool) (entry : Entrypoint α) : Bool :=
   go entry.ref.gate entry.aig.decls assign entry.ref.hgate entry.aig.invariant
 where
-  go (x : Nat) (decls : Array (Decl α)) (assign : α → Bool) (h1 : x < decls.size)
+  go (x : Nat) (decls : Array (Decl α)) (assign : α  Bool) (h1 : x < decls.size)
       (h2 : IsDAG α decls) :
       Bool :=
     match h3 : decls[x] with

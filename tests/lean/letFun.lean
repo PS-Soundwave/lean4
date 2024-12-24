@@ -25,12 +25,12 @@ example (a b : Nat) (h1 : a = 0) (h2 : b = 0) : (let_fun x := a + 1; x + x) > b 
 Checks that the underlying encoding for `let_fun` can be overapplied.
 This still pretty prints with `let_fun` notation.
 -/
-#check (show Nat → Nat from id) 1
+#check (show Nat  Nat from id) 1
 
 /-!
 Checks that zeta reduction still occurs even if the `let_fun` is applied to an argument.
 -/
-example (a b : Nat) (h : a > b) : (show Nat → Nat from id) a > b := by
+example (a b : Nat) (h : a > b) : (show Nat  Nat from id) a > b := by
   simp
   trace_state
   exact h

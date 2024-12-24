@@ -8,24 +8,24 @@ The State monad transformer using IO references.
 prelude
 import Init.System.ST
 
-def StateRefT' (ω : Type) (σ : Type) (m : Type → Type) (α : Type) : Type := ReaderT (ST.Ref ω σ) m α
+def StateRefT' (ω : Type) (σ : Type) (m : Type  Type) (α : Type) : Type := ReaderT (ST.Ref ω σ) m α
 
 /-! Recall that `StateRefT` is a macro that infers `ω` from the `m`. -/
 
 @[always_inline, inline]
-def StateRefT'.run {ω σ : Type} {m : Type → Type} [Monad m] [MonadLiftT (ST ω) m] {α : Type} (x : StateRefT' ω σ m α) (s : σ) : m (α × σ) := do
+def StateRefT'.run {ω σ : Type} {m : Type  Type} [Monad m] [MonadLiftT (ST ω) m] {α : Type} (x : StateRefT' ω σ m α) (s : σ) : m (α × σ) := do
   let ref ← ST.mkRef s
   let a ← x ref
   let s ← ref.get
   pure (a, s)
 
 @[always_inline, inline]
-def StateRefT'.run' {ω σ : Type} {m : Type → Type} [Monad m] [MonadLiftT (ST ω) m] {α : Type} (x : StateRefT' ω σ m α) (s : σ) : m α := do
+def StateRefT'.run' {ω σ : Type} {m : Type  Type} [Monad m] [MonadLiftT (ST ω) m] {α : Type} (x : StateRefT' ω σ m α) (s : σ) : m α := do
   let (a, _) ← x.run s
   pure a
 
 namespace StateRefT'
-variable {ω σ : Type} {m : Type → Type} {α : Type}
+variable {ω σ : Type} {m : Type  Type} {α : Type}
 
 @[always_inline, inline]
 protected def lift (x : m α) : StateRefT' ω σ m α :=
@@ -45,7 +45,7 @@ protected def set [MonadLiftT (ST ω) m] (s : σ) : StateRefT' ω σ m PUnit :=
   fun ref => ref.set s
 
 @[inline]
-protected def modifyGet [MonadLiftT (ST ω) m] (f : σ → α × σ) : StateRefT' ω σ m α :=
+protected def modifyGet [MonadLiftT (ST ω) m] (f : σ  α × σ) : StateRefT' ω σ m α :=
   fun ref => ref.modifyGet f
 
 instance [MonadLiftT (ST ω) m] : MonadStateOf σ (StateRefT' ω σ m) where
@@ -55,13 +55,13 @@ instance [MonadLiftT (ST ω) m] : MonadStateOf σ (StateRefT' ω σ m) where
 
 @[always_inline]
 instance (ε) [MonadExceptOf ε m] : MonadExceptOf ε (StateRefT' ω σ m) where
-  throw    := StateRefT'.lift ∘ throwThe ε
+  throw    := StateRefT'.lift  throwThe ε
   tryCatch := fun x c s => tryCatchThe ε (x s) (fun e => c e s)
 
 end StateRefT'
 
-instance (ω σ : Type) (m : Type → Type) : MonadControl m (StateRefT' ω σ m) :=
+instance (ω σ : Type) (m : Type  Type) : MonadControl m (StateRefT' ω σ m) :=
   inferInstanceAs (MonadControl m (ReaderT _ _))
 
-instance {m : Type → Type} {ω σ : Type} [MonadFinally m] : MonadFinally (StateRefT' ω σ m) :=
+instance {m : Type  Type} {ω σ : Type} [MonadFinally m] : MonadFinally (StateRefT' ω σ m) :=
   inferInstanceAs (MonadFinally (ReaderT _ _))

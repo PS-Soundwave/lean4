@@ -2,7 +2,7 @@ attribute [simp] eq_iff_true_of_subsingleton in
 example : True := trivial
 
 structure Func' (α : Sort _) (β : Sort _) :=
-(toFun    : α → β)
+(toFun    : α  β)
 
 def r : Func' α α := ⟨id⟩
 

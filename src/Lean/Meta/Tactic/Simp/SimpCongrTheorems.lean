@@ -39,7 +39,7 @@ def addSimpCongrTheoremEntry (d : SimpCongrTheorems) (e : SimpCongrTheorem) : Si
       | none    => d.lemmas.insert e.funName [e]
       | some es => d.lemmas.insert e.funName <| insert es }
 where
-  insert : List SimpCongrTheorem → List SimpCongrTheorem
+  insert : List SimpCongrTheorem  List SimpCongrTheorem
     | []     => [e]
     | e'::es => if e.priority ≥ e'.priority then e::e'::es else e' :: insert es
 

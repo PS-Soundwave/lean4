@@ -3,13 +3,13 @@ example (w : False) : False := by
   guard_target = False
   exact w
 
-example : False → Nat := by
+example : False  Nat := by
   false_or_by_contra <;> rename_i h
   guard_target = False
   guard_hyp h : False
   simp_all
 
-example {P : Prop} (p : P) : Nat → Nat → P := by
+example {P : Prop} (p : P) : Nat  Nat  P := by
   false_or_by_contra <;> rename_i a b h
   guard_target = False
   guard_hyp a : Nat
@@ -17,7 +17,7 @@ example {P : Prop} (p : P) : Nat → Nat → P := by
   guard_hyp h : ¬ P
   simp_all
 
-example {P : Prop} : False → P := by
+example {P : Prop} : False  P := by
   false_or_by_contra <;> rename_i h w
   guard_target = False
   guard_hyp h : False

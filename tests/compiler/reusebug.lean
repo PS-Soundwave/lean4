@@ -1,12 +1,12 @@
 inductive Expr
-| Val : Int → Expr
-| Var : String → Expr
-| Add : Expr → Expr → Expr
-| Mul : Expr → Expr → Expr
+| Val : Int  Expr
+| Var : String  Expr
+| Add : Expr  Expr  Expr
+| Mul : Expr  Expr  Expr
 
 namespace Expr
 
-protected def Expr.toString : Expr → String
+protected def Expr.toString : Expr  String
 | Val n   => toString n
 | Var x   => x
 | Add f g   => "(" ++ Expr.toString f ++ " + " ++ Expr.toString g ++ ")"
@@ -15,7 +15,7 @@ protected def Expr.toString : Expr → String
 instance : ToString Expr :=
 ⟨Expr.toString⟩
 
-partial def addAux : Expr → Expr → Expr
+partial def addAux : Expr  Expr  Expr
 | f,         Add (Val n) g   => addAux (Val n) (addAux f g)
 | f,         g               => Add f g
 

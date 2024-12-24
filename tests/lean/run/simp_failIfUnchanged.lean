@@ -14,7 +14,7 @@ example (h : False) : False := by
     dsimp (config := { failIfUnchanged := true })
   cases h
 
-example (_h : 37 = 37) (w : Inhabited False) : False ∨ False := by
+example (_h : 37 = 37) (w : Inhabited False) : False  False := by
   -- removes `_h` and simplifies the goal
   simp_all (config := { failIfUnchanged := true })
   -- Now should fail, because it can't do anything.

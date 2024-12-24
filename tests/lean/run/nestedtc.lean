@@ -4,7 +4,7 @@ variable {R : Type}
 class Zip (α : Type) -- represents `Zero`
 
 class SMul (R : Type) (α : Type) where
-  smul : R → α → α
+  smul : R  α  α
 
 infixr:73 " • " => SMul.smul
 
@@ -25,7 +25,7 @@ instance MulActionWithZero.toSMulWithZero (R M : Type)
 
 namespace pi
 variable {I : Type}
-variable {f : I → Type}
+variable {f : I  Type}
 
 instance instZero [∀ i, Zip (f i)] : Zip (∀ i : I, f i) := ⟨⟩
 

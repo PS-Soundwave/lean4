@@ -1,12 +1,12 @@
 
 
-inductive BV : Nat → Type
+inductive BV : Nat  Type
 | nil  : BV 0
-| cons : (n : Nat) → (hd : Bool) → (tl : BV n) → BV (Nat.succ n)
+| cons : (n : Nat)  (hd : Bool)  (tl : BV n)  BV (Nat.succ n)
 
 open BV
 
-def h : {n : Nat} → BV n.succ.succ → Bool
+def h : {n : Nat}  BV n.succ.succ  Bool
 | _, cons (Nat.succ (Nat.succ m)) b v => b
 | _, cons (Nat.succ Nat.zero) b v     => not b
 

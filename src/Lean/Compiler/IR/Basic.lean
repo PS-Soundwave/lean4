@@ -88,7 +88,7 @@ inductive IRType where
 
 namespace IRType
 
-partial def beq : IRType → IRType → Bool
+partial def beq : IRType  IRType  Bool
   | float,          float          => true
   | float32,        float32        => true
   | uint8,          uint8          => true
@@ -105,7 +105,7 @@ partial def beq : IRType → IRType → Bool
 
 instance : BEq IRType := ⟨beq⟩
 
-def isScalar : IRType → Bool
+def isScalar : IRType  Bool
   | float    => true
   | float32  => true
   | uint8    => true
@@ -115,20 +115,20 @@ def isScalar : IRType → Bool
   | usize    => true
   | _        => false
 
-def isObj : IRType → Bool
+def isObj : IRType  Bool
   | object  => true
   | tobject => true
   | _       => false
 
-def isIrrelevant : IRType → Bool
+def isIrrelevant : IRType  Bool
   | irrelevant => true
   | _ => false
 
-def isStruct : IRType → Bool
+def isStruct : IRType  Bool
   | struct _ _ => true
   | _ => false
 
-def isUnion : IRType → Bool
+def isUnion : IRType  Bool
   | union _ _ => true
   | _ => false
 
@@ -143,7 +143,7 @@ inductive Arg where
   | irrelevant
   deriving Inhabited
 
-protected def Arg.beq : Arg → Arg → Bool
+protected def Arg.beq : Arg  Arg  Bool
   | var x,      var y      => x == y
   | irrelevant, irrelevant => true
   | _,          _          => false
@@ -156,7 +156,7 @@ inductive LitVal where
   | num (v : Nat)
   | str (v : String)
 
-def LitVal.beq : LitVal → LitVal → Bool
+def LitVal.beq : LitVal  LitVal  Bool
   | num v₁, num v₂ => v₁ == v₂
   | str v₁, str v₂ => v₁ == v₂
   | _,      _      => false
@@ -182,7 +182,7 @@ structure CtorInfo where
   ssize : Nat
   deriving Repr
 
-def CtorInfo.beq : CtorInfo → CtorInfo → Bool
+def CtorInfo.beq : CtorInfo  CtorInfo  Bool
   | ⟨n₁, cidx₁, size₁, usize₁, ssize₁⟩, ⟨n₂, cidx₂, size₂, usize₂, ssize₂⟩ =>
     n₁ == n₂ && cidx₁ == cidx₂ && size₁ == size₂ && usize₁ == usize₂ && ssize₁ == ssize₂
 
@@ -289,7 +289,7 @@ abbrev FnBody.nil := FnBody.unreachable
   FnBody.case tid x IRType.object cs
 @[export lean_ir_mk_ret] def mkRet (x : Arg) : FnBody := FnBody.ret x
 @[export lean_ir_mk_jmp] def mkJmp (j : JoinPointId) (ys : Array Arg) : FnBody := FnBody.jmp j ys
-@[export lean_ir_mk_unreachable] def mkUnreachable : Unit → FnBody := fun _ => FnBody.unreachable
+@[export lean_ir_mk_unreachable] def mkUnreachable : Unit  FnBody := fun _ => FnBody.unreachable
 
 abbrev Alt := AltCore FnBody
 @[match_pattern] abbrev Alt.ctor    := @AltCore.ctor FnBody
@@ -297,14 +297,14 @@ abbrev Alt := AltCore FnBody
 
 instance : Inhabited Alt := ⟨Alt.default default⟩
 
-def FnBody.isTerminal : FnBody → Bool
+def FnBody.isTerminal : FnBody  Bool
   | FnBody.case _ _ _ _  => true
   | FnBody.ret _         => true
   | FnBody.jmp _ _       => true
   | FnBody.unreachable   => true
   | _                    => false
 
-def FnBody.body : FnBody → FnBody
+def FnBody.body : FnBody  FnBody
   | FnBody.vdecl _ _ _ b    => b
   | FnBody.jdecl _ _ _ b    => b
   | FnBody.set _ _ _ b      => b
@@ -317,7 +317,7 @@ def FnBody.body : FnBody → FnBody
   | FnBody.mdata _ b        => b
   | other                   => other
 
-def FnBody.setBody : FnBody → FnBody → FnBody
+def FnBody.setBody : FnBody  FnBody  FnBody
   | FnBody.vdecl x t v _,    b => FnBody.vdecl x t v b
   | FnBody.jdecl j xs v _,   b => FnBody.jdecl j xs v b
   | FnBody.set x i y _,      b => FnBody.set x i y b
@@ -340,23 +340,23 @@ def FnBody.setBody : FnBody → FnBody → FnBody
   let c  := b.resetBody
   (c, b')
 
-def AltCore.body : Alt → FnBody
+def AltCore.body : Alt  FnBody
   | Alt.ctor _ b  => b
   | Alt.default b => b
 
-def AltCore.setBody : Alt → FnBody → Alt
+def AltCore.setBody : Alt  FnBody  Alt
   | Alt.ctor c _, b  => Alt.ctor c b
   | Alt.default _, b => Alt.default b
 
-@[inline] def AltCore.modifyBody (f : FnBody → FnBody) : AltCore FnBody → Alt
+@[inline] def AltCore.modifyBody (f : FnBody  FnBody) : AltCore FnBody  Alt
   | Alt.ctor c b  => Alt.ctor c (f b)
   | Alt.default b => Alt.default (f b)
 
-@[inline] def AltCore.mmodifyBody {m : Type → Type} [Monad m] (f : FnBody → m FnBody) : AltCore FnBody → m Alt
+@[inline] def AltCore.mmodifyBody {m : Type  Type} [Monad m] (f : FnBody  m FnBody) : AltCore FnBody  m Alt
   | Alt.ctor c b  => Alt.ctor c <$> f b
   | Alt.default b => Alt.default <$> f b
 
-def Alt.isDefault : Alt → Bool
+def Alt.isDefault : Alt  Bool
   | Alt.ctor _ _  => false
   | Alt.default _ => true
 
@@ -382,12 +382,12 @@ partial def reshapeAux (a : Array FnBody) (i : Nat) (b : FnBody) : FnBody :=
 def reshape (bs : Array FnBody) (term : FnBody) : FnBody :=
   reshapeAux bs bs.size term
 
-@[inline] def modifyJPs (bs : Array FnBody) (f : FnBody → FnBody) : Array FnBody :=
+@[inline] def modifyJPs (bs : Array FnBody) (f : FnBody  FnBody) : Array FnBody :=
   bs.map fun b => match b with
     | FnBody.jdecl j xs v k => FnBody.jdecl j xs (f v) k
     | other                 => other
 
-@[inline] def mmodifyJPs {m : Type → Type} [Monad m] (bs : Array FnBody) (f : FnBody → m FnBody) : m (Array FnBody) :=
+@[inline] def mmodifyJPs {m : Type  Type} [Monad m] (bs : Array FnBody) (f : FnBody  m FnBody) : m (Array FnBody) :=
   bs.mapM fun b => match b with
     | FnBody.jdecl j xs v k => return FnBody.jdecl j xs (← f v) k
     | other                 => return other
@@ -407,23 +407,23 @@ inductive Decl where
 
 namespace Decl
 
-def name : Decl → FunId
+def name : Decl  FunId
   | .fdecl f ..  => f
   | .extern f .. => f
 
-def params : Decl → Array Param
+def params : Decl  Array Param
   | .fdecl (xs := xs) ..  => xs
   | .extern (xs := xs) .. => xs
 
-def resultType : Decl → IRType
+def resultType : Decl  IRType
   | .fdecl (type := t) ..  => t
   | .extern (type := t) .. => t
 
-def isExtern : Decl → Bool
+def isExtern : Decl  Bool
   | .extern .. => true
   | _ => false
 
-def getInfo : Decl → DeclInfo
+def getInfo : Decl  DeclInfo
   | .fdecl (info := info) .. => info
   | _ => {}
 
@@ -452,9 +452,9 @@ def mkIndexSet (idx : Index) : IndexSet :=
   RBTree.empty.insert idx
 
 inductive LocalContextEntry where
-  | param     : IRType → LocalContextEntry
-  | localVar  : IRType → Expr → LocalContextEntry
-  | joinPoint : Array Param → FnBody → LocalContextEntry
+  | param     : IRType  LocalContextEntry
+  | localVar  : IRType  Expr  LocalContextEntry
+  | joinPoint : Array Param  FnBody  LocalContextEntry
 
 abbrev LocalContext := RBMap Index LocalContextEntry compare
 
@@ -515,7 +515,7 @@ def LocalContext.getValue (ctx : LocalContext) (x : VarId) : Option Expr :=
 abbrev IndexRenaming := RBMap Index Index compare
 
 class AlphaEqv (α : Type) where
-  aeqv : IndexRenaming → α → α → Bool
+  aeqv : IndexRenaming  α  α  Bool
 
 export AlphaEqv (aeqv)
 
@@ -526,7 +526,7 @@ def VarId.alphaEqv (ρ : IndexRenaming) (v₁ v₂ : VarId) : Bool :=
 
 instance : AlphaEqv VarId := ⟨VarId.alphaEqv⟩
 
-def Arg.alphaEqv (ρ : IndexRenaming) : Arg → Arg → Bool
+def Arg.alphaEqv (ρ : IndexRenaming) : Arg  Arg  Bool
   | Arg.var v₁,     Arg.var v₂     => aeqv ρ v₁ v₂
   | Arg.irrelevant, Arg.irrelevant => true
   | _,              _              => false
@@ -538,7 +538,7 @@ def args.alphaEqv (ρ : IndexRenaming) (args₁ args₂ : Array Arg) : Bool :=
 
 instance: AlphaEqv (Array Arg) := ⟨args.alphaEqv⟩
 
-def Expr.alphaEqv (ρ : IndexRenaming) : Expr → Expr → Bool
+def Expr.alphaEqv (ρ : IndexRenaming) : Expr  Expr  Bool
   | Expr.ctor i₁ ys₁,        Expr.ctor i₂ ys₂        => i₁ == i₂ && aeqv ρ ys₁ ys₂
   | Expr.reset n₁ x₁,        Expr.reset n₂ x₂        => n₁ == n₂ && aeqv ρ x₁ x₂
   | Expr.reuse x₁ i₁ u₁ ys₁, Expr.reuse x₂ i₂ u₂ ys₂ => aeqv ρ x₁ x₂ && i₁ == i₂ && u₁ == u₂ && aeqv ρ ys₁ ys₂
@@ -574,7 +574,7 @@ def addParamsRename (ρ : IndexRenaming) (ps₁ ps₂ : Array Param) : Option In
       ρ ← addParamRename ρ ps₁[i]! ps₂[i]!
     pure ρ
 
-partial def FnBody.alphaEqv : IndexRenaming → FnBody → FnBody → Bool
+partial def FnBody.alphaEqv : IndexRenaming  FnBody  FnBody  Bool
   | ρ, FnBody.vdecl x₁ t₁ v₁ b₁,      FnBody.vdecl x₂ t₂ v₂ b₂      => t₁ == t₂ && aeqv ρ v₁ v₂ && alphaEqv (addVarRename ρ x₁.idx x₂.idx) b₁ b₂
   | ρ, FnBody.jdecl j₁ ys₁ v₁ b₁,  FnBody.jdecl j₂ ys₂ v₂ b₂        => match addParamsRename ρ ys₁ ys₂ with
     | some ρ' => alphaEqv ρ' v₁ v₂ && alphaEqv (addVarRename ρ j₁.idx j₂.idx) b₁ b₂

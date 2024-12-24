@@ -33,7 +33,7 @@ def fromExpr? (e : Expr) : SimpM (Option Literal) := do
 Helper function for reducing homogeneous unary bitvector operators.
 -/
 @[inline] def reduceUnary (declName : Name) (arity : Nat)
-    (op : {n : Nat} → BitVec n → BitVec n) (e : Expr) : SimpM DStep := do
+    (op : {n : Nat}  BitVec n  BitVec n) (e : Expr) : SimpM DStep := do
   unless e.isAppOfArity declName arity do return .continue
   let some v ← fromExpr? e.appArg! | return .continue
   return .done <| toExpr (op v.value)
@@ -42,7 +42,7 @@ Helper function for reducing homogeneous unary bitvector operators.
 Helper function for reducing homogeneous binary bitvector operators.
 -/
 @[inline] def reduceBin (declName : Name) (arity : Nat)
-    (op : {n : Nat} → BitVec n → BitVec n → BitVec n) (e : Expr) : SimpM DStep := do
+    (op : {n : Nat}  BitVec n  BitVec n  BitVec n) (e : Expr) : SimpM DStep := do
   unless e.isAppOfArity declName arity do return .continue
   let some v₁ ← fromExpr? e.appFn!.appArg! | return .continue
   let some v₂ ← fromExpr? e.appArg! | return .continue
@@ -53,7 +53,7 @@ Helper function for reducing homogeneous binary bitvector operators.
 
 /-- Simplification procedure for `setWidth`, `zeroExtend` and `signExtend` on `BitVec`s. -/
 @[inline] def reduceExtend (declName : Name)
-    (op : {n : Nat} → (m : Nat) → BitVec n → BitVec m) (e : Expr) : SimpM DStep := do
+    (op : {n : Nat}  (m : Nat)  BitVec n  BitVec m) (e : Expr) : SimpM DStep := do
   unless e.isAppOfArity declName 3 do return .continue
   let some v ← fromExpr? e.appArg! | return .continue
   let some n ← Nat.fromExpr? e.appFn!.appArg! | return .continue
@@ -62,7 +62,7 @@ Helper function for reducing homogeneous binary bitvector operators.
 /--
 Helper function for reducing bitvector functions such as `getLsb` and `getMsb`.
 -/
-@[inline] def reduceGetBit (declName : Name) (op : {n : Nat} → BitVec n → Nat → Bool) (e : Expr)
+@[inline] def reduceGetBit (declName : Name) (op : {n : Nat}  BitVec n  Nat  Bool) (e : Expr)
     : SimpM DStep := do
   unless e.isAppOfArity declName 3 do return .continue
   let some v ← fromExpr? e.appFn!.appArg! | return .continue
@@ -74,7 +74,7 @@ Helper function for reducing bitvector functions such as `getLsb` and `getMsb`.
 Helper function for reducing bitvector functions such as `shiftLeft` and `rotateRight`.
 -/
 @[inline] def reduceShift (declName : Name) (arity : Nat)
-    (op : {n : Nat} → BitVec n → Nat → BitVec n) (e : Expr) : SimpM DStep := do
+    (op : {n : Nat}  BitVec n  Nat  BitVec n) (e : Expr) : SimpM DStep := do
   unless e.isAppOfArity declName arity do return .continue
   let some v ← fromExpr? e.appFn!.appArg! | return .continue
   let some i ← Nat.fromExpr? e.appArg! | return .continue
@@ -94,7 +94,7 @@ into one that is a natural number literal.
 Helper function for reducing bitvector predicates.
 -/
 @[inline] def reduceBinPred (declName : Name) (arity : Nat)
-    (op : {n : Nat} → BitVec n → BitVec n → Bool) (e : Expr) : SimpM Step := do
+    (op : {n : Nat}  BitVec n  BitVec n  Bool) (e : Expr) : SimpM Step := do
   unless e.isAppOfArity declName arity do return .continue
   let some v₁ ← fromExpr? e.appFn!.appArg! | return .continue
   let some v₂ ← fromExpr? e.appArg! | return .continue
@@ -105,7 +105,7 @@ Helper function for reducing bitvector predicates.
     return .continue
 
 @[inline] def reduceBoolPred (declName : Name) (arity : Nat)
-    (op : {n : Nat} → BitVec n → BitVec n → Bool) (e : Expr) : SimpM DStep := do
+    (op : {n : Nat}  BitVec n  BitVec n  Bool) (e : Expr) : SimpM DStep := do
   unless e.isAppOfArity declName arity do return .continue
   let some v₁ ← fromExpr? e.appFn!.appArg! | return .continue
   let some v₂ ← fromExpr? e.appArg! | return .continue
@@ -119,8 +119,8 @@ Helper function for reducing bitvector predicates.
 /-- Simplification procedure for negation of `BitVec`s. -/
 builtin_dsimproc [simp, seval] reduceNeg ((- _ : BitVec _)) := reduceUnary ``Neg.neg 3 (- ·)
 /-- Simplification procedure for bitwise not of `BitVec`s. -/
-builtin_dsimproc [simp, seval] reduceNot ((~~~ _ : BitVec _)) :=
-  reduceUnary ``Complement.complement 3 (~~~ ·)
+builtin_dsimproc [simp, seval] reduceNot (( _ : BitVec _)) :=
+  reduceUnary ``Complement.complement 3 ( ·)
 /-- Simplification procedure for absolute value of `BitVec`s. -/
 builtin_dsimproc [simp, seval] reduceAbs (BitVec.abs _) := reduceUnary ``BitVec.abs 2 BitVec.abs
 /-- Simplification procedure for bitwise and of `BitVec`s. -/

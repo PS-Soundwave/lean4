@@ -20,7 +20,7 @@ There are three orthogonal configurations for sorries:
   is not triggered for synthetic sorries as we assume there is already an error message logged.
 
 - The sorry could be *unique*. A unique sorry is not definitionally equal to any other sorry, even if they have the same type.
-  Normally `sorryAx α s = sorryAx α s` is a definitional equality. Unique sorries insert a unique tag `t` using the encoding `sorryAx (τ → α) s t`.
+  Normally `sorryAx α s = sorryAx α s` is a definitional equality. Unique sorries insert a unique tag `t` using the encoding `sorryAx (τ  α) s t`.
 
 - The sorry could be *labeled*. A labeled sorry contains source position information, supporting the LSP "go to definition" feature in the Infoview,
   and also supporting pretty printing the sorry with an indication of source position when the option `pp.sorrySource` is true.

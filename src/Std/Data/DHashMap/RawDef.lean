@@ -40,7 +40,7 @@ should be an equivalence relation and `a == b` should imply `hash a = hash b` (s
 `EquivBEq` and `LawfulHashable` typeclasses). Both of these conditions are automatic if the BEq
 instance is lawful, i.e., if `a == b` implies `a = b`.
 -/
-structure Raw (α : Type u) (β : α → Type v) where
+structure Raw (α : Type u) (β : α  Type v) where
   /-- The number of mappings present in the hash map -/
   size : Nat
   /-- Internal implementation detail of the hash map -/

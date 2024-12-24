@@ -39,7 +39,7 @@ def utf8DecodeChar? (a : ByteArray) (i : Nat) : Option Char := do
       (c2 &&& 0x3f).toUInt32
     guard (0x800 ≤ r)
     -- TODO: Prove `r < 0x110000` from the definition of r once we have the necessary lemmas
-    if h : r < 0xd800 ∨ 0xdfff < r ∧ r < 0x110000 then
+    if h : r < 0xd800  0xdfff < r ∧ r < 0x110000 then
       have :=
         match h with
         | .inl h => Or.inl (UInt32.toNat_lt_of_lt (by decide) h)
@@ -155,12 +155,12 @@ macro_rules
 namespace Iterator
 
 /-- Advance the given iterator until the predicate returns true or the end of the string is reached. -/
-@[specialize] def find (it : Iterator) (p : Char → Bool) : Iterator :=
+@[specialize] def find (it : Iterator) (p : Char  Bool) : Iterator :=
   if it.atEnd then it
   else if p it.curr then it
   else find it.next p
 
-@[specialize] def foldUntil (it : Iterator) (init : α) (f : α → Char → Option α) : α × Iterator :=
+@[specialize] def foldUntil (it : Iterator) (init : α) (f : α  Char  Option α) : α × Iterator :=
   if it.atEnd then
     (init, it)
   else if let some a := f init it.curr then

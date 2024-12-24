@@ -74,9 +74,9 @@ that `a == b` implies `hash a = hash b`. This is automatic if the `BEq` instance
 -/
 class LawfulHashable (α : Type u) [BEq α] [Hashable α] where
   /-- If `a == b`, then `hash a = hash b`. -/
-  hash_eq (a b : α) : a == b → hash a = hash b
+  hash_eq (a b : α) : a == b  hash a = hash b
 
-theorem hash_eq [BEq α] [Hashable α] [LawfulHashable α] {a b : α} : a == b → hash a = hash b :=
+theorem hash_eq [BEq α] [Hashable α] [LawfulHashable α] {a b : α} : a == b  hash a = hash b :=
   LawfulHashable.hash_eq a b
 
 instance (priority := low) [BEq α] [Hashable α] [LawfulBEq α] : LawfulHashable α where

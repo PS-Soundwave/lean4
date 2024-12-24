@@ -18,12 +18,12 @@ abbrev ConfigLang.default : ConfigLang := .toml
 
 instance : Inhabited ConfigLang := ⟨.default⟩
 
-def ConfigLang.ofString? : String → Option ConfigLang
+def ConfigLang.ofString? : String  Option ConfigLang
 | "lean" => some .lean
 | "toml" => some .toml
 | _ => none
 
-def ConfigLang.fileExtension : ConfigLang → String
+def ConfigLang.fileExtension : ConfigLang  String
 | .lean => "lean"
 | .toml => "toml"
 

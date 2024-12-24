@@ -13,7 +13,7 @@ import Lake.Load.Lean.Elab
 namespace Lake
 open Toml Lean System PrettyPrinter
 
-private partial def descopeSyntax : Syntax → Syntax
+private partial def descopeSyntax : Syntax  Syntax
 | .ident info rawVal val preresolved =>
   .ident info rawVal val.eraseMacroScopes preresolved
 | .node info k args => .node info k <| args.map descopeSyntax

@@ -19,32 +19,32 @@ namespace List
 
 
 /--
-Given a list `as = [a₀, a₁, ...]` function `f : Fin as.length → α → β`, returns the list
+Given a list `as = [a₀, a₁, ...]` function `f : Fin as.length  α  β`, returns the list
 `[f 0 a₀, f 1 a₁, ...]`.
 -/
-@[inline] def mapFinIdx (as : List α) (f : Fin as.length → α → β) : List β := go as #[] (by simp) where
+@[inline] def mapFinIdx (as : List α) (f : Fin as.length  α  β) : List β := go as #[] (by simp) where
   /-- Auxiliary for `mapFinIdx`:
   `mapFinIdx.go [a₀, a₁, ...] acc = acc.toList ++ [f 0 a₀, f 1 a₁, ...]` -/
-  @[specialize] go : (bs : List α) → (acc : Array β) → bs.length + acc.size = as.length → List β
+  @[specialize] go : (bs : List α)  (acc : Array β)  bs.length + acc.size = as.length  List β
   | [], acc, h => acc.toList
   | a :: as, acc, h =>
     go as (acc.push (f ⟨acc.size, by simp at h; omega⟩ a)) (by simp at h ⊢; omega)
 
 /--
-Given a function `f : Nat → α → β` and `as : List α`, `as = [a₀, a₁, ...]`, returns the list
+Given a function `f : Nat  α  β` and `as : List α`, `as = [a₀, a₁, ...]`, returns the list
 `[f 0 a₀, f 1 a₁, ...]`.
 -/
-@[inline] def mapIdx (f : Nat → α → β) (as : List α) : List β := go as #[] where
+@[inline] def mapIdx (f : Nat  α  β) (as : List α) : List β := go as #[] where
   /-- Auxiliary for `mapIdx`:
   `mapIdx.go [a₀, a₁, ...] acc = acc.toList ++ [f acc.size a₀, f (acc.size + 1) a₁, ...]` -/
-  @[specialize] go : List α → Array β → List β
+  @[specialize] go : List α  Array β  List β
   | [], acc => acc.toList
   | a :: as, acc => go as (acc.push (f acc.size a))
 
 /-! ### mapFinIdx -/
 
 @[simp]
-theorem mapFinIdx_nil {f : Fin 0 → α → β} : mapFinIdx [] f = [] :=
+theorem mapFinIdx_nil {f : Fin 0  α  β} : mapFinIdx [] f = [] :=
   rfl
 
 @[simp] theorem length_mapFinIdx_go :
@@ -53,11 +53,11 @@ theorem mapFinIdx_nil {f : Fin 0 → α → β} : mapFinIdx [] f = [] :=
   | nil => simpa using h
   | cons _ _ ih => simp [mapFinIdx.go, ih]
 
-@[simp] theorem length_mapFinIdx {as : List α} {f : Fin as.length → α → β} :
+@[simp] theorem length_mapFinIdx {as : List α} {f : Fin as.length  α  β} :
     (as.mapFinIdx f).length = as.length := by
   simp [mapFinIdx, length_mapFinIdx_go]
 
-theorem getElem_mapFinIdx_go {as : List α} {f : Fin as.length → α → β} {i : Nat} {h} {w} :
+theorem getElem_mapFinIdx_go {as : List α} {f : Fin as.length  α  β} {i : Nat} {h} {w} :
     (mapFinIdx.go as f bs acc h)[i] =
       if w' : i < acc.size then acc[i] else f ⟨i, by simp at w; omega⟩ (bs[i - acc.size]'(by simp at w; omega)) := by
   induction bs generalizing acc with
@@ -78,27 +78,27 @@ theorem getElem_mapFinIdx_go {as : List α} {f : Fin as.length → α → β} {i
     · have h₃ : i - acc.size = (i - (acc.size + 1)) + 1 := by omega
       simp [h₃]
 
-@[simp] theorem getElem_mapFinIdx {as : List α} {f : Fin as.length → α → β} {i : Nat} {h} :
+@[simp] theorem getElem_mapFinIdx {as : List α} {f : Fin as.length  α  β} {i : Nat} {h} :
     (as.mapFinIdx f)[i] = f ⟨i, by simp at h; omega⟩ (as[i]'(by simp at h; omega)) := by
   simp [mapFinIdx, getElem_mapFinIdx_go]
 
-theorem mapFinIdx_eq_ofFn {as : List α} {f : Fin as.length → α → β} :
+theorem mapFinIdx_eq_ofFn {as : List α} {f : Fin as.length  α  β} :
     as.mapFinIdx f = List.ofFn fun i : Fin as.length => f i as[i] := by
   apply ext_getElem <;> simp
 
-@[simp] theorem getElem?_mapFinIdx {l : List α} {f : Fin l.length → α → β} {i : Nat} :
+@[simp] theorem getElem?_mapFinIdx {l : List α} {f : Fin l.length  α  β} {i : Nat} :
     (l.mapFinIdx f)[i]? = l[i]?.pbind fun x m => f ⟨i, by simp [getElem?_eq_some_iff] at m; exact m.1⟩ x := by
   simp only [getElem?_def, length_mapFinIdx, getElem_mapFinIdx]
   split <;> simp
 
 @[simp]
-theorem mapFinIdx_cons {l : List α} {a : α} {f : Fin (l.length + 1) → α → β} :
+theorem mapFinIdx_cons {l : List α} {a : α} {f : Fin (l.length + 1)  α  β} :
     mapFinIdx (a :: l) f = f 0 a :: mapFinIdx l (fun i => f i.succ) := by
   apply ext_getElem
   · simp
   · rintro (_|i) h₁ h₂ <;> simp
 
-theorem mapFinIdx_append {K L : List α} {f : Fin (K ++ L).length → α → β} :
+theorem mapFinIdx_append {K L : List α} {f : Fin (K ++ L).length  α  β} :
     (K ++ L).mapFinIdx f =
       K.mapFinIdx (fun i => f (i.castLE (by simp))) ++ L.mapFinIdx (fun i => f ((i.natAdd K.length).cast (by simp))) := by
   apply ext_getElem
@@ -115,31 +115,31 @@ theorem mapFinIdx_append {K L : List α} {f : Fin (K ++ L).length → α → β}
       simp
       omega
 
-@[simp] theorem mapFinIdx_concat {l : List α} {e : α} {f : Fin (l ++ [e]).length → α → β}:
+@[simp] theorem mapFinIdx_concat {l : List α} {e : α} {f : Fin (l ++ [e]).length  α  β}:
     (l ++ [e]).mapFinIdx f = l.mapFinIdx (fun i => f (i.castLE (by simp))) ++ [f ⟨l.length, by simp⟩ e] := by
   simp [mapFinIdx_append]
   congr
 
-theorem mapFinIdx_singleton {a : α} {f : Fin 1 → α → β} :
+theorem mapFinIdx_singleton {a : α} {f : Fin 1  α  β} :
     [a].mapFinIdx f = [f ⟨0, by simp⟩ a] := by
   simp
 
-theorem mapFinIdx_eq_enum_map {l : List α} {f : Fin l.length → α → β} :
+theorem mapFinIdx_eq_enum_map {l : List α} {f : Fin l.length  α  β} :
     l.mapFinIdx f = l.enum.attach.map
       fun ⟨⟨i, x⟩, m⟩ =>
         f ⟨i, by rw [mk_mem_enum_iff_getElem?, getElem?_eq_some_iff] at m; exact m.1⟩ x := by
   apply ext_getElem <;> simp
 
 @[simp]
-theorem mapFinIdx_eq_nil_iff {l : List α} {f : Fin l.length → α → β} :
+theorem mapFinIdx_eq_nil_iff {l : List α} {f : Fin l.length  α  β} :
     l.mapFinIdx f = [] ↔ l = [] := by
   rw [mapFinIdx_eq_enum_map, map_eq_nil_iff, attach_eq_nil_iff, enum_eq_nil_iff]
 
-theorem mapFinIdx_ne_nil_iff {l : List α} {f : Fin l.length → α → β} :
+theorem mapFinIdx_ne_nil_iff {l : List α} {f : Fin l.length  α  β} :
     l.mapFinIdx f ≠ [] ↔ l ≠ [] := by
   simp
 
-theorem exists_of_mem_mapFinIdx {b : β} {l : List α} {f : Fin l.length → α → β}
+theorem exists_of_mem_mapFinIdx {b : β} {l : List α} {f : Fin l.length  α  β}
     (h : b ∈ l.mapFinIdx f) : ∃ (i : Fin l.length), f i l[i] = b := by
   rw [mapFinIdx_eq_enum_map] at h
   replace h := exists_of_mem_map h
@@ -149,7 +149,7 @@ theorem exists_of_mem_mapFinIdx {b : β} {l : List α} {f : Fin l.length → α 
   obtain ⟨h', rfl⟩ := h
   exact ⟨⟨i, h'⟩, rfl⟩
 
-@[simp] theorem mem_mapFinIdx {b : β} {l : List α} {f : Fin l.length → α → β} :
+@[simp] theorem mem_mapFinIdx {b : β} {l : List α} {f : Fin l.length  α  β} :
     b ∈ l.mapFinIdx f ↔ ∃ (i : Fin l.length), f i l[i] = b := by
   constructor
   · intro h
@@ -158,7 +158,7 @@ theorem exists_of_mem_mapFinIdx {b : β} {l : List α} {f : Fin l.length → α 
     rw [mem_iff_getElem]
     exact ⟨i, by simp⟩
 
-theorem mapFinIdx_eq_cons_iff {l : List α} {b : β} {f : Fin l.length → α → β} :
+theorem mapFinIdx_eq_cons_iff {l : List α} {b : β} {f : Fin l.length  α  β} :
     l.mapFinIdx f = b :: l₂ ↔
       ∃ (a : α) (l₁ : List α) (h : l = a :: l₁),
         f ⟨0, by simp [h]⟩ a = b ∧ l₁.mapFinIdx (fun i => f (i.succ.cast (by simp [h]))) = l₂ := by
@@ -173,13 +173,13 @@ theorem mapFinIdx_eq_cons_iff {l : List α} {b : β} {f : Fin l.length → α �
     · rintro ⟨a, ⟨rfl, h⟩, ⟨_, ⟨rfl, rfl⟩, h⟩⟩
       exact ⟨rfl, h⟩
 
-theorem mapFinIdx_eq_cons_iff' {l : List α} {b : β} {f : Fin l.length → α → β} :
+theorem mapFinIdx_eq_cons_iff' {l : List α} {b : β} {f : Fin l.length  α  β} :
     l.mapFinIdx f = b :: l₂ ↔
       l.head?.pbind (fun x m => (f ⟨0, by cases l <;> simp_all⟩ x)) = some b ∧
         l.tail?.attach.map (fun ⟨t, m⟩ => t.mapFinIdx fun i => f (i.succ.cast (by cases l <;> simp_all))) = some l₂ := by
   cases l <;> simp
 
-theorem mapFinIdx_eq_iff {l : List α} {f : Fin l.length → α → β} :
+theorem mapFinIdx_eq_iff {l : List α} {f : Fin l.length  α  β} :
     l.mapFinIdx f = l' ↔ ∃ h : l'.length = l.length, ∀ (i : Nat) (h : i < l.length), l'[i] = f ⟨i, h⟩ l[i] := by
   constructor
   · rintro rfl
@@ -187,20 +187,20 @@ theorem mapFinIdx_eq_iff {l : List α} {f : Fin l.length → α → β} :
   · rintro ⟨h, w⟩
     apply ext_getElem <;> simp_all
 
-theorem mapFinIdx_eq_mapFinIdx_iff {l : List α} {f g : Fin l.length → α → β} :
+theorem mapFinIdx_eq_mapFinIdx_iff {l : List α} {f g : Fin l.length  α  β} :
     l.mapFinIdx f = l.mapFinIdx g ↔ ∀ (i : Fin l.length), f i l[i] = g i l[i] := by
   rw [eq_comm, mapFinIdx_eq_iff]
   simp [Fin.forall_iff]
 
-@[simp] theorem mapFinIdx_mapFinIdx {l : List α} {f : Fin l.length → α → β} {g : Fin _ → β → γ} :
-    (l.mapFinIdx f).mapFinIdx g = l.mapFinIdx (fun i => g (i.cast (by simp)) ∘ f i) := by
+@[simp] theorem mapFinIdx_mapFinIdx {l : List α} {f : Fin l.length  α  β} {g : Fin _  β  γ} :
+    (l.mapFinIdx f).mapFinIdx g = l.mapFinIdx (fun i => g (i.cast (by simp))  f i) := by
   simp [mapFinIdx_eq_iff]
 
-theorem mapFinIdx_eq_replicate_iff {l : List α} {f : Fin l.length → α → β} {b : β} :
+theorem mapFinIdx_eq_replicate_iff {l : List α} {f : Fin l.length  α  β} {b : β} :
     l.mapFinIdx f = replicate l.length b ↔ ∀ (i : Fin l.length), f i l[i] = b := by
   simp [eq_replicate_iff, length_mapFinIdx, mem_mapFinIdx, forall_exists_index, true_and]
 
-@[simp] theorem mapFinIdx_reverse {l : List α} {f : Fin l.reverse.length → α → β} :
+@[simp] theorem mapFinIdx_reverse {l : List α} {f : Fin l.reverse.length  α  β} :
     l.reverse.mapFinIdx f = (l.mapFinIdx (fun i => f ⟨l.length - 1 - i, by simp; omega⟩)).reverse := by
   simp [mapFinIdx_eq_iff]
   intro i h
@@ -210,7 +210,7 @@ theorem mapFinIdx_eq_replicate_iff {l : List α} {f : Fin l.length → α → β
 /-! ### mapIdx -/
 
 @[simp]
-theorem mapIdx_nil {f : Nat → α → β} : mapIdx f [] = [] :=
+theorem mapIdx_nil {f : Nat  α  β} : mapIdx f [] = [] :=
   rfl
 
 theorem mapIdx_go_length {arr : Array β} :
@@ -256,18 +256,18 @@ theorem getElem?_mapIdx_go : ∀ {l : List α} {arr : Array β} {i : Nat},
     (l.mapIdx f)[i]? = Option.map (f i) l[i]? := by
   simp [mapIdx, getElem?_mapIdx_go]
 
-@[simp] theorem getElem_mapIdx {l : List α} {f : Nat → α → β} {i : Nat} {h : i < (l.mapIdx f).length} :
+@[simp] theorem getElem_mapIdx {l : List α} {f : Nat  α  β} {i : Nat} {h : i < (l.mapIdx f).length} :
     (l.mapIdx f)[i] = f i (l[i]'(by simpa using h)) := by
   apply Option.some_inj.mp
   rw [← getElem?_eq_getElem, getElem?_mapIdx, getElem?_eq_getElem (by simpa using h)]
   simp
 
-@[simp] theorem mapFinIdx_eq_mapIdx {l : List α} {f : Fin l.length → α → β} {g : Nat → α → β}
+@[simp] theorem mapFinIdx_eq_mapIdx {l : List α} {f : Fin l.length  α  β} {g : Nat  α  β}
     (h : ∀ (i : Fin l.length), f i l[i] = g i l[i]) :
     l.mapFinIdx f = l.mapIdx g := by
   simp_all [mapFinIdx_eq_iff]
 
-theorem mapIdx_eq_mapFinIdx {l : List α} {f : Nat → α → β} :
+theorem mapIdx_eq_mapFinIdx {l : List α} {f : Nat  α  β} :
     l.mapIdx f = l.mapFinIdx (fun i => f i) := by
   simp [mapFinIdx_eq_mapIdx]
 
@@ -337,7 +337,7 @@ theorem mapIdx_eq_iff {l : List α} : mapIdx f l = l' ↔ ∀ i : Nat, l'[i]? = 
     simp [w]
 
 theorem mapIdx_eq_mapIdx_iff {l : List α} :
-    mapIdx f l = mapIdx g l ↔ ∀ i : Nat, (h : i < l.length) → f i l[i] = g i l[i] := by
+    mapIdx f l = mapIdx g l ↔ ∀ i : Nat, (h : i < l.length)  f i l[i] = g i l[i] := by
   constructor
   · intro w i h
     simpa [h] using congrArg (fun l => l[i]?) w
@@ -355,16 +355,16 @@ theorem mapIdx_eq_mapIdx_iff {l : List α} :
   · split <;> simp_all
   · rfl
 
-@[simp] theorem head_mapIdx {l : List α} {f : Nat → α → β} {w : mapIdx f l ≠ []} :
+@[simp] theorem head_mapIdx {l : List α} {f : Nat  α  β} {w : mapIdx f l ≠ []} :
     (mapIdx f l).head w = f 0 (l.head (by simpa using w)) := by
   cases l with
   | nil => simp at w
   | cons _ _ => simp
 
-@[simp] theorem head?_mapIdx {l : List α} {f : Nat → α → β} : (mapIdx f l).head? = l.head?.map (f 0) := by
+@[simp] theorem head?_mapIdx {l : List α} {f : Nat  α  β} : (mapIdx f l).head? = l.head?.map (f 0) := by
   cases l <;> simp
 
-@[simp] theorem getLast_mapIdx {l : List α} {f : Nat → α → β} {h} :
+@[simp] theorem getLast_mapIdx {l : List α} {f : Nat  α  β} {h} :
     (mapIdx f l).getLast h = f (l.length - 1) (l.getLast (by simpa using h)) := by
   cases l with
   | nil => simp at h
@@ -375,17 +375,17 @@ theorem mapIdx_eq_mapIdx_iff {l : List α} :
     simp only [← mapIdx_cons, getElem_mapIdx]
     simp
 
-@[simp] theorem getLast?_mapIdx {l : List α} {f : Nat → α → β} :
+@[simp] theorem getLast?_mapIdx {l : List α} {f : Nat  α  β} :
     (mapIdx f l).getLast? = (getLast? l).map (f (l.length - 1)) := by
   cases l
   · simp
   · rw [getLast?_eq_getLast, getLast?_eq_getLast, getLast_mapIdx] <;> simp
 
-@[simp] theorem mapIdx_mapIdx {l : List α} {f : Nat → α → β} {g : Nat → β → γ} :
-    (l.mapIdx f).mapIdx g = l.mapIdx (fun i => g i ∘ f i) := by
+@[simp] theorem mapIdx_mapIdx {l : List α} {f : Nat  α  β} {g : Nat  β  γ} :
+    (l.mapIdx f).mapIdx g = l.mapIdx (fun i => g i  f i) := by
   simp [mapIdx_eq_iff]
 
-theorem mapIdx_eq_replicate_iff {l : List α} {f : Nat → α → β} {b : β} :
+theorem mapIdx_eq_replicate_iff {l : List α} {f : Nat  α  β} {b : β} :
     mapIdx f l = replicate l.length b ↔ ∀ (i : Nat) (h : i < l.length), f i l[i] = b := by
   simp only [eq_replicate_iff, length_mapIdx, mem_mapIdx, forall_exists_index, true_and]
   constructor
@@ -394,7 +394,7 @@ theorem mapIdx_eq_replicate_iff {l : List α} {f : Nat → α → β} {b : β} :
   · rintro w _ i h rfl
     exact w i h
 
-@[simp] theorem mapIdx_reverse {l : List α} {f : Nat → α → β} :
+@[simp] theorem mapIdx_reverse {l : List α} {f : Nat  α  β} :
     l.reverse.mapIdx f = (mapIdx (fun i => f (l.length - 1 - i)) l).reverse := by
   simp [mapIdx_eq_iff]
   intro i

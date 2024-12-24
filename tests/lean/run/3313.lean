@@ -9,7 +9,7 @@ instance (R : Type) [Zero R] : Module R R := ⟨⟩
 structure Submodule (R : Type) (M : Type) [Zero R] [Zero M] [Module R M] : Type where
 
 class HasQuotient (A : outParam <| Type) (B : Type) where
-  quotient' : B → Type
+  quotient' : B  Type
 
 instance Submodule.hasQuotient {R : Type} {M : Type} [Ring R] [AddCommGroup M]
   [Module R M]: HasQuotient M (Submodule R M) := ⟨fun _ => M⟩

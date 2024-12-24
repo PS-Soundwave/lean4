@@ -145,12 +145,12 @@ of the right subtree are greater than `k`. But that invariant is not part of the
 So, let's formalize the BST invariant. Here's one way to do so. First, we define a helper `ForallTree`
 to express that idea that a predicate holds at every node of a tree:
 -/
-inductive ForallTree (p : Nat → β → Prop) : Tree β → Prop
+inductive ForallTree (p : Nat  β  Prop) : Tree β  Prop
   | leaf : ForallTree p .leaf
   | node :
-     ForallTree p left →
-     p key value →
-     ForallTree p right →
+     ForallTree p left 
+     p key value 
+     ForallTree p right 
      ForallTree p (.node left key value right)
 
 /-!
@@ -158,12 +158,12 @@ Second, we define the BST invariant:
 An empty tree is a BST.
 A non-empty tree is a BST if all its left nodes have a lesser key, its right nodes have a greater key, and the left and right subtrees are themselves BSTs.
 -/
-inductive BST : Tree β → Prop
+inductive BST : Tree β  Prop
   | leaf : BST .leaf
   | node :
-     ForallTree (fun k v => k < key) left →
-     ForallTree (fun k v => key < k) right →
-     BST left → BST right →
+     ForallTree (fun k v => k < key) left 
+     ForallTree (fun k v => key < k) right 
+     BST left  BST right 
      BST (.node left key value right)
 
 /-!

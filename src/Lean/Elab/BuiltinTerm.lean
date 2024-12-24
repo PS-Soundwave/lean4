@@ -64,7 +64,7 @@ private def elabOptLevel (stx : Syntax) : TermElabM Level :=
 @[builtin_term_elab «syntheticHole»] def elabSyntheticHole : TermElab := fun stx expectedType? => do
   let arg  := stx[1]
   let userName := if arg.isIdent then arg.getId else Name.anonymous
-  let mkNewHole : Unit → TermElabM Expr := fun _ => do
+  let mkNewHole : Unit  TermElabM Expr := fun _ => do
     let kind := if (← read).inPattern then MetavarKind.natural else MetavarKind.syntheticOpaque
     let mvar ← mkFreshExprMVar expectedType? kind userName
     registerMVarErrorHoleInfo mvar.mvarId! stx

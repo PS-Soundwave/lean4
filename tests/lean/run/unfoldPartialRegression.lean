@@ -21,7 +21,7 @@ open AddZeroClass
 theorem bit0_zero {M} [AddZeroClass M] : bit0 (0 : M) = 0 :=
   add_zero _
 
-def bit (b : Bool) : Nat → Nat :=
+def bit (b : Bool) : Nat  Nat :=
   cond b bit1 bit0
 
 -- This is `Nat.bit_mod_two` from `Mathlib.Data.Nat.Bitwise`.

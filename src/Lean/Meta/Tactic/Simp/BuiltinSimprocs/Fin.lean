@@ -20,19 +20,19 @@ def fromExpr? (e : Expr) : SimpM (Option Value) := do
   let some ⟨n, value⟩ ← getFinValue? e | return none
   return some { n, value }
 
-@[inline] def reduceOp (declName : Name) (arity : Nat) (f : Nat → Nat) (op : {n : Nat} → Fin n → Fin (f n)) (e : Expr) : SimpM DStep := do
+@[inline] def reduceOp (declName : Name) (arity : Nat) (f : Nat  Nat) (op : {n : Nat}  Fin n  Fin (f n)) (e : Expr) : SimpM DStep := do
   unless e.isAppOfArity declName arity do return .continue
   let some v ← fromExpr? e.appArg! | return .continue
   let v' := op v.value
   return .done <| toExpr v'
 
-@[inline] def reduceNatOp (declName : Name) (arity : Nat) (f : Nat → Nat) (op : (n : Nat) → Fin (f n)) (e : Expr) : SimpM DStep := do
+@[inline] def reduceNatOp (declName : Name) (arity : Nat) (f : Nat  Nat) (op : (n : Nat)  Fin (f n)) (e : Expr) : SimpM DStep := do
   unless e.isAppOfArity declName arity do return .continue
   let some v ← getNatValue? e.appArg! | return .continue
   let v' := op v
   return .done <| toExpr v'
 
-@[inline] def reduceBin (declName : Name) (arity : Nat) (op : {n : Nat} → Fin n → Fin n → Fin n) (e : Expr) : SimpM DStep := do
+@[inline] def reduceBin (declName : Name) (arity : Nat) (op : {n : Nat}  Fin n  Fin n  Fin n) (e : Expr) : SimpM DStep := do
   unless e.isAppOfArity declName arity do return .continue
   let some v₁ ← fromExpr? e.appFn!.appArg! | return .continue
   let some v₂ ← fromExpr? e.appArg! | return .continue
@@ -42,13 +42,13 @@ def fromExpr? (e : Expr) : SimpM (Option Value) := do
   else
     return .continue
 
-@[inline] def reduceBinPred (declName : Name) (arity : Nat) (op : Nat → Nat → Bool) (e : Expr) : SimpM Step := do
+@[inline] def reduceBinPred (declName : Name) (arity : Nat) (op : Nat  Nat  Bool) (e : Expr) : SimpM Step := do
   unless e.isAppOfArity declName arity do return .continue
   let some v₁ ← fromExpr? e.appFn!.appArg! | return .continue
   let some v₂ ← fromExpr? e.appArg! | return .continue
   evalPropStep e (op v₁.value v₂.value)
 
-@[inline] def reduceBoolPred (declName : Name) (arity : Nat) (op : Nat → Nat → Bool) (e : Expr) : SimpM DStep := do
+@[inline] def reduceBoolPred (declName : Name) (arity : Nat) (op : Nat  Nat  Bool) (e : Expr) : SimpM DStep := do
   unless e.isAppOfArity declName arity do return .continue
   let some v₁ ← fromExpr? e.appFn!.appArg! | return .continue
   let some v₂ ← fromExpr? e.appArg! | return .continue

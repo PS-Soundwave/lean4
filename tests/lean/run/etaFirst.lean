@@ -28,7 +28,7 @@ rfl
 theorem tst9 : (Nat.add · ·) = @Add.add Nat _ :=
 rfl
 
-axiom p    : (Nat → Nat → Nat) → Prop
+axiom p    : (Nat  Nat  Nat)  Prop
 axiom pAdd : p Nat.add
 
 theorem tst10 : p (fun a b => Nat.add a b) :=

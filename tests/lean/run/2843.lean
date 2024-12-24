@@ -1,4 +1,4 @@
-axiom abs : Int → Int
+axiom abs : Int  Int
 
 axiom abs_eq_self {a : Int }: abs a = a ↔ 0 ≤ a
 

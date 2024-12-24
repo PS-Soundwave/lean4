@@ -76,4 +76,4 @@ def bar (_ _ : Nat) : Nat := default
 
 #discr_tree_simp_key (∀ m : Nat, ∃ n : Nat, m ≠ n)
 
-#discr_tree_simp_key (∀ m : Nat, m > 0 → m ≠ 0)
+#discr_tree_simp_key (∀ m : Nat, m > 0  m ≠ 0)

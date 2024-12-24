@@ -58,7 +58,7 @@ theorem eraseIdx_insertIdx (n : Nat) (l : List α) : (l.insertIdx n a).eraseIdx 
 
 theorem insertIdx_eraseIdx_of_ge :
     ∀ n m as,
-      n < length as → n ≤ m → insertIdx m a (as.eraseIdx n) = (as.insertIdx (m + 1) a).eraseIdx n
+      n < length as  n ≤ m  insertIdx m a (as.eraseIdx n) = (as.insertIdx (m + 1) a).eraseIdx n
   | 0, 0, [], has, _ => (Nat.lt_irrefl _ has).elim
   | 0, 0, _ :: as, _, _ => by simp [eraseIdx, insertIdx]
   | 0, _ + 1, _ :: _, _, _ => rfl
@@ -68,7 +68,7 @@ theorem insertIdx_eraseIdx_of_ge :
 
 theorem insertIdx_eraseIdx_of_le :
     ∀ n m as,
-      n < length as → m ≤ n → insertIdx m a (as.eraseIdx n) = (as.insertIdx m a).eraseIdx (n + 1)
+      n < length as  m ≤ n  insertIdx m a (as.eraseIdx n) = (as.insertIdx m a).eraseIdx (n + 1)
   | _, 0, _ :: _, _, _ => rfl
   | n + 1, m + 1, a :: as, has, hmn =>
     congrArg (cons a) <|
@@ -85,7 +85,7 @@ theorem insertIdx_comm (a b : α) :
     exact insertIdx_comm a b i j l (Nat.le_of_succ_le_succ h₀) (Nat.le_of_succ_le_succ h₁)
 
 theorem mem_insertIdx {a b : α} :
-    ∀ {n : Nat} {l : List α} (_ : n ≤ l.length), a ∈ l.insertIdx n b ↔ a = b ∨ a ∈ l
+    ∀ {n : Nat} {l : List α} (_ : n ≤ l.length), a ∈ l.insertIdx n b ↔ a = b  a ∈ l
   | 0, as, _ => by simp
   | _ + 1, [], h => (Nat.not_succ_le_zero _ h).elim
   | n + 1, a' :: as, h => by

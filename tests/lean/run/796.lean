@@ -10,7 +10,7 @@ def d {a : A} [E a] (α : Sort u) [B a α] : D α := ⟨⟩
 end Ex1
 
 namespace Ex2
-class C where f : Sort u → Nat
+class C where f : Sort u  Nat
 class D extends C
 def a [C] := C.f Nat
 def b [D] := D.toC.f Nat
@@ -24,7 +24,7 @@ class Zero where
   zero : N
 export Zero (zero)
 class Succ where
-  succ : N → N
+  succ : N  N
 export Succ (succ)
 class Succ_Not_Zero [Zero N] [Succ N] where
   succ_not_zero {n : N} : succ n ≠ zero
@@ -33,9 +33,9 @@ class Eq_Of_Succ_Eq_Succ [Succ N] where
   eq_of_succ_eq_succ {n m : N} (h : succ n = succ m) : n = m
 export Eq_Of_Succ_Eq_Succ (eq_of_succ_eq_succ)
 class Nat_Induction [Zero N] [Succ N] where
-  nat_induction {P : N → Sort _}
+  nat_induction {P : N  Sort _}
     (P0 : P zero)
-    (ih : (k : N) → P k → P (succ k))
+    (ih : (k : N)  P k  P (succ k))
     (n : N) : P n
 export Nat_Induction (nat_induction)
 end
@@ -51,7 +51,7 @@ variable {ℕ} [Natural ℕ]
 def pred_with_proof (n : ℕ) (h : n ≠ zero) : Σ' m, n = succ m :=
   by
   revert h
-  let P (k : ℕ) := k ≠ zero → Σ' m, k = succ m
+  let P (k : ℕ) := k ≠ zero  Σ' m, k = succ m
   exact (nat_induction (by simp [P]; exact False.elim) (λ k _ _ => ⟨k, rfl⟩) n : P n)
 
 def pred (n : ℕ) (h : n ≠ zero) : ℕ := (pred_with_proof n h).fst

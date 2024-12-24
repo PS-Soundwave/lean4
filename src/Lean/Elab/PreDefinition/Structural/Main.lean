@@ -40,12 +40,12 @@ private def getFixedPrefix (declName : Name) (xs : Array Expr) (value : Expr) : 
            ```
            inductive PList (α : Type) : Prop
            | nil
-           | cons : α → PList α → PList α
+           | cons : α  PList α  PList α
 
            infixr:67 " ::: " => PList.cons
 
            set_option trace.Elab.definition.structural true in
-           def pmap {α β} (f : α → β) : PList α → PList β
+           def pmap {α β} (f : α  β) : PList α  PList β
              | PList.nil => PList.nil
              | a:::as => f a ::: pmap f as
            ```
@@ -59,7 +59,7 @@ private def getFixedPrefix (declName : Name) (xs : Array Expr) (value : Expr) : 
       return true
   numFixedRef.get
 
-partial def withCommonTelescope (preDefs : Array PreDefinition) (k : Array Expr → Array Expr → M α) : M α :=
+partial def withCommonTelescope (preDefs : Array PreDefinition) (k : Array Expr  Array Expr  M α) : M α :=
   go #[] (preDefs.map (·.value))
 where
   go (fvars : Array Expr) (vals : Array Expr) : M α := do

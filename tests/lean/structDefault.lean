@@ -1,5 +1,5 @@
 structure A where
-  f : Nat → Nat → Nat
+  f : Nat  Nat  Nat
 
 structure B extends A where
   f (a b : Nat) := 10

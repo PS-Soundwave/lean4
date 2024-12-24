@@ -28,7 +28,7 @@ See issue #2685.
 -/
 
 /-- A wrapper which `dsimp` will eliminate after an appropriate `@[simp]` theorem is added. -/
-def w : Bool → Bool | b => b
+def w : Bool  Bool | b => b
 
 /-! # Control: `dsimp` uses applied constants -/
 

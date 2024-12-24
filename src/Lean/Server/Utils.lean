@@ -128,7 +128,7 @@ def maybeTee (fName : String) (isOut : Bool) (h : FS.Stream) : IO FS.Stream := d
 open Lsp
 
 /-- Returns the document contents with the change applied. -/
-def applyDocumentChange (oldText : FileMap) : (change : Lsp.TextDocumentContentChangeEvent) → FileMap
+def applyDocumentChange (oldText : FileMap) : (change : Lsp.TextDocumentContentChangeEvent)  FileMap
   | TextDocumentContentChangeEvent.rangeChange (range : Range) (newText : String) =>
     replaceLspRange oldText range newText
   | TextDocumentContentChangeEvent.fullChange (newText : String) =>

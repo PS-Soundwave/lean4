@@ -41,7 +41,7 @@ termination_by structural h
 error: one parameter bound in `termination_by`, but the body of Errors.foo3 only binds 0 parameters.
 -/
 #guard_msgs in
-def foo3 (n : Nat) : Nat → Nat := match n with
+def foo3 (n : Nat) : Nat  Nat := match n with
   | 0 => id
   | n+1 => foo3 n
 termination_by structural m => m
@@ -78,7 +78,7 @@ error: The termination argument of a structurally recursive function must be one
 isn't one of these.
 -/
 #guard_msgs in
-def foo4 (n : Nat) : Nat → Nat := match n with
+def foo4 (n : Nat) : Nat  Nat := match n with
   | 0 => id
   | n+1 => foo4 n
 termination_by structural id n + 1
@@ -89,7 +89,7 @@ Cannot use parameter #2:
   the type Nat × Nat does not have a `.brecOn` recursor
 -/
 #guard_msgs in
-def foo5 : Nat → (Nat × Nat) → Nat
+def foo5 : Nat  (Nat × Nat)  Nat
  | 0, _ => 0
  | n+1, t => foo5 n t
 termination_by structural n t => t
@@ -101,11 +101,11 @@ Cannot use parameters #2 of Errors.foo6 and #2 of Errors.bar6:
 -/
 #guard_msgs in
 mutual
-def foo6 : Nat → (Nat × Nat) → Nat
+def foo6 : Nat  (Nat × Nat)  Nat
  | 0, _ => 0
  | n+1, t => bar6 n t
 termination_by structural n t => t
-def bar6 : Nat → (Nat × Nat) → Nat
+def bar6 : Nat  (Nat × Nat)  Nat
  | 0, _ => 0
  | n+1, t => foo6 n t
 termination_by structural n t => t

@@ -8,7 +8,7 @@ import Init.Core
 
 namespace Lean.Grind
 
-theorem intro_with_eq (p p' q : Prop) (he : p = p') (h : p' → q) : p → q :=
+theorem intro_with_eq (p p' q : Prop) (he : p = p') (h : p'  q) : p  q :=
   fun hp => h (he.mp hp)
 
 end Lean.Grind

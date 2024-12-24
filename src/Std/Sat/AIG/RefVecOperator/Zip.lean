@@ -16,7 +16,7 @@ namespace RefVec
 variable {α : Type} [Hashable α] [DecidableEq α] {aig : AIG α}
 
 class LawfulZipOperator (α : Type) [Hashable α] [DecidableEq α]
-    (f : (aig : AIG α) → BinaryInput aig → Entrypoint α) [LawfulOperator α BinaryInput f] : Prop
+    (f : (aig : AIG α)  BinaryInput aig  Entrypoint α) [LawfulOperator α BinaryInput f] : Prop
   where
   chainable : ∀ (aig : AIG α) (input1 input2 : BinaryInput aig) (h) (assign),
                 ⟦f (f aig input1).aig (input2.cast h), assign⟧
@@ -26,7 +26,7 @@ class LawfulZipOperator (α : Type) [Hashable α] [DecidableEq α]
 namespace LawfulZipOperator
 
 theorem denote_prefix_cast_ref {aig : AIG α} {input1 input2 : BinaryInput aig}
-    {f : (aig : AIG α) → BinaryInput aig → Entrypoint α} [LawfulOperator α BinaryInput f]
+    {f : (aig : AIG α)  BinaryInput aig  Entrypoint α} [LawfulOperator α BinaryInput f]
     [LawfulZipOperator α f] {h} :
     ⟦f (f aig input1).aig (input2.cast h), assign⟧
       =
@@ -72,7 +72,7 @@ end LawfulZipOperator
 
 structure ZipTarget (aig : AIG α) (len : Nat) where
   input : BinaryRefVec aig len
-  func : (aig : AIG α) → BinaryInput aig → Entrypoint α
+  func : (aig : AIG α)  BinaryInput aig  Entrypoint α
   [lawful : LawfulOperator α BinaryInput func]
   [chainable : LawfulZipOperator α func]
 
@@ -85,7 +85,7 @@ def zip (aig : AIG α) (target : ZipTarget aig len) : RefVecEntry α len :=
 where
   @[specialize]
   go (aig : AIG α) (idx : Nat) (s : RefVec aig idx) (hidx : idx ≤ len)
-      (lhs rhs : RefVec aig len) (f : (aig : AIG α) → BinaryInput aig → Entrypoint α)
+      (lhs rhs : RefVec aig len) (f : (aig : AIG α)  BinaryInput aig  Entrypoint α)
       [LawfulOperator α BinaryInput f] [LawfulZipOperator α f] :
       RefVecEntry α len :=
     if hidx : idx < len then
@@ -106,7 +106,7 @@ where
 
 theorem zip.go_le_size {aig : AIG α} (idx : Nat) (hidx) (s : RefVec aig idx)
     (lhs rhs : RefVec aig len)
-    (f : (aig : AIG α) → BinaryInput aig → Entrypoint α) [LawfulOperator α BinaryInput f]
+    (f : (aig : AIG α)  BinaryInput aig  Entrypoint α) [LawfulOperator α BinaryInput f]
     [chainable : LawfulZipOperator α f] :
     aig.decls.size ≤ (go aig idx s hidx lhs rhs f).1.decls.size := by
   unfold go
@@ -123,7 +123,7 @@ theorem zip_le_size {aig : AIG α} (target : ZipTarget aig len) :
   apply zip.go_le_size
 
 theorem zip.go_decl_eq {aig : AIG α} (i) (hi) (lhs rhs : RefVec aig len)
-    (s : RefVec aig i) (f : (aig : AIG α) → BinaryInput aig → Entrypoint α)
+    (s : RefVec aig i) (f : (aig : AIG α)  BinaryInput aig  Entrypoint α)
     [LawfulOperator α BinaryInput f] [chainable : LawfulZipOperator α f] :
     ∀ (idx : Nat) (h1) (h2), (go aig i s hi lhs rhs f).1.decls[idx]'h2 = aig.decls[idx]'h1 := by
   generalize hgo : go aig i s hi lhs rhs f = res
@@ -157,7 +157,7 @@ instance : LawfulVecOperator α ZipTarget zip where
 namespace zip
 
 theorem go_get_aux {aig : AIG α} (curr : Nat) (hcurr : curr ≤ len) (s : RefVec aig curr)
-    (lhs rhs : RefVec aig len) (f : (aig : AIG α) → BinaryInput aig → Entrypoint α)
+    (lhs rhs : RefVec aig len) (f : (aig : AIG α)  BinaryInput aig  Entrypoint α)
     [LawfulOperator α BinaryInput f] [chainable : LawfulZipOperator α f] :
     -- The hfoo here is a trick to make the dependent type gods happy
     ∀ (idx : Nat) (hidx : idx < curr) (hfoo),
@@ -187,7 +187,7 @@ theorem go_get_aux {aig : AIG α} (curr : Nat) (hcurr : curr ≤ len) (s : RefVe
 termination_by len - curr
 
 theorem go_get {aig : AIG α} (curr : Nat) (hcurr : curr ≤ len) (s : RefVec aig curr)
-    (lhs rhs : RefVec aig len) (f : (aig : AIG α) → BinaryInput aig → Entrypoint α)
+    (lhs rhs : RefVec aig len) (f : (aig : AIG α)  BinaryInput aig  Entrypoint α)
     [LawfulOperator α BinaryInput f] [chainable : LawfulZipOperator α f] :
     ∀ (idx : Nat) (hidx : idx < curr),
       (go aig curr s hcurr lhs rhs f).vec.get idx (by omega)
@@ -198,7 +198,7 @@ theorem go_get {aig : AIG α} (curr : Nat) (hcurr : curr ≤ len) (s : RefVec ai
 
 theorem go_denote_mem_prefix {aig : AIG α} (curr : Nat) (hcurr : curr ≤ len)
     (s : RefVec aig curr) (lhs rhs : RefVec aig len)
-    (f : (aig : AIG α) → BinaryInput aig → Entrypoint α) [LawfulOperator α BinaryInput f]
+    (f : (aig : AIG α)  BinaryInput aig  Entrypoint α) [LawfulOperator α BinaryInput f]
     [chainable : LawfulZipOperator α f] (start : Nat) (hstart) :
     ⟦
       (go aig curr s hcurr lhs rhs f).aig,
@@ -216,11 +216,11 @@ theorem go_denote_mem_prefix {aig : AIG α} (curr : Nat) (hcurr : curr ≤ len)
 
 attribute [local simp] LawfulZipOperator.denote_prefix_cast_ref in
 theorem denote_go {aig : AIG α} (curr : Nat) (hcurr : curr ≤ len) (s : RefVec aig curr)
-    (lhs rhs : RefVec aig len) (f : (aig : AIG α) → BinaryInput aig → Entrypoint α)
+    (lhs rhs : RefVec aig len) (f : (aig : AIG α)  BinaryInput aig  Entrypoint α)
     [LawfulOperator α BinaryInput f] [chainable : LawfulZipOperator α f] :
     ∀ (idx : Nat) (hidx1 : idx < len),
       curr ≤ idx
-        →
+        
       ⟦
         (go aig curr s hcurr lhs rhs f).aig,
         (go aig curr s hcurr lhs rhs f).vec.get idx hidx1,

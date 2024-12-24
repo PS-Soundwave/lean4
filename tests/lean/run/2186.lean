@@ -13,7 +13,7 @@ namespace Test1
 
 structure A (α : Type u) where
   p : Prop
-  bar : p → True
+  bar : p  True
 
 structure B (α : Type _) extends A α where
   bar _ := trivial
@@ -34,7 +34,7 @@ variable (α : Type _)
 structure A extends LE α where
   foo : True
 structure B extends LE α where
-  bar : ∀ a b : α, a ≤ b → True
+  bar : ∀ a b : α, a ≤ b  True
 structure C extends A α, B α
 
 structure D extends C α where
@@ -53,12 +53,12 @@ example : E α where
 
 -- Second example
 structure X where
-  transform : α → α
+  transform : α  α
 
 structure A₁ extends X α where
   foo : True
 structure B₁ extends X α where
-  bar : ∀ a, transform a = transform (transform a) → True
+  bar : ∀ a, transform a = transform (transform a)  True
 structure C₁ extends A₁ α, B₁ α
 
 structure D₁ extends C₁ α where

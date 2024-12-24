@@ -23,7 +23,7 @@ theorem sizeOf_get [SizeOf α] (as : Array α) (i : Nat) (h : i < as.size) : siz
 
 /-- This tactic, added to the `decreasing_trivial` toolbox, proves that
 `sizeOf arr[i] < sizeOf arr`, which is useful for well founded recursions
-over a nested inductive like `inductive T | mk : Array T → T`. -/
+over a nested inductive like `inductive T | mk : Array T  T`. -/
 macro "array_get_dec" : tactic =>
   `(tactic| first
     -- subsumed by simp
@@ -37,7 +37,7 @@ macro_rules | `(tactic| decreasing_trivial) => `(tactic| array_get_dec)
 
 /-- This tactic, added to the `decreasing_trivial` toolbox, proves that `sizeOf a < sizeOf arr`
 provided that `a ∈ arr` which is useful for well founded recursions over a nested inductive like
-`inductive T | mk : Array T → T`. -/
+`inductive T | mk : Array T  T`. -/
 -- NB: This is analogue to tactic `sizeOf_list_dec`
 macro "array_mem_dec" : tactic =>
   `(tactic| first

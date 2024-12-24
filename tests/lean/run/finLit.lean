@@ -1,11 +1,11 @@
-def f : Fin 2 → Nat
+def f : Fin 2  Nat
   | 0 => 5
   | 1 => 45
 
 example : f 0 = 5 := rfl
 example : f 1 = 45 := rfl
 
-def g : Fin 11 → Nat
+def g : Fin 11  Nat
   | 0 => 5
   | 1 => 10
   | 2 => 15
@@ -18,15 +18,15 @@ def g : Fin 11 → Nat
   | 9 => 64
   | 10 => 21
 
-def h : Fin 15 → Nat
+def h : Fin 15  Nat
   | 0 => 5
   | 1 => 45
   | _ => 50
 
-def f' : Fin 2 → Nat
+def f' : Fin 2  Nat
   | ⟨0, _⟩ => 5
   | ⟨1, _⟩ => 45
 
-def f'' : Fin 2 → Nat
+def f'' : Fin 2  Nat
   | 0 => 5
   | ⟨1, _⟩ => 45

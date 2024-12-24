@@ -1,7 +1,7 @@
 import Lean
 open Lean Lean.PrettyPrinter
 
-def foo : PUnit → PUnit := id
+def foo : PUnit  PUnit := id
 def x   : PUnit := ()
 
 @[app_unexpander foo] def unexpandFoo : Unexpander := fun _ => `(sorry)

@@ -1,6 +1,6 @@
 
 
-def head {α} : (as : List α) → as ≠ [] → α
+def head {α} : (as : List α)  as ≠ []  α
 | [],    h => absurd rfl h
 | a::as, _ => a
 

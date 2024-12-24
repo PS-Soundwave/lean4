@@ -19,7 +19,7 @@ namespace Lake
 open System Lean Toml
 
 class ToToml (α : Type u) where
-  toToml : α → Value
+  toToml : α  Value
 
 export ToToml (toToml)
 
@@ -36,7 +36,7 @@ instance : ToToml Table := ⟨.table .missing⟩
 
 /-- Insert a value into a table unless it represents a nullish value. -/
 class SmartInsert (α : Type u) where
-  smartInsert (k : Name) : α → Table → Table
+  smartInsert (k : Name) : α  Table  Table
 
 namespace Toml.Table
 

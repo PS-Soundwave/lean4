@@ -9,7 +9,7 @@ def mul10 (n : Nat) := n*10
 def inc (n : Nat) := n+1
 
 unsafe def evalNatFn (fName : Name) (n : Nat) : IO Unit :=
-do f ← evalConst (Nat → Nat) fName,
+do f ← evalConst (Nat  Nat) fName,
    IO.println (f n)
 
 unsafe def evalVal (α : Type) [Inhabited α] [ToString α] (n : Name) : IO Unit :=

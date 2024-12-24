@@ -366,7 +366,7 @@ def mkUnfoldEq (declName : Name) (info : EqnInfoCore) : MetaM Name := withLCtx {
       }
       return name
 
-def getUnfoldFor? (declName : Name) (getInfo? : Unit → Option EqnInfoCore) : MetaM (Option Name) := do
+def getUnfoldFor? (declName : Name) (getInfo? : Unit  Option EqnInfoCore) : MetaM (Option Name) := do
   if let some info := getInfo? () then
     return some (← mkUnfoldEq declName info)
   else

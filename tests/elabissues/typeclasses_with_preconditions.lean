@@ -35,14 +35,14 @@ Here is a toy version of this problem:
 @[instance] axiom p2 : Prime 2
 @[instance] axiom p3 : Prime 3
 
-@[class] axiom Field : Type → Type
-@[class] axiom Ring : Type → Type
+@[class] axiom Field : Type  Type
+@[class] axiom Ring : Type  Type
 
 @[instance] axiom FieldToDiv (α : Type) [Field α] : Div α
 @[instance] axiom FieldToMul (α : Type) [Field α] : Mul α
 @[instance] axiom RingToMul (α : Type) [Ring α] : Mul α
 
-axiom mkType : Nat → Type
+axiom mkType : Nat  Type
 
 @[instance] axiom PrimeField (n : Nat) (Hp : Prime n · provePrimality) : Field (mkType n)
 @[instance] axiom NonPrimeRing (n : Nat) : Ring (mkType n)

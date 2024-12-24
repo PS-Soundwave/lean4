@@ -14,8 +14,8 @@ fun n i => if n == i then forceNat n else forceInt i -- works
 def f2 :=
 fun n i => if coe n == i then forceInt i else forceNat n -- works
 
-#check f1 -- Nat → Nat → Bool
-#check f2 -- Nat → Int → Bool
+#check f1 -- Nat  Nat  Bool
+#check f2 -- Nat  Int  Bool
 
 def f3 :=
 /- Fails.

@@ -198,7 +198,7 @@ def locationLinksOfInfo (kind : GoToKind) (ictx : InfoWithCtx)
               elaborators ← ci.runMetaM i.lctx <| locationLinksFromDecl i ei.elaborator
           let instIdx := info.numParams
           let appArgs := expr.getAppArgs
-          let rec extractInstances : Expr → RequestM (Array Name)
+          let rec extractInstances : Expr  RequestM (Array Name)
             | .const declName _ => do
               if ← ci.runMetaM i.lctx do Lean.Meta.isInstance declName then pure #[declName] else pure #[]
             | .app fn arg => do pure $ (← extractInstances fn).append (← extractInstances arg)
@@ -327,7 +327,7 @@ partial def handleDocumentHighlight (p : DocumentHighlightParams)
   let text := doc.meta.text
   let pos := text.lspPosToUtf8Pos p.position
 
-  let rec highlightReturn? (doRange? : Option Range) : Syntax → Option DocumentHighlight
+  let rec highlightReturn? (doRange? : Option Range) : Syntax  Option DocumentHighlight
     | `(doElem|return%$i $e) => Id.run do
       if let some range := i.getRange? then
         if range.contains pos then
@@ -367,7 +367,7 @@ structure NamespaceEntry where
   prevSiblings : Array DocumentSymbol
 
 def NamespaceEntry.finish (text : FileMap) (syms : Array DocumentSymbol) (endStx : Option Syntax) :
-    NamespaceEntry → Array DocumentSymbol
+    NamespaceEntry  Array DocumentSymbol
   | { name, stx, selection, prevSiblings, .. } =>
     -- we can assume that commands always have at least one position (see `parseCommand`)
     let range := match endStx with
@@ -526,7 +526,7 @@ def computeDeltaLspSemanticTokens (tokens : Array AbsoluteLspSemanticToken) : Se
 Collects all semantic tokens that can be deduced purely from `Syntax`
 without elaboration information.
 -/
-partial def collectSyntaxBasedSemanticTokens : (stx : Syntax) → Array LeanSemanticToken
+partial def collectSyntaxBasedSemanticTokens : (stx : Syntax)  Array LeanSemanticToken
   | `($e.$id:ident)    =>
     let tokens := collectSyntaxBasedSemanticTokens e
     tokens.push ⟨id, SemanticTokenType.property⟩

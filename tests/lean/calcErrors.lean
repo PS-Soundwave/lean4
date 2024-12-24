@@ -20,20 +20,20 @@ theorem ex3 (a b c : Nat) (h₁ : a = b) (h₂ : b = c) : a + b = 0 + c + b :=
 
 /-! Initial term mismatch -/
 
-theorem ex4 (p : Nat → Prop) (a b : Nat) (h₁ : p a) (h₂ : p b) : p c :=
+theorem ex4 (p : Nat  Prop) (a b : Nat) (h₁ : p a) (h₂ : p b) : p c :=
   calc  p a := h₁
         _   := h₂
 
 /-! Final term mismatch -/
 
-theorem ex5 (p : Nat → Nat → Prop) (a b : Nat) (h₁ : p a b) (h₂ : p b c) : p a c :=
+theorem ex5 (p : Nat  Nat  Prop) (a b : Nat) (h₁ : p a b) (h₂ : p b c) : p a c :=
   calc  p a b := h₁
         p _ c := h₂
 
 /-! Relation with bad signature -/
 
 infix:50 " ≅ "  => HEq
-instance {α β γ} : Trans (· ≅ · : α → β → Prop) (· ≅ · : β → γ → Prop) (· ≅ · : α → γ → Prop) where
+instance {α β γ} : Trans (· ≅ · : α  β  Prop) (· ≅ · : β  γ  Prop) (· ≅ · : α  γ  Prop) where
   trans h₁ h₂ := HEq.trans h₁ h₂
 
 theorem ex6 {a : α} {b : β} {c : γ} (h₁ : HEq a b) (h₂ : b ≅ c) : a ≅ c :=
@@ -45,7 +45,7 @@ abbrev HEqRel {α β} (a : α) (b : β) := HEq a b
 
 infix:50 "===" => HEqRel
 
-instance {α β γ} : Trans (HEqRel : α → β → Prop) (HEqRel : β → γ → Prop) (HEqRel : α → γ → Prop) where
+instance {α β γ} : Trans (HEqRel : α  β  Prop) (HEqRel : β  γ  Prop) (HEqRel : α  γ  Prop) where
   trans h₁ h₂ := HEq.trans h₁ h₂
 
 theorem ex7 {a : α} {b : β} {c : γ} (h₁ : a ≅ b) (h₂ : b ≅ c) : a === c :=

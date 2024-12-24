@@ -32,5 +32,5 @@ import Init.Data.Nat.Linear
 @[simp] protected theorem Char.sizeOf (a : Char) : sizeOf a = a.toNat + 4 := by
   cases a; simp_arith [Char.toNat]
 
-@[simp] protected theorem Subtype.sizeOf {α : Sort u_1} {p : α → Prop} (s : Subtype p) : sizeOf s = sizeOf s.val + 1 := by
+@[simp] protected theorem Subtype.sizeOf {α : Sort u_1} {p : α  Prop} (s : Subtype p) : sizeOf s = sizeOf s.val + 1 := by
   cases s; simp

@@ -1,4 +1,4 @@
-def f : Nat → Nat → Nat
+def f : Nat  Nat  Nat
   | 0,   y   => y
   | x+1, y+1 => f (x-2) y
   | x+1, 0   => 0
@@ -10,12 +10,12 @@ example : f 0 0 = 0 := rfl
 
 example : f 0 (y+1) = y+1 := rfl
 
-inductive Vector' (α : Type u) : Nat → Type u where
+inductive Vector' (α : Type u) : Nat  Type u where
   | nil  : Vector' α 0
-  | cons : α → Vector' α n → Vector' α (n+1)
+  | cons : α  Vector' α n  Vector' α (n+1)
 
 namespace Vector'
-  def insert (a: α): Fin (n+1) → Vector' α n → Vector' α (n+1)
+  def insert (a: α): Fin (n+1)  Vector' α n  Vector' α (n+1)
   | ⟨0  , _⟩,        xs => cons a   xs
   | ⟨i+1, h⟩, cons x xs => cons x $ xs.insert a ⟨i, Nat.lt_of_succ_lt_succ h⟩
 

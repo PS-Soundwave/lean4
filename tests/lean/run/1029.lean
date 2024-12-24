@@ -1,2 +1,2 @@
 inductive Foo : Type
-  | mk : 0 = 1 → Foo → Foo
+  | mk : 0 = 1  Foo  Foo

@@ -6,9 +6,9 @@ def fooSimple (n : Nat) : Prop :=
 lemma fooSimple' : fooSimple 0 :=
   by constructor
 
-def fooPat : Nat → Prop
+def fooPat : Nat  Prop
   | 0   => True
   | _+1 => False
 
-lemma fooPat' : (x : Nat) → fooPat x → x = 0
+lemma fooPat' : (x : Nat)  fooPat x  x = 0
   | 0, _ => rfl

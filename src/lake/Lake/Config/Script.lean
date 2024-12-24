@@ -20,7 +20,7 @@ The type of a `Script`'s function.
 Similar to the `main` function's signature, except that its monad is
 also equipped with information about the Lake configuration.
 -/
-abbrev ScriptFn := (args : List String) → ScriptM ExitCode
+abbrev ScriptFn := (args : List String)  ScriptM ExitCode
 
 /--
 A package `Script` is a `ScriptFn` definition that is

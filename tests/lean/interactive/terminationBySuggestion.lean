@@ -12,7 +12,7 @@ def onlyOneMeasure (n : Nat) := match n with
 termination_by?
    --^ codeAction
 
-def anonymousMeasure : Nat → Nat
+def anonymousMeasure : Nat  Nat
   | 0 => 0
   | .succ n => anonymousMeasure n
 termination_by?
@@ -26,7 +26,7 @@ termination_by?
    --^ codeAction
 decreasing_by decreasing_tactic
 
-def anonymousMeasureWF : Nat → Nat
+def anonymousMeasureWF : Nat  Nat
   | 0 => 0
   | .succ n => anonymousMeasureWF n
 termination_by?

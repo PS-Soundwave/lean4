@@ -1,4 +1,4 @@
-opaque f : Nat → Nat
+opaque f : Nat  Nat
 
 example (a : Nat) : True := by
   let x := a

@@ -4,10 +4,10 @@ The ``def`` command provides one important way of defining new objects.
 
 ```lean
 
-def foo : (Nat → Nat) → Nat :=
+def foo : (Nat  Nat)  Nat :=
   fun f => f 0
 
-#check foo   -- (Nat → Nat) → Nat
+#check foo   -- (Nat  Nat)  Nat
 #print foo
 ```
 
@@ -15,7 +15,7 @@ We can omit the type when Lean has enough information to infer it:
 
 ```lean
 def foo :=
-  fun (f : Nat → Nat) => f 0
+  fun (f : Nat  Nat) => f 0
 ```
 
 The general form of a definition is ``def foo : α := bar``. Lean can usually infer the type ``α``, but it is often a good idea to write it explicitly.
@@ -39,7 +39,7 @@ def square (x : Nat) :=
 #reduce square 3  -- 9
 #eval square 3    -- 9
 
-def doTwice (f : Nat → Nat) (x : Nat) : Nat :=
+def doTwice (f : Nat  Nat) (x : Nat) : Nat :=
   f (f x)
 
 #eval doTwice double 2   -- 8
@@ -48,19 +48,19 @@ def doTwice (f : Nat → Nat) (x : Nat) : Nat :=
 These definitions are equivalent to the following:
 
 ```lean
-def double : Nat → Nat :=
+def double : Nat  Nat :=
   fun x => x + x
 
-def square : Nat → Nat :=
+def square : Nat  Nat :=
   fun x => x * x
 
-def doTwice : (Nat → Nat) → Nat → Nat :=
+def doTwice : (Nat  Nat)  Nat  Nat :=
   fun f x => f (f x)
 ```
 
 We can even use this approach to specify arguments that are types:
 
 ```lean
-def compose (α β γ : Type) (g : β → γ) (f : α → β) (x : α) : γ :=
+def compose (α β γ : Type) (g : β  γ) (f : α  β) (x : α) : γ :=
   g (f x)
 ```

@@ -30,7 +30,7 @@ partial def updateTypes (e eNew : Expr) (entries : Array Entry) (i : Nat) : Meta
   else
     pure entries
 
-partial def generalizeTelescopeAux {α} (k : Array Expr → MetaM α)
+partial def generalizeTelescopeAux {α} (k : Array Expr  MetaM α)
     (entries : Array Entry) (i : Nat) (fvars : Array Expr) : MetaM α := do
   if h : i < entries.size then
     let replace (baseUserName : Name) (e : Expr) (type : Expr) : MetaM α := do
@@ -85,7 +85,7 @@ open GeneralizeTelescope
     (x_1 : Nat) (xs : Vec Nat n) (x_2 : Vec Nat x_1)
   ```
   and the type for the new variable abstracting `h` is `xs = x_2` which is not type correct. -/
-def generalizeTelescope {α} (es : Array Expr) (k : Array Expr → MetaM α) : MetaM α := do
+def generalizeTelescope {α} (es : Array Expr) (k : Array Expr  MetaM α) : MetaM α := do
   let es ← es.mapM fun e => do
     let type ← inferType e
     let type ← instantiateMVars type

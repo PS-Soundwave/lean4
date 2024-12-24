@@ -1,9 +1,9 @@
-class OfNatSound (α : Type u) [Add α] [(n : Nat) → OfNat α n] : Prop where
+class OfNatSound (α : Type u) [Add α] [(n : Nat)  OfNat α n] : Prop where
   ofNat_add (n m : Nat) : (OfNat.ofNat n : α) + OfNat.ofNat m = OfNat.ofNat (n+m)
 
 export OfNatSound (ofNat_add)
 
-theorem ex1 {α : Type u} [Add α] [(n : Nat) → OfNat α n] [OfNatSound α] : (10000000 : α) + 10000000 = 20000000 :=
+theorem ex1 {α : Type u} [Add α] [(n : Nat)  OfNat α n] [OfNatSound α] : (10000000 : α) + 10000000 = 20000000 :=
   ofNat_add ..
 
 class One (α : Type u) where
@@ -22,7 +22,7 @@ class S (α : Type u) extends Add α, Mul α, Zero α, One α where
   left_distrib (a b c : α) : a * (b + c) = a * b + a * c
 
 -- Very simply default `ofNat` for `S`
-protected def S.ofNat (α : Type u) [S α] : Nat → α
+protected def S.ofNat (α : Type u) [S α] : Nat  α
   | 0   => 0
   | n+1 => S.ofNat α n + 1
 

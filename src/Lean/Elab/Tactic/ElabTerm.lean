@@ -79,7 +79,7 @@ During the execution of `x`:
 
 On failure, the main goal remains at the front of the goal list.
 -/
-def closeMainGoalUsing (tacName : Name) (x : Expr → Name → TacticM Expr) (checkNewUnassigned := true) : TacticM Unit := do
+def closeMainGoalUsing (tacName : Name) (x : Expr  Name  TacticM Expr) (checkNewUnassigned := true) : TacticM Unit := do
   let mvarCounterSaved := (← getMCtx).mvarCounter
   let mvarId ← popMainGoal
   Tactic.tryCatch
@@ -135,7 +135,7 @@ def withCollectingNewGoalsFrom (k : TacticM Expr) (parentTag : Name) (tagSuffix 
     withTheReader Term.Context (fun ctx => { ctx with holesAsSyntheticOpaque := ctx.holesAsSyntheticOpaque || allowNaturalHoles }) do
       /-
       We also enable the assignment of synthetic metavariables, otherwise we will fail to
-      elaborate terms such as `f _ x` where `f : (α : Type) → α → α` and `x : A`.
+      elaborate terms such as `f _ x` where `f : (α : Type)  α  α` and `x : A`.
 
       IMPORTANT: This is not a perfect solution. For example, `isDefEq` will be able assign metavariables associated with `by ...`.
       This should not be an immediate problem since this feature is only used to implement `refine'`. If it becomes
@@ -251,7 +251,7 @@ def refineCore (stx : Syntax) (tagSuffix : Name) (allowNaturalHoles : Bool) : Ta
    ```
    where `s ≤ t` here is defined as
    ```
-   ∀ {x : α}, x ∈ s → x ∈ t
+   ∀ {x : α}, x ∈ s  x ∈ t
    ```
 -/
 def elabTermForApply (stx : Syntax) (mayPostpone := true) : TacticM Expr := do
@@ -271,7 +271,7 @@ def getFVarId (id : Syntax) : TacticM FVarId := withRef id <| withMainContext do
 def getFVarIds (ids : Array Syntax) : TacticM (Array FVarId) := do
   withMainContext do ids.mapM getFVarId
 
-def evalApplyLikeTactic (tac : MVarId → Expr → MetaM (List MVarId)) (e : Syntax) : TacticM Unit := do
+def evalApplyLikeTactic (tac : MVarId  Expr  MetaM (List MVarId)) (e : Syntax) : TacticM Unit := do
   withMainContext do
     let mut val ← instantiateMVars (← elabTermForApply e)
     if val.isMVar then
@@ -279,7 +279,7 @@ def evalApplyLikeTactic (tac : MVarId → Expr → MetaM (List MVarId)) (e : Syn
       If `val` is a metavariable, we force the elaboration of postponed terms.
       This is useful for producing a more useful error message in examples such as
       ```
-      example (h : P) : P ∨ Q := by
+      example (h : P) : P  Q := by
         apply .inl
       ```
       Recall that `apply` elaborates terms without using the expected type,

@@ -2,7 +2,7 @@ import Lean
 namespace Lean.Elab.Command
 open Lean
 -- to get around missing structure notation support
-def modifyEnv (f : Environment → Environment) : CommandElabM Unit :=
+def modifyEnv (f : Environment  Environment) : CommandElabM Unit :=
 modify $ fun s => { s with env := f s.env }
 end Lean.Elab.Command
 
@@ -31,7 +31,7 @@ match (aliasExtension.getState env).find? (`_subst ++ a) with
 | none    => []
 | some es => es
 
-def checkPrev (p : Syntax → Bool) (errorMsg : String) : Parser :=
+def checkPrev (p : Syntax  Bool) (errorMsg : String) : Parser :=
 { fn := fun c s =>
   let prev := s.stxStack.back;
   if p prev then s else s.mkError errorMsg }

@@ -1,8 +1,8 @@
 namespace SillyParam
 
 set_option linter.unusedVariables false in
-theorem nat_rec_with_string (some_param : String) {motive : Nat → Prop}
-  (zero : motive .zero) (succ : ∀ n, motive n → motive (.succ n)) : ∀ n, motive n :=
+theorem nat_rec_with_string (some_param : String) {motive : Nat  Prop}
+  (zero : motive .zero) (succ : ∀ n, motive n  motive (.succ n)) : ∀ n, motive n :=
   @Nat.rec motive zero succ
 
 example (n m : Nat) (h : n ≠ zero) : Nat.add m n ≠ zero := by
@@ -17,10 +17,10 @@ end SillyParam
 
 namespace RestrictedMotive
 
-axiom Restriction : (Nat → Prop) → Prop
+axiom Restriction : (Nat  Prop)  Prop
 
-axiom restricted_induction {motive : Nat → Prop} (h : Restriction motive)
-  (zero : motive .zero) (succ : ∀ n, motive n → motive (.succ n)) : ∀ n, motive n
+axiom restricted_induction {motive : Nat  Prop} (h : Restriction motive)
+  (zero : motive .zero) (succ : ∀ n, motive n  motive (.succ n)) : ∀ n, motive n
 
 example (n m : Nat) (h : n ≠ zero) : Nat.add m n ≠ zero := by
   induction n using restricted_induction
@@ -35,8 +35,8 @@ end RestrictedMotive
 
 namespace DownInduction
 
-axiom down_induction {motive : Nat → Prop} (u : Nat) (x : Nat)
-  (le_u : x ≤ u) (start : motive u) (step : ∀ x, x < u → motive (x + 1) → motive x) : motive x
+axiom down_induction {motive : Nat  Prop} (u : Nat) (x : Nat)
+  (le_u : x ≤ u) (start : motive u) (step : ∀ x, x < u  motive (x + 1)  motive x) : motive x
 
 example (n m : Nat) (h : m * m < 100) (h2 : n ≤ m) : n * n < 100 := by
   induction n using down_induction

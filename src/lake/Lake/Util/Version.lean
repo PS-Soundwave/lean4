@@ -236,7 +236,7 @@ open Elab Term Meta
 
 /-- Parses a version from a string. -/
 class DecodeVersion (α : Type u) where
-  decodeVersion : String → Except String α
+  decodeVersion : String  Except String α
 
 export DecodeVersion (decodeVersion)
 

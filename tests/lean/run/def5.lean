@@ -1,6 +1,6 @@
 --
 
-def fib : Nat → Nat
+def fib : Nat  Nat
 | 0 | 1 => 1
 | n+2 => fib n + fib (n+1)
 

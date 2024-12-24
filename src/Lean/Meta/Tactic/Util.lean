@@ -95,7 +95,7 @@ def _root_.Lean.MVarId.getNondepPropHyps (mvarId : MVarId) : MetaM (Array FVarId
           result := result.push localDecl.fvarId
       return result
 
-partial def saturate (mvarId : MVarId) (x : MVarId → MetaM (Option (List MVarId))) : MetaM (List MVarId) := do
+partial def saturate (mvarId : MVarId) (x : MVarId  MetaM (Option (List MVarId))) : MetaM (List MVarId) := do
   let (_, r) ← go mvarId |>.run #[]
   return r.toList
 where

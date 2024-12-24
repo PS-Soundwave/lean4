@@ -78,7 +78,7 @@ where
       mkForallFVars xs (← mkArrow (mkAppN (mkIndValConst indVal) xs) t)
     addMotives motives numParams header
 
-  addMotives (motives : Array (Name × Expr)) (numParams : Nat) : Expr → MetaM Expr :=
+  addMotives (motives : Array (Name × Expr)) (numParams : Nat) : Expr  MetaM Expr :=
     motives.foldrM (fun (motiveName, motive) t =>
       forallTelescopeReducing t fun xs s => do
         let motiveType ← instantiateForall motive xs[:numParams]
@@ -165,7 +165,7 @@ where
       (vars : Variables)
       (binder : Expr)
       (domain : Expr)
-      {α : Type} (k : Nat → Expr → MetaM α) : MetaM α := do
+      {α : Type} (k : Nat  Expr  MetaM α) : MetaM α := do
     forallTelescopeReducing domain fun xs t => do
       let fail _ := do
         throwError "only trivial inductive applications supported in premises:{indentExpr t}"
@@ -190,7 +190,7 @@ where
       (indValIdx : Nat)
       (binder : Expr)
       (domain : Expr)
-      {α : Type} (k : Expr → MetaM α) : MetaM α := do
+      {α : Type} (k : Expr  MetaM α) : MetaM α := do
     forallTelescopeReducing domain fun xs t => do
       let t ← whnf t
       t.withApp fun _ args => do
@@ -341,7 +341,7 @@ where
       (params : Array Expr)
       (motives : Array Expr)
       (idx : Nat)
-      (motive : Name × Expr) : MetaM $ Name × (Array Expr → MetaM Expr) := do
+      (motive : Name × Expr) : MetaM $ Name × (Array Expr  MetaM Expr) := do
     let name :=
       if ctx.motives.size > 1
       then mkFreshUserName <| .mkSimple s!"ih_{idx + 1}"
@@ -546,7 +546,7 @@ where
         loop (mkApp belowCtor a) belowFieldOpts (belowFields.push $ Pattern.var a.fvarId!) (additionalFVars.push localDecl)
     loop belowCtor belowFieldOpts #[] #[]
 
-  toInaccessible : Pattern → MetaM Pattern
+  toInaccessible : Pattern  MetaM Pattern
   | Pattern.inaccessible p => return Pattern.inaccessible p
   | Pattern.var v => return Pattern.var v
   | p => return Pattern.inaccessible $ ←p.toExpr

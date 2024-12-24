@@ -25,7 +25,7 @@ syntax buildDeclSig :=
 abbrev mkModuleFacetDecl
   (α) (facet : Name)
   [FamilyDef ModuleData facet (Job α)]
-  (f : Module → FetchM (Job α))
+  (f : Module  FetchM (Job α))
 : ModuleFacetDecl := .mk facet <| mkFacetJobConfig fun mod => do
   withRegisterJob (mod.facet facet |>.key.toSimpleString)
     (f mod)
@@ -60,7 +60,7 @@ kw:"module_facet " sig:buildDeclSig : command => withRef kw do
 abbrev mkPackageFacetDecl
   (α) (facet : Name)
   [FamilyDef PackageData facet (Job α)]
-  (f : Package → FetchM (Job α))
+  (f : Package  FetchM (Job α))
 : PackageFacetDecl := .mk facet <| mkFacetJobConfig fun pkg => do
   withRegisterJob (pkg.facet facet |>.key.toSimpleString)
     (f pkg)
@@ -95,7 +95,7 @@ kw:"package_facet " sig:buildDeclSig : command => withRef kw do
 abbrev mkLibraryFacetDecl
   (α) (facet : Name)
   [FamilyDef LibraryData facet (Job α)]
-  (f : LeanLib → FetchM (Job α))
+  (f : LeanLib  FetchM (Job α))
 : LibraryFacetDecl := .mk facet <| mkFacetJobConfig fun lib => do
   withRegisterJob (lib.facet facet |>.key.toSimpleString)
     (f lib)
@@ -134,7 +134,7 @@ kw:"library_facet " sig:buildDeclSig : command => withRef kw do
 abbrev mkTargetDecl
   (α) (pkgName target : Name)
   [FamilyDef CustomData (pkgName, target) (Job α)]
-  (f : NPackage pkgName → FetchM (Job α))
+  (f : NPackage pkgName  FetchM (Job α))
 : TargetDecl := .mk pkgName target <| mkTargetJobConfig fun pkg => do
   withRegisterJob (pkg.target target |>.key.toSimpleString)
     (f pkg)

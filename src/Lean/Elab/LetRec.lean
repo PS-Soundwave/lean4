@@ -74,7 +74,7 @@ private def mkLetRecDeclView (letRec : Syntax) : TermElabM LetRecView := do
       throwUnsupportedSyntax
   return { decls, body := letRec[3] }
 
-private partial def withAuxLocalDecls {α} (views : Array LetRecDeclView) (k : Array Expr → TermElabM α) : TermElabM α :=
+private partial def withAuxLocalDecls {α} (views : Array LetRecDeclView) (k : Array Expr  TermElabM α) : TermElabM α :=
   let rec loop (i : Nat) (fvars : Array Expr) : TermElabM α :=
     if h : i < views.size then
       let view := views[i]

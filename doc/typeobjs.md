@@ -6,14 +6,14 @@ are first-class citizens, which is to say that they themselves are objects. For 
 ```lean
 #check Nat               -- Type
 #check Bool              -- Type
-#check Nat → Bool        -- Type
+#check Nat  Bool        -- Type
 #check Nat × Bool        -- Type
-#check Nat → Nat         -- ...
-#check Nat × Nat → Nat
-#check Nat → Nat → Nat
-#check Nat → (Nat → Nat)
-#check Nat → Nat → Bool
-#check (Nat → Nat) → Nat
+#check Nat  Nat         -- ...
+#check Nat × Nat  Nat
+#check Nat  Nat  Nat
+#check Nat  (Nat  Nat)
+#check Nat  Nat  Bool
+#check (Nat  Nat)  Nat
 ```
 
 We see that each one of the expressions above is an object of type ``Type``. We can also declare new constants and constructors for types:
@@ -21,18 +21,18 @@ We see that each one of the expressions above is an object of type ``Type``. We 
 ```lean
 constant α : Type
 constant β : Type
-constant F : Type → Type
-constant G : Type → Type → Type
+constant F : Type  Type
+constant G : Type  Type  Type
 
 #check α        -- Type
 #check F α      -- Type
 #check F Nat    -- Type
-#check G α      -- Type → Type
+#check G α      -- Type  Type
 #check G α β    -- Type
 #check G α Nat  -- Type
 ```
 
-Indeed, we have already seen an example of a function of type ``Type → Type → Type``, namely, the Cartesian product.
+Indeed, we have already seen an example of a function of type ``Type  Type  Type``, namely, the Cartesian product.
 
 ```lean
 constant α : Type
@@ -91,13 +91,13 @@ We want some operations, however, to be *polymorphic* over type universes. For e
 make sense for any type ``α``, no matter which type universe ``α`` lives in. This explains the type annotation of the function ``List``:
 
 ```lean
-#check List    -- Type u_1 → Type u_1
+#check List    -- Type u_1  Type u_1
 ```
 
 Here ``u_1`` is a variable ranging over type levels. The output of the ``#check`` command means that whenever ``α`` has type ``Type n``, ``List α`` also has type ``Type n``. The function ``Prod`` is similarly polymorphic:
 
 ```lean
-#check Prod    -- Type u_1 → Type u_2 → Type (max u_1 u_2)
+#check Prod    -- Type u_1  Type u_2  Type (max u_1 u_2)
 ```
 
 To define polymorphic constants and variables, Lean allows us to declare universe variables explicitly using the `universe` command:

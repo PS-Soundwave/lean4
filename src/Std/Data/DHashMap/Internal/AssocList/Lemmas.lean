@@ -22,7 +22,7 @@ open List (Perm perm_middle)
 
 universe w v u
 
-variable {α : Type u} {β : α → Type v} {γ : α → Type w} {δ : Type w} {m : Type w → Type w} [Monad m]
+variable {α : Type u} {β : α  Type v} {γ : α  Type w} {δ : Type w} {m : Type w  Type w} [Monad m]
 
 namespace Std.DHashMap.Internal.AssocList
 
@@ -33,7 +33,7 @@ open Internal.List
     (l.cons a b).toList = ⟨a, b⟩ :: l.toList := rfl
 
 @[simp]
-theorem foldl_eq {f : δ → (a : α) → β a → δ} {init : δ} {l : AssocList α β} :
+theorem foldl_eq {f : δ  (a : α)  β a  δ} {init : δ} {l : AssocList α β} :
     l.foldl f init = l.toList.foldl (fun d p => f d p.1 p.2) init := by
   induction l generalizing init <;> simp_all [foldl, Id.run, foldlM]
 
@@ -152,7 +152,7 @@ theorem toList_erase [BEq α] {l : AssocList α β} {a : α} :
   · simp [erase]
   · next k v t ih => cases h : k == a <;> simp_all [erase, List.eraseKey_cons]
 
-theorem toList_filterMap {f : (a : α) → β a → Option (γ a)} {l : AssocList α β} :
+theorem toList_filterMap {f : (a : α)  β a  Option (γ a)} {l : AssocList α β} :
     Perm (l.filterMap f).toList (l.toList.filterMap fun p => (f p.1 p.2).map (⟨p.1, ·⟩)) := by
   rw [filterMap]
   suffices ∀ l l', Perm (filterMap.go f l l').toList
@@ -170,7 +170,7 @@ theorem toList_filterMap {f : (a : α) → β a → Option (γ a)} {l : AssocLis
       simp only [toList_cons, List.cons_append]
       exact perm_middle.symm.trans (by simp [h])
 
-theorem toList_map {f : (a : α) → β a → γ a} {l : AssocList α β} :
+theorem toList_map {f : (a : α)  β a  γ a} {l : AssocList α β} :
     Perm (l.map f).toList (l.toList.map fun p => ⟨p.1, f p.1 p.2⟩) := by
   rw [map]
   suffices ∀ l l', Perm (map.go f l l').toList
@@ -184,7 +184,7 @@ theorem toList_map {f : (a : α) → β a → γ a} {l : AssocList α β} :
     refine (ih _).trans ?_
     simpa using perm_middle.symm
 
-theorem toList_filter {f : (a : α) → β a → Bool} {l : AssocList α β} :
+theorem toList_filter {f : (a : α)  β a  Bool} {l : AssocList α β} :
     Perm (l.filter f).toList (l.toList.filter fun p => f p.1 p.2) := by
   rw [filter]
   suffices ∀ l l', Perm (filter.go f l l').toList
@@ -199,12 +199,12 @@ theorem toList_filter {f : (a : α) → β a → Bool} {l : AssocList α β} :
     · exact (ih _).trans (by simpa using perm_middle.symm)
     · exact ih _
 
-theorem foldl_apply {l : AssocList α β} {acc : List δ} (f : (a : α) → β a → δ) :
+theorem foldl_apply {l : AssocList α β} {acc : List δ} (f : (a : α)  β a  δ) :
     l.foldl (fun acc k v => f k v :: acc) acc =
       (l.toList.map (fun p => f p.1 p.2)).reverse ++ acc := by
   induction l generalizing acc <;> simp_all [AssocList.foldl, AssocList.foldlM, Id.run]
 
-theorem foldr_apply {l : AssocList α β} {acc : List δ} (f : (a : α) → β a → δ) :
+theorem foldr_apply {l : AssocList α β} {acc : List δ} (f : (a : α)  β a  δ) :
     l.foldr (fun k v acc => f k v :: acc) acc =
       (l.toList.map (fun p => f p.1 p.2)) ++ acc := by
   induction l generalizing acc <;> simp_all [AssocList.foldr, AssocList.foldrM, Id.run]

@@ -164,9 +164,9 @@ inductive SuggestionText where
   /-- `TSyntax kind` used as suggested replacement text in the infoview. Note that while `TSyntax`
   is in general parameterized by a list of `SyntaxNodeKind`s, we only allow one here; this
   unambiguously guides pretty-printing. -/
-  | tsyntax {kind : SyntaxNodeKind} : TSyntax kind → SuggestionText
+  | tsyntax {kind : SyntaxNodeKind} : TSyntax kind  SuggestionText
   /-- A raw string to be used as suggested replacement text in the infoview. -/
-  | string : String → SuggestionText
+  | string : String  SuggestionText
   deriving Inhabited
 
 instance : ToMessageData SuggestionText where
@@ -184,7 +184,7 @@ namespace SuggestionText
 
 /-- Pretty-prints a `SuggestionText` as a `Format`. If the `SuggestionText` is some `TSyntax kind`,
 we use the appropriate pretty-printer; strings are coerced to `Format`s as-is. -/
-def pretty : SuggestionText → CoreM Format
+def pretty : SuggestionText  CoreM Format
   | .tsyntax (kind := kind) stx => ppCategory kind stx
   | .string text => return text
 
@@ -290,7 +290,7 @@ structure Suggestion where
   /-- How to construct the text that appears in the lightbulb menu from the suggestion text. If
   `none`, we use `fun ppSuggestionText => "Try this: " ++ ppSuggestionText`. Only the pretty-printed
   `suggestion : SuggestionText` is used here. -/
-  toCodeActionTitle? : Option (String → String) := none
+  toCodeActionTitle? : Option (String  String) := none
   deriving Inhabited
 
 /-- Converts a `Suggestion` to `Json` in `CoreM`. We need `CoreM` in order to pretty-print syntax.
@@ -374,7 +374,7 @@ The parameters are:
   * `messageData?`: an optional message to display in place of `suggestion` in the info diagnostic
     (only). The widget message uses only `suggestion`. If `messageData?` is `none`, we simply use
     `suggestion` instead.
-  * `toCodeActionTitle?`: an optional function `String → String` describing how to transform the
+  * `toCodeActionTitle?`: an optional function `String  String` describing how to transform the
     pretty-printed suggestion text into the code action text which appears in the lightbulb menu.
     If `none`, we simply prepend `"Try This: "` to the suggestion text.
 * `origSpan?`: a syntax object whose span is the actual text to be replaced by `suggestion`.
@@ -409,7 +409,7 @@ The parameters are:
   * `messageData?`: an optional message to display in place of `suggestion` in the info diagnostic
     (only). The widget message uses only `suggestion`. If `messageData?` is `none`, we simply use
     `suggestion` instead.
-  * `toCodeActionTitle?`: an optional function `String → String` describing how to transform the
+  * `toCodeActionTitle?`: an optional function `String  String` describing how to transform the
     pretty-printed suggestion text into the code action text which appears in the lightbulb menu.
     If `none`, we simply prepend `"Try This: "` to the suggestion text.
 * `origSpan?`: a syntax object whose span is the actual text to be replaced by `suggestion`.

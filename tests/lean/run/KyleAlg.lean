@@ -4,13 +4,13 @@ import Lean
 class OfNat (α : Type u) (n : Nat) where
   ofNat : α
 class Mul (α : Type u) where
-  mul : α → α → α
+  mul : α  α  α
 class Add (α : Type u) where
-  add : α → α → α
+  add : α  α  α
 -/
 
 class Inv (α : Type u) where
-    inv : α → α
+    inv : α  α
 
 postfix:max "⁻¹" => Inv.inv
 
@@ -24,50 +24,50 @@ instance [One α] : OfNat α (nat_lit 1) where
 export Zero (zero)
 
 class MulComm (α : Type u) [Mul α] : Prop where
-    mulComm : {a b : α} → a * b = b * a
+    mulComm : {a b : α}  a * b = b * a
 export MulComm (mulComm)
 
 class MulAssoc (α : Type u) [Mul α] : Prop where
-    mulAssoc : {a b c : α} → a * b * c = a * (b * c)
+    mulAssoc : {a b c : α}  a * b * c = a * (b * c)
 export MulAssoc (mulAssoc)
 
 class OneUnit (α : Type u) [Mul α] [One α] : Prop where
-    oneMul : {a : α} → 1 * a = a
-    mulOne : {a : α} → a * 1 = a
+    oneMul : {a : α}  1 * a = a
+    mulOne : {a : α}  a * 1 = a
 export OneUnit (oneMul mulOne)
 
 class AddComm (α : Type u) [Add α] : Prop where
-    addComm : {a b : α} → a + b = b + a
+    addComm : {a b : α}  a + b = b + a
 export AddComm (addComm)
 
 class AddAssoc (α : Type u) [Add α] : Prop where
-    addAssoc : {a b c : α} → a + b + c = a + (b + c)
+    addAssoc : {a b c : α}  a + b + c = a + (b + c)
 export AddAssoc (addAssoc)
 
 class ZeroUnit (α : Type u) [Add α] [Zero α] : Prop where
-    zeroAdd : {a : α} → 0 + a = a
-    addZero : {a : α} → a + 0 = a
+    zeroAdd : {a : α}  0 + a = a
+    addZero : {a : α}  a + 0 = a
 export ZeroUnit (zeroAdd addZero)
 
 class InvMul (α : Type u) [Mul α] [One α] [Inv α] : Prop where
-    invMul : {a : α} → a⁻¹ * a = 1
+    invMul : {a : α}  a⁻¹ * a = 1
 export InvMul (invMul)
 
 class NegAdd (α : Type u) [Add α] [Zero α] [Neg α] : Prop where
-    negAdd : {a : α} → -a + a = 0
+    negAdd : {a : α}  -a + a = 0
 export NegAdd (negAdd)
 
 class ZeroMul (α : Type u) [Mul α] [Zero α] : Prop where
-    zeroMul : {a : α} → 0 * a = 0
+    zeroMul : {a : α}  0 * a = 0
 export ZeroMul (zeroMul)
 
 class Distrib (α : Type u) [Add α] [Mul α] : Prop where
-    leftDistrib : {a b c : α} → a * (b + c) = a * b + a * c
-    rightDistrib : {a b c : α} → (a + b) * c = a * c + b * c
+    leftDistrib : {a b c : α}  a * (b + c) = a * b + a * c
+    rightDistrib : {a b c : α}  (a + b) * c = a * c + b * c
 export Distrib (leftDistrib rightDistrib)
 
 class Domain (α : Type u) [Mul α] [Zero α] : Prop where
-    eqZeroOrEqZeroOfMulEqZero : {a b : α} → a * b = 0 → a = 0 ∨ b = 0
+    eqZeroOrEqZeroOfMulEqZero : {a b : α}  a * b = 0  a = 0  b = 0
 export Domain (eqZeroOrEqZeroOfMulEqZero)
 
 class Semigroup (α : Type u) extends Mul α, MulAssoc α
@@ -181,7 +181,7 @@ instance [Inv α] [Inv β] : Inv (α × β) where
 instance [One α] [One β] : One (α × β) where
     one := (1, 1)
 
-theorem Product.ext : {p q : α × β} → p.1 = q.1 → p.2 = q.2 → p = q
+theorem Product.ext : {p q : α × β}  p.1 = q.1  p.2 = q.2  p = q
     | (a, b), (c, d) => by simp_all
 
 instance [Semigroup α] [Semigroup β] : Semigroup (α × β) where

@@ -2,15 +2,15 @@ import Lean
 
 mutual
 
-inductive Vect (α : Type u) (β : Type v) : Nat → Nat → Type max u v where
+inductive Vect (α : Type u) (β : Type v) : Nat  Nat  Type max u v where
   | nil   : Vect α β 0 0
-  | lst   : List (Array (Vect α β 0 0)) → Vect α β 0 0
-  | cons1 : {n m : Nat} → TreeV α β n → Vect α β n m → Vect α β (n+1) m
-  | cons2 : {n m : Nat} → TreeV α β m → Vect α β n m → Vect α β n (m+1)
+  | lst   : List (Array (Vect α β 0 0))  Vect α β 0 0
+  | cons1 : {n m : Nat}  TreeV α β n  Vect α β n m  Vect α β (n+1) m
+  | cons2 : {n m : Nat}  TreeV α β m  Vect α β n m  Vect α β n (m+1)
 
-inductive TreeV (α : Type u) (β : Type v) : Nat → Type max u v where
-  | diag   : {n : Nat}   → Vect α β n n → TreeV α β n
-  | lower  : {n m : Nat} → n < m → Vect α β n m → TreeV α β m
+inductive TreeV (α : Type u) (β : Type v) : Nat  Type max u v where
+  | diag   : {n : Nat}    Vect α β n n  TreeV α β n
+  | lower  : {n m : Nat}  n < m  Vect α β n m  TreeV α β m
 
 end
 
@@ -45,11 +45,11 @@ instance {α β n} [ToString α] [ToString β] : ToString (TreeV α β n) where
 namespace Test
 mutual
 inductive Foo (α : Type) where
-  | mk : List (Bla α) → Foo α
-  | leaf : α → Foo α
+  | mk : List (Bla α)  Foo α
+  | leaf : α  Foo α
 inductive Bla (α : Type) where
   | nil : Bla α
-  | cons : Foo α → Bla α → Bla α
+  | cons : Foo α  Bla α  Bla α
 end
 
 
@@ -112,7 +112,7 @@ structure Header where
   targetName : Name
 
 abbrev MkAltRhs :=
-  ContextCore → (ctorName : Name) → (ctorArgs : Array (Syntax × Expr)) → TermElabM Syntax
+  ContextCore  (ctorName : Name)  (ctorArgs : Array (Syntax × Expr))  TermElabM Syntax
 
 structure Context extends ContextCore where
   mkAltRhs : MkAltRhs

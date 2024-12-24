@@ -5,7 +5,7 @@ universe u
 -- {α : Type} works as expected, as does specializing this lemma for `Nat`.
 @[simp]
 theorem tsub_eq_zero_of_le {α : Type u} [LE α] [Sub α] [OfNat α 0] {a b : α} :
-    a ≤ b → a - b = 0 := by sorry
+    a ≤ b  a - b = 0 := by sorry
 
 set_option tactic.simp.trace true
 

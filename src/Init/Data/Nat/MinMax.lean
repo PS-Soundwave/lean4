@@ -28,7 +28,7 @@ protected theorem min_eq_left {a b : Nat} (h : a ≤ b) : min a b = a := if_pos 
 protected theorem min_eq_right {a b : Nat} (h : b ≤ a) : min a b = b :=
   Nat.min_comm .. ▸ Nat.min_eq_left h
 
-protected theorem le_min_of_le_of_le {a b c : Nat} : a ≤ b → a ≤ c → a ≤ min b c := by
+protected theorem le_min_of_le_of_le {a b c : Nat} : a ≤ b  a ≤ c  a ≤ min b c := by
   intros; cases Nat.le_total b c with
   | inl h => rw [Nat.min_eq_left h]; assumption
   | inr h => rw [Nat.min_eq_right h]; assumption

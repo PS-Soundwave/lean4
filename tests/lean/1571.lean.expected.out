@@ -1,2 +1,2 @@
-True → ∃ a, a = a : Prop
-True → ∃ b, b = b : Prop
+True  ∃ a, a = a : Prop
+True  ∃ b, b = b : Prop

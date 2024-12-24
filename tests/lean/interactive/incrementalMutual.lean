@@ -33,7 +33,7 @@ end
 /-! #4328 incorrect info tree restore led to linter false-positives. -/
 
 -- RESET
-def map' {α β} (f : α → β) : List α → List β :=
+def map' {α β} (f : α  β) : List α  List β :=
   List.map f
           --^ collectDiagnostics
           --^ insert: "\n"

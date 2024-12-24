@@ -9,7 +9,7 @@ trace[Meta.debug] msg
 def checkM (x : MetaM Bool) : MetaM Unit :=
 unless (← x) do throwError "check failed"
 
-axiom Ax : forall (α β : Type), α → β → DecidableEq β
+axiom Ax : forall (α β : Type), α  β  DecidableEq β
 
 set_option trace.Meta.debug true
 
@@ -40,9 +40,9 @@ forallBoundedTelescope cinfo.type (some 10) $ fun xs body => do { print xs; chec
 pure ()
 
 /--
-info: [Meta.debug] (α β : Type) → α → β → DecidableEq β
-[Meta.debug] (β : Type) → ?α → β → DecidableEq β
-[Meta.debug] (b : ?β) → Decidable (?a = b)
+info: [Meta.debug] (α β : Type)  α  β  DecidableEq β
+[Meta.debug] (β : Type)  ?α  β  DecidableEq β
+[Meta.debug] (b : ?β)  Decidable (?a = b)
 [Meta.debug] Decidable (?a = ?b)
 [Meta.debug] Decidable (?a = ?b)
 [Meta.debug] #[α, β, a✝¹, a✝, a, b]

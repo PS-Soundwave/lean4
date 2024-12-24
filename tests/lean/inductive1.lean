@@ -19,7 +19,7 @@ mutual
 
 inductive T1 (x : Nat) : Type u
 
-inductive T2 (x : Nat) : Nat → Type v -- Error resulting universe mismatch
+inductive T2 (x : Nat) : Nat  Type v -- Error resulting universe mismatch
 
 end
 
@@ -95,16 +95,16 @@ unsafe inductive T2 : Type
 end
 
 -- Test11
-inductive T1 : Nat → Type
+inductive T1 : Nat  Type
 | z1 : T1 0
 | z2 -- constructor resulting type must be specified in inductive family declaration
 
 
 -- Test12
-inductive T1 : Nat → Type
+inductive T1 : Nat  Type
 | z1 : T1 -- unexpected constructor resulting type
 
-inductive T1 : Nat → Type
+inductive T1 : Nat  Type
 | z1 : Nat -- unexpected constructor resulting type
 
 
@@ -112,7 +112,7 @@ inductive T1 : Nat → Type
 
 inductive A (α : Type u) (β : Type v)
 | nil
-| protected cons : α → β → A α β → A α β
+| protected cons : α  β  A α β  A α β
 
 open A
 #check cons -- unknown `cons`, it is protected

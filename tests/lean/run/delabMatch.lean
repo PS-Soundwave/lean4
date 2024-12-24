@@ -8,7 +8,7 @@ import Lean
 Basic functionality
 -/
 /--
-info: def Nat.pred : Nat → Nat :=
+info: def Nat.pred : Nat  Nat :=
 fun x =>
   match x with
   | 0 => 0
@@ -17,7 +17,7 @@ fun x =>
 #guard_msgs in
 #print Nat.pred
 /--
-info: def List.head?.{u} : {α : Type u} → List α → Option α :=
+info: def List.head?.{u} : {α : Type u}  List α  Option α :=
 fun {α} x =>
   match x with
   | [] => none
@@ -87,10 +87,10 @@ Overapplication
 -/
 /--
 info: fun b =>
-  (match (motive := Bool → Bool → Bool) b with
+  (match (motive := Bool  Bool  Bool) b with
     | false => fun x => x
     | true => fun x => !x)
-    b : Bool → Bool
+    b : Bool  Bool
 -/
 #guard_msgs in
 #check (fun b : Bool => (match b with | false => fun x => x | true => fun x => !x) b)
@@ -109,7 +109,7 @@ set_option linter.unusedVariables false in
 info: fun b =>
   match b with
   | false => false
-  | a => b : Bool → Bool
+  | a => b : Bool  Bool
 -/
 #guard_msgs in
 #check fun b => foo.match_1 (fun _ => Bool) b (fun _ => false) fun a => b
@@ -119,7 +119,7 @@ info: fun b =>
 Underapplied, no `match` notation
 -/
 set_option linter.unusedVariables false in
-/-- info: fun b => foo.match_1 (fun x => Bool) b fun x => false : Bool → (Bool → Bool) → Bool -/
+/-- info: fun b => foo.match_1 (fun x => Bool) b fun x => false : Bool  (Bool  Bool)  Bool -/
 #guard_msgs in
 #check fun b => foo.match_1 (fun _ => Bool) b (fun _ => false)
 

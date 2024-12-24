@@ -29,7 +29,7 @@ inductive MatchKind
 open Lean.Parser Lean.Parser.Tactic Lean.Parser.Command
 
 /-- Converts a `colon` syntax into a `MatchKind` -/
-def colon.toMatchKind : TSyntax ``colon → Option MatchKind
+def colon.toMatchKind : TSyntax ``colon  Option MatchKind
   | `(colon| :) => some .defEq
   | `(colon| :~) => some (.defEq .default)
   | `(colon| :ₛ) => some .syntactic
@@ -37,7 +37,7 @@ def colon.toMatchKind : TSyntax ``colon → Option MatchKind
   | _ => none
 
 /-- Converts a `colonEq` syntax into a `MatchKind` -/
-def colonEq.toMatchKind : TSyntax ``colonEq → Option MatchKind
+def colonEq.toMatchKind : TSyntax ``colonEq  Option MatchKind
   | `(colonEq| :=) => some .defEq
   | `(colonEq| :=~) => some (.defEq .default)
   | `(colonEq| :=ₛ) => some .syntactic
@@ -45,7 +45,7 @@ def colonEq.toMatchKind : TSyntax ``colonEq → Option MatchKind
   | _ => none
 
 /-- Converts a `equal` syntax into a `MatchKind` -/
-def equal.toMatchKind : TSyntax ``equal → Option MatchKind
+def equal.toMatchKind : TSyntax ``equal  Option MatchKind
   | `(equal| =) => some .defEq
   | `(equal| =~) => some (.defEq .default)
   | `(equal| =ₛ) => some .syntactic
@@ -53,7 +53,7 @@ def equal.toMatchKind : TSyntax ``equal → Option MatchKind
   | _ => none
 
 /-- Applies the selected matching rule to two expressions. -/
-def MatchKind.isEq (a b : Expr) : MatchKind → MetaM Bool
+def MatchKind.isEq (a b : Expr) : MatchKind  MetaM Bool
   | .syntactic => return a.consumeMData == b.consumeMData
   | .alphaEq => return a.eqv b
   | .defEq red => withoutModifyingState <| withTransparency red <| Lean.Meta.isDefEqGuarded a b

@@ -16,12 +16,12 @@ inductive Expr
 
 open Std
 
-structure Variable {α : Sort u} (op : α → α → α) : Type u where
+structure Variable {α : Sort u} (op : α  α  α) : Type u where
   value : α
   neutral : Option $ PLift (LawfulIdentity op value)
 
 structure Context (α : Sort u) where
-  op : α → α → α
+  op : α  α  α
   assoc : Associative op
   comm : Option $ PLift $ Commutative op
   idem : Option $ PLift $ IdempotentOp op
@@ -29,14 +29,14 @@ structure Context (α : Sort u) where
   arbitrary : α
 
 class ContextInformation (α : Sort u) where
-  isNeutral : α → Nat → Bool
-  isComm : α → Bool
-  isIdem : α → Bool
+  isNeutral : α  Nat  Bool
+  isComm : α  Bool
+  isIdem : α  Bool
 
 class EvalInformation (α : Sort u) (β : Sort v) where
-  arbitrary : α → β
-  evalOp : α → β → β → β
-  evalVar : α → Nat → β
+  arbitrary : α  β
+  evalOp : α  β  β  β
+  evalVar : α  Nat  β
 
 def Context.var (ctx : Context α) (idx : Nat) : Variable ctx.op :=
   ctx.vars.getD idx ⟨ctx.arbitrary, none⟩
@@ -51,31 +51,31 @@ instance : EvalInformation (Context α) α where
   evalOp ctx := ctx.op
   evalVar ctx idx := ctx.var idx |>.value
 
-def eval (β : Sort u) [EvalInformation α β] (ctx : α) : (ex : Expr) → β
+def eval (β : Sort u) [EvalInformation α β] (ctx : α) : (ex : Expr)  β
   | Expr.var idx => EvalInformation.evalVar ctx idx
   | Expr.op l r => EvalInformation.evalOp ctx (eval β ctx l) (eval β ctx r)
 
-def Expr.toList : Expr → List Nat
+def Expr.toList : Expr  List Nat
   | Expr.var idx => [idx]
   | Expr.op l r => l.toList.append r.toList
 
-def evalList (β : Sort u) [EvalInformation α β] (ctx : α) : List Nat → β
+def evalList (β : Sort u) [EvalInformation α β] (ctx : α) : List Nat  β
   | [] => EvalInformation.arbitrary ctx
   | [x] => EvalInformation.evalVar ctx x
   | x :: xs => EvalInformation.evalOp ctx (EvalInformation.evalVar ctx x) (evalList β ctx xs)
 
-def insert (x : Nat) : List Nat → List Nat
+def insert (x : Nat) : List Nat  List Nat
   | [] => [x]
   | a :: as => if x < a then x :: a :: as else a :: insert x as
 
 def sort (xs : List Nat) : List Nat :=
-  let rec loop : List Nat → List Nat → List Nat
+  let rec loop : List Nat  List Nat  List Nat
     | acc, [] => acc
     | acc, x :: xs => loop (insert x acc) xs
   loop [] xs
 
 def mergeIdem (xs : List Nat) : List Nat :=
-  let rec loop : Nat → List Nat → List Nat
+  let rec loop : Nat  List Nat  List Nat
     | curr, next :: rest =>
       if curr = next then
         loop curr rest
@@ -87,13 +87,13 @@ def mergeIdem (xs : List Nat) : List Nat :=
   | [] => []
   | x :: xs => loop x xs
 
-def removeNeutrals [info : ContextInformation α] (ctx : α) : List Nat → List Nat
+def removeNeutrals [info : ContextInformation α] (ctx : α) : List Nat  List Nat
   | x :: xs =>
     match loop (x :: xs) with
     | [] => [x]
     | ys => ys
   | [] => []
-  where loop : List Nat → List Nat
+  where loop : List Nat  List Nat
     | x :: xs =>
       match info.isNeutral ctx x with
       | true => loop xs
@@ -107,11 +107,11 @@ def norm [info : ContextInformation α] (ctx : α) (e : Expr) : List Nat :=
   if info.isIdem ctx then mergeIdem xs else xs
 
 noncomputable def List.two_step_induction
-  {motive : List Nat → Sort u}
+  {motive : List Nat  Sort u}
   (l : List Nat)
   (empty : motive [])
   (single : ∀ a, motive [a])
-  (step : ∀ a b l, motive (b :: l) → motive (a :: b :: l))
+  (step : ∀ a b l, motive (b :: l)  motive (a :: b :: l))
   : motive l := by
   induction l with
   | nil => assumption
@@ -285,7 +285,7 @@ theorem Context.toList_nonEmpty (e : Expr) : e.toList ≠ [] := by
 theorem Context.unwrap_isNeutral
   {ctx : Context α}
   {x : Nat}
-  : ContextInformation.isNeutral ctx x = true → LawfulIdentity (EvalInformation.evalOp ctx) (EvalInformation.evalVar (β := α) ctx x) := by
+  : ContextInformation.isNeutral ctx x = true  LawfulIdentity (EvalInformation.evalOp ctx) (EvalInformation.evalVar (β := α) ctx x) := by
   simp [ContextInformation.isNeutral, Option.isSome, EvalInformation.evalOp, EvalInformation.evalVar]
   match (var ctx x).neutral with
   | some hn =>

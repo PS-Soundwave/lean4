@@ -16,7 +16,7 @@ macro a:term " ♬ " b:term : term => `(Foo.mk $a $b)
 
 #check 3 ♬ 4
 
-def foo (k : Nat → Nat) (n : Nat) : Nat := k (n+1)
+def foo (k : Nat  Nat) (n : Nat) : Nat := k (n+1)
 
 @[app_unexpander foo] def unexpandFooApp : Lean.PrettyPrinter.Unexpander
   | `(foo $k $a) => `(My.foo $k $a)

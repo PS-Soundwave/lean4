@@ -65,7 +65,7 @@ When implementing your own `CodeActionProvider`, we assume that no long-running 
 If you need to create a code-action with a long-running computation, you can use the `lazy?` field on `LazyCodeAction`
 to perform the computation after the user has clicked on the code action in their editor.
 -/
-def CodeActionProvider := CodeActionParams → Snapshot → RequestM (Array LazyCodeAction)
+def CodeActionProvider := CodeActionParams  Snapshot  RequestM (Array LazyCodeAction)
 deriving instance Inhabited for CodeActionProvider
 
 private builtin_initialize builtinCodeActionProviders : IO.Ref (NameMap CodeActionProvider) ←

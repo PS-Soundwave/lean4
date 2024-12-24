@@ -4,12 +4,12 @@ inductive Expr : Type
   | mul (e₁ e₂ : Expr)
   deriving BEq, Inhabited, Repr, DecidableEq
 
-def Expr.eval : Expr → Nat
+def Expr.eval : Expr  Nat
   | const n    => n
   | plus e₁ e₂ => eval e₁ + eval e₂
   | mul e₁ e₂  => eval e₁ * eval e₂
 
-def Expr.times : Nat → Expr → Expr
+def Expr.times : Nat  Expr  Expr
   | k, const n    => const (k*n)
   | k, plus e₁ e₂ => plus (times k e₁) (times k e₂)
   | k, mul e₁ e₂  => mul (times k e₁) e₂
@@ -19,7 +19,7 @@ theorem eval_times (k : Nat) (e : Expr) : (e.times k |>.eval) = k * e.eval := by
   | plus e₁ e₂ ih₁ ih₂ => simp [ih₁, ih₂, Nat.left_distrib]
   | mul  _ _ ih₁ ih₂   => simp [ih₁, Nat.mul_assoc]
 
-def Expr.reassoc : Expr → Expr
+def Expr.reassoc : Expr  Expr
   | const n    => const n
   | plus e₁ e₂ =>
     let e₁' := e₁.reassoc

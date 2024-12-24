@@ -101,16 +101,16 @@ The parameter `type` is the common type of the these expressions
 
 For example
 ```
-packLambdas (Nat → Sort u) #[(fun (n : Nat) => Nat), (fun (n : Nat) => Fin n -> Fin n )]
+packLambdas (Nat  Sort u) #[(fun (n : Nat) => Nat), (fun (n : Nat) => Fin n -> Fin n )]
 ```
 will return
 ```
-fun (n : Nat) => (Nat ×' (Fin n → Fin n))
+fun (n : Nat) => (Nat ×' (Fin n  Fin n))
 ```
 
 It is the identity if `es.size = 1`.
 
-It returns a dummy motive `(xs : ) → PUnit` or `(xs : … ) → True` if no expressions are given.
+It returns a dummy motive `(xs : )  PUnit` or `(xs : … )  True` if no expressions are given.
 (this is the reason we need the expected type in the `type` parameter).
 
 -/

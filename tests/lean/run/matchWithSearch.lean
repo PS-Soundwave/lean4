@@ -3,7 +3,7 @@ inductive Color where
   | Black
 open Color
 
-inductive rbnode : Nat → Color → Type where
+inductive rbnode : Nat  Color  Type where
   | Leaf : rbnode 1 Black
   | R {h}
       (left : rbnode h Black)
@@ -15,12 +15,12 @@ inductive rbnode : Nat → Color → Type where
       (right : rbnode h cr) : rbnode (h+1) Black
 open rbnode
 
-inductive hiddenTree : Nat → Type
+inductive hiddenTree : Nat  Type
   | HR {h} (node : rbnode h Red) : hiddenTree h
   | HB {h} (node : rbnode (h+1) Black) : hiddenTree (h+1)
 open hiddenTree
 
-inductive almostNode : Nat → Type
+inductive almostNode : Nat  Type
   | LR {h cR} (left:rbnode h Red) (value:Int) (right:rbnode h cR) : almostNode h
   | RR {h cL} (left:rbnode h cL) (value:Int) (right:rbnode h Red) : almostNode h
   | V {h c} (node:rbnode h c) : almostNode h

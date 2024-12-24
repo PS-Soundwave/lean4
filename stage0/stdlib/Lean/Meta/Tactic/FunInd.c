@@ -49644,7 +49644,7 @@ static lean_object* _init_l_Lean_Tactic_FunInd_buildInductionBody___lambda__1___
 _start:
 {
 lean_object* x_1; 
-x_1 = lean_mk_string_unchecked(" → ", 5, 3);
+x_1 = lean_mk_string_unchecked("  ", 5, 3);
 return x_1;
 }
 }

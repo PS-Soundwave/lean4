@@ -23,7 +23,7 @@ variable [Hashable α] [DecidableEq α]
 
 @[simp]
 theorem denote_blastAppend (aig : AIG α) (target : AppendTarget aig newWidth)
-  (assign : α → Bool) :
+  (assign : α  Bool) :
   ∀ (idx : Nat) (hidx : idx < newWidth),
       ⟦
         (blastAppend aig target).aig,

@@ -39,7 +39,7 @@ def bar (xs ys : List Nat) : List Nat :=
   | xs', ys'   => xs' ++ ys'
 
 /--
-info: def bar : List Nat → List Nat → List Nat :=
+info: def bar : List Nat  List Nat  List Nat :=
 fun xs ys =>
   match xs ++ [], ys ++ [] with
   | xs', ys' => xs' ++ ys'

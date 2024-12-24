@@ -4,7 +4,7 @@ def f (xs : List Nat) : Nat :=
   | [a, b] => (a + b).succ
   | _ => 2
 
-theorem ex1 (xs : List Nat) (hr : xs.reverse = xs) (ys : Nat) : ys > 0 → f xs > 0 := by
+theorem ex1 (xs : List Nat) (hr : xs.reverse = xs) (ys : Nat) : ys > 0  f xs > 0 := by
   simp [f]
   split
   next => intro hys; decide

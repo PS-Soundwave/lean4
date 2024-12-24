@@ -34,7 +34,7 @@ Moreover, the ReducibilityHints cannot be changed after a declaration is added t
 inductive ReducibilityHints where
   | opaque  : ReducibilityHints
   | abbrev  : ReducibilityHints
-  | regular : UInt32 → ReducibilityHints
+  | regular : UInt32  ReducibilityHints
   deriving Inhabited, BEq
 
 @[export lean_mk_reducibility_hints_regular]
@@ -50,14 +50,14 @@ def ReducibilityHints.getHeightEx (h : ReducibilityHints) : UInt32 :=
 namespace ReducibilityHints
 
 -- Recall that if `lt h₁ h₂`, we want to reduce declaration associated with `h₁`.
-def lt : ReducibilityHints → ReducibilityHints → Bool
+def lt : ReducibilityHints  ReducibilityHints  Bool
   | .abbrev,     .abbrev     => false
   | .abbrev,     _           => true
   | .regular d₁, .regular d₂ => d₁ > d₂
   | .regular _,  .opaque     => true
   | _,           _           => false
 
-protected def compare : ReducibilityHints → ReducibilityHints → Ordering
+protected def compare : ReducibilityHints  ReducibilityHints  Ordering
   | .abbrev,     .abbrev     => .eq
   | .abbrev,     _           => .lt
   | .regular _,  .abbrev     => .gt
@@ -69,11 +69,11 @@ protected def compare : ReducibilityHints → ReducibilityHints → Ordering
 instance : Ord ReducibilityHints where
   compare := ReducibilityHints.compare
 
-def isAbbrev : ReducibilityHints → Bool
+def isAbbrev : ReducibilityHints  Bool
   | .abbrev => true
   | _       => false
 
-def isRegular : ReducibilityHints → Bool
+def isRegular : ReducibilityHints  Bool
   | .regular .. => true
   | _           => false
 
@@ -185,15 +185,15 @@ def mkInductiveDeclEs (lparams : List Name) (nparams : Nat) (types : List Induct
   Declaration.inductDecl lparams nparams types isUnsafe
 
 @[export lean_is_unsafe_inductive_decl]
-def Declaration.isUnsafeInductiveDeclEx : Declaration → Bool
+def Declaration.isUnsafeInductiveDeclEx : Declaration  Bool
   | .inductDecl _ _ _ isUnsafe => isUnsafe
   | _ => false
 
-def Declaration.definitionVal! : Declaration → DefinitionVal
+def Declaration.definitionVal! : Declaration  DefinitionVal
   | .defnDecl val => val
   | _ => panic! "Expected a `Declaration.defnDecl`."
 
-@[specialize] def Declaration.foldExprM {α} {m : Type → Type} [Monad m] (d : Declaration) (f : α → Expr → m α) (a : α) : m α :=
+@[specialize] def Declaration.foldExprM {α} {m : Type  Type} [Monad m] (d : Declaration) (f : α  Expr  m α) (a : α) : m α :=
   match d with
   | .quotDecl                                        => pure a
   | .axiomDecl { type := type, .. }                  => f a type
@@ -206,7 +206,7 @@ def Declaration.definitionVal! : Declaration → DefinitionVal
       let a ← f a inductType.type
       inductType.ctors.foldlM (fun a ctor => f a ctor.type) a
 
-@[inline] def Declaration.forExprM {m : Type → Type} [Monad m] (d : Declaration) (f : Expr → m Unit) : m Unit :=
+@[inline] def Declaration.forExprM {m : Type  Type} [Monad m] (d : Declaration) (f : Expr  m Unit) : m Unit :=
   d.foldExprM (fun _ a => f a) ()
 
 /-- The kernel compiles (mutual) inductive declarations (see `inductiveDecls`) into a set of
@@ -222,7 +222,7 @@ def Declaration.definitionVal! : Declaration → DefinitionVal
 structure InductiveVal extends ConstantVal where
   /-- Number of parameters. A parameter is an argument to the defined type that is fixed over constructors.
   An example of this is the `α : Type` argument in the vector constructors
-  `nil : Vector α 0` and `cons : α → Vector α n → Vector α (n+1)`.
+  `nil : Vector α 0` and `cons : α  Vector α n  Vector α (n+1)`.
 
   The intuition is that the inductive type must exhibit _parametric polymorphism_ over the inductive
   parameter, as opposed to _ad-hoc polymorphism_.
@@ -230,7 +230,7 @@ structure InductiveVal extends ConstantVal where
   numParams : Nat
   /-- Number of indices. An index is an argument that varies over constructors.
 
-  An example of this is the `n : Nat` argument in the vector constructor `cons : α → Vector α n → Vector α (n+1)`.
+  An example of this is the `n : Nat` argument in the vector constructor `cons : α  Vector α n  Vector α (n+1)`.
   -/
   numIndices : Nat
   /-- List of all (including this one) inductive datatypes in the mutual declaration containing this one -/
@@ -239,7 +239,7 @@ structure InductiveVal extends ConstantVal where
   ctors : List Name
   /-- Number of auxiliary data types produced from nested occurrences.
   An inductive definition `T` is nested when there is a constructor with an argument `x : F T`,
-   where `F : Type → Type` is some suitably behaved (ie strictly positive) function (Eg `Array T`, `List T`, `T × T`, ...).  -/
+   where `F : Type  Type` is some suitably behaved (ie strictly positive) function (Eg `Array T`, `List T`, `T × T`, ...).  -/
   numNested : Nat
   /-- `true` when recursive (that is, the inductive type appears as an argument in a constructor). -/
   isRec : Bool
@@ -400,7 +400,7 @@ inductive ConstantInfo where
 
 namespace ConstantInfo
 
-def toConstantVal : ConstantInfo → ConstantVal
+def toConstantVal : ConstantInfo  ConstantVal
   | .defnInfo     {toConstantVal := d, ..} => d
   | .axiomInfo    {toConstantVal := d, ..} => d
   | .thmInfo      {toConstantVal := d, ..} => d
@@ -410,7 +410,7 @@ def toConstantVal : ConstantInfo → ConstantVal
   | .ctorInfo     {toConstantVal := d, ..} => d
   | .recInfo      {toConstantVal := d, ..} => d
 
-def isUnsafe : ConstantInfo → Bool
+def isUnsafe : ConstantInfo  Bool
   | .defnInfo   v => v.safety == .unsafe
   | .axiomInfo  v => v.isUnsafe
   | .thmInfo    _ => false
@@ -420,7 +420,7 @@ def isUnsafe : ConstantInfo → Bool
   | .ctorInfo   v => v.isUnsafe
   | .recInfo    v => v.isUnsafe
 
-def isPartial : ConstantInfo → Bool
+def isPartial : ConstantInfo  Bool
   | .defnInfo v => v.safety == .partial
   | _ => false
 
@@ -457,30 +457,30 @@ def value! (info : ConstantInfo) (allowOpaque := false) : Expr :=
   | .opaqueInfo {value, ..} => if allowOpaque then value else panic! "declaration with value expected"
   | _                       => panic! "declaration with value expected"
 
-def hints : ConstantInfo → ReducibilityHints
+def hints : ConstantInfo  ReducibilityHints
   | .defnInfo {hints, ..} => hints
   | _                     => .opaque
 
-def isCtor : ConstantInfo → Bool
+def isCtor : ConstantInfo  Bool
   | .ctorInfo _ => true
   | _           => false
 
-def isInductive : ConstantInfo → Bool
+def isInductive : ConstantInfo  Bool
   | .inductInfo _ => true
   | _             => false
 
-def isTheorem : ConstantInfo → Bool
+def isTheorem : ConstantInfo  Bool
   | .thmInfo _ => true
   | _          => false
 
-def inductiveVal! : ConstantInfo → InductiveVal
+def inductiveVal! : ConstantInfo  InductiveVal
   | .inductInfo val => val
   | _ => panic! "Expected a `ConstantInfo.inductInfo`."
 
 /--
   List of all (including this one) declarations in the same mutual block.
 -/
-def all : ConstantInfo → List Name
+def all : ConstantInfo  List Name
   | .inductInfo val => val.all
   | .defnInfo val   => val.all
   | .thmInfo val    => val.all

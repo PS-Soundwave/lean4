@@ -1,6 +1,6 @@
 inductive Foo where
-  | mk : Nat → Foo
-  | boo : String → Foo
+  | mk : Nat  Foo
+  | boo : String  Foo
 
 instance : ToString Foo where
   toString o := match o with

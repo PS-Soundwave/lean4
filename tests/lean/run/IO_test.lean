@@ -40,7 +40,7 @@ let fn1 := "bar2.txt";
 let fn2 := "foo2.txt";
 let xs₀ : String := "⟨[₂,α]⟩";
 let xs₁ := "⟨[6,8,@]⟩";
-let xs₂ := "/* Handle.getLine : Handle → IO Unit                     */" ++
+let xs₂ := "/* Handle.getLine : Handle  IO Unit                     */" ++
            "/*   The line returned by `lean_io_prim_handle_get_line` */" ++
            "/*   is truncated at the first \'\\0\' character and the    */" ++
            "/*   rest of the line is discarded.                      */";
@@ -65,7 +65,7 @@ let ys ← withFile fn2 Mode.read $ fun h => do
   { let ys ← (List.iota 4).mapM $ fun i => do
     { let ln ← h.getLine;
       IO.println i;
-      IO.println ∘ repr $ ln;
+      IO.println  repr $ ln;
       pure ln };
     pure ys };
 IO.println ys;
@@ -83,13 +83,13 @@ info: ⟨[₂,α]⟩⟨[₂,α]⟩
 4
 "⟨[₂,α]⟩⟨[₂,α]⟩\n"
 3
-"/* Handle.getLine : Handle → IO Unit                     *//*   The line returned by `lean_io_prim_handle_get_line` *//*   is truncated at the first '\\0' character and the    *//*   rest of the line is discarded.                      */\n"
+"/* Handle.getLine : Handle  IO Unit                     *//*   The line returned by `lean_io_prim_handle_get_line` *//*   is truncated at the first '\\0' character and the    *//*   rest of the line is discarded.                      */\n"
 2
 "⟨[6,8,@]⟩\n"
 1
 "⟨[6,8,@]⟩\n"
 [⟨[₂,α]⟩⟨[₂,α]⟩
-, /* Handle.getLine : Handle → IO Unit                     *//*   The line returned by `lean_io_prim_handle_get_line` *//*   is truncated at the first '\0' character and the    *//*   rest of the line is discarded.                      */
+, /* Handle.getLine : Handle  IO Unit                     *//*   The line returned by `lean_io_prim_handle_get_line` *//*   is truncated at the first '\0' character and the    *//*   rest of the line is discarded.                      */
 , ⟨[6,8,@]⟩
 , ⟨[6,8,@]⟩
 ]

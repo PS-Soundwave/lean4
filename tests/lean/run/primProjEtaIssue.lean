@@ -1,4 +1,4 @@
-example (f : Fin n → Prop) (h : ∀ i h, i = 0 → f ⟨i, h⟩) : f i := by
+example (f : Fin n  Prop) (h : ∀ i h, i = 0  f ⟨i, h⟩) : f i := by
   apply h
   rw [show i.1 = 0 from sorry]
 

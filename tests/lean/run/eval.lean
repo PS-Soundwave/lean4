@@ -37,7 +37,7 @@ Can't evaluate types
 /-!
 Capturing `dbg_trace` output
 -/
-def Nat.choose : Nat → Nat → Nat
+def Nat.choose : Nat  Nat  Nat
   | _, 0 => dbg_trace "(_, 0)"; 1
   | 0, _ + 1 => dbg_trace "(0, _ + 1)"; 0
   | n + 1, k + 1 => dbg_trace "(_ + 1, _ + 1)"; choose n k + choose n (k + 1)
@@ -69,9 +69,9 @@ to 'IO' or 'Lean.Elab.Command.CommandElabM'.
 -- Note that there is no "this is due to..." diagonostic in this case.
 /--
 error: could not synthesize a 'ToExpr', 'Repr', or 'ToString' instance for type
-  MyMonad (Nat → Nat)
+  MyMonad (Nat  Nat)
 -/
-#guard_msgs in #eval (pure id : MyMonad (Nat → _))
+#guard_msgs in #eval (pure id : MyMonad (Nat  _))
 
 instance : MonadEval MyMonad IO where
   monadEval m := m.run 0
@@ -82,9 +82,9 @@ instance : MonadEval MyMonad IO where
 -- Note that now we have a MonadEval instance, it doesn't mention MyMonad in the error.
 /--
 error: could not synthesize a 'ToExpr', 'Repr', or 'ToString' instance for type
-  Nat → Nat
+  Nat  Nat
 -/
-#guard_msgs in #eval (pure id : MyMonad (Nat → _))
+#guard_msgs in #eval (pure id : MyMonad (Nat  _))
 
 /-!
 Elaboration error, does not attempt to evaluate.

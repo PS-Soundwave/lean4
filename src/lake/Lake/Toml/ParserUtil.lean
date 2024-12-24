@@ -32,7 +32,7 @@ scoped instance : AndThen ParserFn where
   andThen p q := fun c s => let s := p c s; if s.hasError then s else q () c s
 
 /-- `ParserFn` combinator that runs `f` with the current position. -/
-@[always_inline, inline] def usePosFn (f : String.Pos → ParserFn) : ParserFn :=
+@[always_inline, inline] def usePosFn (f : String.Pos  ParserFn) : ParserFn :=
   fun c s => f s.pos c s
 
 /-- Match an arbitrary parser or do nothing. -/
@@ -54,7 +54,7 @@ def optFn (p : ParserFn) : ParserFn := fun c s =>
 def mkUnexpectedCharError (s : ParserState) (c : Char)  (expected : List String := []) (pushMissing := true) : ParserState :=
   s.mkUnexpectedError s!"unexpected '{c}'" expected pushMissing
 
-@[inline] def satisfyFn (p : Char → Bool) (expected : List String := [])  : ParserFn := fun c s =>
+@[inline] def satisfyFn (p : Char  Bool) (expected : List String := [])  : ParserFn := fun c s =>
   let i := s.pos
   if h : c.input.atEnd i then
     s.mkEOIError expected
@@ -65,7 +65,7 @@ def mkUnexpectedCharError (s : ParserState) (c : Char)  (expected : List String 
     else
       mkUnexpectedCharError s curr expected
 
-def takeWhile1Fn (p : Char → Bool) (expected : List String := []) : ParserFn :=
+def takeWhile1Fn (p : Char  Bool) (expected : List String := []) : ParserFn :=
   satisfyFn p expected >> takeWhileFn p
 
 /-- Consume a single digit (i.e., `Char.isDigit`). -/
@@ -93,7 +93,7 @@ def strFn (str : String) (expected : List String := [s!"'{str}'"]) : ParserFn :=
 
 mutual
 
-partial def sepByChar1AuxFn (p : Char → Bool) (sep : Char) (expected : List String := []) : ParserFn := fun c s =>
+partial def sepByChar1AuxFn (p : Char  Bool) (sep : Char) (expected : List String := []) : ParserFn := fun c s =>
   let i := s.pos
   let input := c.input
   if h : input.atEnd i then
@@ -107,7 +107,7 @@ partial def sepByChar1AuxFn (p : Char → Bool) (sep : Char) (expected : List St
     else
       s
 
-partial def sepByChar1Fn (p : Char → Bool) (sep : Char) (expected : List String := []) : ParserFn := fun c s =>
+partial def sepByChar1Fn (p : Char  Bool) (sep : Char) (expected : List String := []) : ParserFn := fun c s =>
   let i := s.pos
   let input := c.input
   if h : input.atEnd i then
@@ -146,11 +146,11 @@ def atomFn (p : ParserFn) (trailingFn := skipFn) : ParserFn := fun c s =>
 def atom (p : ParserFn) (trailingFn := skipFn) : Parser where
   fn := atomFn p trailingFn
 
-def getInfoExprPos? : SourceInfo → Option String.Pos
+def getInfoExprPos? : SourceInfo  Option String.Pos
   | SourceInfo.synthetic (pos := pos) .. => pos
   | _ => none
 
-def getSyntaxExprPos? : Syntax → Option String.Pos
+def getSyntaxExprPos? : Syntax  Option String.Pos
   | .node info _ _ => getInfoExprPos? info
   | .atom info _ => getInfoExprPos? info
   | .ident info _ _ _ => getInfoExprPos? info
@@ -234,11 +234,11 @@ def epsilon.formatter (_ : ParserFn) : Formatter := pure ()
 @[combinator_parenthesizer epsilon]
 def epsilon.parenthesizer (_ : ParserFn) : Parenthesizer := pure ()
 
-def SourceInfo.updateTrailing (trailing : Substring) : SourceInfo → SourceInfo
+def SourceInfo.updateTrailing (trailing : Substring) : SourceInfo  SourceInfo
   | SourceInfo.original leading pos _ endPos => SourceInfo.original leading pos trailing endPos
   | info                                     => info
 
-partial def modifyTailInfo (f : SourceInfo → SourceInfo) : (stx : Syntax) → Syntax
+partial def modifyTailInfo (f : SourceInfo  SourceInfo) : (stx : Syntax)  Syntax
   | .atom info val => .atom (f info) val
   | .ident info rawVal val pre => .ident (f info) rawVal val pre
   | .node info k args =>
@@ -270,14 +270,14 @@ def dynamicNode.formatter (_ : ParserFn) : Formatter := do
 def dynamicNode.parenthesizer (_ : ParserFn) : Parenthesizer := do
   Parenthesizer.parenthesizerForKind (← Syntax.MonadTraverser.getCur).getKind
 
-partial def recNodeFn (f : Parser → Parser) : ParserFn :=
+partial def recNodeFn (f : Parser  Parser) : ParserFn :=
   f (dynamicNode (recNodeFn f)) |>.fn
 
 /--
-`Parser → Parser` hidden by an `abbrev`.
+`Parser  Parser` hidden by an `abbrev`.
 Prevents the formatter/parenthesizer generator from transforming it.
 -/
-abbrev ParserMapFn := Parser → Parser
+abbrev ParserMapFn := Parser  Parser
 
 def recNode (f : ParserMapFn) : Parser :=
   dynamicNode (recNodeFn f)

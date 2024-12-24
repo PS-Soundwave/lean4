@@ -9,10 +9,10 @@ structure Minus where
 #guard_msgs in
 #check { «i-love-lisp» := true : Minus }
 
-/-- info: fun x => x.«i-love-lisp» : Minus → Bool -/
+/-- info: fun x => x.«i-love-lisp» : Minus  Bool -/
 #guard_msgs in
 #check fun (x : Minus) => x.«i-love-lisp»
 
-/-- info: fun x => x.«i-love-lisp» : Minus → Bool -/
+/-- info: fun x => x.«i-love-lisp» : Minus  Bool -/
 #guard_msgs in
 #check fun (x : Minus) => (x).«i-love-lisp»

@@ -7,11 +7,11 @@ set_option linter.unusedVariables false
 set_option pp.mvars false
 
 def Vec.casesOn
-     (motive : (n : Nat) → Vec α n → Sort v)
+     (motive : (n : Nat)  Vec α n  Sort v)
      (n  : Nat)
      (as : Vec α n)
      (nil : motive 0 Vec.nil)
-     (cons : (n : Nat) → (a : α) → (as : Vec α n) → (ih : motive n as) → motive (n+1) (Vec.cons a as))
+     (cons : (n : Nat)  (a : α)  (as : Vec α n)  (ih : motive n as)  motive (n+1) (Vec.cons a as))
      : motive n as :=
   let rec go (n : Nat) (as : List α) (h : as.length = n) : motive n ⟨as, h⟩ :=
     match n, as, h with
@@ -50,7 +50,7 @@ as✝ : Vec α n✝
 n : Nat
 a : α
 as : Vec α n
-ih : n + 1 = n → HEq (Vec.cons a as) as → Vec.cons a as = Vec.cons a as
+ih : n + 1 = n  HEq (Vec.cons a as) as  Vec.cons a as = Vec.cons a as
 ⊢ Vec.cons a as = Vec.cons a as
 -/
 #guard_msgs in
@@ -71,7 +71,7 @@ a' : α
 as' : Vec α n'
 h₁ : n + 2 = n' + 1
 h₂ : HEq (Vec.cons a (Vec.cons a as)) (Vec.cons a' as')
-ih : n' + 1 = n' → HEq (Vec.cons a' as') as' → Vec.cons a' as' = Vec.cons a' as'
+ih : n' + 1 = n'  HEq (Vec.cons a' as') as'  Vec.cons a' as' = Vec.cons a' as'
 ⊢ Vec.cons a' as' = Vec.cons a' as'
 -/
 #guard_msgs in

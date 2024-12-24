@@ -53,7 +53,7 @@ Whether the build should show progress information.
 `Verbosity.verbose` shows progress.
 -/
 def BuildConfig.showProgress (cfg : BuildConfig) : Bool :=
-  (cfg.noBuild ∧ cfg.verbosity == .verbose) ∨ cfg.verbosity != .quiet
+  (cfg.noBuild ∧ cfg.verbosity == .verbose)  cfg.verbosity != .quiet
 
 /-- Information on what this job did. -/
 inductive JobAction
@@ -116,7 +116,7 @@ structure BuildContext extends BuildConfig, Context where
 abbrev BuildT := ReaderT BuildContext
 
 /-- A monad equipped with a Lake build context. -/
-abbrev MonadBuild (m : Type → Type u) :=
+abbrev MonadBuild (m : Type  Type u) :=
   MonadReaderOf BuildContext m
 
 @[inline] def getBuildContext [MonadBuild m] : m BuildContext :=

@@ -4,9 +4,9 @@ open Lean
 open Lean.Meta
 
 class HasCoerce (a : semiOutParam Type) (b : Type) :=
-(coerce : a → b)
+(coerce : a  b)
 
-def coerce {a b : Type} [HasCoerce a b] : a → b :=
+def coerce {a b : Type} [HasCoerce a b] : a  b :=
 @HasCoerce.coerce a b _
 
 instance coerceTrans {a b c : Type} [HasCoerce b c] [HasCoerce a b] : HasCoerce a c :=

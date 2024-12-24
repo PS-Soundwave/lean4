@@ -3,17 +3,17 @@
 structure bv (w : Nat) := (u:Unit)
 
 inductive val : Type
-| bv (w : Nat) : bv w → val
+| bv (w : Nat) : bv w  val
 
 inductive memtype : Type
-| ptr : Unit → memtype
+| ptr : Unit  memtype
 
 inductive instr : Type
 | load : memtype -> val -> instr
 | store : Unit -> Unit -> Unit -> instr
 
 structure sim (a:Type) :=
-(runSim : {z:Type} → (IO.Error → z) /- error continuation -/ → (a → z) /- normal continuation -/ →  z)
+(runSim : {z:Type}  (IO.Error  z) /- error continuation -/  (a  z) /- normal continuation -/   z)
 
 instance monad : Monad sim :=
 { bind := λ mx mf => sim.mk (λ kerr k =>
@@ -30,7 +30,7 @@ instance monadExcept : MonadExcept IO.Error sim :=
 def f : sim val := throw (IO.userError "ASDF")
 def g : sim Unit := throw (IO.userError "ASDF")
 
-def evalInstr : instr → sim (Option val)
+def evalInstr : instr  sim (Option val)
 | instr.load mt pv =>
       match mt, pv with
       | memtype.ptr _, val.bv 27 _ => throw (IO.userError "ASDF")

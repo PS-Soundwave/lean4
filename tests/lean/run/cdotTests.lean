@@ -1,7 +1,7 @@
 
 
 class Inc (α : Type) :=
-(inc : α → α)
+(inc : α  α)
 
 export Inc (inc)
 
@@ -40,6 +40,6 @@ Check that ambiguous notation inside cdot notation still has only a single argum
 def tag (_ : α) (y : α) := y
 notation "f" x => tag 1 x
 notation "f" x => tag "2" x
-/-- info: fun x => (f x).length : String → Nat -/
+/-- info: fun x => (f x).length : String  Nat -/
 #guard_msgs in
 #check (String.length <| f ·)

@@ -68,7 +68,7 @@ family_def bar : FooFam `bar := Nat
 The signature of the type class `FamilyDef` is
 
 ```
-FamilyDef {α : Type u} (Fam : α → Type v) (a : α) (β : outParam $ Type v) : Prop
+FamilyDef {α : Type u} (Fam : α  Type v) (a : α) (β : outParam $ Type v) : Prop
 ```
 
 The key part being that `β` is an `outParam` so Lean's type class synthesis will
@@ -84,8 +84,8 @@ Lean will smartly infer that the type of ``foo `bar`` is `Nat`.
 However, filling in the right hand side of `foo` is not quite so easy.
 ``FooFam `bar = Nat`` is only true propositionally, so we have to manually
 `cast` a `Nat` to ``FooFam `bar``and provide the proof (and the same is true
-vice versa). Thus, this module provides two definitions, `toFamily : β → Fam a`
-and `ofFamily : Fam a → β`, to help with this conversion.
+vice versa). Thus, this module provides two definitions, `toFamily : β  Fam a`
+and `ofFamily : Fam a  β`, to help with this conversion.
 
 ## Full Example
 
@@ -113,7 +113,7 @@ def foo := Id.run do
 
 ## Type Safety
 
-In order to maintain type safety, `a = b → Fam a = Fam b` must actually hold.
+In order to maintain type safety, `a = b  Fam a = Fam b` must actually hold.
 That is, one must not define mappings to two different types with equivalent
 keys. Since mappings are defined through axioms, Lean WILL NOT catch violations
 of this rule itself, so extra care must be taken when defining mappings.
@@ -135,11 +135,11 @@ Defines a single mapping of the **open type family** `Fam`, namely `Fam a = β`.
 See the module documentation of `Lake.Util.Family` for details on what an open
 type family is in Lake.
 -/
-class FamilyDef {α : Type u} (Fam : α → Type v) (a : α) (β : semiOutParam $ Type v) : Prop where
+class FamilyDef {α : Type u} (Fam : α  Type v) (a : α) (β : semiOutParam $ Type v) : Prop where
   family_key_eq_type : Fam a = β
 
 /-- Like `FamilyDef`, but `β` is an `outParam`. -/
-class FamilyOut {α : Type u} (Fam : α → Type v) (a : α) (β : outParam $ Type v) : Prop where
+class FamilyOut {α : Type u} (Fam : α  Type v) (a : α) (β : outParam $ Type v) : Prop where
   family_key_eq_type : Fam a = β
 
 -- Simplifies proofs involving open type families

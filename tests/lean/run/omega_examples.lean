@@ -44,7 +44,7 @@ example (a b c d e : Int)
     (hb : a + 2 * b + c + d + e = 5)
     (hc : a + b + 2 * c + d + e = 6)
     (hd : a + b + c + 2 * d + e = 7)
-    (he : a + b + c + d + 2 * e = 8 ∨ e = 3) : e = 3 := by omega
+    (he : a + b + c + d + 2 * e = 8  e = 3) : e = 3 := by omega
 
 -- Case bashing conjunctions in the goal
 example (ε : Int) (_ : ε > 0) : (ε - 2 ≤ ε / 3 + ε / 2 + ε / 2) ∧ (ε / 3 + ε / 4 + ε / 5 ≤ ε) := by

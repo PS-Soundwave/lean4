@@ -1,6 +1,6 @@
 def evenq (n: Nat) : Bool := Nat.mod n 2 = 0
 
-private theorem pack_loop_terminates : (n : Nat) → n / 2 < n.succ
+private theorem pack_loop_terminates : (n : Nat)  n / 2 < n.succ
   | 0   => by decide
   | 1   => by decide
   | n+2 => by

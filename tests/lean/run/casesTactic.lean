@@ -42,14 +42,14 @@ example (α : Type) : True := by
 
 /--
 error: tactic 'cases' failed, major premise type is not an inductive type
-  Bool → Bool
+  Bool  Bool
 
 Explanation: the 'cases' tactic is for constructor-based reasoning as well as for applying custom
 cases principles with a 'using' clause or a registered '@[cases_eliminator]' theorem. The above
 type neither is an inductive type nor has a registered theorem.
-f : Bool → Bool
+f : Bool  Bool
 ⊢ True
 -/
 #guard_msgs in
-example (f : Bool → Bool) : True := by
+example (f : Bool  Bool) : True := by
   cases f

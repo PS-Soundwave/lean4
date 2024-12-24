@@ -21,7 +21,7 @@ def mkMatch (ctx : Context) (header : Header) (indVal : InductiveVal) : TermElab
   let alts ← mkAlts
   `(match $[$discrs],* with $alts:matchAlt*)
 where
-  mkSameCtorRhs : List (Ident × Ident × Option Name × Bool) → TermElabM Term
+  mkSameCtorRhs : List (Ident × Ident × Option Name × Bool)  TermElabM Term
     | [] => ``(isTrue rfl)
     | (a, b, recField, isProof) :: todo => withFreshMacroScope do
       let rhs ← if isProof then
@@ -72,7 +72,7 @@ where
                 let xType ← inferType x
                 let indValNum :=
                   ctx.typeInfos.findIdx?
-                  (xType.isAppOf ∘ ConstantVal.name ∘ InductiveVal.toConstantVal)
+                  (xType.isAppOf  ConstantVal.name  InductiveVal.toConstantVal)
                 let recField  := indValNum.map (ctx.auxFunNames[·]!)
                 let isProof ← isProp xType
                 todo := todo.push (a, b, recField, isProof)

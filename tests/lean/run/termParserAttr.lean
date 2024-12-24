@@ -45,7 +45,7 @@ adaptExpander $ fun stx => match stx with
  | `((|| $e ||)) => `($e + 1)
  | _             => throwUnsupportedSyntax
 
-/-- info: id : Nat → Nat -/
+/-- info: id : Nat  Nat -/
 #guard_msgs in
 #eval runCore "#check [| @id.{1} Nat |]"
 

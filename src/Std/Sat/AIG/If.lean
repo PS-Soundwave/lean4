@@ -237,7 +237,7 @@ theorem denote_go {w : Nat} (aig : AIG α) (curr : Nat) (hcurr : curr ≤ w) (di
     (lhs rhs : RefVec aig w) (s : RefVec aig curr) :
     ∀ (idx : Nat) (hidx1 : idx < w),
       curr ≤ idx
-        →
+        
       ⟦
         (go aig curr hcurr discr lhs rhs s).aig,
         (go aig curr hcurr discr lhs rhs s).vec.get idx hidx1,

@@ -10,11 +10,11 @@ inductive MyOption (α : Type u) where
 
 namespace MyOption
 
-def isSomeWithInstance [MyClass α] : MyOption α → Bool
+def isSomeWithInstance [MyClass α] : MyOption α  Bool
   | none => false
   | some _ => true
 
-def isSome : MyOption α → Bool
+def isSome : MyOption α  Bool
   | none => false
   | some _ => true
 

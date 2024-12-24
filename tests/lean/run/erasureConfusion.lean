@@ -1,6 +1,6 @@
 import Lean
 
-structure S (α : Type u) (β : Type v) (f : α → β) where
+structure S (α : Type u) (β : Type v) (f : α  β) where
   a : α
   b : β := f a
 

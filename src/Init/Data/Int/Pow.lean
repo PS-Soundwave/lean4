@@ -21,7 +21,7 @@ theorem pow_le_pow_of_le_left {n m : Nat} (h : n ≤ m) : ∀ (i : Nat), n^i ≤
   | 0      => Nat.le_refl _
   | i + 1 => Nat.mul_le_mul (pow_le_pow_of_le_left h i) h
 
-theorem pow_le_pow_of_le_right {n : Nat} (hx : n > 0) {i : Nat} : ∀ {j}, i ≤ j → n^i ≤ n^j
+theorem pow_le_pow_of_le_right {n : Nat} (hx : n > 0) {i : Nat} : ∀ {j}, i ≤ j  n^i ≤ n^j
   | 0,      h =>
     have : i = 0 := Nat.eq_zero_of_le_zero h
     this.symm ▸ Nat.le_refl _

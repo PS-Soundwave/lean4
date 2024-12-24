@@ -8,7 +8,7 @@
 
 -- Recursive functions
 
-def fact : Nat → Nat
+def fact : Nat  Nat
 | 0   => 1
 | n+1 => (n+1) * fact n
 
@@ -31,12 +31,12 @@ xs.length + 1
 -- Inductive datatypes
 
 inductive Tree (α : Type)
-| leaf : α → Tree
-| node : Tree → Tree → Tree
+| leaf : α  Tree
+| node : Tree  Tree  Tree
 
 namespace Tree
 
-private def toStr {α} [ToString α] : Tree α → String
+private def toStr {α} [ToString α] : Tree α  String
 | leaf a          => toString a
 | node left right => "(node " ++ toStr left ++ " " ++ toStr right ++ ")"
 
@@ -84,7 +84,7 @@ IO.println msg
 
 -- Debugging helper functions
 
-def Tree.map {α β} (f : α → β) : Tree α → Tree β
+def Tree.map {α β} (f : α  β) : Tree α  Tree β
 | leaf a          => leaf (f a)
 | node left right => node (Tree.map left) (Tree.map right)
 

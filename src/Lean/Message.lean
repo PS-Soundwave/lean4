@@ -55,8 +55,8 @@ structure TraceData where
 inductive MessageData where
   /-- Eagerly formatted text with info annotations.
   This constructor is inspected in various hacks. -/
-  | ofFormatWithInfos : FormatWithInfos → MessageData
-  | ofGoal            : MVarId → MessageData
+  | ofFormatWithInfos : FormatWithInfos  MessageData
+  | ofGoal            : MVarId  MessageData
   /-- A widget instance.
 
   In `ofWidget wi alt`,
@@ -67,19 +67,19 @@ inductive MessageData where
   for example `ofGoal` to approximate a tactic state widget,
   and, if necessary, even other widget instances
   (for which approximations are computed recursively). -/
-  | ofWidget          : Widget.WidgetInstance → MessageData → MessageData
+  | ofWidget          : Widget.WidgetInstance  MessageData  MessageData
   /-- `withContext ctx d` specifies the pretty printing context `(env, mctx, lctx, opts)` for the nested expressions in `d`. -/
-  | withContext       : MessageDataContext → MessageData → MessageData
-  | withNamingContext : NamingContext → MessageData → MessageData
+  | withContext       : MessageDataContext  MessageData  MessageData
+  | withNamingContext : NamingContext  MessageData  MessageData
   /-- Lifted `Format.nest` -/
-  | nest              : Nat → MessageData → MessageData
+  | nest              : Nat  MessageData  MessageData
   /-- Lifted `Format.group` -/
-  | group             : MessageData → MessageData
+  | group             : MessageData  MessageData
   /-- Lifted `Format.compose` -/
-  | compose           : MessageData → MessageData → MessageData
+  | compose           : MessageData  MessageData  MessageData
   /-- Tagged sections. `Name` should be viewed as a "kind", and is used by `MessageData` inspector functions.
     Example: an inspector that tries to find "definitional equality failures" may look for the tag "DefEqFailure". -/
-  | tagged            : Name → MessageData → MessageData
+  | tagged            : Name  MessageData  MessageData
   | trace (data : TraceData) (msg : MessageData) (children : Array MessageData)
   /-- A lazy message.
   The provided thunk will not be run until it is about to be displayed.
@@ -91,7 +91,7 @@ inductive MessageData where
   If the thunked message is produced for a term that contains a synthetic sorry,
   `hasSyntheticSorry` should return `true`.
   This is used to filter out certain messages. -/
-  | ofLazy (f : Option PPContext → BaseIO Dynamic) (hasSyntheticSorry : MetavarContext → Bool)
+  | ofLazy (f : Option PPContext  BaseIO Dynamic) (hasSyntheticSorry : MetavarContext  Bool)
   deriving Inhabited, TypeName
 
 namespace MessageData
@@ -103,8 +103,8 @@ def ofFormat (fmt : Format) : MessageData := .ofFormatWithInfos ⟨fmt, .empty�
 Lazy message data production, with access to the context as given by
 a surrounding `MessageData.withContext` (which is expected to exist).
 -/
-def lazy (f : PPContext → BaseIO MessageData)
-    (hasSyntheticSorry : MetavarContext → Bool := fun _ => false) : MessageData :=
+def lazy (f : PPContext  BaseIO MessageData)
+    (hasSyntheticSorry : MetavarContext  Bool := fun _ => false) : MessageData :=
   .ofLazy (hasSyntheticSorry := hasSyntheticSorry) fun ctx? => do
     let msg ← match ctx? with
       | .none =>
@@ -112,7 +112,7 @@ def lazy (f : PPContext → BaseIO MessageData)
       | .some ctx => f ctx
     return Dynamic.mk msg
 
-variable (p : Name → Bool) in
+variable (p : Name  Bool) in
 /-- Returns true when the message contains a `MessageData.tagged tag ..` constructor where `p tag`
 is true.
 
@@ -120,7 +120,7 @@ This does not descend into lazily generated subtrees (`.ofLazy`); message tags
 of interest (like those added by `logLinter`) are expected to be near the root
 of the `MessageData`, and not hidden inside `.ofLazy`.
 -/
-partial def hasTag : MessageData → Bool
+partial def hasTag : MessageData  Bool
   | withContext _ msg       => hasTag msg
   | withNamingContext _ msg => hasTag msg
   | nest _ msg              => hasTag msg
@@ -137,7 +137,7 @@ If none, returns `Name.anonymous`.
 This does not descend into message subtrees (e.g., `.compose`, `.ofLazy`).
 The message kind is expected to describe the whole message.
 -/
-def kind : MessageData → Name
+def kind : MessageData  Name
   | withContext _ msg       => kind msg
   | withNamingContext _ msg => kind msg
   | tagged n _              => n
@@ -209,7 +209,7 @@ def ofConstName (constName : Name) (fullNames : Bool := false) : MessageData :=
 partial def hasSyntheticSorry (msg : MessageData) : Bool :=
   visit none msg
 where
-  visit (mctx? : Option MetavarContext) : MessageData → Bool
+  visit (mctx? : Option MetavarContext) : MessageData  Bool
   | ofLazy _ f              => f (mctx?.getD {})
   | withContext ctx msg     => visit ctx.mctx msg
   | withNamingContext _ msg => visit mctx? msg
@@ -220,7 +220,7 @@ where
   | trace _ msg msgs        => visit mctx? msg || msgs.any (visit mctx?)
   | _                       => false
 
-partial def formatAux : NamingContext → Option MessageDataContext → MessageData → BaseIO Format
+partial def formatAux : NamingContext  Option MessageDataContext  MessageData  BaseIO Format
   | _,    _,         ofFormatWithInfos fmt    => return fmt.1
   | _,    none,      ofGoal mvarId            => return formatRawGoal mvarId
   | nCtx, some ctx,  ofGoal mvarId            => ppGoal (mkPPContext nCtx ctx) mvarId
@@ -252,7 +252,7 @@ protected def toString (msgData : MessageData) : BaseIO String := do
 
 instance : Append MessageData := ⟨compose⟩
 
-instance : Coe String MessageData := ⟨ofFormat ∘ format⟩
+instance : Coe String MessageData := ⟨ofFormat  format⟩
 instance : Coe Format MessageData := ⟨ofFormat⟩
 instance : Coe Level MessageData  := ⟨ofLevel⟩
 instance : Coe Expr MessageData   := ⟨ofExpr⟩
@@ -278,13 +278,13 @@ def paren (f : MessageData) : MessageData := bracket "(" f ")"
 /-- Wrap the given message in square brackets `[]`. -/
 def sbracket (f : MessageData) : MessageData := bracket "[" f "]"
 /-- Append the given list of messages with the given separator. -/
-def joinSep : List MessageData → MessageData → MessageData
+def joinSep : List MessageData  MessageData  MessageData
   | [],    _   => Format.nil
   | [a],   _   => a
   | a::as, sep => a ++ sep ++ joinSep as sep
 
 /-- Write the given list of messages as a list, separating each item with `,\n` and surrounding with square brackets. -/
-def ofList : List MessageData → MessageData
+def ofList : List MessageData  MessageData
   | [] => "[]"
   | xs => sbracket <| joinSep xs (ofFormat "," ++ Format.line)
 
@@ -415,9 +415,9 @@ def empty : MessageLog := {}
 
 @[deprecated "renamed to `unreported`; direct access should in general be avoided in favor of \
 using `MessageLog.toList/toArray`" (since := "2024-05-22")]
-def msgs : MessageLog → PersistentArray Message := unreported
+def msgs : MessageLog  PersistentArray Message := unreported
 
-def reportedPlusUnreported : MessageLog → PersistentArray Message
+def reportedPlusUnreported : MessageLog  PersistentArray Message
   | { reported := r, unreported := u, .. } => r ++ u
 
 def hasUnreported (log : MessageLog) : Bool :=
@@ -451,7 +451,7 @@ def errorsToWarnings (log : MessageLog) : MessageLog :=
 def getInfoMessages (log : MessageLog) : MessageLog :=
   { unreported := log.unreported.filter fun m => match m.severity with | MessageSeverity.information => true | _ => false }
 
-def forM {m : Type → Type} [Monad m] (log : MessageLog) (f : Message → m Unit) : m Unit :=
+def forM {m : Type  Type} [Monad m] (log : MessageLog) (f : Message  m Unit) : m Unit :=
   log.unreported.forM f
 
 /-- Converts the unreported messages to a list, oldest message first. -/
@@ -473,7 +473,7 @@ def indentD (msg : MessageData) : MessageData :=
 def indentExpr (e : Expr) : MessageData :=
   indentD e
 
-class AddMessageContext (m : Type → Type) where
+class AddMessageContext (m : Type  Type) where
   /--
   Without context, a `MessageData` object may be missing information
   (e.g. hover info) for pretty printing, or may print an error. Hence,
@@ -481,7 +481,7 @@ class AddMessageContext (m : Type → Type) where
   (e.g. via `m!`) before taking it out of context (e.g. leaving `MetaM` or
   `CoreM`).
   -/
-  addMessageContext : MessageData → m MessageData
+  addMessageContext : MessageData  m MessageData
 
 export AddMessageContext (addMessageContext)
 
@@ -501,16 +501,16 @@ def addMessageContextFull {m} [Monad m] [MonadEnv m] [MonadMCtx m] [MonadLCtx m]
   return MessageData.withContext { env := env, mctx := mctx, lctx := lctx, opts := opts } msgData
 
 class ToMessageData (α : Type) where
-  toMessageData : α → MessageData
+  toMessageData : α  MessageData
 
 export ToMessageData (toMessageData)
 
 def stringToMessageData (str : String) : MessageData :=
   let lines := str.split (· == '\n')
-  let lines := lines.map (MessageData.ofFormat ∘ format)
+  let lines := lines.map (MessageData.ofFormat  format)
   MessageData.joinSep lines (MessageData.ofFormat Format.line)
 
-instance [ToFormat α] : ToMessageData α := ⟨MessageData.ofFormat ∘ format⟩
+instance [ToFormat α] : ToMessageData α := ⟨MessageData.ofFormat  format⟩
 instance : ToMessageData Expr          := ⟨MessageData.ofExpr⟩
 instance : ToMessageData Level         := ⟨MessageData.ofLevel⟩
 instance : ToMessageData Name          := ⟨MessageData.ofName⟩

@@ -1332,7 +1332,7 @@ class csimp_fn {
        Then, we will expand `_x_4.1` since it corresponds to the `Functor` `map` element,
        and its type is not a type class, but is of the form
        ```
-       (Π {α β : Type u}, (α → β) → ...)
+       (Π {α β : Type u}, (α  β)  ...)
        ```
        In the example above, the compiler should not expand `_x_3.1` or `_x_2.1` since their
        types type class applications: `Functor` and `Applicative` respectively.
@@ -1858,9 +1858,9 @@ class csimp_fn {
         unsigned arity =
             n + /* α_1 ... α_n Type arguments */
             1 + /* β : Type */
-            1 + /* (base : α_1 → ... → α_n → β) */
-            1 + /* (rec : (α_1 → ... → α_n → β) → α_1 → ... → α_n → β) */
-            n; /* α_1 → ... → α_n */
+            1 + /* (base : α_1  ...  α_n  β) */
+            1 + /* (rec : (α_1  ...  α_n  β)  α_1  ...  α_n  β) */
+            n; /* α_1  ...  α_n */
         if (args.size() <= arity) return visit_app_default(e);
         /* This `fixCore<n>` application is an overapplication.
            The `fixCore<n>` is implemented by the runtime, and the result
@@ -1875,7 +1875,7 @@ class csimp_fn {
         for (unsigned i = 0; i < m+1; i++) {
             new_args.push_back(mk_enf_neutral());
         }
-        /* `(base : α_1 → ... → α_n → β)` is not used in the runtime primitive.
+        /* `(base : α_1  ...  α_n  β)` is not used in the runtime primitive.
            So, we replace it with a neutral value :) */
         new_args.push_back(mk_enf_neutral());
         new_args.append(args.size() - n - 2, args.data() + n + 2);

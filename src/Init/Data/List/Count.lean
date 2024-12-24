@@ -17,7 +17,7 @@ open Nat
 /-! ### countP -/
 section countP
 
-variable (p q : α → Bool)
+variable (p q : α  Bool)
 
 @[simp] theorem countP_nil : countP p [] = 0 := rfl
 
@@ -64,7 +64,7 @@ theorem countP_eq_length_filter (l) : countP p l = length (filter p l) := by
     then rw [countP_cons_of_pos p l h, ih, filter_cons_of_pos h, length]
     else rw [countP_cons_of_neg p l h, ih, filter_cons_of_neg h]
 
-theorem countP_eq_length_filter' : countP p = length ∘ filter p := by
+theorem countP_eq_length_filter' : countP p = length  filter p := by
   funext l
   apply countP_eq_length_filter
 
@@ -89,12 +89,12 @@ theorem countP_le_length : countP p l ≤ l.length := by
 @[simp] theorem countP_eq_length {p} : countP p l = l.length ↔ ∀ a ∈ l, p a := by
   rw [countP_eq_length_filter, filter_length_eq_length]
 
-theorem countP_replicate (p : α → Bool) (a : α) (n : Nat) :
+theorem countP_replicate (p : α  Bool) (a : α) (n : Nat) :
     countP p (replicate n a) = if p a then n else 0 := by
   simp only [countP_eq_length_filter, filter_replicate]
   split <;> simp
 
-theorem boole_getElem_le_countP (p : α → Bool) (l : List α) (i : Nat) (h : i < l.length) :
+theorem boole_getElem_le_countP (p : α  Bool) (l : List α) (i : Nat) (h : i < l.length) :
     (if p l[i] then 1 else 0) ≤ l.countP p := by
   induction l generalizing i with
   | nil => simp at h
@@ -134,12 +134,12 @@ theorem countP_filter (l : List α) :
   funext l
   simp
 
-@[simp] theorem countP_map (p : β → Bool) (f : α → β) :
-    ∀ l, countP p (map f l) = countP (p ∘ f) l
+@[simp] theorem countP_map (p : β  Bool) (f : α  β) :
+    ∀ l, countP p (map f l) = countP (p  f) l
   | [] => rfl
   | a :: l => by rw [map_cons, countP_cons, countP_cons, countP_map p f l]; rfl
 
-theorem length_filterMap_eq_countP (f : α → Option β) (l : List α) :
+theorem length_filterMap_eq_countP (f : α  Option β) (l : List α) :
     (filterMap f l).length = countP (fun a => (f a).isSome) l := by
   induction l with
   | nil => rfl
@@ -147,7 +147,7 @@ theorem length_filterMap_eq_countP (f : α → Option β) (l : List α) :
     simp only [filterMap_cons, countP_cons]
     split <;> simp [ih, *]
 
-theorem countP_filterMap (p : β → Bool) (f : α → Option β) (l : List α) :
+theorem countP_filterMap (p : β  Bool) (f : α  Option β) (l : List α) :
     countP p (filterMap f l) = countP (fun a => ((f a).map p).getD false) l := by
   simp only [countP_eq_length_filter, filter_filterMap, ← filterMap_eq_filter]
   simp only [length_filterMap_eq_countP]
@@ -162,8 +162,8 @@ theorem countP_filterMap (p : β → Bool) (f : α → Option β) (l : List α) 
 
 @[deprecated countP_flatten (since := "2024-10-14")] abbrev countP_join := @countP_flatten
 
-theorem countP_flatMap (p : β → Bool) (l : List α) (f : α → List β) :
-    countP p (l.flatMap f) = sum (map (countP p ∘ f) l) := by
+theorem countP_flatMap (p : β  Bool) (l : List α) (f : α  List β) :
+    countP p (l.flatMap f) = sum (map (countP p  f) l) := by
   rw [List.flatMap, countP_flatten, map_map]
 
 @[simp] theorem countP_reverse (l : List α) : countP p l.reverse = countP p l := by
@@ -171,7 +171,7 @@ theorem countP_flatMap (p : β → Bool) (l : List α) (f : α → List β) :
 
 variable {p q}
 
-theorem countP_mono_left (h : ∀ x ∈ l, p x → q x) : countP p l ≤ countP q l := by
+theorem countP_mono_left (h : ∀ x ∈ l, p x  q x) : countP p l ≤ countP q l := by
   induction l with
   | nil => apply Nat.le_refl
   | cons a l ihl =>
@@ -316,12 +316,12 @@ theorem replicate_count_eq_of_count_eq_length {l : List α} (h : count a l = len
   rw [count, countP_filter]; congr; funext b
   simp; rintro rfl; exact h
 
-theorem count_le_count_map [DecidableEq β] (l : List α) (f : α → β) (x : α) :
+theorem count_le_count_map [DecidableEq β] (l : List α) (f : α  β) (x : α) :
     count x l ≤ count (f x) (map f l) := by
   rw [count, count, countP_map]
   apply countP_mono_left; simp +contextual
 
-theorem count_filterMap {α} [BEq β] (b : β) (f : α → Option β) (l : List α) :
+theorem count_filterMap {α} [BEq β] (b : β) (f : α  Option β) (l : List α) :
     count b (filterMap f l) = countP (fun a => f a == some b) l := by
   rw [count_eq_countP, countP_filterMap]
   congr
@@ -330,8 +330,8 @@ theorem count_filterMap {α} [BEq β] (b : β) (f : α → Option β) (l : List 
   · simp
   · simp
 
-theorem count_flatMap {α} [BEq β] (l : List α) (f : α → List β) (x : β) :
-    count x (l.flatMap f) = sum (map (count x ∘ f) l) := countP_flatMap _ _ _
+theorem count_flatMap {α} [BEq β] (l : List α) (f : α  List β) (x : β) :
+    count x (l.flatMap f) = sum (map (count x  f) l) := countP_flatMap _ _ _
 
 theorem count_erase (a b : α) :
     ∀ l : List α, count a (l.erase b) = count a l - if b == a then 1 else 0

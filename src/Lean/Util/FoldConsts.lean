@@ -17,7 +17,7 @@ unsafe structure State where
 
 unsafe abbrev FoldM := StateM State
 
-unsafe def fold {α : Type} (f : Name → α → α) (e : Expr) (acc : α) : FoldM α :=
+unsafe def fold {α : Type} (f : Name  α  α) (e : Expr) (acc : α) : FoldM α :=
   let rec visit (e : Expr) (acc : α) : FoldM α := do
     if (← get).visited.contains e then
       return acc
@@ -38,14 +38,14 @@ unsafe def fold {α : Type} (f : Name → α → α) (e : Expr) (acc : α) : Fol
     | _ => return acc
   visit e acc
 
-@[inline] unsafe def foldUnsafe {α : Type} (e : Expr) (init : α) (f : Name → α → α) : α :=
+@[inline] unsafe def foldUnsafe {α : Type} (e : Expr) (init : α) (f : Name  α  α) : α :=
   (fold f e init).run' {}
 
 end FoldConstsImpl
 
 /-- Apply `f` to every constant occurring in `e` once. -/
 @[implemented_by FoldConstsImpl.foldUnsafe]
-opaque foldConsts {α : Type} (e : Expr) (init : α) (f : Name → α → α) : α := init
+opaque foldConsts {α : Type} (e : Expr) (init : α) (f : Name  α  α) : α := init
 
 def getUsedConstants (e : Expr) : Array Name :=
   e.foldConsts #[] fun c cs => cs.push c

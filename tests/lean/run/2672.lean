@@ -8,8 +8,8 @@ elab "foo" t:term "," s:term : term => do
   logInfo t
   return e
 
-variable {α : Sort u} {r : α → α → Prop} {β : Sort v} (f : α → β)
-  (H : ∀ (a b : α), r a b → f a = f b)
+variable {α : Sort u} {r : α  α  Prop} {β : Sort v} (f : α  β)
+  (H : ∀ (a b : α), r a b  f a = f b)
 
 /-- info: Quot.lift f H @Quot.mk -/
 #guard_msgs in

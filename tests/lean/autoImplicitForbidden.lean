@@ -1,9 +1,9 @@
-def f : f → Bool := -- Error at second `f`
+def f : f  Bool := -- Error at second `f`
   fun _ => true
 
 mutual
 
-  def g : h → Bool := -- Error at `h`, `h` is not eligible to be an auto implicit because of the mutual block
+  def g : h  Bool := -- Error at `h`, `h` is not eligible to be an auto implicit because of the mutual block
     fun _ => true
 
   def h := List Nat
@@ -17,7 +17,7 @@ inductive Foo : List Foo -> Type -- Error at second `Foo`
   | x : Foo []
 
 mutual
-  inductive Ex1 : Ex2 → Type -- Error at `Ex2`
+  inductive Ex1 : Ex2  Type -- Error at `Ex2`
 
   inductive Ex2 : Type
 end

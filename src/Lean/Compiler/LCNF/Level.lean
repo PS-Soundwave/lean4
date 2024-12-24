@@ -112,7 +112,7 @@ def visitArgs (args : Array Arg) : Visitor :=
 def visitLetValue (e : LetValue) : Visitor :=
   match e with
   | .erased | .value .. | .proj .. => id
-  | .const _ us args => visitLevels us ∘ visitArgs args
+  | .const _ us args => visitLevels us  visitArgs args
   | .fvar _ args => visitArgs args
 
 def visitParam (p : Param) : Visitor :=
@@ -125,21 +125,21 @@ mutual
   partial def visitAlt (alt : Alt) : Visitor :=
     match alt with
     | .default k => visitCode k
-    | .alt _ ps k => visitCode k ∘ visitParams ps
+    | .alt _ ps k => visitCode k  visitParams ps
 
   partial def visitAlts (alts : Array Alt) : Visitor :=
     fun s => alts.foldl (init := s) fun s alt => visitAlt alt s
 
-  partial def visitCode : Code → Visitor
-    | .let decl k => visitCode k ∘ visitLetValue decl.value ∘ visitType decl.type
-    | .fun decl k | .jp decl k => visitCode k ∘ visitCode decl.value ∘ visitParams decl.params ∘ visitType decl.type
-    | .cases c => visitAlts c.alts ∘ visitType c.resultType
+  partial def visitCode : Code  Visitor
+    | .let decl k => visitCode k  visitLetValue decl.value  visitType decl.type
+    | .fun decl k | .jp decl k => visitCode k  visitCode decl.value  visitParams decl.params  visitType decl.type
+    | .cases c => visitAlts c.alts  visitType c.resultType
     | .unreach type => visitType type
     | .return _ => id
     | .jmp _ args => visitArgs args
 end
 
-def visitDeclValue : DeclValue → Visitor
+def visitDeclValue : DeclValue  Visitor
   | .code c => visitCode c
   | .extern .. => id
 
@@ -153,7 +153,7 @@ Collect universe level parameters collecting in the type, parameters, and value,
 set `decl.levelParams` with the resulting value.
 -/
 def Decl.setLevelParams (decl : Decl) : Decl :=
-  let levelParams := (visitDeclValue decl.value ∘ visitParams decl.params ∘ visitType decl.type) {} |>.params.toList
+  let levelParams := (visitDeclValue decl.value  visitParams decl.params  visitType decl.type) {} |>.params.toList
   { decl with levelParams }
 
 end Lean.Compiler.LCNF

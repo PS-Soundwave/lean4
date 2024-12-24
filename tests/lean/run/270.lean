@@ -1,6 +1,6 @@
 class CommAddSemigroup (α : Type u) extends Add α where
-    addComm : {a b : α} → a + b = b + a
-    addAssoc : {a b c : α} → a + b + c = a + (b + c)
+    addComm : {a b : α}  a + b = b + a
+    addAssoc : {a b c : α}  a + b + c = a + (b + c)
 
 open CommAddSemigroup
 

@@ -1,6 +1,6 @@
 import Lean.Elab.Command
 
-variable (P : Bool → Prop)
+variable (P : Bool  Prop)
 variable (o : Option Nat)
 
 /-!
@@ -8,7 +8,7 @@ This test checks that `simp [foo]` where `foo` is `reducible` uses the unfolding
 not the equations machinery.
 -/
 
-@[reducible] def red : Option α → Bool
+@[reducible] def red : Option α  Bool
   | .some _ => true
   | .none => false
 
@@ -16,7 +16,7 @@ not the equations machinery.
 
 /--
 error: tactic 'fail' failed
-P : Bool → Prop
+P : Bool  Prop
 o : Option Nat
 ⊢ P
     (match o with
@@ -42,7 +42,7 @@ run_meta Lean.logInfo m!"{← Lean.hasConst `red.eq_1}"
 
 /--
 error: tactic 'fail' failed
-P : Bool → Prop
+P : Bool  Prop
 o : Option Nat
 ⊢ P
     (match o with
@@ -54,7 +54,7 @@ theorem ex1' : P (red o) := by simp; fail
 
 -- For comparison, the behavior for a semi-reducible function
 
-def semired : Option α → Bool
+def semired : Option α  Bool
   | .some _ => true
   | .none => false
 
@@ -63,7 +63,7 @@ def semired : Option α → Bool
 
 /--
 error: tactic 'fail' failed
-P : Bool → Prop
+P : Bool  Prop
 o : Option Nat
 ⊢ P
     (match o with
@@ -79,7 +79,7 @@ theorem ex2 : P (semired o) := by simp [semired]; fail
 #guard_msgs in
 run_meta Lean.logInfo m!"{← Lean.hasConst `semired.eq_1}"
 
-def semired2 : Option α → Bool
+def semired2 : Option α  Bool
   | .some _ => true
   | .none => false
 
@@ -91,7 +91,7 @@ run_meta Lean.logInfo m!"{← Lean.hasConst `semired2.eq_1}"
 
 /--
 error: tactic 'fail' failed
-P : Bool → Prop
+P : Bool  Prop
 o : Option Nat
 ⊢ P
     (match o with

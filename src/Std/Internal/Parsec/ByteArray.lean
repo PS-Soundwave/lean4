@@ -97,13 +97,13 @@ def digits : Parser Nat := do
 def hexDigit : Parser Char := attempt do
   let b ← any
   if ('0'.toUInt8 ≤ b ∧ b ≤ '9'.toUInt8)
-   ∨ ('a'.toUInt8 ≤ b ∧ b ≤ 'f'.toUInt8)
-   ∨ ('A'.toUInt8 ≤ b ∧ b ≤ 'F'.toUInt8) then return Char.ofUInt8 b else fail s!"hex digit expected"
+    ('a'.toUInt8 ≤ b ∧ b ≤ 'f'.toUInt8)
+    ('A'.toUInt8 ≤ b ∧ b ≤ 'F'.toUInt8) then return Char.ofUInt8 b else fail s!"hex digit expected"
 
 @[inline]
 def asciiLetter : Parser Char := attempt do
   let b ← any
-  if ('A'.toUInt8 ≤ b ∧ b ≤ 'Z'.toUInt8) ∨ ('a'.toUInt8 ≤ b ∧ b ≤ 'z'.toUInt8) then
+  if ('A'.toUInt8 ≤ b ∧ b ≤ 'Z'.toUInt8)  ('a'.toUInt8 ≤ b ∧ b ≤ 'z'.toUInt8) then
     return Char.ofUInt8 b
   else
     fail s!"ASCII letter expected"
@@ -111,7 +111,7 @@ def asciiLetter : Parser Char := attempt do
 private partial def skipWs (it : ByteArray.Iterator) : ByteArray.Iterator :=
   if h : it.hasNext then
     let b := it.curr' h
-    if b = '\u0009'.toUInt8 ∨ b = '\u000a'.toUInt8 ∨ b = '\u000d'.toUInt8 ∨ b = '\u0020'.toUInt8 then
+    if b = '\u0009'.toUInt8  b = '\u000a'.toUInt8  b = '\u000d'.toUInt8  b = '\u0020'.toUInt8 then
       skipWs (it.next' h)
     else
       it

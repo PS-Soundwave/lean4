@@ -33,7 +33,7 @@ private def mkUserNameFor (e : Expr) : TermElabM Name := do
    Remark: if the discriminat is `Syntax.missing`, we abort the elaboration of the `match`-expression.
    This can happen due to error recovery. Example
    ```
-   example : (p ∨ p) → p := fun h => match
+   example : (p  p)  p := fun h => match
    ```
    If we don't abort, the elaborator loops because we will keep trying to expand
    ```
@@ -137,13 +137,13 @@ def expandMacrosInPatterns (matchAlts : Array MatchAltView) : MacroM (Array Matc
     let patterns ← matchAlt.patterns.mapM expandMacros
     pure { matchAlt with patterns := patterns }
 
-private def getMatchGeneralizing? : Syntax → Option Bool
+private def getMatchGeneralizing? : Syntax  Option Bool
   | `(match (generalizing := true)  $[$motive]? $_discrs,* with $_alts:matchAlt*) => some true
   | `(match (generalizing := false) $[$motive]? $_discrs,* with $_alts:matchAlt*) => some false
   | _ => none
 
 /-- Given `stx` a match-expression, return its alternatives. -/
-private def getMatchAlts : Syntax → Array MatchAltView
+private def getMatchAlts : Syntax  Array MatchAltView
   | `(match $[$gen]? $[$motive]? $_discrs,* with $alts:matchAlt*) =>
     alts.filterMap fun alt => match alt with
       | `(matchAltExpr| | $patterns,* => $rhs) => some {
@@ -173,7 +173,7 @@ open Lean.Elab.Term.Quotation in
 structure PatternVarDecl where
   fvarId : FVarId
 
-private partial def withPatternVars {α} (pVars : Array PatternVar) (k : Array PatternVarDecl → TermElabM α) : TermElabM α :=
+private partial def withPatternVars {α} (pVars : Array PatternVar) (k : Array PatternVarDecl  TermElabM α) : TermElabM α :=
   let rec loop (i : Nat) (decls : Array PatternVarDecl) (userNames : Array Name) := do
     if h : i < pVars.size then
       let type ← mkFreshTypeMVar
@@ -187,7 +187,7 @@ private partial def withPatternVars {α} (pVars : Array PatternVar) (k : Array P
 Remark: when performing dependent pattern matching, we often had to write code such as
 
 ```lean
-def Vec.map' (f : α → β) (xs : Vec α n) : Vec β n :=
+def Vec.map' (f : α  β) (xs : Vec α n) : Vec β n :=
   match n, xs with
   | _, nil       => nil
   | _, cons a as => cons (f a) (map' f as)
@@ -219,9 +219,9 @@ structure PatternElabException where
   It tries to compute a path to an index of the discriminant type.
   For example, suppose the user has written
   ```
-  inductive Mem (a : α) : List α → Prop where
+  inductive Mem (a : α) : List α  Prop where
     | head {as} : Mem a (a::as)
-    | tail {as} : Mem a as → Mem a (a'::as)
+    | tail {as} : Mem a as  Mem a (a'::as)
 
   infix:50 " ∈ " => Mem
 
@@ -229,7 +229,7 @@ structure PatternElabException where
   match h with
   | Mem.head => rfl
   ```
-  The motive for the match is `a ∈ [b] → b = a`, and get a type mismatch between the type
+  The motive for the match is `a ∈ [b]  b = a`, and get a type mismatch between the type
   of `Mem.head` and `a ∈ [b]`. This procedure return the path `[2, 1]` to the index `b`.
   We use it to produce the following refinement
   ```
@@ -237,7 +237,7 @@ structure PatternElabException where
   match b, h with
   | _, Mem.head => rfl
   ```
-  which produces the new motive `(x : Nat) →  a ∈ [x] → x = a`
+  which produces the new motive `(x : Nat)   a ∈ [x]  x = a`
   After this refinement step, the `match` is elaborated successfully.
 
   This method relies on the fact that the dependent pattern matcher compiler solves equations
@@ -251,7 +251,7 @@ structure PatternElabException where
   Our procedure ensures that "information" is not lost, and will *not* succeed in an
   example such as
   ```
-  example (a b : Nat) (f : Nat → Nat) (h : f a ∈ [f b]) : f b = f a :=
+  example (a b : Nat) (f : Nat  Nat) (h : f a ∈ [f b]) : f b = f a :=
     match h with
     | Mem.head => rfl
   ```
@@ -660,7 +660,7 @@ where
   - `k` is the continuation that is executed in an updated local context with the all pattern variables (explicit and implicit). Note that, `patternVarDecls` are all
      replaced since they may depend on implicit pattern variables (i.e., metavariables) that are converted into new free variables by this method.
  -/
-partial def main (patternVarDecls : Array PatternVarDecl) (ps : Array Expr) (matchType : Expr) (k : Array LocalDecl → Array Pattern → Expr → TermElabM α) : TermElabM α := do
+partial def main (patternVarDecls : Array PatternVarDecl) (ps : Array Expr) (matchType : Expr) (k : Array LocalDecl  Array Pattern  Expr  TermElabM α) : TermElabM α := do
   let explicitPatternVars := patternVarDecls.map fun decl => decl.fvarId
   let (ps, s) ← ps.mapM normalize |>.run { explicitPatternVars } |>.run {}
   let patternVars ← topSort s.patternVars
@@ -702,7 +702,7 @@ where
         resetMVarUserNames (← get)
     go |>.run' #[]
 
-  unpack (packed : Expr) (k : (patternVars : Array Expr) → (patterns : Array Expr) → (matchType : Expr) → TermElabM α) : TermElabM α :=
+  unpack (packed : Expr) (k : (patternVars : Array Expr)  (patterns : Array Expr)  (matchType : Expr)  TermElabM α) : TermElabM α :=
     let rec go (packed : Expr) (patternVars : Array Expr) : TermElabM α := do
       match packed with
       | .lam n d b _ =>
@@ -717,11 +717,11 @@ where
 
 end ToDepElimPattern
 
-def withDepElimPatterns (patternVarDecls : Array PatternVarDecl) (ps : Array Expr) (matchType : Expr) (k : Array LocalDecl → Array Pattern → Expr → TermElabM α) : TermElabM α := do
+def withDepElimPatterns (patternVarDecls : Array PatternVarDecl) (ps : Array Expr) (matchType : Expr) (k : Array LocalDecl  Array Pattern  Expr  TermElabM α) : TermElabM α := do
   ToDepElimPattern.main patternVarDecls ps matchType k
 
 private def withElaboratedLHS {α} (ref : Syntax) (patternVarDecls : Array PatternVarDecl) (patternStxs : Array Syntax) (matchType : Expr)
-    (k : AltLHS → Expr → TermElabM α) : ExceptT PatternElabException TermElabM α := do
+    (k : AltLHS  Expr  TermElabM α) : ExceptT PatternElabException TermElabM α := do
   let (patterns, matchType) ← withSynthesize <| elabPatterns patternStxs matchType
   id (α := TermElabM α) do
     trace[Elab.match] "patterns: {patterns}"
@@ -751,7 +751,7 @@ private def withToClear (toClear : Array FVarId) (type : Expr) (k : TermElabM α
   Generate equalities `h : discr = pattern` for discriminants annotated with `h :`.
   We use these equalities to elaborate the right-hand-side of a `match` alternative.
 -/
-private def withEqs (discrs : Array Discr) (patterns : List Pattern) (k : Array Expr → TermElabM α) : TermElabM α := do
+private def withEqs (discrs : Array Discr) (patterns : List Pattern) (k : Array Expr  TermElabM α) : TermElabM α := do
   go 0 patterns #[]
 where
   go (i : Nat) (ps : List Pattern) (eqs : Array Expr) : TermElabM α := do
@@ -940,9 +940,9 @@ where
      If we don't include these extra variables in indices, then
      `updateMatchType` will generate a type incorrect term.
      For example, suppose `discr` contains `h : @HEq α a α b`, and
-     `indices` is `#[α, b]`, and `matchType` is `@HEq α a α b → B`.
+     `indices` is `#[α, b]`, and `matchType` is `@HEq α a α b  B`.
      `updateMatchType indices matchType` produces the type
-     `(α' : Type) → (b : α') → @HEq α' a α' b → B` which is type incorrect
+     `(α' : Type)  (b : α')  @HEq α' a α' b  B` which is type incorrect
      because we have `a : α`.
      The method `collectDeps` will include `a` into `indices`.
 
@@ -1062,7 +1062,7 @@ private def elabMatchAux (generalizing? : Option Bool) (discrStxs : Array Syntax
             ps
          ```
          When we try to elaborate `fun (p : Prod _ _) => ...` for the first time, we haven't propagated the type of `ps` yet
-         because `Array.filter` has type `{α : Type u_1} → (α → Bool) → (as : Array α) → optParam Nat 0 → optParam Nat (Array.size as) → Array α`
+         because `Array.filter` has type `{α : Type u_1}  (α  Bool)  (as : Array α)  optParam Nat 0  optParam Nat (Array.size as)  Array α`
          However, the partial type annotation `(p : Prod _ _)` makes sure we succeed at the quick-check `waitExpectedTypeAndDiscrs`.
       -/
       withRef altLHS.ref do

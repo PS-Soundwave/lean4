@@ -83,7 +83,7 @@ private def isFirstOcc (xs : Array Arg) (i : Nat) : Bool :=
 
 /-- Return true if `x` also occurs in `ys` in a position that is not consumed.
    That is, it is also passed as a borrow reference. -/
-private def isBorrowParamAux (x : VarId) (ys : Array Arg) (consumeParamPred : Nat → Bool) : Bool :=
+private def isBorrowParamAux (x : VarId) (ys : Array Arg) (consumeParamPred : Nat  Bool) : Bool :=
   ys.size.any fun i _ =>
     let y := ys[i]
     match y with
@@ -98,14 +98,14 @@ Return `n`, the number of times `x` is consumed.
 - `ys` is a sequence of instruction parameters where we search for `x`.
 - `consumeParamPred i = true` if parameter `i` is consumed.
 -/
-private def getNumConsumptions (x : VarId) (ys : Array Arg) (consumeParamPred : Nat → Bool) : Nat :=
+private def getNumConsumptions (x : VarId) (ys : Array Arg) (consumeParamPred : Nat  Bool) : Nat :=
   ys.size.fold (init := 0) fun i _ n =>
     let y := ys[i]
     match y with
     | Arg.irrelevant => n
     | Arg.var y      => if x == y && consumeParamPred i then n+1 else n
 
-private def addIncBeforeAux (ctx : Context) (xs : Array Arg) (consumeParamPred : Nat → Bool) (b : FnBody) (liveVarsAfter : LiveVarSet) : FnBody :=
+private def addIncBeforeAux (ctx : Context) (xs : Array Arg) (consumeParamPred : Nat  Bool) (b : FnBody) (liveVarsAfter : LiveVarSet) : FnBody :=
   xs.size.fold (init := b) fun i _ b =>
     let x := xs[i]
     match x with
@@ -149,12 +149,12 @@ private def addDecForDeadParams (ctx : Context) (ps : Array Param) (b : FnBody) 
   ps.foldl (init := b) fun b p =>
     if !p.borrow && p.ty.isObj && !bLiveVars.contains p.x then addDec ctx p.x b else b
 
-private def isPersistent : Expr → Bool
+private def isPersistent : Expr  Bool
   | Expr.fap _ xs => xs.isEmpty -- all global constants are persistent objects
   | _             => false
 
 /-- We do not need to consume the projection of a variable that is not consumed -/
-private def consumeExpr (m : VarMap) : Expr → Bool
+private def consumeExpr (m : VarMap) : Expr  Bool
   | Expr.proj _ x   => match m.find? x with
     | some info => info.consume
     | none      => true
@@ -210,7 +210,7 @@ def updateVarInfoWithParams (ctx : Context) (ps : Array Param) : Context :=
     m.insert p.x { ref := p.ty.isObj, consume := !p.borrow }
   { ctx with varMap := m }
 
-partial def visitFnBody : FnBody → Context → (FnBody × LiveVarSet)
+partial def visitFnBody : FnBody  Context  (FnBody × LiveVarSet)
   | FnBody.vdecl x t v b,      ctx =>
     let ctx := updateVarInfo ctx x t v
     let (b, bLiveVars) := visitFnBody b ctx

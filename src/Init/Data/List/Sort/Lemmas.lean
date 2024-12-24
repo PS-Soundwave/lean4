@@ -79,7 +79,7 @@ theorem splitInTwo_snd_sorted (l : { l : List α // l.length = n }) (h : Pairwis
   exact h.drop
 
 theorem splitInTwo_fst_le_splitInTwo_snd {l : { l : List α // l.length = n }} (h : Pairwise le l.1) :
-    ∀ a b, a ∈ (splitInTwo l).1.1 → b ∈ (splitInTwo l).2.1 → le a b := by
+    ∀ a b, a ∈ (splitInTwo l).1.1  b ∈ (splitInTwo l).2.1  le a b := by
   rw [splitInTwo_fst, splitInTwo_snd]
   intro a b ma mb
   exact h.rel_of_mem_take_of_mem_drop ma mb
@@ -90,10 +90,10 @@ open MergeSort.Internal
 
 /-! ### enumLE -/
 
-variable {le : α → α → Bool}
+variable {le : α  α  Bool}
 
-theorem enumLE_trans (trans : ∀ a b c, le a b → le b c → le a c)
-    (a b c : Nat × α) : enumLE le a b → enumLE le b c → enumLE le a c := by
+theorem enumLE_trans (trans : ∀ a b c, le a b  le b c  le a c)
+    (a b c : Nat × α) : enumLE le a b  enumLE le b c  enumLE le a c := by
   simp only [enumLE]
   split <;> split <;> split <;> rename_i ab₂ ba₂ bc₂
   · simp_all
@@ -132,19 +132,19 @@ theorem enumLE_total (total : ∀ a b, le a b || le b a)
 
 /-! ### merge -/
 
-theorem cons_merge_cons (s : α → α → Bool) (a b l r) :
+theorem cons_merge_cons (s : α  α  Bool) (a b l r) :
     merge (a::l) (b::r) s = if s a b then a :: merge l (b::r) s else b :: merge (a::l) r s := by
   simp only [merge]
 
-@[simp] theorem cons_merge_cons_pos (s : α → α → Bool) (l r) (h : s a b) :
+@[simp] theorem cons_merge_cons_pos (s : α  α  Bool) (l r) (h : s a b) :
     merge (a::l) (b::r) s = a :: merge l (b::r) s := by
   rw [cons_merge_cons, if_pos h]
 
-@[simp] theorem cons_merge_cons_neg (s : α → α → Bool) (l r) (h : ¬ s a b) :
+@[simp] theorem cons_merge_cons_neg (s : α  α  Bool) (l r) (h : ¬ s a b) :
     merge (a::l) (b::r) s = b :: merge (a::l) r s := by
   rw [cons_merge_cons, if_neg h]
 
-@[simp] theorem length_merge (s : α → α → Bool) (l r) :
+@[simp] theorem length_merge (s : α  α  Bool) (l r) :
     (merge l r s).length = l.length + r.length := by
   match l, r with
   | [], r => simp
@@ -159,7 +159,7 @@ theorem cons_merge_cons (s : α → α → Bool) (a b l r) :
 The elements of `merge le xs ys` are exactly the elements of `xs` and `ys`.
 -/
 -- We subsequently prove that `mergeSort_perm : merge le xs ys ~ xs ++ ys`.
-theorem mem_merge {a : α} {xs ys : List α} : a ∈ merge xs ys le ↔ a ∈ xs ∨ a ∈ ys := by
+theorem mem_merge {a : α} {xs ys : List α} : a ∈ merge xs ys le ↔ a ∈ xs  a ∈ ys := by
   induction xs generalizing ys with
   | nil => simp [merge]
   | cons x xs ih =>
@@ -173,13 +173,13 @@ theorem mem_merge {a : α} {xs ys : List α} : a ∈ merge xs ys le ↔ a ∈ xs
         apply or_congr_left
         simp only [or_comm (a := a = y), or_assoc]
 
-theorem mem_merge_left (s : α → α → Bool) (h : x ∈ l) : x ∈ merge l r s :=
+theorem mem_merge_left (s : α  α  Bool) (h : x ∈ l) : x ∈ merge l r s :=
   mem_merge.2 <| .inl h
 
-theorem mem_merge_right (s : α → α → Bool) (h : x ∈ r) : x ∈ merge l r s :=
+theorem mem_merge_right (s : α  α  Bool) (h : x ∈ r) : x ∈ merge l r s :=
   mem_merge.2 <| .inr h
 
-theorem merge_stable : ∀ (xs ys) (_ : ∀ x y, x ∈ xs → y ∈ ys → x.1 ≤ y.1),
+theorem merge_stable : ∀ (xs ys) (_ : ∀ x y, x ∈ xs  y ∈ ys  x.1 ≤ y.1),
     (merge xs ys (enumLE le)).map (·.2) = merge (xs.map (·.2)) (ys.map (·.2)) le
   | [], ys, _ => by simp [merge]
   | xs, [], _ => by simp [merge]
@@ -202,7 +202,7 @@ If the ordering relation `le` is transitive and total (i.e. `le a b || le b a` f
 then the `merge` of two sorted lists is sorted.
 -/
 theorem sorted_merge
-    (trans : ∀ (a b c : α), le a b → le b c → le a c)
+    (trans : ∀ (a b c : α), le a b  le b c  le a c)
     (total : ∀ (a b : α), le a b || le b a)
     (l₁ l₂ : List α) (h₁ : l₁.Pairwise le) (h₂ : l₂.Pairwise le) : (merge l₁ l₂ le).Pairwise le := by
   induction l₁ generalizing l₂ with
@@ -231,7 +231,7 @@ theorem sorted_merge
           · exact rel_of_pairwise_cons h₂ m
         · exact ih₂ h₂.tail
 
-theorem merge_of_le : ∀ {xs ys : List α} (_ : ∀ a b, a ∈ xs → b ∈ ys → le a b),
+theorem merge_of_le : ∀ {xs ys : List α} (_ : ∀ a b, a ∈ xs  b ∈ ys  le a b),
     merge xs ys le = xs ++ ys
   | [], ys, _
   | xs, [], _ => by simp [merge]
@@ -279,15 +279,15 @@ termination_by l => l.length
 
 /--
 The result of `mergeSort` is sorted,
-as long as the comparison function is transitive (`le a b → le b c → le a c`)
+as long as the comparison function is transitive (`le a b  le b c  le a c`)
 and total in the sense that `le a b || le b a`.
 
 The comparison function need not be irreflexive, i.e. `le a b` and `le b a` is allowed even when `a ≠ b`.
 -/
 theorem sorted_mergeSort
-    (trans : ∀ (a b c : α), le a b → le b c → le a c)
+    (trans : ∀ (a b c : α), le a b  le b c  le a c)
     (total : ∀ (a b : α), le a b || le b a) :
-    (l : List α) → (mergeSort l le).Pairwise le
+    (l : List α)  (mergeSort l le).Pairwise le
   | [] => by simp [mergeSort]
   | [a] => by simp [mergeSort]
   | a :: b :: xs => by
@@ -350,12 +350,12 @@ where go : ∀ (i : Nat) (l : List α),
       omega
 termination_by _ l => l.length
 
-theorem mergeSort_cons {le : α → α → Bool}
-    (trans : ∀ (a b c : α), le a b → le b c → le a c)
+theorem mergeSort_cons {le : α  α  Bool}
+    (trans : ∀ (a b c : α), le a b  le b c  le a c)
     (total : ∀ (a b : α), le a b || le b a)
     (a : α) (l : List α) :
     ∃ l₁ l₂, mergeSort (a :: l) le = l₁ ++ a :: l₂ ∧ mergeSort l le = l₁ ++ l₂ ∧
-      ∀ b, b ∈ l₁ → !le a b := by
+      ∀ b, b ∈ l₁  !le a b := by
   rw [← mergeSort_enum]
   rw [enum_cons]
   have nd : Nodup ((a :: l).enum.map (·.1)) := by rw [enum_map_fst]; exact nodup_range _
@@ -410,7 +410,7 @@ If `c` is a sorted sublist of `l`,
 then `c` is still a sublist of `mergeSort le l`.
 -/
 theorem sublist_mergeSort
-    (trans : ∀ (a b c : α), le a b → le b c → le a c)
+    (trans : ∀ (a b c : α), le a b  le b c  le a c)
     (total : ∀ (a b : α), le a b || le b a) :
     ∀ {c : List α} (_ : c.Pairwise le) (_ : c <+ l),
     c <+ mergeSort l le
@@ -442,7 +442,7 @@ If a pair `[a, b]` is a sublist of `l` and `le a b`,
 then `[a, b]` is still a sublist of `mergeSort le l`.
 -/
 theorem pair_sublist_mergeSort
-    (trans : ∀ (a b c : α), le a b → le b c → le a c)
+    (trans : ∀ (a b c : α), le a b  le b c  le a c)
     (total : ∀ (a b : α), le a b || le b a)
     (hab : le a b) (h : [a, b] <+ l) : [a, b] <+ mergeSort l le :=
   sublist_mergeSort trans total (pairwise_pair.mpr hab) h
@@ -450,7 +450,7 @@ theorem pair_sublist_mergeSort
 @[deprecated pair_sublist_mergeSort(since := "2024-09-02")]
 abbrev mergeSort_stable_pair := @pair_sublist_mergeSort
 
-theorem map_merge {f : α → β} {r : α → α → Bool} {s : β → β → Bool} {l l' : List α}
+theorem map_merge {f : α  β} {r : α  α  Bool} {s : β  β  Bool} {l l' : List α}
     (hl : ∀ a ∈ l, ∀ b ∈ l', r a b = s (f a) (f b)) :
     (l.merge l' r).map f = (l.map f).merge (l'.map f) s := by
   match l, l' with
@@ -469,7 +469,7 @@ theorem map_merge {f : α → β} {r : α → α → Bool} {s : β → β → Bo
       simp only [List.forall_mem_cons]
       exact ⟨hl.1.2, hl.2.2⟩
 
-theorem map_mergeSort {r : α → α → Bool} {s : β → β → Bool} {f : α → β} {l : List α}
+theorem map_mergeSort {r : α  α  Bool} {s : β  β  Bool} {f : α  β} {l : List α}
     (hl : ∀ a ∈ l, ∀ b ∈ l, r a b = s (f a) (f b)) :
     (l.mergeSort r).map f = (l.map f).mergeSort s :=
   match l with

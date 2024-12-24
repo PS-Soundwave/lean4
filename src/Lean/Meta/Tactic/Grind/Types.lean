@@ -298,12 +298,12 @@ def getENodes : GoalM (Array ENode) := do
   let nodes := (← get).enodes.toArray.map (·.2)
   return nodes.qsort fun a b => a.idx < b.idx
 
-def forEachENode (f : ENode → GoalM Unit) : GoalM Unit := do
+def forEachENode (f : ENode  GoalM Unit) : GoalM Unit := do
   let nodes ← getENodes
   for n in nodes do
     f n
 
-def filterENodes (p : ENode → GoalM Bool) : GoalM (Array ENode) := do
+def filterENodes (p : ENode  GoalM Bool) : GoalM (Array ENode) := do
   let ref ← IO.mkRef #[]
   forEachENode fun n => do
     if (← p n) then

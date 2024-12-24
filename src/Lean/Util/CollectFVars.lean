@@ -18,19 +18,19 @@ structure State where
 def State.add (s : State) (fvarId : FVarId) : State :=
   { s with fvarSet := s.fvarSet.insert fvarId, fvarIds := s.fvarIds.push fvarId }
 
-abbrev Visitor := State → State
+abbrev Visitor := State  State
 
 mutual
   partial def visit (e : Expr) : Visitor := fun s =>
     if !e.hasFVar || s.visitedExpr.contains e then s
     else main e { s with visitedExpr := s.visitedExpr.insert e }
 
-  partial def main : Expr → Visitor
+  partial def main : Expr  Visitor
     | .proj _ _ e      => visit e
-    | .forallE _ d b _ => visit b ∘ visit d
-    | .lam _ d b _     => visit b ∘ visit d
-    | .letE _ t v b _  => visit b ∘ visit v ∘ visit t
-    | .app f a         => visit a ∘ visit f
+    | .forallE _ d b _ => visit b  visit d
+    | .lam _ d b _     => visit b  visit d
+    | .letE _ t v b _  => visit b  visit v  visit t
+    | .app f a         => visit a  visit f
     | .mdata _ b       => visit b
     | .fvar fvarId     => fun s => s.add fvarId
     | _                => id

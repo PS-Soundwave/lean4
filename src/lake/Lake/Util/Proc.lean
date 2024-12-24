@@ -16,7 +16,7 @@ def mkCmdLog (args : IO.Process.SpawnArgs) : String :=
   s!"{cwd}> {envStr}{cmdStr}"
 
 @[inline] def logOutput
-  [Monad m] (out : IO.Process.Output) (log : String → m PUnit)
+  [Monad m] (out : IO.Process.Output) (log : String  m PUnit)
 : m Unit := do
   unless out.stdout.isEmpty do
     log s!"stdout:\n{out.stdout.trim}"

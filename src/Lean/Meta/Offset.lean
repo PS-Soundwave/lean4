@@ -12,7 +12,7 @@ import Lean.Util.SafeExponentiation
 
 namespace Lean.Meta
 
-private abbrev withInstantiatedMVars (e : Expr) (k : Expr → OptionT MetaM α) : OptionT MetaM α := do
+private abbrev withInstantiatedMVars (e : Expr) (k : Expr  OptionT MetaM α) : OptionT MetaM α := do
   let eNew ← instantiateMVars e
   if eNew.getAppFn.isMVar then
     failure

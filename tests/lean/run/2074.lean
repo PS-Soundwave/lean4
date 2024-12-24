@@ -33,7 +33,7 @@ instance (priority := 100) CommRing.toNonUnitalCommRing [s : CommRing α] : NonU
   { s with }
 
 class StarRing' (R : Type _) [NonUnitalSemiring R]
-def starGizmo [CommSemiring R] [StarRing' R] : R → R := id
+def starGizmo [CommSemiring R] [StarRing' R] : R  R := id
 theorem starGizmo_foo [CommRing R] [StarRing' R] (x : R) : starGizmo x = x := rfl
 
 namespace ReidMWE
@@ -59,7 +59,7 @@ class I (α : Type u) extends G α, D α
 class J (α : Type u) extends H α, I α, E α
 
 class StarRing' (R : Type 0) [B R]
-def starGizmo [E R] [StarRing' R] : R → R := id
+def starGizmo [E R] [StarRing' R] : R  R := id
 
 theorem starGizmo_foo [J R] [StarRing' R] (x : R) : starGizmo x = x := rfl
 

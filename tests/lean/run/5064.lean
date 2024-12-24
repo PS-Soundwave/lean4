@@ -8,7 +8,7 @@ Motivating example from #5064.
 This failed when generating the splitter theorem for `thingy`.
 -/
 
-def thingy : List (Nat ⊕ Nat) → List Bool
+def thingy : List (Nat ⊕ Nat)  List Bool
   | Sum.inr (_n + 2) :: l => thingy l
   | _ => []
   termination_by l => l.length

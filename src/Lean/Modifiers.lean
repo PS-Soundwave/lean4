@@ -32,7 +32,7 @@ def privateHeader : Name := `_private
 def mkPrivateName (env : Environment) (n : Name) : Name :=
   Name.mkNum (privateHeader ++ env.mainModule) 0 ++ n
 
-def isPrivateName : Name → Bool
+def isPrivateName : Name  Bool
   | n@(.str p _) => n == privateHeader || isPrivateName p
   | .num p _     => isPrivateName p
   | _            => false
@@ -72,7 +72,7 @@ def isPrivateNameFromImportedModule (env : Environment) (n : Name) : Bool :=
   | some userName => mkPrivateName env userName != n
   | _ => false
 
-private def privatePrefixAux : Name → Name
+private def privatePrefixAux : Name  Name
   | .str p _ => privatePrefixAux p
   | n        => n
 

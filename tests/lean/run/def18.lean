@@ -2,7 +2,7 @@
 universe u
 variable {α : Type u}
 
-def split : List α → List α × List α
+def split : List α  List α × List α
 | []       => ([], [])
 | [a]      => ([a], [])
 | a::b::as => (a :: (split as).1, b :: (split as).2)

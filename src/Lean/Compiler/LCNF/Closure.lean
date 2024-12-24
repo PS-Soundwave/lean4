@@ -22,13 +22,13 @@ structure Context where
   /--
   `inScope x` returns `true` if `x` is a variable that is not in `C`.
   -/
-  inScope : FVarId → Bool
+  inScope : FVarId  Bool
   /--
   If `abstract x` returns `true`, we convert `x` into a closure parameter. Otherwise,
   we collect the dependencies in the `let`/`fun`-declaration too, and include the declaration in the closure.
   Remark: the lambda lifting pass abstracts all `let`/`fun`-declarations.
   -/
-  abstract : FVarId → Bool
+  abstract : FVarId  Bool
 
 /--
 State for the `ClosureM` monad.
@@ -146,7 +146,7 @@ mutual
 
 end
 
-def run (x : ClosureM α) (inScope : FVarId → Bool) (abstract : FVarId → Bool := fun _ => true) : CompilerM (α × Array Param × Array CodeDecl) := do
+def run (x : ClosureM α) (inScope : FVarId  Bool) (abstract : FVarId  Bool := fun _ => true) : CompilerM (α × Array Param × Array CodeDecl) := do
   let (a, s) ← x { inScope, abstract } |>.run {}
   return (a, s.params, s.decls)
 

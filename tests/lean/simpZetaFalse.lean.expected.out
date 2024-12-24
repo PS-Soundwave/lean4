@@ -4,7 +4,7 @@ h : f (f x) = x
     if True then 1 else y + 1) =
     1
 theorem ex1 : ∀ (x : Nat),
-  f (f x) = x →
+  f (f x) = x 
     (let y := x * x;
       if f (f x) = x then 1 else y + 1) =
       1 :=
@@ -23,8 +23,8 @@ h' : z = x
     y) =
     z
 theorem ex2 : ∀ (x z : Nat),
-  f (f x) = x →
-    z = x →
+  f (f x) = x 
+    z = x 
       (let y := f (f x);
         y) =
         z :=
@@ -41,7 +41,7 @@ h : p
     fun x => True) =
     fun z => p
 theorem ex4 : ∀ (p : Prop),
-  p →
+  p 
     (let n := 10;
       fun x => x = x) =
       fun z => p :=

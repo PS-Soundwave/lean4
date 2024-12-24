@@ -16,12 +16,12 @@ abbrev CallStack κ := List κ
 abbrev Cycle κ := CallStack κ
 
 /-- A monad equipped with a call stack. -/
-class MonadCallStackOf (κ :  semiOutParam (Type u)) (m : Type u → Type v) where
+class MonadCallStackOf (κ :  semiOutParam (Type u)) (m : Type u  Type v) where
   getCallStack : m (CallStack κ)
   withCallStack (stack : CallStack κ) (x : m α) : m α
 
 /-- Similar to `MonadCallStackOf`, but `κ` is an `outParam` for convenience. -/
-class MonadCallStack (κ :  outParam (Type u)) (m : Type u → Type v) where
+class MonadCallStack (κ :  outParam (Type u)) (m : Type u  Type v) where
   getCallStack : m (CallStack κ)
   withCallStack (stack : CallStack κ) (x : m α) : m α
 
@@ -36,11 +36,11 @@ instance [MonadLift m n] [MonadFunctor m n] [MonadCallStackOf κ m] : MonadCallS
   withCallStack s := monadMap (m := m) (withCallStack s ·)
 
 /-- A monad equipped with a call stack and the ability to error on a cycle. -/
-class MonadCycleOf (κ :  semiOutParam (Type u)) (m : Type u → Type v) extends MonadCallStackOf κ m where
+class MonadCycleOf (κ :  semiOutParam (Type u)) (m : Type u  Type v) extends MonadCallStackOf κ m where
   throwCycle (cycle : Cycle κ) : m α
 
 /-- Similar to `MonadCycle`, but `κ` is an `outParam` for convenience. -/
-class MonadCycle (κ :  outParam (Type u)) (m : Type u → Type v) extends MonadCallStack κ m where
+class MonadCycle (κ :  outParam (Type u)) (m : Type u  Type v) extends MonadCallStack κ m where
   throwCycle (cycle : Cycle κ) : m α
 
 export MonadCycle (throwCycle)

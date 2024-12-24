@@ -3,8 +3,8 @@ structure SCore (α : Type) :=
 (x : α) (y : Nat)
 
 inductive M
-| leaf : Nat → M
-| node : SCore M → M
+| leaf : Nat  M
+| node : SCore M  M
 
 abbrev S := SCore M
 
@@ -15,6 +15,6 @@ def SCore.doubleY (s : S) : Nat :=
 def f (s : S) : Nat :=
 s.doubleY
 
-def g : M → Nat
+def g : M  Nat
 | M.leaf n => n
 | M.node s => s.doubleY

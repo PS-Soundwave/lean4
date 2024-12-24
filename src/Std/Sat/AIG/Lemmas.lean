@@ -237,9 +237,9 @@ theorem denote_idx_gate {aig : AIG α} {hstart} (h : aig.decls[start] = .gate lh
     simp_all
 
 theorem idx_trichotomy (aig : AIG α) (hstart : start < aig.decls.size) {prop : Prop}
-    (hconst : ∀ b, aig.decls[start]'hstart = .const b → prop)
-    (hatom : ∀ a, aig.decls[start]'hstart = .atom a → prop)
-    (hgate : ∀ lhs rhs linv rinv, aig.decls[start]'hstart = .gate lhs rhs linv rinv → prop)
+    (hconst : ∀ b, aig.decls[start]'hstart = .const b  prop)
+    (hatom : ∀ a, aig.decls[start]'hstart = .atom a  prop)
+    (hgate : ∀ lhs rhs linv rinv, aig.decls[start]'hstart = .gate lhs rhs linv rinv  prop)
     : prop := by
   match h : aig.decls[start]'hstart with
   | .const b => apply hconst; assumption
@@ -247,12 +247,12 @@ theorem idx_trichotomy (aig : AIG α) (hstart : start < aig.decls.size) {prop : 
   | .gate lhs rhs linv rinv => apply hgate; assumption
 
 theorem denote_idx_trichotomy {aig : AIG α} {hstart : start < aig.decls.size}
-    (hconst : ∀ b, aig.decls[start]'hstart = .const b → ⟦aig, ⟨start, hstart⟩, assign⟧ = res)
-    (hatom : ∀ a, aig.decls[start]'hstart = .atom a → ⟦aig, ⟨start, hstart⟩, assign⟧ = res)
+    (hconst : ∀ b, aig.decls[start]'hstart = .const b  ⟦aig, ⟨start, hstart⟩, assign⟧ = res)
+    (hatom : ∀ a, aig.decls[start]'hstart = .atom a  ⟦aig, ⟨start, hstart⟩, assign⟧ = res)
     (hgate :
       ∀ lhs rhs linv rinv,
         aig.decls[start]'hstart = .gate lhs rhs linv rinv
-          →
+          
         ⟦aig, ⟨start, hstart⟩, assign⟧ = res
     ) :
     ⟦aig, ⟨start, hstart⟩, assign⟧ = res := by
@@ -264,8 +264,8 @@ theorem denote_idx_trichotomy {aig : AIG α} {hstart : start < aig.decls.size}
 theorem mem_def {aig : AIG α} {a : α} : (a ∈ aig) ↔ ((.atom a) ∈ aig.decls) := by
   simp [Membership.mem, Mem]
 
-theorem denote_congr (assign1 assign2 : α → Bool) (aig : AIG α) (idx : Nat)
-    (hidx : idx < aig.decls.size) (h : ∀ a, a ∈ aig → assign1 a = assign2 a) :
+theorem denote_congr (assign1 assign2 : α  Bool) (aig : AIG α) (idx : Nat)
+    (hidx : idx < aig.decls.size) (h : ∀ a, a ∈ aig  assign1 a = assign2 a) :
     ⟦aig, ⟨idx, hidx⟩, assign1⟧ = ⟦aig, ⟨idx, hidx⟩, assign2⟧ := by
   apply denote_idx_trichotomy
   · intro b heq

@@ -2,7 +2,7 @@ import Lean.Util.SCC
 
 open Lean.SCC
 
-def checkSCC (expected : List (List Nat)) (vertices : List Nat) (successorsOf : Nat → List Nat) : IO Unit := do
+def checkSCC (expected : List (List Nat)) (vertices : List Nat) (successorsOf : Nat  List Nat) : IO Unit := do
 let r := scc vertices successorsOf
 IO.println r
 unless expected == r do

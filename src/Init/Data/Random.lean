@@ -16,16 +16,16 @@ available on the Haskell library
 class RandomGen (g : Type u) where
   /-- `range` returns the range of values returned by
       the generator. -/
-  range : g → Nat × Nat
+  range : g  Nat × Nat
   /-- `next` operation returns a natural number that is uniformly distributed
       the range returned by `range` (including both end points),
      and a new generator. -/
-  next  : g → Nat × g
+  next  : g  Nat × g
   /--
     The 'split' operation allows one to obtain two distinct random number
     generators. This is very useful in functional programs (for example, when
     passing a random number generator down to recursive calls). -/
-  split : g → g × g
+  split : g  g × g
 
 /-- "Standard" random number generator. -/
 structure StdGen where
@@ -39,7 +39,7 @@ def stdRange := (1, 2147483562)
 instance : Repr StdGen where
   reprPrec | ⟨s1, s2⟩, _ => Std.Format.bracket "⟨" (repr s1 ++ ", " ++ repr s2) "⟩"
 
-def stdNext : StdGen → Nat × StdGen
+def stdNext : StdGen  Nat × StdGen
   | ⟨s1, s2⟩ =>
     let k    : Int := Int.ofNat (s1 / 53668)
     let s1'  : Int := 40014 * (Int.ofNat s1 - k * 53668) - k * 12211
@@ -51,7 +51,7 @@ def stdNext : StdGen → Nat × StdGen
     let z'   : Nat := if z < 1 then (z + 2147483562).toNat else z.toNat % 2147483562
     (z', ⟨s1'', s2''⟩)
 
-def stdSplit : StdGen → StdGen × StdGen
+def stdSplit : StdGen  StdGen × StdGen
   | g@⟨s1, s2⟩ =>
     let newS1  := if s1 = 2147483562 then 1 else s1 + 1
     let newS2  := if s2 = 1          then 2147483398 else s2 - 1
@@ -79,7 +79,7 @@ Generate random values until we exceed the target magnitude.
 `genLo` and `genMag` are the generator lower bound and magnitude.
 The parameter `r` is the "remaining" magnitude.
 -/
-private partial def randNatAux {gen : Type u} [RandomGen gen] (genLo genMag : Nat) : Nat → (Nat × gen) → Nat × gen
+private partial def randNatAux {gen : Type u} [RandomGen gen] (genLo genMag : Nat) : Nat  (Nat × gen)  Nat × gen
   | 0,        (v, g) => (v, g)
   | r'@(_+1), (v, g) =>
     let (x, g') := RandomGen.next g

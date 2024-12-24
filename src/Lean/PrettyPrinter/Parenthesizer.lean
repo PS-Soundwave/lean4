@@ -106,7 +106,7 @@ end Parenthesizer
 abbrev ParenthesizerM := ReaderT Parenthesizer.Context $ StateRefT Parenthesizer.State CoreM
 abbrev Parenthesizer := ParenthesizerM Unit
 
-@[inline] def ParenthesizerM.orElse (p₁ : ParenthesizerM α) (p₂ : Unit → ParenthesizerM α) : ParenthesizerM α := do
+@[inline] def ParenthesizerM.orElse (p₁ : ParenthesizerM α) (p₂ : Unit  ParenthesizerM α) : ParenthesizerM α := do
   let s ← get
   catchInternalId backtrackExceptionId
     p₁
@@ -136,7 +136,7 @@ unsafe def mkParenthesizerAttribute : IO (KeyedDeclsAttribute Parenthesizer) :=
   } `Lean.PrettyPrinter.parenthesizerAttribute
 @[builtin_init mkParenthesizerAttribute] opaque parenthesizerAttribute : KeyedDeclsAttribute Parenthesizer
 
-abbrev CategoryParenthesizer := (prec : Nat) → Parenthesizer
+abbrev CategoryParenthesizer := (prec : Nat)  Parenthesizer
 
 unsafe def mkCategoryParenthesizerAttribute : IO (KeyedDeclsAttribute CategoryParenthesizer) :=
   KeyedDeclsAttribute.init {
@@ -209,7 +209,7 @@ instance : MonadQuotation ParenthesizerM := {
 /--
   Run `x` and parenthesize the result using `mkParen` if necessary.
   If `canJuxtapose` is false, we assume the category does not have a token-less juxtaposition syntax a la function application and deactivate rule 2. -/
-def maybeParenthesize (cat : Name) (canJuxtapose : Bool) (mkParen : Syntax → Syntax) (prec : Nat) (x : ParenthesizerM Unit) : ParenthesizerM Unit := do
+def maybeParenthesize (cat : Name) (canJuxtapose : Bool) (mkParen : Syntax  Syntax) (prec : Nat) (x : ParenthesizerM Unit) : ParenthesizerM Unit := do
   let stx ← getCur
   let idx ← getIdx
   let st ← get
@@ -293,7 +293,7 @@ opaque mkAntiquot.parenthesizer' (name : String) (kind : SyntaxNodeKind) (anonym
 
 -- break up big mutual recursion
 @[extern "lean_pretty_printer_parenthesizer_interpret_parser_descr"]
-opaque interpretParserDescr' : ParserDescr → CoreM Parenthesizer
+opaque interpretParserDescr' : ParserDescr  CoreM Parenthesizer
 
 unsafe def parenthesizerForKindUnsafe (k : SyntaxNodeKind) : Parenthesizer := do
   if k == `missing then
@@ -425,7 +425,7 @@ def checkPrec.parenthesizer (prec : Nat) : Parenthesizer :=
   addPrecCheck prec
 
 @[combinator_parenthesizer withFn]
-def withFn.parenthesizer (_ : ParserFn → ParserFn) (p : Parenthesizer) : Parenthesizer := p
+def withFn.parenthesizer (_ : ParserFn  ParserFn) (p : Parenthesizer) : Parenthesizer := p
 
 @[combinator_parenthesizer leadingNode]
 def leadingNode.parenthesizer (k : SyntaxNodeKind) (prec : Nat) (p : Parenthesizer) : Parenthesizer := do
@@ -542,8 +542,8 @@ def registerAlias (aliasName : Name) (v : ParenthesizerAliasValue) : IO Unit := 
   Parser.registerAliasCore parenthesizerAliasesRef aliasName v
 
 instance : Coe Parenthesizer ParenthesizerAliasValue := { coe := AliasValue.const }
-instance : Coe (Parenthesizer → Parenthesizer) ParenthesizerAliasValue := { coe := AliasValue.unary }
-instance : Coe (Parenthesizer → Parenthesizer → Parenthesizer) ParenthesizerAliasValue := { coe := AliasValue.binary }
+instance : Coe (Parenthesizer  Parenthesizer) ParenthesizerAliasValue := { coe := AliasValue.unary }
+instance : Coe (Parenthesizer  Parenthesizer  Parenthesizer) ParenthesizerAliasValue := { coe := AliasValue.binary }
 
 end Parenthesizer
 open Parenthesizer

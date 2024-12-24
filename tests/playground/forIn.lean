@@ -3,16 +3,16 @@
 namespace ForIn
 
 inductive Step.{u} (α : Type u)
-| done  : α → Step α
-| yield : α → Step α
+| done  : α  Step α
+| yield : α  Step α
 
-class Fold.{u, v, w, z} (m : Type w → Type z) [Monad m] (α : outParam (Type u)) (s : Type v) : Type (max v u z (w+1)):=
-(fold {β : Type w} (as : s) (init : β) (f : α → β → m (Step β)) : m β)
+class Fold.{u, v, w, z} (m : Type w  Type z) [Monad m] (α : outParam (Type u)) (s : Type v) : Type (max v u z (w+1)):=
+(fold {β : Type w} (as : s) (init : β) (f : α  β  m (Step β)) : m β)
 
 export Fold (fold)
 
-class FoldMap.{u, w} (m : Type u → Type w) [Monad m] (s : Type u → Type u) : Type (max (u+1) w):=
-(foldMap {α β : Type u} (as : s α) (init : β) (f : α → β → m (Step (α × β))) : m (s α × β))
+class FoldMap.{u, w} (m : Type u  Type w) [Monad m] (s : Type u  Type u) : Type (max (u+1) w):=
+(foldMap {α β : Type u} (as : s α) (init : β) (f : α  β  m (Step (α × β))) : m (s α × β))
 
 export FoldMap (foldMap)
 
@@ -90,7 +90,7 @@ structure Range :=
 @[inline] instance Range.fold {m} [Monad m] : Fold m Nat Range :=
 { fold := fun s init f =>
   let base := s.lower + s.upper - 2
-  let rec @[specialize] loop : Nat → _ → _
+  let rec @[specialize] loop : Nat  _  _
     | 0,   b => pure b
     | i+1, b =>
       let j := base - i
@@ -117,7 +117,7 @@ fold (range 5 10) 0 fun i s => do
 
 #eval tst3
 
-theorem zeroLtOfLt : {a b : Nat} → a < b → 0 < b
+theorem zeroLtOfLt : {a b : Nat}  a < b  0 < b
 | 0,   _, h => h
 | a+1, b, h =>
   have a < b from Nat.ltTrans (Nat.ltSuccSelf _) h
@@ -125,7 +125,7 @@ theorem zeroLtOfLt : {a b : Nat} → a < b → 0 < b
 
 @[inline] instance {m} {α} [Monad m] : Fold m α (Array α) :=
 { fold := fun as init f =>
-    let rec @[specialize] loop : (i : Nat) → i ≤ as.size → _
+    let rec @[specialize] loop : (i : Nat)  i ≤ as.size  _
       | 0, h, b   => pure b
       | i+1, h, b =>
         have h' : i < as.size          from Nat.ltOfLtOfLe (Nat.ltSuccSelf i) h

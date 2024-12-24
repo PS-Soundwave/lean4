@@ -49,7 +49,7 @@ theorem go_get (aig : AIG α) (w : Nat) (hw : 0 < w) (input : RefVec aig w) (new
     (curr : Nat) (hcurr : curr ≤ newWidth) (s : RefVec aig curr) :
     ∀ (idx : Nat) (hidx1 : idx < newWidth),
         curr ≤ idx
-          →
+          
         (go w hw input newWidth curr hcurr s).get idx hidx1
           =
         if hidx2 : idx < w then
@@ -84,7 +84,7 @@ theorem blastSignExtend_empty_eq_zeroExtend (aig : AIG α) (target : ExtendTarge
   simp [htarget]
 
 theorem denote_blastSignExtend (aig : AIG α) (target : ExtendTarget aig newWidth)
-    (assign : α → Bool) (htarget : 0 < target.w) :
+    (assign : α  Bool) (htarget : 0 < target.w) :
     ∀ (idx : Nat) (hidx : idx < newWidth),
         ⟦(blastSignExtend aig target).aig, (blastSignExtend aig target).vec.get idx hidx, assign⟧
           =

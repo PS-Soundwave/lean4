@@ -1,5 +1,5 @@
 class AddGroup (A : Type u) extends Zero A where
-  gsmul : Int → A → A
+  gsmul : Int  A  A
   gsmul_zero' : ∀ a, gsmul 0 a = 0
 
 class Ring (R : Type u) extends Zero R, AddGroup R

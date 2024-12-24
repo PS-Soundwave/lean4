@@ -24,7 +24,7 @@ There are other `Array` functions that use well-founded recursion,
 which we've marked as `@[semireducible]`. We test that `decide` can unfold them here.
 -/
 
-example : Array.ofFn (id : Fin 2 → Fin 2) = #[0, 1] := by decide
+example : Array.ofFn (id : Fin 2  Fin 2) = #[0, 1] := by decide
 
 example : #[0, 1].map (· + 1) = #[1, 2] := by decide
 

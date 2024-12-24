@@ -1,6 +1,6 @@
 inductive Dyck : Type where
-  | round : Dyck → Dyck  -- ( <inner> )
-  | curly : Dyck → Dyck  -- { <inner> }
+  | round : Dyck  Dyck  -- ( <inner> )
+  | curly : Dyck  Dyck  -- { <inner> }
   | leaf : Dyck
 
 -- declare Dyck grammar parse trees

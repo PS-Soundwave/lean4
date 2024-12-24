@@ -15088,7 +15088,7 @@ static lean_object* _init_l_Lean_Elab_WF_GuessLex_collectRecCalls___lambda__2___
 _start:
 {
 lean_object* x_1; 
-x_1 = lean_mk_string_unchecked(") → ", 6, 4);
+x_1 = lean_mk_string_unchecked(")  ", 6, 4);
 return x_1;
 }
 }

@@ -99,7 +99,7 @@ def TerminationBy.checkVars (funName : Name) (extraParams : Nat) (tb : Terminati
               "expects the function name here.)"
       throwErrorAt tb.ref msg
   where
-    parameters : Nat → MessageData
+    parameters : Nat  MessageData
     | 1 => "one parameter"
     | n => m!"{n} parameters"
 

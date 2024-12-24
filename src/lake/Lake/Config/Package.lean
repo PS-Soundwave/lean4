@@ -31,7 +31,7 @@ inductive StrPat
 Matches a string that satisfies an arbitrary predicate
 (optionally identified by a `Name`).
 -/
-| satisfies (f : String → Bool) (name := Name.anonymous)
+| satisfies (f : String  Bool) (name := Name.anonymous)
 /-- Matches a string that is a member of the array -/
 | mem (xs : Array String)
 /-- Matches a string that starts with this prefix. -/
@@ -39,7 +39,7 @@ Matches a string that satisfies an arbitrary predicate
 deriving Inhabited
 
 instance : Coe (Array String) StrPat := ⟨.mem⟩
-instance : Coe (String → Bool) StrPat := ⟨.satisfies⟩
+instance : Coe (String  Bool) StrPat := ⟨.satisfies⟩
 
 /-- Matches nothing. -/
 def StrPat.none : StrPat := .mem #[]
@@ -70,7 +70,7 @@ def versionTagPresets :=
   |>.insert `default defaultVersionTags
 
 /-- Returns whether the string `s` matches the pattern. -/
-def StrPat.matches (s : String) : (self : StrPat) → Bool
+def StrPat.matches (s : String) : (self : StrPat)  Bool
 | .satisfies f _ => f s
 | .mem xs => xs.contains s
 | .startsWith p => p.isPrefixOf s
@@ -246,18 +246,18 @@ structure PackageConfig extends WorkspaceConfig, LeanConfig where
 
   Lake suggest the following guidelines for incrementing versions:
 
-  * **Major version increment** *(e.g., v1.3.0 → v2.0.0)*
+  * **Major version increment** *(e.g., v1.3.0  v2.0.0)*
     Indicates significant breaking changes in the package.
     Package users are not expected to update to the new version
     without manual intervention.
 
-  * **Minor version increment** *(e.g., v1.3.0 → v1.4.0)*
+  * **Minor version increment** *(e.g., v1.3.0  v1.4.0)*
     Denotes notable changes that are expected to be
     generally backwards compatible.
     Package users are expected to update to this version automatically
     and should be able to fix any breakages and/or warnings easily.
 
-  * **Patch version increment** *(e.g., v1.3.0 → v1.3.1)*
+  * **Patch version increment** *(e.g., v1.3.0  v1.3.1)*
     Reserved for bug fixes and small touchups.
     Package users are expected to update automatically and should not expect
     significant breakage, except in the edge case of users relying on the
@@ -447,7 +447,7 @@ abbrev NPackage.name (_ : NPackage n) := n
 The type of a post-update hooks monad.
 `IO` equipped with logging ability and information about the Lake configuration.
 -/
-abbrev PostUpdateFn (pkgName : Name) := NPackage pkgName → LakeT LogIO PUnit
+abbrev PostUpdateFn (pkgName : Name) := NPackage pkgName  LakeT LogIO PUnit
 
 structure PostUpdateHook (pkgName : Name) where
   fn : PostUpdateFn pkgName

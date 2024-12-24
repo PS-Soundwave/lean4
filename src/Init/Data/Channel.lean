@@ -94,7 +94,7 @@ def Channel.recv? (ch : Channel α) : BaseIO (Task (Option α)) :=
 Note that if this function is called twice, each `forAsync` only gets half the messages.
 -/
 @[deprecated "Use Std.Channel.forAsync from Std.Sync.Channel instead" (since := "2024-12-02")]
-partial def Channel.forAsync (f : α → BaseIO Unit) (ch : Channel α)
+partial def Channel.forAsync (f : α  BaseIO Unit) (ch : Channel α)
     (prio : Task.Priority := .default) : BaseIO (Task Unit) := do
   BaseIO.bindTask (prio := prio) (← ch.recv?) fun
     | none => return .pure ()
@@ -136,7 +136,7 @@ def Channel.Sync.recv? (ch : Channel.Sync α) : BaseIO (Option α) := do
 
 @[deprecated "Use Std.Channel.Sync.forIn from Std.Sync.Channel instead" (since := "2024-12-02")]
 private partial def Channel.Sync.forIn [Monad m] [MonadLiftT BaseIO m]
-    (ch : Channel.Sync α) (f : α → β → m (ForInStep β)) : β → m β := fun b => do
+    (ch : Channel.Sync α) (f : α  β  m (ForInStep β)) : β  m β := fun b => do
   match ← ch.recv? with
     | some a =>
       match ← f a b with

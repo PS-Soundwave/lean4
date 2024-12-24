@@ -25,9 +25,9 @@
                     • 1 : Nat @ ⟨5, 7⟩-⟨5, 8⟩ @ Lean.Elab.Term.elabNumLit
                     • 2 : Nat @ ⟨5, 11⟩-⟨5, 12⟩ @ Lean.Elab.Term.elabNumLit
               • 3 : Nat @ ⟨5, 15⟩-⟨5, 16⟩ @ Lean.Elab.Term.elabNumLit
-fun n m l => ↑n + (↑m + ↑l) : Nat → Nat → Nat → Int
+fun n m l => ↑n + (↑m + ↑l) : Nat  Nat  Nat  Int
 [Elab.info] • command @ ⟨7, 0⟩-⟨7, 48⟩ @ Lean.Elab.Command.elabCheck
-      • fun n m l => ↑n + (↑m + ↑l) : Nat → Nat → Nat → Int @ ⟨7, 7⟩-⟨7, 48⟩ @ Lean.Elab.Term.elabFun
+      • fun n m l => ↑n + (↑m + ↑l) : Nat  Nat  Nat  Int @ ⟨7, 7⟩-⟨7, 48⟩ @ Lean.Elab.Term.elabFun
         • Nat : Type @ ⟨7, 20⟩-⟨7, 23⟩ @ Lean.Elab.Term.elabIdent
           • [.] Nat : some Sort.{?_uniq} @ ⟨7, 20⟩-⟨7, 23⟩
           • Nat : Type @ ⟨7, 20⟩-⟨7, 23⟩

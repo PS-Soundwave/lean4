@@ -74,9 +74,9 @@ inductive S6.{u, v} (α : Sort u) (β : Sort v) : Sort (max u v)
   | mk (a : α) (b : β)
 
 inductive Term
-  | Var : Nat → Term
-  | App : Term → Term → Term
-  | All : (Nat → Term) → Term
+  | Var : Nat  Term
+  | App : Term  Term  Term
+  | All : (Nat  Term)  Term
 
 inductive S7.{u, v} (α : Sort u) (β : Sort v) : Sort (max u v)  -- Error: invalid universe polymorphic type
   | mk (a : α) (b : β)

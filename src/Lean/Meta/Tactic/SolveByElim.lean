@@ -103,7 +103,7 @@ namespace SolveByElimConfig
 instance : Coe SolveByElimConfig BacktrackConfig := ⟨(·.toApplyRulesConfig.toBacktrackConfig)⟩
 
 /-- Create or modify a `Config` which allows a class of goals to be returned as subgoals. -/
-def accept (cfg : SolveByElimConfig := {}) (test : MVarId → MetaM Bool) : SolveByElimConfig :=
+def accept (cfg : SolveByElimConfig := {}) (test : MVarId  MetaM Bool) : SolveByElimConfig :=
   { cfg with
     discharge := fun g => do
       if (← test g) then
@@ -115,7 +115,7 @@ def accept (cfg : SolveByElimConfig := {}) (test : MVarId → MetaM Bool) : Solv
 Create or modify a `Config` which runs a tactic on the main goal.
 If that tactic fails, fall back to the `proc` behaviour of `cfg`.
 -/
-def mainGoalProc (cfg : SolveByElimConfig := {}) (proc : MVarId → MetaM (List MVarId)) : SolveByElimConfig :=
+def mainGoalProc (cfg : SolveByElimConfig := {}) (proc : MVarId  MetaM (List MVarId)) : SolveByElimConfig :=
   { cfg with
     proc := fun orig goals => match goals with
     | [] => cfg.proc orig []
@@ -141,7 +141,7 @@ def synthInstance (cfg : SolveByElimConfig := {}) : SolveByElimConfig :=
 
 /-- Add a discharging tactic, falling back to the original discharging tactic if it fails.
 Return `none` to return the goal as a new subgoal, or `some goals` to replace it. -/
-def withDischarge (cfg : SolveByElimConfig := {}) (discharge : MVarId → MetaM (Option (List MVarId))) : SolveByElimConfig :=
+def withDischarge (cfg : SolveByElimConfig := {}) (discharge : MVarId  MetaM (Option (List MVarId))) : SolveByElimConfig :=
   { cfg with
     discharge := fun g => try discharge g
       catch _ => cfg.discharge g }
@@ -165,7 +165,7 @@ def synthInstanceAfter (cfg : SolveByElimConfig := {}) : SolveByElimConfig :=
 Create or modify a `Config` which rejects branches for which `test`,
 applied to the instantiations of the original goals, fails or returns `false`.
 -/
-def testPartialSolutions (cfg : SolveByElimConfig := {}) (test : List Expr → MetaM Bool) : SolveByElimConfig :=
+def testPartialSolutions (cfg : SolveByElimConfig := {}) (test : List Expr  MetaM Bool) : SolveByElimConfig :=
   { cfg with
     proc := fun orig goals => do
       guard <| ← test (← orig.mapM fun m => m.withContext do instantiateMVars (.mvar m))
@@ -175,7 +175,7 @@ def testPartialSolutions (cfg : SolveByElimConfig := {}) (test : List Expr → M
 Create or modify a `SolveByElimConfig` which rejects complete solutions for which `test`,
 applied to the instantiations of the original goals, fails or returns `false`.
 -/
-def testSolutions (cfg : SolveByElimConfig := {}) (test : List Expr → MetaM Bool) : SolveByElimConfig :=
+def testSolutions (cfg : SolveByElimConfig := {}) (test : List Expr  MetaM Bool) : SolveByElimConfig :=
   cfg.testPartialSolutions fun sols => do
     if sols.any Expr.hasMVar then
       pure true
@@ -205,20 +205,20 @@ Elaborate a list of lemmas and local context.
 See `mkAssumptionSet` for an explanation of why this is needed.
 -/
 def elabContextLemmas (cfg : SolveByElimConfig) (g : MVarId)
-    (lemmas : List (TermElabM Expr)) (ctx : SolveByElimConfig → TermElabM (List Expr)) :
+    (lemmas : List (TermElabM Expr)) (ctx : SolveByElimConfig  TermElabM (List Expr)) :
     MetaM (List Expr) := do
   g.withContext (Elab.Term.TermElabM.run' do pure ((← ctx cfg) ++ (← lemmas.mapM id)))
 
 /-- Returns the list of tactics corresponding to applying the available lemmas to the goal. -/
 def applyLemmas (cfg : SolveByElimConfig)
-    (lemmas : List (TermElabM Expr)) (ctx : SolveByElimConfig → TermElabM (List Expr))
+    (lemmas : List (TermElabM Expr)) (ctx : SolveByElimConfig  TermElabM (List Expr))
     (g : MVarId) : MetaM (Meta.Iterator (List MVarId)) := do
   let es ← elabContextLemmas cfg g lemmas ctx
   applyTactics cfg.toApplyConfig cfg.transparency es g
 
 /-- Applies the first possible lemma to the goal. -/
 def applyFirstLemma (cfg : SolveByElimConfig)
-    (lemmas : List (TermElabM Expr)) (ctx : SolveByElimConfig → TermElabM (List Expr))
+    (lemmas : List (TermElabM Expr)) (ctx : SolveByElimConfig  TermElabM (List Expr))
     (g : MVarId) : MetaM (List MVarId) := do
   let es ← elabContextLemmas cfg g lemmas ctx
   applyFirst cfg.toApplyConfig cfg.transparency es g
@@ -240,7 +240,7 @@ and so the returned list is always empty.
 Custom wrappers (e.g. `apply_assumption` and `apply_rules`) may modify this behaviour.
 -/
 def solveByElim (cfg : SolveByElimConfig)
-    (lemmas : List (TermElabM Expr)) (ctx : SolveByElimConfig → TermElabM (List Expr))
+    (lemmas : List (TermElabM Expr)) (ctx : SolveByElimConfig  TermElabM (List Expr))
     (goals : List MVarId) : MetaM (List MVarId) := do
   let cfg := cfg.processOptions
   try
@@ -256,7 +256,7 @@ def solveByElim (cfg : SolveByElimConfig)
     | _, _ => throw e
 where
   /-- Run either backtracking search, or repeated application, on the list of goals. -/
-  run (cfg : SolveByElimConfig) : List MVarId → MetaM (List MVarId) :=
+  run (cfg : SolveByElimConfig) : List MVarId  MetaM (List MVarId) :=
     if cfg.backtracking then
       backtrack cfg `Meta.Tactic.solveByElim (applyLemmas cfg lemmas ctx)
     else
@@ -339,7 +339,7 @@ that have been explicitly removed via `only` or `[-h]`.)
 -- These `TermElabM`s must be run inside a suitable `g.withContext`,
 -- usually using `elabContextLemmas`.
 def mkAssumptionSet (noDefaults star : Bool) (add remove : List Term) (use : Array Ident) :
-    MetaM (List (TermElabM Expr) × (SolveByElimConfig → TermElabM (List Expr))) := do
+    MetaM (List (TermElabM Expr) × (SolveByElimConfig  TermElabM (List Expr))) := do
   if star && !noDefaults then
     throwError "It doesn't make sense to use `*` without `only`."
 

@@ -1,9 +1,9 @@
-opaque bar : Nat → Nat
+opaque bar : Nat  Nat
 theorem foo : bar (Nat.succ a) = 0 := sorry
 example : bar (a + 1) = 0 := by with_reducible exact foo -- ok
 example : bar (a + a + 1) = 0 := by with_reducible exact foo -- should also work
 
-def factorial : Nat → Nat
+def factorial : Nat  Nat
   | 0 => 1
   | n + 1 => (n + 1) * factorial n
 

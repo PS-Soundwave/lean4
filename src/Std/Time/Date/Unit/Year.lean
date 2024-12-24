@@ -84,7 +84,7 @@ Determines if a year is a leap year in the proleptic Gregorian calendar.
 -/
 @[inline]
 def isLeap (y : Offset) : Bool :=
-  y.toInt.tmod 4 = 0 ∧ (y.toInt.tmod 100 ≠ 0 ∨ y.toInt.tmod 400 = 0)
+  y.toInt.tmod 4 = 0 ∧ (y.toInt.tmod 100 ≠ 0  y.toInt.tmod 400 = 0)
 
 /--
 Returns the `Era` of the `Year`.
@@ -109,7 +109,7 @@ def weeks (year : Offset) : Bounded.LE 52 53 :=
   let p (year : Offset) := Bounded.LE.byEmod (year.toInt + year.toInt/4 - year.toInt/100 + year.toInt/400) 7 (by decide)
 
   let add : Bounded.LE 0 1 :=
-    if (p year).val = 4 ∨ (p (year - 1)).val = 3
+    if (p year).val = 4  (p (year - 1)).val = 3
       then Bounded.LE.ofNat 1 (by decide)
       else Bounded.LE.ofNat 0 (by decide)
 

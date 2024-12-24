@@ -22,7 +22,7 @@ namespace List
 This version is not tail-recursive,
 but it is replaced at runtime by `mergeTR` using a `@[csimp]` lemma.
 -/
-def merge (xs ys : List α) (le : α → α → Bool := by exact fun a b => a ≤ b) : List α :=
+def merge (xs ys : List α) (le : α  α  Bool := by exact fun a b => a ≤ b) : List α :=
   match xs, ys with
   | [], ys => ys
   | xs, [] => xs
@@ -61,7 +61,7 @@ It is replaced at runtime in the compiler by `mergeSortTR₂` using a `@[csimp]`
 Because we want the sort to be stable,
 it is essential that we split the list in two contiguous sublists.
 -/
-def mergeSort : ∀ (xs : List α) (le : α → α → Bool := by exact fun a b => a ≤ b), List α
+def mergeSort : ∀ (xs : List α) (le : α  α  Bool := by exact fun a b => a ≤ b), List α
   | [], _ => []
   | [a], _ => [a]
   | a :: b :: xs, le =>
@@ -72,7 +72,7 @@ def mergeSort : ∀ (xs : List α) (le : α → α → Bool := by exact fun a b 
 termination_by xs => xs.length
 
 /--
-Given an ordering relation `le : α → α → Bool`,
+Given an ordering relation `le : α  α  Bool`,
 construct the reverse lexicographic ordering on `Nat × α`.
 which first compares the second components using `le`,
 but if these are equivalent (in the sense `le a.2 b.2 && le b.2 a.2`)
@@ -80,7 +80,7 @@ then compares the first components using `≤`.
 
 This function is only used in stating the stability properties of `mergeSort`.
 -/
-def enumLE (le : α → α → Bool) (a b : Nat × α) : Bool :=
+def enumLE (le : α  α  Bool) (a b : Nat × α) : Bool :=
   if le a.2 b.2 then if le b.2 a.2 then a.1 ≤ b.1 else true else false
 
 end List

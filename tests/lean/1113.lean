@@ -1,4 +1,4 @@
-def foo: {n: Nat} → Fin n → Nat
+def foo: {n: Nat}  Fin n  Nat
 |   0, _ => 0
 | n+1, _ => 0
 

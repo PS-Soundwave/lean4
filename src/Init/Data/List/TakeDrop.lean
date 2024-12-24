@@ -144,16 +144,16 @@ theorem drop_eq_nil_iff {l : List α} {k : Nat} : l.drop k = [] ↔ l.length ≤
 @[deprecated drop_eq_nil_iff (since := "2024-09-10")] abbrev drop_eq_nil_iff_le := @drop_eq_nil_iff
 
 @[simp]
-theorem take_eq_nil_iff {l : List α} {k : Nat} : l.take k = [] ↔ k = 0 ∨ l = [] := by
+theorem take_eq_nil_iff {l : List α} {k : Nat} : l.take k = [] ↔ k = 0  l = [] := by
   cases l <;> cases k <;> simp [Nat.succ_ne_zero]
 
-theorem drop_eq_nil_of_eq_nil : ∀ {as : List α} {i}, as = [] → as.drop i = []
+theorem drop_eq_nil_of_eq_nil : ∀ {as : List α} {i}, as = []  as.drop i = []
   | _, _, rfl => drop_nil
 
 theorem ne_nil_of_drop_ne_nil {as : List α} {i : Nat} (h: as.drop i ≠ []) : as ≠ [] :=
   mt drop_eq_nil_of_eq_nil h
 
-theorem take_eq_nil_of_eq_nil : ∀ {as : List α} {i}, as = [] → as.take i = []
+theorem take_eq_nil_of_eq_nil : ∀ {as : List α} {i}, as = []  as.take i = []
   | _, _, rfl => take_nil
 
 theorem ne_nil_of_take_ne_nil {as : List α} {i : Nat} (h : as.take i ≠ []) : as ≠ [] :=
@@ -258,13 +258,13 @@ theorem dropLast_eq_take (l : List α) : l.dropLast = l.take (l.length - 1) := b
   | cons x l =>
     induction l generalizing x <;> simp_all [dropLast]
 
-@[simp] theorem map_take (f : α → β) :
+@[simp] theorem map_take (f : α  β) :
     ∀ (L : List α) (i : Nat), (L.take i).map f = (L.map f).take i
   | [], i => by simp
   | _, 0 => by simp
   | h :: t, n + 1 => by dsimp; rw [map_take f t n]
 
-@[simp] theorem map_drop (f : α → β) :
+@[simp] theorem map_drop (f : α  β) :
     ∀ (L : List α) (i : Nat), (L.drop i).map f = (L.map f).drop i
   | [], i => by simp
   | L, 0 => by simp
@@ -274,16 +274,16 @@ theorem dropLast_eq_take (l : List α) : l.dropLast = l.take (l.length - 1) := b
 
 /-! ### takeWhile and dropWhile -/
 
-theorem takeWhile_cons (p : α → Bool) (a : α) (l : List α) :
+theorem takeWhile_cons (p : α  Bool) (a : α) (l : List α) :
     (a :: l).takeWhile p = if p a then a :: l.takeWhile p else [] := by
   simp only [takeWhile]
   by_cases h: p a <;> simp [h]
 
-@[simp] theorem takeWhile_cons_of_pos {p : α → Bool} {a : α} {l : List α} (h : p a) :
+@[simp] theorem takeWhile_cons_of_pos {p : α  Bool} {a : α} {l : List α} (h : p a) :
     (a :: l).takeWhile p = a :: l.takeWhile p := by
   simp [takeWhile_cons, h]
 
-@[simp] theorem takeWhile_cons_of_neg {p : α → Bool} {a : α} {l : List α} (h : ¬ p a) :
+@[simp] theorem takeWhile_cons_of_neg {p : α  Bool} {a : α} {l : List α} (h : ¬ p a) :
     (a :: l).takeWhile p = [] := by
   simp [takeWhile_cons, h]
 
@@ -299,14 +299,14 @@ theorem dropWhile_cons :
     (a :: l).dropWhile p = a :: l := by
   simp [dropWhile_cons, h]
 
-theorem head?_takeWhile (p : α → Bool) (l : List α) : (l.takeWhile p).head? = l.head?.filter p := by
+theorem head?_takeWhile (p : α  Bool) (l : List α) : (l.takeWhile p).head? = l.head?.filter p := by
   cases l with
   | nil => rfl
   | cons x xs =>
     simp only [takeWhile_cons, head?_cons, Option.filter_some]
     split <;> simp
 
-theorem head_takeWhile (p : α → Bool) (l : List α) (w) :
+theorem head_takeWhile (p : α  Bool) (l : List α) (w) :
     (l.takeWhile p).head w = l.head (by rintro rfl; simp_all) := by
   cases l with
   | nil => rfl
@@ -315,7 +315,7 @@ theorem head_takeWhile (p : α → Bool) (l : List α) (w) :
     simp only [takeWhile_cons] at w
     split <;> simp_all
 
-theorem head?_dropWhile_not (p : α → Bool) (l : List α) :
+theorem head?_dropWhile_not (p : α  Bool) (l : List α) :
     match (l.dropWhile p).head? with | some x => p x = false | none => True := by
   induction l with
   | nil => simp
@@ -323,27 +323,27 @@ theorem head?_dropWhile_not (p : α → Bool) (l : List α) :
     simp only [dropWhile_cons]
     split <;> rename_i h <;> split at h <;> simp_all
 
-theorem head_dropWhile_not (p : α → Bool) (l : List α) (w) :
+theorem head_dropWhile_not (p : α  Bool) (l : List α) (w) :
     p ((l.dropWhile p).head w) = false := by
   simpa [head?_eq_head, w] using head?_dropWhile_not p l
 
-theorem takeWhile_map (f : α → β) (p : β → Bool) (l : List α) :
-    (l.map f).takeWhile p = (l.takeWhile (p ∘ f)).map f := by
+theorem takeWhile_map (f : α  β) (p : β  Bool) (l : List α) :
+    (l.map f).takeWhile p = (l.takeWhile (p  f)).map f := by
   induction l with
   | nil => rfl
   | cons x xs ih =>
     simp only [map_cons, takeWhile_cons]
     split <;> simp_all
 
-theorem dropWhile_map (f : α → β) (p : β → Bool) (l : List α) :
-    (l.map f).dropWhile p = (l.dropWhile (p ∘ f)).map f := by
+theorem dropWhile_map (f : α  β) (p : β  Bool) (l : List α) :
+    (l.map f).dropWhile p = (l.dropWhile (p  f)).map f := by
   induction l with
   | nil => rfl
   | cons x xs ih =>
     simp only [map_cons, dropWhile_cons]
     split <;> simp_all
 
-theorem takeWhile_filterMap (f : α → Option β) (p : β → Bool) (l : List α) :
+theorem takeWhile_filterMap (f : α  Option β) (p : β  Bool) (l : List α) :
     (l.filterMap f).takeWhile p = (l.takeWhile fun a => (f a).all p).filterMap f := by
   induction l with
   | nil => rfl
@@ -355,7 +355,7 @@ theorem takeWhile_filterMap (f : α → Option β) (p : β → Bool) (l : List �
     · simp [takeWhile_cons, h, ih]
       split <;> simp_all [filterMap_cons]
 
-theorem dropWhile_filterMap (f : α → Option β) (p : β → Bool) (l : List α) :
+theorem dropWhile_filterMap (f : α  Option β) (p : β  Bool) (l : List α) :
     (l.filterMap f).dropWhile p = (l.dropWhile fun a => (f a).all p).filterMap f := by
   induction l with
   | nil => rfl
@@ -367,15 +367,15 @@ theorem dropWhile_filterMap (f : α → Option β) (p : β → Bool) (l : List �
     · simp [dropWhile_cons, h, ih]
       split <;> simp_all [filterMap_cons]
 
-theorem takeWhile_filter (p q : α → Bool) (l : List α) :
+theorem takeWhile_filter (p q : α  Bool) (l : List α) :
     (l.filter p).takeWhile q = (l.takeWhile fun a => !p a || q a).filter p := by
   simp [← filterMap_eq_filter, takeWhile_filterMap]
 
-theorem dropWhile_filter (p q : α → Bool) (l : List α) :
+theorem dropWhile_filter (p q : α  Bool) (l : List α) :
     (l.filter p).dropWhile q = (l.dropWhile fun a => !p a || q a).filter p := by
   simp [← filterMap_eq_filter, dropWhile_filterMap]
 
-@[simp] theorem takeWhile_append_dropWhile (p : α → Bool) :
+@[simp] theorem takeWhile_append_dropWhile (p : α  Bool) :
     ∀ (l : List α), takeWhile p l ++ dropWhile p l = l
   | [] => rfl
   | x :: xs => by simp [takeWhile, dropWhile]; cases p x <;> simp [takeWhile_append_dropWhile p xs]
@@ -392,7 +392,7 @@ theorem takeWhile_append {xs ys : List α} :
       split <;> rfl
     · simp_all
 
-@[simp] theorem takeWhile_append_of_pos {p : α → Bool} {l₁ l₂ : List α} (h : ∀ a ∈ l₁, p a) :
+@[simp] theorem takeWhile_append_of_pos {p : α  Bool} {l₁ l₂ : List α} (h : ∀ a ∈ l₁, p a) :
     (l₁ ++ l₂).takeWhile p = l₁ ++ l₂.takeWhile p := by
   induction l₁ with
   | nil => simp
@@ -407,13 +407,13 @@ theorem dropWhile_append {xs ys : List α} :
     simp only [cons_append, dropWhile_cons]
     split <;> simp_all
 
-@[simp] theorem dropWhile_append_of_pos {p : α → Bool} {l₁ l₂ : List α} (h : ∀ a ∈ l₁, p a) :
+@[simp] theorem dropWhile_append_of_pos {p : α  Bool} {l₁ l₂ : List α} (h : ∀ a ∈ l₁, p a) :
     (l₁ ++ l₂).dropWhile p = l₂.dropWhile p := by
   induction l₁ with
   | nil => simp
   | cons x xs ih => simp_all [dropWhile_cons]
 
-@[simp] theorem takeWhile_replicate_eq_filter (p : α → Bool) :
+@[simp] theorem takeWhile_replicate_eq_filter (p : α  Bool) :
     (replicate n a).takeWhile p = (replicate n a).filter p := by
   induction n with
   | zero => simp
@@ -421,11 +421,11 @@ theorem dropWhile_append {xs ys : List α} :
     simp only [replicate_succ, takeWhile_cons]
     split <;> simp_all
 
-theorem takeWhile_replicate (p : α → Bool) :
+theorem takeWhile_replicate (p : α  Bool) :
     (replicate n a).takeWhile p = if p a then replicate n a else [] := by
   rw [takeWhile_replicate_eq_filter, filter_replicate]
 
-@[simp] theorem dropWhile_replicate_eq_filter_not (p : α → Bool) :
+@[simp] theorem dropWhile_replicate_eq_filter_not (p : α  Bool) :
     (replicate n a).dropWhile p = (replicate n a).filter (fun a => !p a) := by
   induction n with
   | zero => simp
@@ -433,12 +433,12 @@ theorem takeWhile_replicate (p : α → Bool) :
     simp only [replicate_succ, dropWhile_cons]
     split <;> simp_all
 
-theorem dropWhile_replicate (p : α → Bool) :
+theorem dropWhile_replicate (p : α  Bool) :
     (replicate n a).dropWhile p = if p a then [] else replicate n a := by
   simp only [dropWhile_replicate_eq_filter_not, filter_replicate]
   split <;> simp_all
 
-theorem take_takeWhile {l : List α} (p : α → Bool) n :
+theorem take_takeWhile {l : List α} (p : α  Bool) n :
     (l.takeWhile p).take n = (l.take n).takeWhile p := by
   induction l generalizing n with
   | nil => simp
@@ -456,7 +456,7 @@ theorem take_takeWhile {l : List α} (p : α → Bool) n :
   | nil => rfl
   | cons h t ih => by_cases p h <;> simp_all
 
-theorem replace_takeWhile [BEq α] [LawfulBEq α] {l : List α} {p : α → Bool} (h : p a = p b) :
+theorem replace_takeWhile [BEq α] [LawfulBEq α] {l : List α} {p : α  Bool} (h : p a = p b) :
     (l.takeWhile p).replace a b = (l.replace a b).takeWhile p := by
   induction l with
   | nil => rfl

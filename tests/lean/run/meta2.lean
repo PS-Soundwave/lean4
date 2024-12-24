@@ -541,7 +541,7 @@ info: [Meta.debug] ----- tst28 -----
 #guard_msgs in
 #eval tst28
 
-def norm : Level → Level := @Lean.Level.normalize
+def norm : Level  Level := @Lean.Level.normalize
 
 def tst29 : MetaM Unit := do
 print "----- tst29 -----";
@@ -676,7 +676,7 @@ withLocalDeclD `α type $ fun α => do
 
 /--
 info: [Meta.debug] ----- tst34 -----
-[Meta.debug] fun α => ?_ α → ?_ α
+[Meta.debug] fun α => ?_ α  ?_ α
 -/
 #guard_msgs in
 #eval tst34
@@ -700,8 +700,8 @@ withLocalDeclD `α type $ fun α => do
 
 /--
 info: [Meta.debug] ----- tst35 -----
-[Meta.debug] fun α => ?_ α → ?_ α
-[Meta.debug] fun α => α → α
+[Meta.debug] fun α => ?_ α  ?_ α
+[Meta.debug] fun α => α  α
 -/
 #guard_msgs in
 #eval tst35

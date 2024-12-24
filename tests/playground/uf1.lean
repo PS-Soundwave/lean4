@@ -1,23 +1,23 @@
-def StateT (m : Type → Type) (σ : Type) (α : Type) := (Unit × σ) → m (α × σ)
+def StateT (m : Type  Type) (σ : Type) (α : Type) := (Unit × σ)  m (α × σ)
 namespace StateT
-variable {m : Type → Type} [Monad m] {σ : Type} {α β : Type}
+variable {m : Type  Type} [Monad m] {σ : Type} {α β : Type}
 @[inline] protected def pure (a : α) : StateT m σ α := λ ⟨_, s⟩, pure (a, s)
-@[inline] protected def bind (x : StateT m σ α) (f : α → StateT m σ β) : StateT m σ β := λ p, do (a, s') ← x p, f a ((), s')
+@[inline] protected def bind (x : StateT m σ α) (f : α  StateT m σ β) : StateT m σ β := λ p, do (a, s') ← x p, f a ((), s')
 @[inline] def read : StateT m σ σ := λ ⟨_, s⟩, pure (s, s)
 @[inline] def write (s' : σ) : StateT m σ Unit := λ ⟨_, s⟩, pure ((), s')
-@[inline] def updt (f : σ → σ) : StateT m σ Unit := λ ⟨_, s⟩, pure ((), f s)
+@[inline] def updt (f : σ  σ) : StateT m σ Unit := λ ⟨_, s⟩, pure ((), f s)
 instance : Monad (StateT m σ) :=
 {pure := @StateT.pure _ _ _, bind := @StateT.bind _ _ _}
 end StateT
 
-def ExceptT (m : Type → Type) (ε : Type) (α : Type) := { e : Except ε Unit // e = Except.ok () } → m (Except ε α)
+def ExceptT (m : Type  Type) (ε : Type) (α : Type) := { e : Except ε Unit // e = Except.ok () }  m (Except ε α)
 namespace ExceptT
-variable {m : Type → Type} [Monad m] {ε : Type} {α β : Type}
+variable {m : Type  Type} [Monad m] {ε : Type} {α β : Type}
 @[inline] protected def pure (a : α) : ExceptT m ε α :=
 λ e, match e with
      | ⟨Except.ok _, h⟩    := pure (Except.ok a)
      | ⟨Except.error _, h⟩ := Except.noConfusion h
-@[inline] protected def bind (x : ExceptT m ε α) (f : α → ExceptT m ε β) : ExceptT m ε β :=
+@[inline] protected def bind (x : ExceptT m ε α) (f : α  ExceptT m ε β) : ExceptT m ε β :=
 λ e, do v ← x e,
         match v with
         | Except.error e := pure (Except.error e)
@@ -41,7 +41,7 @@ abbreviation ufData := Array nodeData
 abbreviation M (α : Type) := ExceptT (StateT id ufData) String α
 @[inline] def read : M ufData := ExceptT.lift StateT.read
 @[inline] def write (s : ufData) : M Unit := ExceptT.lift (StateT.write s)
-@[inline] def updt (f : ufData → ufData) : M Unit := ExceptT.lift (StateT.updt f)
+@[inline] def updt (f : ufData  ufData) : M Unit := ExceptT.lift (StateT.updt f)
 @[inline] def error {α : Type} (e : String) : M α := ExceptT.error e
 def run {α : Type} (x : M α) (s : ufData := Array.nil) : Except String α × ufData :=
 x ⟨Except.ok (), rfl⟩ ((), s)
@@ -49,7 +49,7 @@ x ⟨Except.ok (), rfl⟩ ((), s)
 def capacity : M Nat :=
 do d ← read, pure d.size
 
-def findEntryAux : Nat → Node → M nodeData
+def findEntryAux : Nat  Node  M nodeData
 | 0     n := error "out of fuel"
 | (i+1) n :=
   do s ← read,
@@ -85,7 +85,7 @@ do r₁ ← findEntry n₁,
      else s.write' r₂.find { find := r₁.find }
 
 
-def mkNodes : Nat → M Unit
+def mkNodes : Nat  M Unit
 | 0     := pure ()
 | (n+1) := mk *> mkNodes n
 
@@ -93,7 +93,7 @@ def checkEq (n₁ n₂ : Node) : M Unit :=
 do r₁ ← find n₁, r₂ ← find n₂,
    unless (r₁ = r₂) $ error "nodes are not equal"
 
-def mergePackAux : Nat → Nat → Nat → M Unit
+def mergePackAux : Nat  Nat  Nat  M Unit
 | 0     _ _ := pure ()
 | (i+1) n d :=
   do c ← capacity,
@@ -104,7 +104,7 @@ def mergePackAux : Nat → Nat → Nat → M Unit
 def mergePack (d : Nat) : M Unit :=
 do c ← capacity, mergePackAux c 0 d
 
-def numEqsAux : Nat → Node → Nat → M Nat
+def numEqsAux : Nat  Node  Nat  M Nat
 | 0     _ r := pure r
 | (i+1) n r :=
   do c ← capacity,

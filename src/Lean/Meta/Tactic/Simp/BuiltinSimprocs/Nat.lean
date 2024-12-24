@@ -18,24 +18,24 @@ open Lean Meta Simp
 def fromExpr? (e : Expr) : SimpM (Option Nat) :=
   getNatValue? e
 
-@[inline] def reduceUnary (declName : Name) (arity : Nat) (op : Nat → Nat) (e : Expr) : SimpM DStep := do
+@[inline] def reduceUnary (declName : Name) (arity : Nat) (op : Nat  Nat) (e : Expr) : SimpM DStep := do
   unless e.isAppOfArity declName arity do return .continue
   let some n ← fromExpr? e.appArg! | return .continue
   return .done <| toExpr (op n)
 
-@[inline] def reduceBin (declName : Name) (arity : Nat) (op : Nat → Nat → Nat) (e : Expr) : SimpM DStep := do
+@[inline] def reduceBin (declName : Name) (arity : Nat) (op : Nat  Nat  Nat) (e : Expr) : SimpM DStep := do
   unless e.isAppOfArity declName arity do return .continue
   let some n ← fromExpr? e.appFn!.appArg! | return .continue
   let some m ← fromExpr? e.appArg! | return .continue
   return .done <| toExpr (op n m)
 
-@[inline] def reduceBinPred (declName : Name) (arity : Nat) (op : Nat → Nat → Bool) (e : Expr) : SimpM Step := do
+@[inline] def reduceBinPred (declName : Name) (arity : Nat) (op : Nat  Nat  Bool) (e : Expr) : SimpM Step := do
   unless e.isAppOfArity declName arity do return .continue
   let some n ← fromExpr? e.appFn!.appArg! | return .continue
   let some m ← fromExpr? e.appArg! | return .continue
   evalPropStep e (op n m)
 
-@[inline] def reduceBoolPred (declName : Name) (arity : Nat) (op : Nat → Nat → Bool) (e : Expr) : SimpM DStep := do
+@[inline] def reduceBoolPred (declName : Name) (arity : Nat) (op : Nat  Nat  Bool) (e : Expr) : SimpM DStep := do
   unless e.isAppOfArity declName arity do return .continue
   let some n ← fromExpr? e.appFn!.appArg! | return .continue
   let some m ← fromExpr? e.appArg! | return .continue
@@ -182,7 +182,7 @@ inductive EqResult where
 | false (p : Expr) : EqResult
 | eq (x y : Expr) (p : Expr) : EqResult
 
-def applyEqLemma (e : Expr → EqResult) (lemmaName : Name) (args : Array Expr) : SimpM (Option EqResult) := do
+def applyEqLemma (e : Expr  EqResult) (lemmaName : Name) (args : Array Expr) : SimpM (Option EqResult) := do
   unless (← getEnv).contains lemmaName do
     return none
   return .some (e (mkAppN (mkConst lemmaName) args))

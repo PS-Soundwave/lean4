@@ -16,7 +16,7 @@ def explicitBinderF := Parser.Term.explicitBinder
 
 /-- Make fresh, hygienic names for every parameter and index of an inductive declaration.
 
-For example, `inductive Foo {α : Type} : Nat → Type` will give something like ``#[`α✝, `a✝]``. -/
+For example, `inductive Foo {α : Type} : Nat  Type` will give something like ``#[`α✝, `a✝]``. -/
 def mkInductArgNames (indVal : InductiveVal) : TermElabM (Array Name) := do
   forallTelescopeReducing indVal.type fun xs _ => do
     let mut argNames := #[]
@@ -44,7 +44,7 @@ def mkImplicitBinders (argNames : Array Name) : TermElabM (Array (TSyntax ``Pars
 of the inductive `indVal` for which such a binding is type-correct. `argNames` is expected
 to provide names for the parameters (see `mkInductArgNames`). The output matches `instBinder*`.
 
-For example, given `inductive Foo {α : Type} (n : Nat) : (β : Type) → Type`, where `β` is an index,
+For example, given `inductive Foo {α : Type} (n : Nat) : (β : Type)  Type`, where `β` is an index,
 invoking ``mkInstImplicitBinders `BarClass foo #[`α, `n, `β]`` gives `` `([BarClass α])``. -/
 def mkInstImplicitBinders (className : Name) (indVal : InductiveVal) (argNames : Array Name) : TermElabM (Array Syntax) :=
   forallBoundedTelescope indVal.type indVal.numParams fun xs _ => do

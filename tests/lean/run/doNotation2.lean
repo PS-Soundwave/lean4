@@ -99,7 +99,7 @@ theorem ex5 : sumOdd [1, 2, 3, 4, 5, 6, 7, 9, 11, 101] 10 = 16 :=
 rfl
 
 -- We need `Id.run` because we still have `Monad Option`
-def find? (xs : List Nat) (p : Nat → Bool) : Option Nat := Id.run do
+def find? (xs : List Nat) (p : Nat  Bool) : Option Nat := Id.run do
 let mut result := none
 for x in xs do
   if p x then
@@ -117,7 +117,7 @@ theorem ex7 : sumDiff [(2, 1), (10, 5)] = 6 :=
 rfl
 
 def f1 (x : Nat) : IO Unit := do
-let rec loop : Nat → IO Unit
+let rec loop : Nat  IO Unit
   | 0   => pure ()
   | x+1 => do IO.println x; loop x
 loop x
@@ -139,10 +139,10 @@ info: 9
 
 partial def f2 (x : Nat) : IO Unit := do
 let rec
-  isEven : Nat → Bool
+  isEven : Nat  Bool
     | 0   => true
     | x+1 => isOdd x,
-  isOdd : Nat → Bool
+  isOdd : Nat  Bool
     | 0   => false
     | x+1 => isEven x
 IO.println ("isOdd(" ++ toString x ++ "): " ++ toString (isOdd x))

@@ -158,7 +158,7 @@ private def mkConfigElaborator
 end
 
 /-!
-`declare_config_elab elabName TypeName` declares a function `elabName : Syntax → TacticM TypeName`
+`declare_config_elab elabName TypeName` declares a function `elabName : Syntax  TacticM TypeName`
 that elaborates a tactic configuration.
 The tactic configuration can be from `Lean.Parser.Tactic.optConfig` or `Lean.Parser.Tactic.config`,
 and these can also be wrapped in null nodes (for example, from `(config)?`).
@@ -175,7 +175,7 @@ open Linter.MissingDocs in
 def checkConfigElab : SimpleHandler := mkSimpleHandler "config elab"
 
 /-!
-`declare_command_config_elab elabName TypeName` declares a function `elabName : Syntax → CommandElabM TypeName`
+`declare_command_config_elab elabName TypeName` declares a function `elabName : Syntax  CommandElabM TypeName`
 that elaborates a command configuration.
 The configuration can be from `Lean.Parser.Tactic.optConfig` or `Lean.Parser.Tactic.config`,
 and these can also be wrapped in null nodes (for example, from `(config)?`).

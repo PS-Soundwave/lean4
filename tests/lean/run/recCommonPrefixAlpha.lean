@@ -1,12 +1,12 @@
 namespace Structural
 mutual
-def f1 (α : Type) : List α → Nat
+def f1 (α : Type) : List α  Nat
 | [] => 0
 | _ :: xs => f2 α xs + 1
 termination_by structural n => n
 
 -- NB β, not α. Used to prevent this from working (with an unhelpful error message)
-def f2 (β : Type) : List β → Nat
+def f2 (β : Type) : List β  Nat
 | [] => 0
 | _ :: xs => f1 β xs + 1
 termination_by structural n => n
@@ -16,13 +16,13 @@ end Structural
 namespace WF
 
 mutual
-def f1 (α : Type) : List α → Nat
+def f1 (α : Type) : List α  Nat
 | [] => 0
 | _ :: xs => f2 α xs + 1
 termination_by n => n
 
 -- NB β, not α. Used to prevent this from working (with an unhelpful error message)
-def f2 (β : Type) : List β → Nat
+def f2 (β : Type) : List β  Nat
 | [] => 0
 | _ :: xs => f1 β xs + 1
 termination_by n => n

@@ -1,4 +1,4 @@
-abbrev shrinkFn (α : Type u) [sz : SizeOf α] := (x : α) → List { y : α // sz.sizeOf y < sz.sizeOf x }
+abbrev shrinkFn (α : Type u) [sz : SizeOf α] := (x : α)  List { y : α // sz.sizeOf y < sz.sizeOf x }
 
 class Sampleable (α : Type u) [SizeOf α] where
   shrink : shrinkFn α := fun _ => []

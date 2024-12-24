@@ -9,13 +9,13 @@ import Init.Prelude
 namespace Lean
 
 @[extern "lean_closure_max_args"]
-opaque closureMaxArgsFn : Unit → Nat
+opaque closureMaxArgsFn : Unit  Nat
 
 @[extern "lean_max_small_nat"]
-opaque maxSmallNatFn : Unit → Nat
+opaque maxSmallNatFn : Unit  Nat
 
 @[extern "lean_libuv_version"]
-opaque libUVVersionFn : Unit → Nat
+opaque libUVVersionFn : Unit  Nat
 
 def closureMaxArgs : Nat :=
   closureMaxArgsFn ()

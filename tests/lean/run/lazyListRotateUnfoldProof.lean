@@ -4,12 +4,12 @@ inductive LazyList (α : Type u)
 | delayed (t : Thunk (LazyList α)) : LazyList α
 
 namespace LazyList
-def length : LazyList α → Nat
+def length : LazyList α  Nat
 | nil        => 0
 | cons _ as  => length as + 1
 | delayed as => length as.get
 
-def force : LazyList α → Option (α × LazyList α)
+def force : LazyList α  Option (α × LazyList α)
 | delayed as => force as.get
 | nil        => none
 | cons a as  => some (a,as)
@@ -24,16 +24,16 @@ def rotate (f : LazyList τ) (r : List τ) (a : LazyList τ)
   | none =>  LazyList.cons y a
   | some (x, f') => LazyList.cons x (rotate f' r' (LazyList.cons y a) (sorry))
 
-theorem rotate_inv {F : LazyList τ} {R : List τ} : (h : F.length + 1 = R.length) → (rotate F R nil h).length = F.length + R.length := by
+theorem rotate_inv {F : LazyList τ} {R : List τ} : (h : F.length + 1 = R.length)  (rotate F R nil h).length = F.length + R.length := by
   match F with
   | LazyList.nil => intro h; unfold rotate; sorry
   | LazyList.cons Fh Ft => sorry
   | LazyList.delayed Ft => sorry
 
-def LazyList.ind {α : Type u} {motive : LazyList α → Sort v}
+def LazyList.ind {α : Type u} {motive : LazyList α  Sort v}
         (nil : motive LazyList.nil)
-        (cons : (hd : α) → (tl : LazyList α) → motive tl → motive (LazyList.cons hd tl))
-        (delayed : (t : Thunk (LazyList α)) → motive t.get → motive (LazyList.delayed t))
+        (cons : (hd : α)  (tl : LazyList α)  motive tl  motive (LazyList.cons hd tl))
+        (delayed : (t : Thunk (LazyList α))  motive t.get  motive (LazyList.delayed t))
         (t : LazyList α) : motive t :=
   match t with
   | LazyList.nil => nil
@@ -64,7 +64,7 @@ a✝ : ∀ (h : t.get.length + 1 = R.length), (rotate t.get R nil h).length = t.
     (rotate (LazyList.delayed t) R nil h).length = (LazyList.delayed t).length + R.length
 -/
 #guard_msgs in
-theorem rotate_inv' {F : LazyList τ} {R : List τ} : (h : F.length + 1 = R.length) → (rotate F R nil h).length = F.length + R.length := by
+theorem rotate_inv' {F : LazyList τ} {R : List τ} : (h : F.length + 1 = R.length)  (rotate F R nil h).length = F.length + R.length := by
   induction F using LazyList.ind with
   | nil => intro h; unfold rotate; sorry
   | cons h t ih => trace_state; sorry

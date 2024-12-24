@@ -28,18 +28,18 @@ elab "ctor" idx:num : tactic =>
 example (p : Prop) : p := by
   ctor 1 -- Error
 
-example (h : q) : p ∨ q := by
+example (h : q) : p  q := by
   ctor 0 -- Error
   exact h
 
-example (h : q) : p ∨ q := by
+example (h : q) : p  q := by
   ctor 3 -- Error
   exact h
 
-example (h : q) : p ∨ q := by
+example (h : q) : p  q := by
   ctor 2
   exact h
 
-example (h : q) : p ∨ q := by
+example (h : q) : p  q := by
   ctor 1
   exact h -- Error

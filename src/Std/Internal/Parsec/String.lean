@@ -81,18 +81,18 @@ def digits : Parser Nat := do
 def hexDigit : Parser Char := attempt do
   let c ← any
   if ('0' ≤ c ∧ c ≤ '9')
-   ∨ ('a' ≤ c ∧ c ≤ 'f')
-   ∨ ('A' ≤ c ∧ c ≤ 'F') then return c else fail s!"hex digit expected"
+    ('a' ≤ c ∧ c ≤ 'f')
+    ('A' ≤ c ∧ c ≤ 'F') then return c else fail s!"hex digit expected"
 
 @[inline]
 def asciiLetter : Parser Char := attempt do
   let c ← any
-  if ('A' ≤ c ∧ c ≤ 'Z') ∨ ('a' ≤ c ∧ c ≤ 'z') then return c else fail s!"ASCII letter expected"
+  if ('A' ≤ c ∧ c ≤ 'Z')  ('a' ≤ c ∧ c ≤ 'z') then return c else fail s!"ASCII letter expected"
 
 private partial def skipWs (it : String.Iterator) : String.Iterator :=
   if h : it.hasNext then
     let c := it.curr' h
-    if c = '\u0009' ∨ c = '\u000a' ∨ c = '\u000d' ∨ c = '\u0020' then
+    if c = '\u0009'  c = '\u000a'  c = '\u000d'  c = '\u0020' then
       skipWs (it.next' h)
     else
       it

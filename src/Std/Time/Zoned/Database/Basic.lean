@@ -20,26 +20,26 @@ protected class Database (α : Type) where
   /--
   Retrieves the zone rules information (`ZoneRules`) for a given area at a specific point in time.
   -/
-  getZoneRules : α → String → IO TimeZone.ZoneRules
+  getZoneRules : α  String  IO TimeZone.ZoneRules
 
   /--
   Retrieves the local zone rules information (`ZoneRules`) at a given timestamp.
   -/
-  getLocalZoneRules : α → IO TimeZone.ZoneRules
+  getLocalZoneRules : α  IO TimeZone.ZoneRules
 
 namespace TimeZone
 
 /--
 Converts a Boolean value to a corresponding `StdWall` type.
 -/
-def convertWall : Bool → StdWall
+def convertWall : Bool  StdWall
   | true => .standard
   | false => .wall
 
 /--
 Converts a Boolean value to a corresponding `UTLocal` type.
 -/
-def convertUt : Bool → UTLocal
+def convertUt : Bool  UTLocal
   | true => .ut
   | false => .local
 

@@ -1,7 +1,7 @@
 universe u v w
 
 structure A (α : Type u) :=
-(f : (β : Type u) → α → β → α)
+(f : (β : Type u)  α  β  α)
 
 set_option pp.all true
 
@@ -16,7 +16,7 @@ structure B (α : Type u) extends A α :=
 namespace New
 
 structure A (α : Type u) where
-  f : (β : Type u) → α → β → α
+  f : (β : Type u)  α  β  α
 
 structure B (α : Type u) extends A α where
   x : Nat
@@ -40,15 +40,15 @@ structure State (α : Type) where
 inductive Format where
   | nil                 : Format
   | line                : Format
-  | text                : String → Format
-  | nest (indent : Int) : Format → Format
-  | append              : Format → Format → Format
-  | group               : Format → Format
+  | text                : String  Format
+  | nest (indent : Int) : Format  Format
+  | append              : Format  Format  Format
+  | group               : Format  Format
 
-class MonadControl (m : Type u → Type v) (n : Type u → Type w) where
-  stM          : Type u → Type u
-  liftWith {α} : (({β : Type u} → n β → m (stM β)) → m α) → n α
-  restoreM {α} : m (stM α) → n α
+class MonadControl (m : Type u  Type v) (n : Type u  Type w) where
+  stM          : Type u  Type u
+  liftWith {α} : (({β : Type u}  n β  m (stM β))  m α)  n α
+  restoreM {α} : m (stM α)  n α
 
 instance : MonadControl m (ReaderT ρ m) where
   stM        := id

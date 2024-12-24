@@ -1,1 +1,1 @@
-example : (p ∨ p) → p := fun h => match
+example : (p  p)  p := fun h => match

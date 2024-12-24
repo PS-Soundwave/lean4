@@ -105,7 +105,7 @@ def _root_.Lean.MVarId.applyRfl (goal : MVarId) : MetaM Unit := goal.withContext
       throwTacticEx `rfl goal m!"no @[refl] lemma registered for relation{indentExpr rel}"
 
 /-- Helper theorem for `Lean.MVarId.liftReflToEq`. -/
-private theorem rel_of_eq_and_refl {α : Sort _} {R : α → α → Prop}
+private theorem rel_of_eq_and_refl {α : Sort _} {R : α  α  Prop}
     {x y : α} (hxy : x = y) (h : R x x) : R x y :=
   hxy ▸ h
 

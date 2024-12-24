@@ -6,7 +6,7 @@ set_option linter.all true
 def explicitlyUsedVariable (x : Nat) : Nat :=
   x
 
-theorem implicitlyUsedVariable : P ∧ Q → Q := by
+theorem implicitlyUsedVariable : P ∧ Q  Q := by
   intro HPQ
   have HQ : Q := by exact And.right HPQ
   assumption
@@ -72,7 +72,7 @@ def implicitVariables {α : Type} [inst : ToString α] : Nat := 4
 
 def autoImplicitVariable [Inhabited α] := 5
 
-def unusedArrow : (x : Nat) → Nat := fun x => x
+def unusedArrow : (x : Nat)  Nat := fun x => x
 
 def mutVariable (x : Nat) : Nat := Id.run <| do
   let mut y := 5
@@ -192,7 +192,7 @@ opaque foo' (x : Nat) : Nat :=
 
 section
 variable (bar)
-variable (bar' : (x : Nat) → Nat)
+variable (bar' : (x : Nat)  Nat)
 variable {α β} [inst : ToString α]
 end
 
@@ -245,23 +245,23 @@ example (a : Nat) : Nat := sorry
 example (a : sorry) : Nat := 0
 example (a : Nat) : Nat := by
 
-theorem Fin.eqq_of_val_eq {n : Nat} : ∀ {x y : Fin n}, x.val = y.val → x = y
+theorem Fin.eqq_of_val_eq {n : Nat} : ∀ {x y : Fin n}, x.val = y.val  x = y
   | ⟨_, _⟩, _, rfl => rfl
 
-def Nat.discriminate (n : Nat) (H1 : n = 0 → α) (H2 : ∀ m, n = succ m → α) : α :=
+def Nat.discriminate (n : Nat) (H1 : n = 0  α) (H2 : ∀ m, n = succ m  α) : α :=
   match n with
   | 0 => H1 rfl
   | succ m => H2 m rfl
 
 /-! These are *not* linted against anymore as they are parameters used in the eventual body term. -/
-example [ord : Ord β] (f : α → β) (x y : α) : Ordering := compare (f x) (f y)
-example {α β} [ord : Ord β] (f : α → β) (x y : α) : Ordering := compare (f x) (f y)
+example [ord : Ord β] (f : α  β) (x y : α) : Ordering := compare (f x) (f y)
+example {α β} [ord : Ord β] (f : α  β) (x y : α) : Ordering := compare (f x) (f y)
 example {h : Decidable True} (t e : α) : ite True t e = t := if_pos trivial
 
 inductive A where
-  | intro : Nat → A
+  | intro : Nat  A
 
-def A.out : A → Nat
+def A.out : A  Nat
   | .intro n => n
 
 /-! `h` is used indirectly via an alias introduced by `match` that is used only via the mvar ctx -/
@@ -273,12 +273,12 @@ theorem problematicAlias (n : A) (i : Nat) (h : i ≤ n.out) : i ≤ n.out :=
 The wildcard pattern introduces a copy of `x` that should not be linted as it is in an
 inaccessible annotation.
 -/
-example : (x = y) → y = x
+example : (x = y)  y = x
   | .refl _ => .refl _
 
 /-! We do lint parameters by default (`analyzeTactics false`) even when they have lexical uses -/
 
-theorem lexicalTacticUse (p : α → Prop) (ha : p a) (hb : p b) : p b := by
+theorem lexicalTacticUse (p : α  Prop) (ha : p a) (hb : p b) : p b := by
   simp [ha, hb]
 
 /-!
@@ -286,5 +286,5 @@ theorem lexicalTacticUse (p : α → Prop) (ha : p a) (hb : p b) : p b := by
 -/
 
 set_option linter.unusedVariables.analyzeTactics true in
-theorem lexicalTacticUse' (p : α → Prop) (ha : p a) (hb : p b) : p b := by
+theorem lexicalTacticUse' (p : α  Prop) (ha : p a) (hb : p b) : p b := by
   simp [ha, hb]

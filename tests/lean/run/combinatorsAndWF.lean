@@ -1,4 +1,4 @@
-def List.foldl_wf [SizeOf β] (bs : List β) (init : α) (f : α → (b : β) → sizeOf b < sizeOf bs → α) : α :=
+def List.foldl_wf [SizeOf β] (bs : List β) (init : α) (f : α  (b : β)  sizeOf b < sizeOf bs  α) : α :=
   go init bs (Nat.le_refl ..)
 where
   go (a : α) (cs : List β) (h : sizeOf cs ≤ sizeOf bs) : α :=
@@ -13,9 +13,9 @@ where
       have h₂ : sizeOf cs ≤ sizeOf bs := by simp_arith at h; apply Nat.le_trans this h
       go (f a c h₁) cs h₂
 
-theorem List.foldl_wf_eq [SizeOf β] (bs : List β) (init : α) (f : α → β → α) : bs.foldl_wf init (fun a b _ => f a b) = bs.foldl f init := by
+theorem List.foldl_wf_eq [SizeOf β] (bs : List β) (init : α) (f : α  β  α) : bs.foldl_wf init (fun a b _ => f a b) = bs.foldl f init := by
   simp [List.foldl_wf]
-  have : (a : α) → (cs : List β) → (h : sizeOf cs ≤ sizeOf bs) → foldl_wf.go bs (fun a b _ => f a b) a cs h = cs.foldl f a := by
+  have : (a : α)  (cs : List β)  (h : sizeOf cs ≤ sizeOf bs)  foldl_wf.go bs (fun a b _ => f a b) a cs h = cs.foldl f a := by
     intro a cs h
     induction cs generalizing a with simp [List.foldl_wf.go, List.foldl]
     | cons c cs ih => simp [ih]
@@ -26,7 +26,7 @@ inductive Expr where
   | var (n : String)
 
 -- TODO: `WF.lean` should replace `List.foldl` with `List.foldl_wf`, and then apply `List.foldl_wf_eq` when proving equation theorems.
-@[simp] def Expr.numVars : Expr → Nat
+@[simp] def Expr.numVars : Expr  Nat
   | app f args => args.foldl_wf 0 fun sum arg h =>
     -- TODO: linarith should prove the following proposition
     -- TODO: decreasing_tactic should invoke `linarith`
@@ -49,7 +49,7 @@ theorem Expr.numVars_app_eq (f : String) (args : List Expr) : (Expr.app f args).
 
 #guard (Expr.app "f" [Expr.var "a", Expr.app "g" [Expr.var "b", Expr.var "c"]] |>.numVars) == 3
 
-def List.map_wf [SizeOf α] (as : List α) (f : (a : α) → sizeOf a < sizeOf as → β) : List β :=
+def List.map_wf [SizeOf α] (as : List α) (f : (a : α)  sizeOf a < sizeOf as  β) : List β :=
   go as (Nat.le_refl ..)
 where
   go (cs : List α) (h : sizeOf cs ≤ sizeOf as) : List β :=
@@ -64,9 +64,9 @@ where
       have h₂ : sizeOf cs ≤ sizeOf as := by simp_arith at h; apply Nat.le_trans this h
       f c h₁ :: go cs h₂
 
-theorem List.map_wf_eq [SizeOf α] (as : List α) (f : α → β) : as.map_wf (fun a _ => f a) = as.map f := by
+theorem List.map_wf_eq [SizeOf α] (as : List α) (f : α  β) : as.map_wf (fun a _ => f a) = as.map f := by
   simp [List.map_wf]
-  have : (cs : List α) → (h : sizeOf cs ≤ sizeOf as) → map_wf.go as (fun a _ => f a) cs h = cs.map f := by
+  have : (cs : List α)  (h : sizeOf cs ≤ sizeOf as)  map_wf.go as (fun a _ => f a) cs h = cs.map f := by
     intro cs h
     induction cs with simp [List.map_wf.go, List.map]
     | cons c cs ih => simp [ih]

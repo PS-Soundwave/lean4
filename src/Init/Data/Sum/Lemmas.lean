@@ -17,12 +17,12 @@ open Function
 
 namespace Sum
 
-protected theorem «forall» {p : α ⊕ β → Prop} :
+protected theorem «forall» {p : α ⊕ β  Prop} :
     (∀ x, p x) ↔ (∀ a, p (inl a)) ∧ ∀ b, p (inr b) :=
   ⟨fun h => ⟨fun _ => h _, fun _ => h _⟩, fun ⟨h₁, h₂⟩ => Sum.rec h₁ h₂⟩
 
-protected theorem «exists» {p : α ⊕ β → Prop} :
-    (∃ x, p x) ↔ (∃ a, p (inl a)) ∨ ∃ b, p (inr b) :=
+protected theorem «exists» {p : α ⊕ β  Prop} :
+    (∃ x, p x) ↔ (∃ a, p (inl a))  ∃ b, p (inr b) :=
   ⟨ fun
     | ⟨inl a, h⟩ => Or.inl ⟨a, h⟩
     | ⟨inr b, h⟩ => Or.inr ⟨b, h⟩,
@@ -30,7 +30,7 @@ protected theorem «exists» {p : α ⊕ β → Prop} :
     | Or.inl ⟨a, h⟩ => ⟨inl a, h⟩
     | Or.inr ⟨b, h⟩ => ⟨inr b, h⟩⟩
 
-theorem forall_sum {γ : α ⊕ β → Sort _} {p : (∀ ab, γ ab) → Prop} :
+theorem forall_sum {γ : α ⊕ β  Sort _} {p : (∀ ab, γ ab)  Prop} :
     (∀ fab, p fab) ↔ (∀ fa fb, p (Sum.rec fa fb)) := by
   refine ⟨fun h fa fb => h _, fun h fab => ?_⟩
   have h1 : fab = Sum.rec (fun a => fab (Sum.inl a)) (fun b => fab (Sum.inr b)) := by
@@ -97,69 +97,69 @@ theorem inr_ne_inl : inr b ≠ inl a := nofun
 
 /-! ### `Sum.elim` -/
 
-@[simp] theorem elim_comp_inl (f : α → γ) (g : β → γ) : Sum.elim f g ∘ inl = f :=
+@[simp] theorem elim_comp_inl (f : α  γ) (g : β  γ) : Sum.elim f g  inl = f :=
   rfl
 
-@[simp] theorem elim_comp_inr (f : α → γ) (g : β → γ) : Sum.elim f g ∘ inr = g :=
+@[simp] theorem elim_comp_inr (f : α  γ) (g : β  γ) : Sum.elim f g  inr = g :=
   rfl
 
 @[simp] theorem elim_inl_inr : @Sum.elim α β _ inl inr = id :=
   funext fun x => Sum.casesOn x (fun _ => rfl) fun _ => rfl
 
-theorem comp_elim (f : γ → δ) (g : α → γ) (h : β → γ) :
-    f ∘ Sum.elim g h = Sum.elim (f ∘ g) (f ∘ h) :=
+theorem comp_elim (f : γ  δ) (g : α  γ) (h : β  γ) :
+    f  Sum.elim g h = Sum.elim (f  g) (f  h) :=
   funext fun x => Sum.casesOn x (fun _ => rfl) fun _ => rfl
 
-@[simp] theorem elim_comp_inl_inr (f : α ⊕ β → γ) :
-    Sum.elim (f ∘ inl) (f ∘ inr) = f :=
+@[simp] theorem elim_comp_inl_inr (f : α ⊕ β  γ) :
+    Sum.elim (f  inl) (f  inr) = f :=
   funext fun x => Sum.casesOn x (fun _ => rfl) fun _ => rfl
 
-theorem elim_eq_iff {u u' : α → γ} {v v' : β → γ} :
+theorem elim_eq_iff {u u' : α  γ} {v v' : β  γ} :
     Sum.elim u v = Sum.elim u' v' ↔ u = u' ∧ v = v' := by
   simp [funext_iff, Sum.forall]
 
 /-! ### `Sum.map` -/
 
-@[simp] theorem map_map (f' : α' → α'') (g' : β' → β'') (f : α → α') (g : β → β') :
-    ∀ x : Sum α β, (x.map f g).map f' g' = x.map (f' ∘ f) (g' ∘ g)
+@[simp] theorem map_map (f' : α'  α'') (g' : β'  β'') (f : α  α') (g : β  β') :
+    ∀ x : Sum α β, (x.map f g).map f' g' = x.map (f'  f) (g'  g)
   | inl _ => rfl
   | inr _ => rfl
 
-@[simp] theorem map_comp_map (f' : α' → α'') (g' : β' → β'') (f : α → α') (g : β → β') :
-    Sum.map f' g' ∘ Sum.map f g = Sum.map (f' ∘ f) (g' ∘ g) :=
+@[simp] theorem map_comp_map (f' : α'  α'') (g' : β'  β'') (f : α  α') (g : β  β') :
+    Sum.map f' g'  Sum.map f g = Sum.map (f'  f) (g'  g) :=
   funext <| map_map f' g' f g
 
 @[simp] theorem map_id_id : Sum.map (@id α) (@id β) = id :=
   funext fun x => Sum.recOn x (fun _ => rfl) fun _ => rfl
 
-theorem elim_map {f₁ : α → β} {f₂ : β → ε} {g₁ : γ → δ} {g₂ : δ → ε} {x} :
-    Sum.elim f₂ g₂ (Sum.map f₁ g₁ x) = Sum.elim (f₂ ∘ f₁) (g₂ ∘ g₁) x := by
+theorem elim_map {f₁ : α  β} {f₂ : β  ε} {g₁ : γ  δ} {g₂ : δ  ε} {x} :
+    Sum.elim f₂ g₂ (Sum.map f₁ g₁ x) = Sum.elim (f₂  f₁) (g₂  g₁) x := by
   cases x <;> rfl
 
-theorem elim_comp_map {f₁ : α → β} {f₂ : β → ε} {g₁ : γ → δ} {g₂ : δ → ε} :
-    Sum.elim f₂ g₂ ∘ Sum.map f₁ g₁ = Sum.elim (f₂ ∘ f₁) (g₂ ∘ g₁) :=
+theorem elim_comp_map {f₁ : α  β} {f₂ : β  ε} {g₁ : γ  δ} {g₂ : δ  ε} :
+    Sum.elim f₂ g₂  Sum.map f₁ g₁ = Sum.elim (f₂  f₁) (g₂  g₁) :=
   funext fun _ => elim_map
 
-@[simp] theorem isLeft_map (f : α → β) (g : γ → δ) (x : α ⊕ γ) :
+@[simp] theorem isLeft_map (f : α  β) (g : γ  δ) (x : α ⊕ γ) :
     isLeft (x.map f g) = isLeft x := by
   cases x <;> rfl
 
-@[simp] theorem isRight_map (f : α → β) (g : γ → δ) (x : α ⊕ γ) :
+@[simp] theorem isRight_map (f : α  β) (g : γ  δ) (x : α ⊕ γ) :
     isRight (x.map f g) = isRight x := by
   cases x <;> rfl
 
-@[simp] theorem getLeft?_map (f : α → β) (g : γ → δ) (x : α ⊕ γ) :
+@[simp] theorem getLeft?_map (f : α  β) (g : γ  δ) (x : α ⊕ γ) :
     (x.map f g).getLeft? = x.getLeft?.map f := by
   cases x <;> rfl
 
-@[simp] theorem getRight?_map (f : α → β) (g : γ → δ) (x : α ⊕ γ) :
+@[simp] theorem getRight?_map (f : α  β) (g : γ  δ) (x : α ⊕ γ) :
     (x.map f g).getRight? = x.getRight?.map g := by cases x <;> rfl
 
 /-! ### `Sum.swap` -/
 
 @[simp] theorem swap_swap (x : α ⊕ β) : swap (swap x) = x := by cases x <;> rfl
 
-@[simp] theorem swap_swap_eq : swap ∘ swap = @id (α ⊕ β) := funext <| swap_swap
+@[simp] theorem swap_swap_eq : swap  swap = @id (α ⊕ β) := funext <| swap_swap
 
 @[simp] theorem isLeft_swap (x : α ⊕ β) : x.swap.isLeft = x.isRight := by cases x <;> rfl
 
@@ -171,17 +171,17 @@ theorem elim_comp_map {f₁ : α → β} {f₂ : β → ε} {g₁ : γ → δ} {
 
 section LiftRel
 
-theorem LiftRel.mono (hr : ∀ a b, r₁ a b → r₂ a b) (hs : ∀ a b, s₁ a b → s₂ a b)
+theorem LiftRel.mono (hr : ∀ a b, r₁ a b  r₂ a b) (hs : ∀ a b, s₁ a b  s₂ a b)
   (h : LiftRel r₁ s₁ x y) : LiftRel r₂ s₂ x y := by
   cases h
   · exact LiftRel.inl (hr _ _ ‹_›)
   · exact LiftRel.inr (hs _ _ ‹_›)
 
-theorem LiftRel.mono_left (hr : ∀ a b, r₁ a b → r₂ a b) (h : LiftRel r₁ s x y) :
+theorem LiftRel.mono_left (hr : ∀ a b, r₁ a b  r₂ a b) (h : LiftRel r₁ s x y) :
     LiftRel r₂ s x y :=
   (h.mono hr) fun _ _ => id
 
-theorem LiftRel.mono_right (hs : ∀ a b, s₁ a b → s₂ a b) (h : LiftRel r s₁ x y) :
+theorem LiftRel.mono_right (hs : ∀ a b, s₁ a b  s₂ a b) (h : LiftRel r s₁ x y) :
     LiftRel r s₂ x y :=
   h.mono (fun _ _ => id) hs
 
@@ -204,17 +204,17 @@ protected theorem LiftRel.lex {a b : α ⊕ β} (h : LiftRel r s a b) : Lex r s 
 
 theorem liftRel_subrelation_lex : Subrelation (LiftRel r s) (Lex r s) := LiftRel.lex
 
-theorem Lex.mono (hr : ∀ a b, r₁ a b → r₂ a b) (hs : ∀ a b, s₁ a b → s₂ a b) (h : Lex r₁ s₁ x y) :
+theorem Lex.mono (hr : ∀ a b, r₁ a b  r₂ a b) (hs : ∀ a b, s₁ a b  s₂ a b) (h : Lex r₁ s₁ x y) :
     Lex r₂ s₂ x y := by
   cases h
   · exact Lex.inl (hr _ _ ‹_›)
   · exact Lex.inr (hs _ _ ‹_›)
   · exact Lex.sep _ _
 
-theorem Lex.mono_left (hr : ∀ a b, r₁ a b → r₂ a b) (h : Lex r₁ s x y) : Lex r₂ s x y :=
+theorem Lex.mono_left (hr : ∀ a b, r₁ a b  r₂ a b) (h : Lex r₁ s x y) : Lex r₂ s x y :=
   (h.mono hr) fun _ _ => id
 
-theorem Lex.mono_right (hs : ∀ a b, s₁ a b → s₂ a b) (h : Lex r s₁ x y) : Lex r s₂ x y :=
+theorem Lex.mono_right (hs : ∀ a b, s₁ a b  s₂ a b) (h : Lex r s₁ x y) : Lex r s₂ x y :=
   h.mono (fun _ _ => id) hs
 
 theorem lex_acc_inl (aca : Acc r a) : Acc (Lex r s) (inl a) := by
@@ -242,7 +242,7 @@ theorem lex_wf (ha : WellFounded r) (hb : WellFounded s) : WellFounded (Lex r s)
 end Lex
 
 theorem elim_const_const (c : γ) :
-    Sum.elim (const _ c : α → γ) (const _ c : β → γ) = const _ c := by
+    Sum.elim (const _ c : α  γ) (const _ c : β  γ) = const _ c := by
   apply funext
   rintro (_ | _) <;> rfl
 

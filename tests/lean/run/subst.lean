@@ -12,16 +12,16 @@ h₂ ▸ h₁
 theorem ex2 {α : Sort u} {a b : α} (h : a = b) : b = a :=
 h ▸ rfl
 
-theorem ex3 {α : Sort u} {a b c : α} (r : α → α → Prop) (h₁ : r a b) (h₂ : b = c) : r a c :=
+theorem ex3 {α : Sort u} {a b c : α} (r : α  α  Prop) (h₁ : r a b) (h₂ : b = c) : r a c :=
 h₂ ▸ h₁
 
-theorem ex3b {α : Sort u} {a b c : α} (r : α → α → Prop) (h₁ : r a b) (h₂ : b = c) : r a c :=
+theorem ex3b {α : Sort u} {a b c : α} (r : α  α  Prop) (h₁ : r a b) (h₂ : b = c) : r a c :=
 h₂.symm ▸ h₁
 
-theorem ex3c {α : Sort u} {a b c : α} (r : α → α → Prop) (h₁ : r a b) (h₂ : b = c) : r a c :=
+theorem ex3c {α : Sort u} {a b c : α} (r : α  α  Prop) (h₁ : r a b) (h₂ : b = c) : r a c :=
 h₂.symm.symm ▸ h₁
 
-theorem ex4 {α : Sort u} {a b c : α} (r : α → α → Prop) (h₁ : a = b) (h₂ : r b c) : r a c :=
+theorem ex4 {α : Sort u} {a b c : α} (r : α  α  Prop) (h₁ : a = b) (h₂ : r b c) : r a c :=
 h₁ ▸ h₂
 
 theorem ex5 {p : Prop} (h : p = True) : p :=
@@ -54,7 +54,7 @@ Array.ext a b (hsz₁.trans hsz₂.symm) fun i hi₁ hi₂ => h i (hsz₁ ▸ hi
 def toArrayLit {α : Type u} (a : Array α) (n : Nat) (hsz : a.size = n) : Array α :=
 List.toArray $ Array.toListLitAux a n hsz n (hsz ▸ Nat.le_refl _) []
 
-partial def isEqvAux {α} (a b : Array α) (hsz : a.size = b.size) (p : α → α → Bool) (i : Nat) : Bool :=
+partial def isEqvAux {α} (a b : Array α) (hsz : a.size = b.size) (p : α  α  Bool) (i : Nat) : Bool :=
   if h : i < a.size then
      let aidx : Fin a.size := ⟨i, h⟩
      let bidx : Fin b.size := ⟨i, hsz ▸ h⟩

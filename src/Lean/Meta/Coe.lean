@@ -102,13 +102,13 @@ Extensions for monads.
 
 1. Try to unify `n` and `m`. If it succeeds, then we use
   ```
-  coeM {m : Type u → Type v} {α β : Type u} [∀ a, CoeT α a β] [Monad m] (x : m α) : m β
+  coeM {m : Type u  Type v} {α β : Type u} [∀ a, CoeT α a β] [Monad m] (x : m α) : m β
   ```
   `n` must be a `Monad` to use this one.
 
 2. If there is monad lift from `m` to `n` and we can unify `α` and `β`, we use
   ```
-  liftM : ∀ {m : Type u_1 → Type u_2} {n : Type u_1 → Type u_3} [self : MonadLiftT m n] {α : Type u_1}, m α → n α
+  liftM : ∀ {m : Type u_1  Type u_2} {n : Type u_1  Type u_3} [self : MonadLiftT m n] {α : Type u_1}, m α  n α
   ```
   Note that `n` may not be a `Monad` in this case. This happens quite a bit in code such as
   ```
@@ -123,7 +123,7 @@ Extensions for monads.
 
 3. If there is a monad lift from `m` to `n` and a coercion from `α` to `β`, we use
   ```
-  liftCoeM {m : Type u → Type v} {n : Type u → Type w} {α β : Type u} [MonadLiftT m n] [∀ a, CoeT α a β] [Monad n] (x : m α) : n β
+  liftCoeM {m : Type u  Type v} {n : Type u  Type w} {α β : Type u} [MonadLiftT m n] [∀ a, CoeT α a β] [Monad n] (x : m α) : n β
   ```
 
 Note that approach 3 does not subsume 1 because it is only applicable if there is a coercion from `α` to `β` for all values in `α`.

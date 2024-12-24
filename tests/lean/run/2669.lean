@@ -1,4 +1,4 @@
-def f : Nat → Nat := fun x => x - x
+def f : Nat  Nat := fun x => x - x
 
 @[simp] theorem f_zero (n : Nat) : f n = 0 :=
   Nat.sub_self n

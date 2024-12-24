@@ -8,7 +8,7 @@ import Lean.Data.Name
 
 namespace String
 
-private def mangleAux : Nat → String.Iterator → String → String
+private def mangleAux : Nat  String.Iterator  String  String
   | 0,   _,  r => r
   | i+1, it, r =>
     let c := it.curr
@@ -47,7 +47,7 @@ end String
 
 namespace Lean
 
-private def Name.mangleAux : Name → String
+private def Name.mangleAux : Name  String
   | Name.anonymous => ""
   | Name.str p s =>
     let m := String.mangle s

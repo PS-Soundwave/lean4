@@ -2,11 +2,11 @@ import Lean
 
 open Lean
 
-partial def mkTower : Nat → Expr
+partial def mkTower : Nat  Expr
 | 0   => mkConst `a
 | n+1 => mkApp2 (mkConst `f) (mkTower n) (mkTower n)
 
-partial def depth : Expr → MonadCacheT Expr Nat CoreM Nat
+partial def depth : Expr  MonadCacheT Expr Nat CoreM Nat
 | e =>
   checkCache e fun _ =>
     match e with
@@ -16,7 +16,7 @@ partial def depth : Expr → MonadCacheT Expr Nat CoreM Nat
 
 #eval (depth (mkTower 100)).run
 
-partial def visit : Expr → MonadCacheT Expr Expr CoreM Expr
+partial def visit : Expr  MonadCacheT Expr Expr CoreM Expr
 | e =>
   checkCache e fun _ =>
     match e with
@@ -31,7 +31,7 @@ let e ← (visit (mkTower 100)).run; (depth e).run
 
 #eval tst
 
-partial def visitNoCache : Expr → CoreM Expr
+partial def visitNoCache : Expr  CoreM Expr
 | e =>
   match e with
   | Expr.const `a [] => pure $ mkConst `b

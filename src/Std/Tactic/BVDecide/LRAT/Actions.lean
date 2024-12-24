@@ -26,7 +26,7 @@ inductive Action (β : Type u) (α : Type v)
   | del (ids : Array Nat)
 deriving Inhabited, BEq, Repr
 
-def Action.toString [ToString β] [ToString α] : Action β α → String
+def Action.toString [ToString β] [ToString α] : Action β α  String
   | .addEmpty id rup => s!"addEmpty (id: {id}) (hints: {rup})"
   | .addRup id c rup => s!"addRup {c} (id : {id}) (hints: {rup})"
   | .addRat id c l rup rat => s!"addRat {c} (id: {id}) (pivot: {l}) (rup hints: {rup}) (rat hints: {rat})"

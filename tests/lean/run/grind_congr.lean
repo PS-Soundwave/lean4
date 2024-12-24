@@ -17,6 +17,6 @@ info: [d, f b, c, f a]
 warning: declaration uses 'sorry'
 -/
 #guard_msgs in
-example (a b c d : Nat) : a = b → f a = c → f b = d → False := by
+example (a b c d : Nat) : a = b  f a = c  f b = d  False := by
   grind_test
   sorry

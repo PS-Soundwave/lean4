@@ -1,8 +1,8 @@
 structure T : Prop
 structure U : Prop
 
-theorem foo : T → U := λ _ => {}
-theorem bar : (_ : T := by trivial) → U := λ _ => {}
+theorem foo : T  U := λ _ => {}
+theorem bar : (_ : T := by trivial)  U := λ _ => {}
 
 -- fails as expected
 example : U := by

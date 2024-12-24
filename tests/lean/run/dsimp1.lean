@@ -3,7 +3,7 @@ def Nat.isZero (x : Nat) : Bool :=
   | 0 => true
   | _+1 => false
 
-axiom P : Bool → Prop
+axiom P : Bool  Prop
 axiom P_false : P false
 
 /--

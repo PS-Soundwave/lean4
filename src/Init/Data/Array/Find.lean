@@ -24,18 +24,18 @@ open Nat
 @[simp] theorem findSomeRev?_push_of_isNone (l : Array α) (h : (f a).isNone) : (l.push a).findSomeRev? f = l.findSomeRev? f := by
   cases l; simp_all
 
-theorem exists_of_findSome?_eq_some {f : α → Option β} {l : Array α} (w : l.findSome? f = some b) :
+theorem exists_of_findSome?_eq_some {f : α  Option β} {l : Array α} (w : l.findSome? f = some b) :
     ∃ a, a ∈ l ∧ f a = b := by
   cases l; simp_all [List.exists_of_findSome?_eq_some]
 
 @[simp] theorem findSome?_eq_none_iff : findSome? p l = none ↔ ∀ x ∈ l, p x = none := by
   cases l; simp
 
-@[simp] theorem findSome?_isSome_iff {f : α → Option β} {l : Array α} :
+@[simp] theorem findSome?_isSome_iff {f : α  Option β} {l : Array α} :
     (l.findSome? f).isSome ↔ ∃ x, x ∈ l ∧ (f x).isSome := by
   cases l; simp
 
-theorem findSome?_eq_some_iff {f : α → Option β} {l : Array α} {b : β} :
+theorem findSome?_eq_some_iff {f : α  Option β} {l : Array α} {b : β} :
     l.findSome? f = some b ↔ ∃ (l₁ : Array α) (a : α) (l₂ : Array α), l = l₁.push a ++ l₂ ∧ f a = some b ∧ ∀ x ∈ l₁, f x = none := by
   cases l
   simp only [List.findSome?_toArray, List.findSome?_eq_some_iff]
@@ -48,25 +48,25 @@ theorem findSome?_eq_some_iff {f : α → Option β} {l : Array α} {b : β} :
 @[simp] theorem findSome?_guard (l : Array α) : findSome? (Option.guard fun x => p x) l = find? p l := by
   cases l; simp
 
-@[simp] theorem getElem?_zero_filterMap (f : α → Option β) (l : Array α) : (l.filterMap f)[0]? = l.findSome? f := by
+@[simp] theorem getElem?_zero_filterMap (f : α  Option β) (l : Array α) : (l.filterMap f)[0]? = l.findSome? f := by
   cases l; simp [← List.head?_eq_getElem?]
 
-@[simp] theorem getElem_zero_filterMap (f : α → Option β) (l : Array α) (h) :
+@[simp] theorem getElem_zero_filterMap (f : α  Option β) (l : Array α) (h) :
     (l.filterMap f)[0] = (l.findSome? f).get (by cases l; simpa [List.length_filterMap_eq_countP] using h) := by
   cases l; simp [← List.head_eq_getElem, ← getElem?_zero_filterMap]
 
-@[simp] theorem back?_filterMap (f : α → Option β) (l : Array α) : (l.filterMap f).back? = l.findSomeRev? f := by
+@[simp] theorem back?_filterMap (f : α  Option β) (l : Array α) : (l.filterMap f).back? = l.findSomeRev? f := by
   cases l; simp
 
-@[simp] theorem back!_filterMap [Inhabited β] (f : α → Option β) (l : Array α) :
+@[simp] theorem back!_filterMap [Inhabited β] (f : α  Option β) (l : Array α) :
     (l.filterMap f).back! = (l.findSomeRev? f).getD default := by
   cases l; simp
 
-@[simp] theorem map_findSome? (f : α → Option β) (g : β → γ) (l : Array α) :
-    (l.findSome? f).map g = l.findSome? (Option.map g ∘ f) := by
+@[simp] theorem map_findSome? (f : α  Option β) (g : β  γ) (l : Array α) :
+    (l.findSome? f).map g = l.findSome? (Option.map g  f) := by
   cases l; simp
 
-theorem findSome?_map (f : β → γ) (l : Array β) : findSome? p (l.map f) = l.findSome? (p ∘ f) := by
+theorem findSome?_map (f : β  γ) (l : Array β) : findSome? p (l.map f) = l.findSome? (p  f) := by
   cases l; simp [List.findSome?_map]
 
 theorem findSome?_append {l₁ l₂ : Array α} : (l₁ ++ l₂).findSome? f = (l₁.findSome? f).or (l₂.findSome? f) := by
@@ -116,7 +116,7 @@ theorem findSome?_mkArray : findSome? f (mkArray n a) = if n = 0 then none else 
 
 /-! ### find? -/
 
-@[simp] theorem find?_singleton (a : α) (p : α → Bool) :
+@[simp] theorem find?_singleton (a : α) (p : α  Bool) :
     #[a].find? p = if p a then some a else none := by
   simp [singleton_eq_toArray_singleton]
 
@@ -146,10 +146,10 @@ theorem find?_eq_some_iff_append {xs : Array α} :
 
 @[simp]
 theorem find?_push_eq_some {xs : Array α} :
-    (xs.push a).find? p = some b ↔ xs.find? p = some b ∨ (xs.find? p = none ∧ (p a ∧ a = b)) := by
+    (xs.push a).find? p = some b ↔ xs.find? p = some b  (xs.find? p = none ∧ (p a ∧ a = b)) := by
   cases xs; simp
 
-@[simp] theorem find?_isSome {xs : Array α} {p : α → Bool} : (xs.find? p).isSome ↔ ∃ x, x ∈ xs ∧ p x := by
+@[simp] theorem find?_isSome {xs : Array α} {p : α  Bool} : (xs.find? p).isSome ↔ ∃ x, x ∈ xs ∧ p x := by
   cases xs; simp
 
 theorem find?_some {xs : Array α} (h : find? p xs = some a) : p a := by
@@ -166,33 +166,33 @@ theorem get_find?_mem {xs : Array α} (h) : (xs.find? p).get h ∈ xs := by
   cases xs
   simp [List.get_find?_mem]
 
-@[simp] theorem find?_filter {xs : Array α} (p q : α → Bool) :
+@[simp] theorem find?_filter {xs : Array α} (p q : α  Bool) :
     (xs.filter p).find? q = xs.find? (fun a => p a ∧ q a) := by
   cases xs; simp
 
-@[simp] theorem getElem?_zero_filter (p : α → Bool) (l : Array α) :
+@[simp] theorem getElem?_zero_filter (p : α  Bool) (l : Array α) :
     (l.filter p)[0]? = l.find? p := by
   cases l; simp [← List.head?_eq_getElem?]
 
-@[simp] theorem getElem_zero_filter (p : α → Bool) (l : Array α) (h) :
+@[simp] theorem getElem_zero_filter (p : α  Bool) (l : Array α) (h) :
     (l.filter p)[0] =
       (l.find? p).get (by cases l; simpa [← List.countP_eq_length_filter] using h) := by
   cases l
   simp [List.getElem_zero_eq_head]
 
-@[simp] theorem back?_filter (p : α → Bool) (l : Array α) : (l.filter p).back? = l.findRev? p := by
+@[simp] theorem back?_filter (p : α  Bool) (l : Array α) : (l.filter p).back? = l.findRev? p := by
   cases l; simp
 
-@[simp] theorem back!_filter [Inhabited α] (p : α → Bool) (l : Array α) :
+@[simp] theorem back!_filter [Inhabited α] (p : α  Bool) (l : Array α) :
     (l.filter p).back! = (l.findRev? p).get! := by
   cases l; simp [Option.get!_eq_getD]
 
-@[simp] theorem find?_filterMap (xs : Array α) (f : α → Option β) (p : β → Bool) :
+@[simp] theorem find?_filterMap (xs : Array α) (f : α  Option β) (p : β  Bool) :
     (xs.filterMap f).find? p = (xs.find? (fun a => (f a).any p)).bind f := by
   cases xs; simp
 
-@[simp] theorem find?_map (f : β → α) (xs : Array β) :
-    find? p (xs.map f) = (xs.find? (p ∘ f)).map f := by
+@[simp] theorem find?_map (f : β  α) (xs : Array β) :
+    find? p (xs.map f) = (xs.find? (p  f)).map f := by
   cases xs; simp
 
 @[simp] theorem find?_append {l₁ l₂ : Array α} :
@@ -201,12 +201,12 @@ theorem get_find?_mem {xs : Array α} (h) : (xs.find? p).get h ∈ xs := by
   cases l₂
   simp
 
-@[simp] theorem find?_flatten (xs : Array (Array α)) (p : α → Bool) :
+@[simp] theorem find?_flatten (xs : Array (Array α)) (p : α  Bool) :
     xs.flatten.find? p = xs.findSome? (·.find? p) := by
   cases xs using array_array_induction
   simp [List.findSome?_map, Function.comp_def]
 
-theorem find?_flatten_eq_none {xs : Array (Array α)} {p : α → Bool} :
+theorem find?_flatten_eq_none {xs : Array (Array α)} {p : α  Bool} :
     xs.flatten.find? p = none ↔ ∀ ys ∈ xs, ∀ x ∈ ys, !p x := by
   simp
 
@@ -215,7 +215,7 @@ If `find? p` returns `some a` from `xs.flatten`, then `p a` holds, and
 some array in `xs` contains `a`, and no earlier element of that array satisfies `p`.
 Moreover, no earlier array in `xs` has an element satisfying `p`.
 -/
-theorem find?_flatten_eq_some {xs : Array (Array α)} {p : α → Bool} {a : α} :
+theorem find?_flatten_eq_some {xs : Array (Array α)} {p : α  Bool} {a : α} :
     xs.flatten.find? p = some a ↔
       p a ∧ ∃ (as : Array (Array α)) (ys zs : Array α) (bs : Array (Array α)),
         xs = as.push (ys.push a ++ zs) ++ bs ∧
@@ -235,12 +235,12 @@ theorem find?_flatten_eq_some {xs : Array (Array α)} {p : α → Bool} {a : α}
       ⟨zs.toList, bs.toList.map Array.toList, by simpa using h⟩,
         by simpa using h₁, by simpa using h₂⟩
 
-@[simp] theorem find?_flatMap (xs : Array α) (f : α → Array β) (p : β → Bool) :
+@[simp] theorem find?_flatMap (xs : Array α) (f : α  Array β) (p : β  Bool) :
     (xs.flatMap f).find? p = xs.findSome? (fun x => (f x).find? p) := by
   cases xs
   simp [List.find?_flatMap, Array.flatMap_toArray]
 
-theorem find?_flatMap_eq_none {xs : Array α} {f : α → Array β} {p : β → Bool} :
+theorem find?_flatMap_eq_none {xs : Array α} {f : α  Array β} {p : β  Bool} :
     (xs.flatMap f).find? p = none ↔ ∀ x ∈ xs, ∀ y ∈ f x, !p y := by
   simp
 
@@ -260,20 +260,20 @@ theorem find?_mkArray :
   simp [find?_mkArray, h]
 
 -- This isn't a `@[simp]` lemma since there is already a lemma for `l.find? p = none` for any `l`.
-theorem find?_mkArray_eq_none {n : Nat} {a : α} {p : α → Bool} :
-    (mkArray n a).find? p = none ↔ n = 0 ∨ !p a := by
+theorem find?_mkArray_eq_none {n : Nat} {a : α} {p : α  Bool} :
+    (mkArray n a).find? p = none ↔ n = 0  !p a := by
   simp [← List.toArray_replicate, List.find?_replicate_eq_none, Classical.or_iff_not_imp_left]
 
-@[simp] theorem find?_mkArray_eq_some {n : Nat} {a b : α} {p : α → Bool} :
+@[simp] theorem find?_mkArray_eq_some {n : Nat} {a b : α} {p : α  Bool} :
     (mkArray n a).find? p = some b ↔ n ≠ 0 ∧ p a ∧ a = b := by
   simp [← List.toArray_replicate]
 
-@[simp] theorem get_find?_mkArray (n : Nat) (a : α) (p : α → Bool) (h) :
+@[simp] theorem get_find?_mkArray (n : Nat) (a : α) (p : α  Bool) (h) :
     ((mkArray n a).find? p).get h = a := by
   simp [← List.toArray_replicate]
 
-theorem find?_pmap {P : α → Prop} (f : (a : α) → P a → β) (xs : Array α)
-    (H : ∀ (a : α), a ∈ xs → P a) (p : β → Bool) :
+theorem find?_pmap {P : α  Prop} (f : (a : α)  P a  β) (xs : Array α)
+    (H : ∀ (a : α), a ∈ xs  P a) (p : β  Bool) :
     (xs.pmap f H).find? p = (xs.attach.find? (fun ⟨a, m⟩ => p (f a (H a m)))).map fun ⟨a, m⟩ => f a (H a m) := by
   simp only [pmap_eq_map_attach, find?_map]
   rfl

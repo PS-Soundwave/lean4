@@ -34,9 +34,9 @@ theorem Nat.div2_lt (h : n ≠ 0) : n / 2 < n := by
 
 @[specialize]
 def Nat.binrec
-    (motive : Nat → Sort u)
-    (base : Unit → motive 0)
-    (ind  : (b : Bool) → (n : Nat) → (Unit → motive n) → motive (bit b n))
+    (motive : Nat  Sort u)
+    (base : Unit  motive 0)
+    (ind  : (b : Bool)  (n : Nat)  (Unit  motive n)  motive (bit b n))
     (n : Nat) : motive n :=
   if h₁ : n = 0 then
     h₁ ▸ base ()
@@ -48,9 +48,9 @@ termination_by n
 decreasing_by all_goals exact Nat.div2_lt h₁
 
 theorem Nat.binind
-    (motive : Nat → Prop)
+    (motive : Nat  Prop)
     (base : motive 0)
-    (ind  : (b : Bool) → (n : Nat) → motive n → motive (bit b n))
+    (ind  : (b : Bool)  (n : Nat)  motive n  motive (bit b n))
     (n : Nat) : motive n :=
  binrec motive (fun _ => base) (fun b n ih => ind b n (ih ())) n
 

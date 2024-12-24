@@ -16,7 +16,7 @@ namespace RefVec
 variable {α : Type} [Hashable α] [DecidableEq α] {aig : AIG α}
 
 class LawfulMapOperator (α : Type) [Hashable α] [DecidableEq α]
-    (f : (aig : AIG α) → Ref aig → Entrypoint α) [LawfulOperator α Ref f] : Prop
+    (f : (aig : AIG α)  Ref aig  Entrypoint α) [LawfulOperator α Ref f] : Prop
   where
   chainable : ∀ (aig : AIG α) (input1 input2 : Ref aig) (h) (assign),
                 ⟦f (f aig input1).aig (input2.cast h), assign⟧
@@ -26,7 +26,7 @@ class LawfulMapOperator (α : Type) [Hashable α] [DecidableEq α]
 namespace LawfulMapOperator
 
 theorem denote_prefix_cast_ref {aig : AIG α} {input1 input2 : Ref aig}
-    {f : (aig : AIG α) → Ref aig → Entrypoint α} [LawfulOperator α Ref f] [LawfulMapOperator α f]
+    {f : (aig : AIG α)  Ref aig  Entrypoint α} [LawfulOperator α Ref f] [LawfulMapOperator α f]
     {h} :
     ⟦f (f aig input1).aig (input2.cast h), assign⟧
       =
@@ -43,7 +43,7 @@ end LawfulMapOperator
 
 structure MapTarget (aig : AIG α) (len : Nat) where
   vec : RefVec aig len
-  func : (aig : AIG α) → Ref aig → Entrypoint α
+  func : (aig : AIG α)  Ref aig  Entrypoint α
   [lawful : LawfulOperator α Ref func]
   [chainable : LawfulMapOperator α func]
 
@@ -56,7 +56,7 @@ def map (aig : AIG α) (target : MapTarget aig len) : RefVecEntry α len :=
 where
   @[specialize]
   go {len : Nat} (aig : AIG α) (idx : Nat) (hidx : idx ≤ len) (s : RefVec aig idx)
-      (input : RefVec aig len) (f : (aig : AIG α) → Ref aig → Entrypoint α)
+      (input : RefVec aig len) (f : (aig : AIG α)  Ref aig  Entrypoint α)
       [LawfulOperator α Ref f] [LawfulMapOperator α f] :
       RefVecEntry α len :=
     if hidx : idx < len then
@@ -77,7 +77,7 @@ where
   termination_by len - idx
 
 theorem map.go_le_size {aig : AIG α} (idx : Nat) (hidx) (s : RefVec aig idx)
-    (input : RefVec aig len) (f : (aig : AIG α) → Ref aig → Entrypoint α)
+    (input : RefVec aig len) (f : (aig : AIG α)  Ref aig  Entrypoint α)
     [LawfulOperator α Ref f] [LawfulMapOperator α f] :
     aig.decls.size ≤ (go aig idx hidx s input f).aig.decls.size := by
   unfold go
@@ -95,7 +95,7 @@ theorem map_le_size {aig : AIG α} (target : MapTarget aig len) :
   apply map.go_le_size
 
 theorem map.go_decl_eq {aig : AIG α} (i) (hi)
-    (s : RefVec aig i) (input : RefVec aig len) (f : (aig : AIG α) → Ref aig → Entrypoint α)
+    (s : RefVec aig i) (input : RefVec aig len) (f : (aig : AIG α)  Ref aig  Entrypoint α)
     [LawfulOperator α Ref f] [LawfulMapOperator α f] :
     ∀ (idx : Nat) (h1) (h2), (go aig i hi s input f).1.decls[idx]'h2 = aig.decls[idx]'h1 := by
   generalize hgo : go aig i hi s input f = res
@@ -130,7 +130,7 @@ instance : LawfulVecOperator α MapTarget map where
 namespace map
 
 theorem go_get_aux {aig : AIG α} (curr : Nat) (hcurr : curr ≤ len) (s : RefVec aig curr)
-    (input : RefVec aig len) (f : (aig : AIG α) → Ref aig → Entrypoint α)
+    (input : RefVec aig len) (f : (aig : AIG α)  Ref aig  Entrypoint α)
     [LawfulOperator α Ref f] [LawfulMapOperator α f] :
     -- The hfoo here is a trick to make the dependent type gods happy.
     ∀ (idx : Nat) (hidx : idx < curr) (hfoo),
@@ -160,7 +160,7 @@ theorem go_get_aux {aig : AIG α} (curr : Nat) (hcurr : curr ≤ len) (s : RefVe
 termination_by len - curr
 
 theorem go_get {aig : AIG α} (curr : Nat) (hcurr : curr ≤ len) (s : RefVec aig curr)
-    (input : RefVec aig len) (f : (aig : AIG α) → Ref aig → Entrypoint α)
+    (input : RefVec aig len) (f : (aig : AIG α)  Ref aig  Entrypoint α)
     [LawfulOperator α Ref f] [LawfulMapOperator α f] :
     ∀ (idx : Nat) (hidx : idx < curr),
       (go aig curr hcurr s input f).vec.get idx (by omega)
@@ -171,7 +171,7 @@ theorem go_get {aig : AIG α} (curr : Nat) (hcurr : curr ≤ len) (s : RefVec ai
 
 theorem go_denote_mem_prefix {aig : AIG α} (curr : Nat) (hcurr : curr ≤ len)
     (s : RefVec aig curr) (input : RefVec aig len)
-    (f : (aig : AIG α) → Ref aig → Entrypoint α) [LawfulOperator α Ref f] [LawfulMapOperator α f]
+    (f : (aig : AIG α)  Ref aig  Entrypoint α) [LawfulOperator α Ref f] [LawfulMapOperator α f]
     (start : Nat) (hstart) :
     ⟦
       (go aig curr hcurr s input f).aig,
@@ -189,11 +189,11 @@ theorem go_denote_mem_prefix {aig : AIG α} (curr : Nat) (hcurr : curr ≤ len)
 
 attribute [local simp] LawfulMapOperator.denote_prefix_cast_ref in
 theorem denote_go {aig : AIG α} (curr : Nat) (hcurr : curr ≤ len) (s : RefVec aig curr)
-    (input : RefVec aig len) (f : (aig : AIG α) → Ref aig → Entrypoint α)
+    (input : RefVec aig len) (f : (aig : AIG α)  Ref aig  Entrypoint α)
     [LawfulOperator α Ref f] [LawfulMapOperator α f] :
     ∀ (idx : Nat) (hidx1 : idx < len),
       curr ≤ idx
-        →
+        
       ⟦(go aig curr hcurr s input f).aig, (go aig curr hcurr s input f).vec.get idx hidx1, assign⟧
         =
       ⟦f aig (input.get idx hidx1), assign⟧ := by

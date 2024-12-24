@@ -33,7 +33,7 @@ theorem xor_congr (w : Nat) (lhs rhs lhs' rhs' : BitVec w) (h1 : lhs' = lhs) (h2
     lhs' ^^^ rhs' = lhs ^^^ rhs := by
   simp[*]
 
-theorem not_congr (w : Nat) (x x' : BitVec w) (h : x = x') : ~~~x' = ~~~x := by
+theorem not_congr (w : Nat) (x x' : BitVec w) (h : x = x') : x' = x := by
   simp[*]
 
 theorem shiftLeftNat_congr (n : Nat) (w : Nat) (x x' : BitVec w) (h : x = x') :
@@ -124,11 +124,11 @@ theorem umod_congr (lhs rhs lhs' rhs' : BitVec w) (h1 : lhs' = lhs) (h2 : rhs' =
   simp[*]
 
 theorem if_true (discr : Bool) (lhs rhs : BitVec w) :
-    decide ((discr == true) = true → ((if discr = true then lhs else rhs) == lhs) = true) = true := by
+    decide ((discr == true) = true  ((if discr = true then lhs else rhs) == lhs) = true) = true := by
   cases discr <;> simp
 
 theorem if_false (discr : Bool) (lhs rhs : BitVec w) :
-    decide ((discr == false) = true → ((if discr = true then lhs else rhs) == rhs) = true) = true := by
+    decide ((discr == false) = true  ((if discr = true then lhs else rhs) == rhs) = true) = true := by
   cases discr <;> simp
 
 end BitVec
@@ -151,7 +151,7 @@ theorem beq_congr (lhs rhs lhs' rhs' : Bool) (h1 : lhs' = lhs) (h2 : rhs' = rhs)
   simp[*]
 
 theorem imp_congr (lhs rhs lhs' rhs' : Bool) (h1 : lhs' = lhs) (h2 : rhs' = rhs) :
-    (decide (lhs' → rhs')) = (decide (lhs → rhs)) := by
+    (decide (lhs'  rhs')) = (decide (lhs  rhs)) := by
   simp[*]
 
 theorem ite_congr (discr lhs rhs discr' lhs' rhs' : Bool) (h1 : discr' = discr) (h2 : lhs' = lhs)
@@ -177,7 +177,7 @@ def verifyCert (cnf : CNF Nat) (cert : String) : Bool :=
   | .ok lratProof => LRAT.check lratProof cnf
   | .error _ => false
 
-theorem verifyCert_correct : ∀ cnf cert, verifyCert cnf cert = true → cnf.Unsat := by
+theorem verifyCert_correct : ∀ cnf cert, verifyCert cnf cert = true  cnf.Unsat := by
   intro c b h1
   unfold verifyCert at h1
   split at h1

@@ -4,7 +4,7 @@ Tests that definitions by well-founded recursion are irreducible.
 
 set_option pp.mvars false
 
-def foo : Nat → Nat
+def foo : Nat  Nat
   | 0 => 0
   | n+1 => foo n
 termination_by n => n
@@ -80,7 +80,7 @@ but is expected to have type
 example : foo 0 = 0 := rfl
 
 
-def bar : Nat → Nat
+def bar : Nat  Nat
   | 0 => 0
   | n+1 => bar n
 termination_by n => n
@@ -104,7 +104,7 @@ example : foo = bar := rfl
 
 
 -- Attributes on the definition take precedence
-@[semireducible] def baz : Nat → Nat
+@[semireducible] def baz : Nat  Nat
   | 0 => 0
   | n+1 => baz n
 termination_by n => n
@@ -125,7 +125,7 @@ example : baz 0 = 0 := rfl
 
 example : baz 0 = 0 := rfl
 
-@[reducible] def quux : Nat → Nat
+@[reducible] def quux : Nat  Nat
   | 0 => 0
   | n+1 => quux n
 termination_by n => n

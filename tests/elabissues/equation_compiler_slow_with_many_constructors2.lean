@@ -12,13 +12,13 @@ inductive Op : Type
 
 namespace Op
 
-def hasToString : Op → String
+def hasToString : Op  String
 | add => "add"
 | mul => "mul"
 
 instance : ToString Op := ⟨hasToString⟩
 
-def beq : Op → Op → Bool
+def beq : Op  Op  Bool
 | add, add => true
 | mul, mul => true
 | _,   _   => false
@@ -30,14 +30,14 @@ end Op
 open Op
 
 inductive Term : Type
-| ofInt  : Int → Term
-| var    : Nat → Term
-| varPow : Nat → Nat → Term
-| app    : Op → Term → Term → Term
+| ofInt  : Int  Term
+| var    : Nat  Term
+| varPow : Nat  Nat  Term
+| app    : Op  Term  Term  Term
 
 namespace Term
 
-def beq : Term → Term → Bool
+def beq : Term  Term  Bool
 | ofInt n₁,      ofInt n₂      => n₁ == n₂
 | var v₁,        var v₂        => v₁ == v₂
 | varPow v₁ k₁,  varPow v₂ k₂  => v₁ == v₂ && k₁ == k₂
@@ -58,31 +58,31 @@ end Term
 open Term
 
 inductive Proof : Type
-| addZero   : Term → Proof
-| zeroAdd   : Term → Proof
-| addComm   : Term → Term → Proof
-| addCommL  : Term → Term → Term → Proof
-| addAssoc  : Term → Term → Term → Proof
-| mulZero   : Term → Proof
-| zeroMul   : Term → Proof
-| mulOne    : Term → Proof
-| oneMul    : Term → Proof
-| mulComm   : Term → Term → Proof
-| mulCommL  : Term → Term → Term → Proof
-| mulAssoc  : Term → Term → Term → Proof
-| distribL  : Term → Term → Term → Proof
-| distribR  : Term → Term → Term → Proof
-| ofIntAdd  : Int → Int → Proof
-| ofIntMul  : Int → Int → Proof
-| powZero   : Nat → Proof
-| powOne    : Nat → Proof
-| powMerge  : Nat → Nat → Nat → Proof
-| powMergeL : Nat → Nat → Nat → Term → Proof
-| congrArg₁ : Op → Proof → Term → Proof
-| congrArg₂ : Op → Term → Proof → Proof
-| congrArgs : Op → Proof → Proof → Proof
-| refl      : Term → Proof
-| trans     : Proof → Proof → Proof
+| addZero   : Term  Proof
+| zeroAdd   : Term  Proof
+| addComm   : Term  Term  Proof
+| addCommL  : Term  Term  Term  Proof
+| addAssoc  : Term  Term  Term  Proof
+| mulZero   : Term  Proof
+| zeroMul   : Term  Proof
+| mulOne    : Term  Proof
+| oneMul    : Term  Proof
+| mulComm   : Term  Term  Proof
+| mulCommL  : Term  Term  Term  Proof
+| mulAssoc  : Term  Term  Term  Proof
+| distribL  : Term  Term  Term  Proof
+| distribR  : Term  Term  Term  Proof
+| ofIntAdd  : Int  Int  Proof
+| ofIntMul  : Int  Int  Proof
+| powZero   : Nat  Proof
+| powOne    : Nat  Proof
+| powMerge  : Nat  Nat  Nat  Proof
+| powMergeL : Nat  Nat  Nat  Term  Proof
+| congrArg₁ : Op  Proof  Term  Proof
+| congrArg₂ : Op  Term  Proof  Proof
+| congrArgs : Op  Proof  Proof  Proof
+| refl      : Term  Proof
+| trans     : Proof  Proof  Proof
 
 namespace Proof
 
@@ -93,9 +93,9 @@ to synthesize `[MonadFail Except]`.
 
 We used to have the instances
 ```
-instance monadFailLift (m n : Type u → Type v) [HasMonadLift m n] [MonadFail m] [Monad n] : MonadFail n :=
+instance monadFailLift (m n : Type u  Type v) [HasMonadLift m n] [MonadFail m] [Monad n] : MonadFail n :=
 { fail := fun α s => monadLift (MonadFail.fail s : m α) }
-instance I1 (m : Type → Type) [Monad m] : MonadFail (ExceptT String m)
+instance I1 (m : Type  Type) [Monad m] : MonadFail (ExceptT String m)
 ```
 The instance `monadFailLift` triggers the performance problem when trying to solve `[MonadFail (Except String)]`.
 It produces the subgoals
@@ -107,7 +107,7 @@ Then we try to solve `[MonadFail ?m]` using `I1` we can produces an infinite num
 The first solution is `?m := ExceptT String (EIO ?ε)` where `EIO ?ε` is the first Monad Lean managed to synthesize when solving I1.
 Then it uses the instance
 ```lean
-instance (m : Type → Type) [Monad m] : Monad (OptionT m) :=
+instance (m : Type  Type) [Monad m] : Monad (OptionT m) :=
 ```
 to generate the solutions
 ```
@@ -118,16 +118,16 @@ to generate the solutions
 ```
 Note that the new type class resolution procedure would not solve this problem. If we wanted to keep this feature, the solution would be to write
 ```
-instance monadFailLift (m n : Type u → Type v) [HasMonadLift m n] [MonadFail m] [Monad n] : MonadFail n :=
+instance monadFailLift (m n : Type u  Type v) [HasMonadLift m n] [MonadFail m] [Monad n] : MonadFail n :=
 ```
 as
 ```
-instance monadFailLift (m n : Type u → Type v) [MonadFail m] [HasMonadLift m n] [Monad n] : MonadFail n :=
+instance monadFailLift (m n : Type u  Type v) [MonadFail m] [HasMonadLift m n] [Monad n] : MonadFail n :=
 ```
 The subgoal `[HasMonadLift ?m (Except String)]` would fail instantaneously.
 -/
 
-def infer : Proof → Except String (Term × Term)
+def infer : Proof  Except String (Term × Term)
 | addZero x => pure (x+0, x)
 | zeroAdd y => pure (0 + y, y)
 | addComm x y => pure (x + y, y + x)

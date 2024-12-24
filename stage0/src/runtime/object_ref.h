@@ -184,8 +184,8 @@ template<typename T> obj_res to_object(optional<T> const & o) {
 
 /*
 inductive Except (ε : Type u) (α : Type v)
-| error {} : ε → Except
-| ok {} : α → Except
+| error {} : ε  Except
+| ok {} : α  Except
 */
 
 template<typename T> object * mk_except_ok(T const & val) {

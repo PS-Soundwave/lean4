@@ -1,6 +1,6 @@
 abbrev Sequence (α : Type) := List α
 
-def bigop (init : β) (seq : Sequence α) (op : β → β → β) (f : α → Bool × β) : β := Id.run do
+def bigop (init : β) (seq : Sequence α) (op : β  β  β) (f : α  Bool × β) : β := Id.run do
   let mut result := init
   for a in seq do
     let (ok, b) := f a
@@ -10,7 +10,7 @@ def bigop (init : β) (seq : Sequence α) (op : β → β → β) (f : α → Bo
 
 #eval bigop 0 [1, 2, 4] Add.add fun elem => (elem % 2 == 0, elem * 2)
 
-def iota : Nat → Nat → List Nat
+def iota : Nat  Nat  List Nat
   | _, 0   => []
   | m, n+1 => m :: iota (m+1) n
 

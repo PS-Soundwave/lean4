@@ -47,7 +47,7 @@ instance : LT UInt8        := ⟨UInt8.lt⟩
 instance : LE UInt8        := ⟨UInt8.le⟩
 
 @[extern "lean_uint8_complement"]
-def UInt8.complement (a : UInt8) : UInt8 := ⟨~~~a.toBitVec⟩
+def UInt8.complement (a : UInt8) : UInt8 := ⟨a.toBitVec⟩
 
 instance : Complement UInt8 := ⟨UInt8.complement⟩
 instance : AndOp UInt8     := ⟨UInt8.land⟩
@@ -110,7 +110,7 @@ instance : LT UInt16        := ⟨UInt16.lt⟩
 instance : LE UInt16        := ⟨UInt16.le⟩
 
 @[extern "lean_uint16_complement"]
-def UInt16.complement (a : UInt16) : UInt16 := ⟨~~~a.toBitVec⟩
+def UInt16.complement (a : UInt16) : UInt16 := ⟨a.toBitVec⟩
 
 instance : Complement UInt16 := ⟨UInt16.complement⟩
 instance : AndOp UInt16     := ⟨UInt16.land⟩
@@ -171,7 +171,7 @@ instance : HMod UInt32 Nat UInt32 := ⟨UInt32.modn⟩
 instance : Div UInt32       := ⟨UInt32.div⟩
 
 @[extern "lean_uint32_complement"]
-def UInt32.complement (a : UInt32) : UInt32 := ⟨~~~a.toBitVec⟩
+def UInt32.complement (a : UInt32) : UInt32 := ⟨a.toBitVec⟩
 
 instance : Complement UInt32 := ⟨UInt32.complement⟩
 instance : AndOp UInt32     := ⟨UInt32.land⟩
@@ -221,7 +221,7 @@ instance : LT UInt64        := ⟨UInt64.lt⟩
 instance : LE UInt64        := ⟨UInt64.le⟩
 
 @[extern "lean_uint64_complement"]
-def UInt64.complement (a : UInt64) : UInt64 := ⟨~~~a.toBitVec⟩
+def UInt64.complement (a : UInt64) : UInt64 := ⟨a.toBitVec⟩
 
 instance : Complement UInt64 := ⟨UInt64.complement⟩
 instance : AndOp UInt64     := ⟨UInt64.land⟩
@@ -313,7 +313,7 @@ instance : HMod USize Nat USize := ⟨USize.modn⟩
 instance : Div USize       := ⟨USize.div⟩
 
 @[extern "lean_usize_complement"]
-def USize.complement (a : USize) : USize := ⟨~~~a.toBitVec⟩
+def USize.complement (a : USize) : USize := ⟨a.toBitVec⟩
 
 instance : Complement USize := ⟨USize.complement⟩
 instance : AndOp USize      := ⟨USize.land⟩

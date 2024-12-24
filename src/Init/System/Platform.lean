@@ -10,15 +10,15 @@ import Init.Data.String.Basic
 namespace System
 namespace Platform
 
-@[extern "lean_system_platform_windows"] opaque getIsWindows : Unit → Bool
-@[extern "lean_system_platform_osx"] opaque getIsOSX : Unit → Bool
-@[extern "lean_system_platform_emscripten"] opaque getIsEmscripten : Unit → Bool
+@[extern "lean_system_platform_windows"] opaque getIsWindows : Unit  Bool
+@[extern "lean_system_platform_osx"] opaque getIsOSX : Unit  Bool
+@[extern "lean_system_platform_emscripten"] opaque getIsEmscripten : Unit  Bool
 
 def isWindows : Bool := getIsWindows ()
 def isOSX : Bool := getIsOSX ()
 def isEmscripten : Bool := getIsEmscripten ()
 
-@[extern "lean_system_platform_target"] opaque getTarget : Unit → String
+@[extern "lean_system_platform_target"] opaque getTarget : Unit  String
 
 /-- The LLVM target triple of the current platform. Empty if missing at Lean compile time. -/
 def target : String := getTarget ()

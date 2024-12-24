@@ -1,5 +1,5 @@
 class Foo (α β : Type) :=
-  (f : α → β)
+  (f : α  β)
 
 export Foo (f)
 

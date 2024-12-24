@@ -28,7 +28,7 @@ end Ex2
 namespace Ex3
 
 variable {α : Type}
-variable (f : α → α)
+variable (f : α  α)
 variable (α)
 def g (a : α) := f a
 #check g

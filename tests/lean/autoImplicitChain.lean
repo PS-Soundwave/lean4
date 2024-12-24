@@ -3,13 +3,13 @@ set_option linter.constructorNameAsVariable false
 inductive A where
   | a
 
-inductive B : A → Type where
+inductive B : A  Type where
   | b : B A.a
 
-inductive C : B a → Type where
+inductive C : B a  Type where
   | c : C B.b
 
-inductive D : C b → Type where
+inductive D : C b  Type where
   | d : D C.c
 
 def f (d : D c) : Bool :=

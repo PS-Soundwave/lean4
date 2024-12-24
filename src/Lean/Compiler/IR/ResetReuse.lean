@@ -44,7 +44,7 @@ Replace `ctor` applications with `reuse` applications if compatible.
 private partial def S (w : VarId) (c : CtorInfo) (relaxedReuse : Bool) (b : FnBody) : FnBody :=
   go b
 where
-  go : FnBody → FnBody
+  go : FnBody  FnBody
   | .vdecl x t v@(.ctor c' ys) b   =>
     if mayReuse c c' relaxedReuse then
       let updtCidx := c.cidx != c'.cidx
@@ -76,9 +76,9 @@ structure Context where
   We use this information to prevent double-reset in code such as
   ```
   case x_i : obj of
-  Prod.mk →
+  Prod.mk 
     case x_i : obj of
-    Prod.mk →
+    Prod.mk 
     ...
   ```
 
@@ -113,7 +113,7 @@ private def tryS (x : VarId) (c : CtorInfo) (b : FnBody) : M FnBody := do
   else
     return .vdecl w IRType.object (.reset c.size x) b'
 
-private def Dfinalize (x : VarId) (c : CtorInfo) : FnBody × Bool → M FnBody
+private def Dfinalize (x : VarId) (c : CtorInfo) : FnBody × Bool  M FnBody
   | (b, true)  => return b
   | (b, false) => tryS x c b
 

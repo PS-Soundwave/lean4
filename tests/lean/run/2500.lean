@@ -5,11 +5,11 @@ Ensures the `to_telescope` call in `mk_no_confusion_type` (`src/library/construc
 thus allowing for delta-reduction.
 -/
 
-def family := Type → Type
+def family := Type  Type
 
 inductive bad : family
 
-def Set (A : Type _) := A → Prop
+def Set (A : Type _) := A  Prop
 
 inductive Thing (s : Set V) : Set V
-| basic : ∀ x, s x → Thing s x
+| basic : ∀ x, s x  Thing s x

@@ -1,7 +1,7 @@
 inductive T
   | t : T
 
-@[reducible] def T.eval : T → Type
+@[reducible] def T.eval : T  Type
   | T.t => Int
 
 def T.default (τ : T) : τ.eval :=

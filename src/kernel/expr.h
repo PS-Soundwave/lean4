@@ -68,18 +68,18 @@ inline bool operator!=(literal const & a, literal const & b) { return !(a == b);
    Expressions
 
 inductive Expr
-| bvar    : Nat → Expr                                -- bound variables
-| fvar    : Name → Expr                               -- free variables
-| mvar    : Name → Expr                               -- meta variables
-| sort    : Level → Expr                              -- Sort
-| const   : Name → List Level → Expr                  -- constants
-| app     : Expr → Expr → Expr                        -- application
-| lam     : Name → BinderInfo → Expr → Expr → Expr    -- lambda abstraction
-| forallE : Name → BinderInfo → Expr → Expr → Expr    -- (dependent) arrow
-| letE    : Name → Expr → Expr → Expr → Expr          -- let expressions
-| lit     : Literal → Expr                            -- literals
-| mdata   : MData → Expr → Expr                       -- metadata
-| proj    : Name → Nat → Expr → Expr                  -- projection
+| bvar    : Nat  Expr                                -- bound variables
+| fvar    : Name  Expr                               -- free variables
+| mvar    : Name  Expr                               -- meta variables
+| sort    : Level  Expr                              -- Sort
+| const   : Name  List Level  Expr                  -- constants
+| app     : Expr  Expr  Expr                        -- application
+| lam     : Name  BinderInfo  Expr  Expr  Expr    -- lambda abstraction
+| forallE : Name  BinderInfo  Expr  Expr  Expr    -- (dependent) arrow
+| letE    : Name  Expr  Expr  Expr  Expr          -- let expressions
+| lit     : Literal  Expr                            -- literals
+| mdata   : MData  Expr  Expr                       -- metadata
+| proj    : Name  Nat  Expr  Expr                  -- projection
 */
 enum class expr_kind { BVar, FVar, MVar, Sort, Const, App, Lambda, Pi, Let, Lit, MData, Proj };
 class expr : public object_ref {

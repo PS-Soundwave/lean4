@@ -58,7 +58,7 @@ open Lean.Name
 @[simp] theorem isPrefixOf_self {n : Name} : n.isPrefixOf n := by
   cases n <;> simp [isPrefixOf]
 
-@[simp] theorem isPrefixOf_append {n m : Name} : ¬ n.hasMacroScopes → ¬ m.hasMacroScopes → n.isPrefixOf (n ++ m) := by
+@[simp] theorem isPrefixOf_append {n m : Name} : ¬ n.hasMacroScopes  ¬ m.hasMacroScopes  n.isPrefixOf (n ++ m) := by
   intro h1 h2
   show n.isPrefixOf (n.append m)
   simp_all [Name.append]
@@ -71,16 +71,16 @@ open Lean.Name
 | .str .., .num .. => by simp [quickCmpAux]
 | .num p₁ n₁, .num p₂ n₂ => by
   simp only [quickCmpAux]; split <;>
-  simp_all [quickCmpAux_iff_eq, show ∀ p, (p → False) ↔ ¬ p from fun _ => .rfl]
+  simp_all [quickCmpAux_iff_eq, show ∀ p, (p  False) ↔ ¬ p from fun _ => .rfl]
 | .str p₁ s₁, .str p₂ s₂ => by
   simp only [quickCmpAux]; split <;>
-  simp_all [quickCmpAux_iff_eq, show ∀ p, (p → False) ↔ ¬ p from fun _ => .rfl]
+  simp_all [quickCmpAux_iff_eq, show ∀ p, (p  False) ↔ ¬ p from fun _ => .rfl]
 
 instance : LawfulCmpEq Name quickCmpAux where
   eq_of_cmp := quickCmpAux_iff_eq.mp
   cmp_rfl := quickCmpAux_iff_eq.mpr rfl
 
-theorem eq_of_quickCmp {n n' : Name} : n.quickCmp n' = .eq → n = n' := by
+theorem eq_of_quickCmp {n n' : Name} : n.quickCmp n' = .eq  n = n' := by
   unfold Name.quickCmp
   intro h_cmp; split at h_cmp
   next => exact eq_of_cmp h_cmp

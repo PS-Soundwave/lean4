@@ -17,7 +17,7 @@ namespace Std.Tactic.BVDecide
 
 namespace BVExpr
 
-def Assignment.toAIGAssignment (assign : Assignment) : BVBit → Bool :=
+def Assignment.toAIGAssignment (assign : Assignment) : BVBit  Bool :=
   fun bit => (assign.get bit.var).bv.getLsbD bit.idx
 
 @[simp]

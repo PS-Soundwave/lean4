@@ -42,7 +42,7 @@
 #eval (10 : Int8) % -3 = 1
 #eval (10 : Int8) &&& 10 = 10
 #eval (-1 : Int8) &&& 1 = 1
-#eval (-1 : Int8) ^^^ 123 = ~~~123
+#eval (-1 : Int8) ^^^ 123 = 123
 #eval (10 : Int8) ||| 10 = 10
 #eval (10 : Int8) ||| 0 = 10
 #eval (10 : Int8) ||| -1 = -1
@@ -72,8 +72,8 @@
 #eval min (10 : Int8) 20 = 10
 #eval min (10 : Int8) (-1) = -1
 
-def test {α : Type} [BEq α] (w : Nat) (ofBitVec : BitVec w → α) (ofInt : Int → α)
-    (ofNat : Nat → α) : Bool := Id.run do
+def test {α : Type} [BEq α] (w : Nat) (ofBitVec : BitVec w  α) (ofInt : Int  α)
+    (ofNat : Nat  α) : Bool := Id.run do
   let doIntTest (base : Int) (i : Int) : Bool :=
     let t := base + i
     let a := ofBitVec (BitVec.ofInt w t)
@@ -148,7 +148,7 @@ def myId8 (x : Int8) : Int8 := x
 #eval (10 : Int16) % -3 = 1
 #eval (10 : Int16) &&& 10 = 10
 #eval (-1 : Int16) &&& 1 = 1
-#eval (-1 : Int16) ^^^ 123 = ~~~123
+#eval (-1 : Int16) ^^^ 123 = 123
 #eval (10 : Int16) ||| 10 = 10
 #eval (10 : Int16) ||| 0 = 10
 #eval (10 : Int16) ||| -1 = -1
@@ -230,7 +230,7 @@ def myId16 (x : Int16) : Int16 := x
 #eval (10 : Int32) % -3 = 1
 #eval (10 : Int32) &&& 10 = 10
 #eval (-1 : Int32) &&& 1 = 1
-#eval (-1 : Int32) ^^^ 123 = ~~~123
+#eval (-1 : Int32) ^^^ 123 = 123
 #eval (10 : Int32) ||| 10 = 10
 #eval (10 : Int32) ||| 0 = 10
 #eval (10 : Int32) ||| -1 = -1
@@ -311,7 +311,7 @@ def myId32 (x : Int32) : Int32 := x
 #eval (10 : Int64) % -3 = 1
 #eval (10 : Int64) &&& 10 = 10
 #eval (-1 : Int64) &&& 1 = 1
-#eval (-1 : Int64) ^^^ 123 = ~~~123
+#eval (-1 : Int64) ^^^ 123 = 123
 #eval (10 : Int64) ||| 10 = 10
 #eval (10 : Int64) ||| 0 = 10
 #eval (10 : Int64) ||| -1 = -1
@@ -393,7 +393,7 @@ def myId64 (x : Int64) : Int64 := x
 #eval (10 : ISize) % -3 = 1
 #eval (10 : ISize) &&& 10 = 10
 #eval (-1 : ISize) &&& 1 = 1
-#eval (-1 : ISize) ^^^ 123 = ~~~123
+#eval (-1 : ISize) ^^^ 123 = 123
 #eval (10 : ISize) ||| 10 = 10
 #eval (10 : ISize) ||| 0 = 10
 #eval (10 : ISize) ||| -1 = -1

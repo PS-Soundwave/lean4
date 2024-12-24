@@ -11,7 +11,7 @@ import Lean.Compiler.LCNF.CompilerM
 
 namespace Lean.Compiler.LCNF
 
-def Phase.toNat : Phase → Nat
+def Phase.toNat : Phase  Nat
   | .base => 0
   | .mono => 1
   | .impure => 2
@@ -55,7 +55,7 @@ structure Pass where
   /--
   The actual pass function, operating on the `Decl`s.
   -/
-  run : Array Decl → CompilerM (Array Decl)
+  run : Array Decl  CompilerM (Array Decl)
 
 instance : Inhabited Pass where
   default := { phase := .base, name := default, run := fun decls => return decls }
@@ -70,7 +70,7 @@ structure PassInstaller where
   current `Pass`es and return a new one, this can modify the list (and
   the `Pass`es contained within) in any way it wants.
   -/
-  install : Array Pass → CoreM (Array Pass)
+  install : Array Pass  CoreM (Array Pass)
   deriving Inhabited
 
 /--
@@ -89,7 +89,7 @@ instance : ToString Phase where
 
 namespace Pass
 
-def mkPerDeclaration (name : Name) (run : Decl → CompilerM Decl) (phase : Phase) (occurrence : Nat := 0) : Pass where
+def mkPerDeclaration (name : Name) (run : Decl  CompilerM Decl) (phase : Phase) (occurrence : Nat := 0) : Pass where
   occurrence := occurrence
   phase := phase
   name := name
@@ -124,7 +124,7 @@ def installAtEnd (p : Pass) : PassInstaller where
 def append (passesNew : Array Pass) : PassInstaller where
   install passes := return passes ++ passesNew
 
-def withEachOccurrence (targetName : Name) (f : Nat → PassInstaller) : PassInstaller where
+def withEachOccurrence (targetName : Name) (f : Nat  PassInstaller) : PassInstaller where
   install passes := do
     let highestOccurrence ← PassManager.findHighestOccurrence targetName passes
     let mut passes := passes
@@ -132,7 +132,7 @@ def withEachOccurrence (targetName : Name) (f : Nat → PassInstaller) : PassIns
       passes ← f occurrence |>.install passes
     return passes
 
-def installAfter (targetName : Name) (p : Pass → Pass) (occurrence : Nat := 0) : PassInstaller where
+def installAfter (targetName : Name) (p : Pass  Pass) (occurrence : Nat := 0) : PassInstaller where
   install passes :=
     if let some idx := passes.findFinIdx? (fun p => p.name == targetName && p.occurrence == occurrence) then
       let passUnderTest := passes[idx]
@@ -140,10 +140,10 @@ def installAfter (targetName : Name) (p : Pass → Pass) (occurrence : Nat := 0)
     else
       throwError s!"Tried to insert pass after {targetName}, occurrence {occurrence} but {targetName} is not in the pass list"
 
-def installAfterEach (targetName : Name) (p : Pass → Pass) : PassInstaller :=
+def installAfterEach (targetName : Name) (p : Pass  Pass) : PassInstaller :=
     withEachOccurrence targetName (installAfter targetName p ·)
 
-def installBefore (targetName : Name) (p : Pass → Pass) (occurrence : Nat := 0): PassInstaller where
+def installBefore (targetName : Name) (p : Pass  Pass) (occurrence : Nat := 0): PassInstaller where
   install passes :=
     if let some idx := passes.findFinIdx? (fun p => p.name == targetName && p.occurrence == occurrence) then
       let passUnderTest := passes[idx]
@@ -151,15 +151,15 @@ def installBefore (targetName : Name) (p : Pass → Pass) (occurrence : Nat := 0
     else
       throwError s!"Tried to insert pass after {targetName}, occurrence {occurrence} but {targetName} is not in the pass list"
 
-def installBeforeEachOccurrence (targetName : Name) (p : Pass → Pass) : PassInstaller :=
+def installBeforeEachOccurrence (targetName : Name) (p : Pass  Pass) : PassInstaller :=
     withEachOccurrence targetName (installBefore targetName p ·)
 
-def replacePass (targetName : Name) (p : Pass → Pass) (occurrence : Nat := 0) : PassInstaller where
+def replacePass (targetName : Name) (p : Pass  Pass) (occurrence : Nat := 0) : PassInstaller where
   install passes := do
     let some idx := passes.findIdx? (fun p => p.name == targetName && p.occurrence == occurrence) | throwError s!"Tried to replace {targetName}, occurrence {occurrence} but {targetName} is not in the pass list"
     return passes.modify idx p
 
-def replaceEachOccurrence (targetName : Name) (p : Pass → Pass) : PassInstaller :=
+def replaceEachOccurrence (targetName : Name) (p : Pass  Pass) : PassInstaller :=
     withEachOccurrence targetName (replacePass targetName p ·)
 
 def run (manager : PassManager) (installer : PassInstaller) : CoreM PassManager := do

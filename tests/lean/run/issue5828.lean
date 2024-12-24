@@ -2,7 +2,7 @@ axiom a : Nat
 axiom b : Nat
 axiom a_eq_b : a = b
 
-axiom P : Nat → Nat → Prop
+axiom P : Nat  Nat  Prop
 
 -- Warm-up: rewriting in the forward direction
 

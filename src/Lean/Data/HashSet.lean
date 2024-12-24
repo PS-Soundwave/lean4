@@ -44,26 +44,26 @@ private def mkIdx {sz : Nat} (hash : UInt64) (h : sz.isPowerOfTwo) : { u : USize
   else
     ⟨0, by simp; apply Nat.pos_of_isPowerOfTwo h⟩
 
-@[inline] def reinsertAux (hashFn : α → UInt64) (data : HashSetBucket α) (a : α) : HashSetBucket α :=
+@[inline] def reinsertAux (hashFn : α  UInt64) (data : HashSetBucket α) (a : α) : HashSetBucket α :=
   let ⟨i, h⟩ := mkIdx (hashFn a) data.property
   data.update i (a :: data.val[i]) h
 
-@[inline] def foldBucketsM {δ : Type w} {m : Type w → Type w} [Monad m] (data : HashSetBucket α) (d : δ) (f : δ → α → m δ) : m δ :=
+@[inline] def foldBucketsM {δ : Type w} {m : Type w  Type w} [Monad m] (data : HashSetBucket α) (d : δ) (f : δ  α  m δ) : m δ :=
   data.val.foldlM (init := d) fun d as => as.foldlM f d
 
-@[inline] def foldBuckets {δ : Type w} (data : HashSetBucket α) (d : δ) (f : δ → α → δ) : δ :=
+@[inline] def foldBuckets {δ : Type w} (data : HashSetBucket α) (d : δ) (f : δ  α  δ) : δ :=
   Id.run $ foldBucketsM data d f
 
-@[inline] def foldM {δ : Type w} {m : Type w → Type w} [Monad m] (f : δ → α → m δ) (d : δ) (h : HashSetImp α) : m δ :=
+@[inline] def foldM {δ : Type w} {m : Type w  Type w} [Monad m] (f : δ  α  m δ) (d : δ) (h : HashSetImp α) : m δ :=
   foldBucketsM h.buckets d f
 
-@[inline] def fold {δ : Type w} (f : δ → α → δ) (d : δ) (m : HashSetImp α) : δ :=
+@[inline] def fold {δ : Type w} (f : δ  α  δ) (d : δ) (m : HashSetImp α) : δ :=
   foldBuckets m.buckets d f
 
-@[inline] def forBucketsM {m : Type w → Type w} [Monad m] (data : HashSetBucket α) (f : α → m PUnit) : m PUnit :=
+@[inline] def forBucketsM {m : Type w  Type w} [Monad m] (data : HashSetBucket α) (f : α  m PUnit) : m PUnit :=
   data.val.forM fun as => as.forM f
 
-@[inline] def forM {m : Type w → Type w} [Monad m] (f : α → m PUnit) (h : HashSetImp α) : m PUnit :=
+@[inline] def forM {m : Type w  Type w} [Monad m] (f : α  m PUnit) (h : HashSetImp α) : m PUnit :=
   forBucketsM h.buckets f
 
 def find? [BEq α] [Hashable α] (m : HashSetImp α) (a : α) : Option α :=
@@ -127,10 +127,10 @@ def erase [BEq α] [Hashable α] (m : HashSetImp α) (a : α) : HashSetImp α :=
     else
       ⟨size, buckets⟩
 
-inductive WellFormed [BEq α] [Hashable α] : HashSetImp α → Prop where
+inductive WellFormed [BEq α] [Hashable α] : HashSetImp α  Prop where
   | mkWff     : ∀ n,                  WellFormed (mkHashSetImp n)
-  | insertWff : ∀ m a, WellFormed m → WellFormed (insert m a)
-  | eraseWff  : ∀ m a, WellFormed m → WellFormed (erase m a)
+  | insertWff : ∀ m a, WellFormed m  WellFormed (insert m a)
+  | eraseWff  : ∀ m a, WellFormed m  WellFormed (erase m a)
 
 end HashSetImp
 
@@ -169,15 +169,15 @@ variable {α : Type u} {_ : BEq α} {_ : Hashable α}
   match m with
   | ⟨ m, _ ⟩ => m.contains a
 
-@[inline] def foldM {δ : Type w} {m : Type w → Type w} [Monad m] (f : δ → α → m δ) (init : δ) (h : HashSet α) : m δ :=
+@[inline] def foldM {δ : Type w} {m : Type w  Type w} [Monad m] (f : δ  α  m δ) (init : δ) (h : HashSet α) : m δ :=
   match h with
   | ⟨ h, _ ⟩ => h.foldM f init
 
-@[inline] def fold {δ : Type w} (f : δ → α → δ) (init : δ) (m : HashSet α) : δ :=
+@[inline] def fold {δ : Type w} (f : δ  α  δ) (init : δ) (m : HashSet α) : δ :=
   match m with
   | ⟨ m, _ ⟩ => m.fold f init
 
-@[inline] def forM {m : Type w → Type w} [Monad m] (h : HashSet α) (f : α → m PUnit) : m PUnit :=
+@[inline] def forM {m : Type w  Type w} [Monad m] (h : HashSet α) (f : α  m PUnit) : m PUnit :=
   match h with
   | ⟨h, _⟩ => h.forM f
 

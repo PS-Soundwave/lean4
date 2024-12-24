@@ -21,7 +21,7 @@ toExpr true = .const ``Bool.true []
 -/
 class ToExpr (α : Type u) where
   /-- Convert a value `a : α` into an expression that denotes `a` -/
-  toExpr     : α → Expr
+  toExpr     : α  Expr
   /-- Expression representing the type `α` -/
   toTypeExpr : Expr
 
@@ -130,7 +130,7 @@ where
     | .str p s => mkStr p (sz+1) (args.push (toExpr s))
     | _ => unreachable!
 
-  go : Name → Expr
+  go : Name  Expr
     | .anonymous => mkConst ``Lean.Name.anonymous
     | .str p s ..=> mkApp2 (mkConst ``Lean.Name.str) (go p) (toExpr s)
     | .num p n ..=> mkApp2 (mkConst ``Lean.Name.num) (go p) (toExpr n)
@@ -146,7 +146,7 @@ instance {α : Type u} [ToLevel.{u}] [ToExpr α] : ToExpr (Option α) :=
       | some a => mkApp2 (mkConst ``Option.some [toLevel.{u}]) type (toExpr a),
     toTypeExpr := mkApp (mkConst ``Option [toLevel.{u}]) type }
 
-private def List.toExprAux [ToExpr α] (nilFn : Expr) (consFn : Expr) : List α → Expr
+private def List.toExprAux [ToExpr α] (nilFn : Expr) (consFn : Expr) : List α  Expr
   | []    => nilFn
   | a::as => mkApp2 consFn (toExpr a) (toExprAux nilFn consFn as)
 
@@ -185,7 +185,7 @@ instance : ToExpr Syntax.Preresolved where
     | .namespace ns => mkApp (.const ``Syntax.Preresolved.namespace []) (toExpr ns)
     | .decl a ls => mkApp2 (.const ``Syntax.Preresolved.decl []) (toExpr a) (toExpr ls)
 
-def Expr.toCtorIfLit : Expr → Expr
+def Expr.toCtorIfLit : Expr  Expr
   | .lit (.natVal v) =>
     if v == 0 then mkConst ``Nat.zero
     else mkApp (mkConst ``Nat.succ) (mkRawNatLit (v-1))

@@ -23,29 +23,29 @@ rewrite.lean:55:69-56:10: error: unsolved goals
 α : Type
 p : Prop
 a b c : α
-h : p → a = b
+h : p  a = b
 ⊢ b = c
 
 α : Type
 p : Prop
 a b c : α
-h : p → a = b
+h : p  a = b
 ⊢ p
-f : Nat → Nat
+f : Nat  Nat
 w : ∀ (n : Nat), f n = 0
 ⊢ [f 1, 0, f 1, f 2] = [0, 0, 0, 0]
-f : Nat → Nat
+f : Nat  Nat
 w : ∀ (n : Nat), f n = 0
 ⊢ [0, f 2, 0, f 2] = [0, 0, 0, 0]
-f : Nat → Nat
+f : Nat  Nat
 w : ∀ (n : Nat), f n = 0
 ⊢ [0, f 2, 0, f 2] = [0, 0, 0, 0]
-f : Nat → Nat
+f : Nat  Nat
 w : ∀ (n : Nat), f n = 0
 ⊢ [f 1, 0, f 1, 0] = [0, 0, 0, 0]
-f : Nat → Nat
+f : Nat  Nat
 w : ∀ (n : Nat), f n = 0
 ⊢ [f 1, f 2, 0, f 2] = [0, 0, 0, 0]
-f : Nat → Nat
+f : Nat  Nat
 w : ∀ (n : Nat), f n = 0
 ⊢ [f 1, 0, f 1, f 2] = [0, 0, 0, 0]

@@ -177,37 +177,37 @@ section Unverified
 
 /-! We currently do not provide lemmas for the functions below. -/
 
-@[inline, inherit_doc DHashMap.Raw.filterMap] def filterMap {γ : Type w} (f : α → β → Option γ)
+@[inline, inherit_doc DHashMap.Raw.filterMap] def filterMap {γ : Type w} (f : α  β  Option γ)
     (m : Raw α β) : Raw α γ :=
   ⟨m.inner.filterMap f⟩
 
-@[inline, inherit_doc DHashMap.Raw.map] def map {γ : Type w} (f : α → β → γ) (m : Raw α β) :
+@[inline, inherit_doc DHashMap.Raw.map] def map {γ : Type w} (f : α  β  γ) (m : Raw α β) :
     Raw α γ :=
   ⟨m.inner.map f⟩
 
-@[inline, inherit_doc DHashMap.Raw.filter] def filter (f : α → β → Bool) (m : Raw α β) : Raw α β :=
+@[inline, inherit_doc DHashMap.Raw.filter] def filter (f : α  β  Bool) (m : Raw α β) : Raw α β :=
   ⟨m.inner.filter f⟩
 
-@[inline, inherit_doc DHashMap.Raw.foldM] def foldM {m : Type w → Type w} [Monad m] {γ : Type w}
-    (f : γ → α → β → m γ) (init : γ) (b : Raw α β) : m γ :=
+@[inline, inherit_doc DHashMap.Raw.foldM] def foldM {m : Type w  Type w} [Monad m] {γ : Type w}
+    (f : γ  α  β  m γ) (init : γ) (b : Raw α β) : m γ :=
   b.inner.foldM f init
 
-@[inline, inherit_doc DHashMap.Raw.fold] def fold {γ : Type w} (f : γ → α → β → γ) (init : γ)
+@[inline, inherit_doc DHashMap.Raw.fold] def fold {γ : Type w} (f : γ  α  β  γ) (init : γ)
     (b : Raw α β) : γ :=
   b.inner.fold f init
 
-@[inline, inherit_doc DHashMap.Raw.forM] def forM {m : Type w → Type w} [Monad m]
-    (f : (a : α) → β → m PUnit) (b : Raw α β) : m PUnit :=
+@[inline, inherit_doc DHashMap.Raw.forM] def forM {m : Type w  Type w} [Monad m]
+    (f : (a : α)  β  m PUnit) (b : Raw α β) : m PUnit :=
   b.inner.forM f
 
-@[inline, inherit_doc DHashMap.Raw.forIn] def forIn {m : Type w → Type w} [Monad m] {γ : Type w}
-    (f : (a : α) → β → γ → m (ForInStep γ)) (init : γ) (b : Raw α β) : m γ :=
+@[inline, inherit_doc DHashMap.Raw.forIn] def forIn {m : Type w  Type w} [Monad m] {γ : Type w}
+    (f : (a : α)  β  γ  m (ForInStep γ)) (init : γ) (b : Raw α β) : m γ :=
   b.inner.forIn f init
 
-instance {m : Type w → Type w} : ForM m (Raw α β) (α × β) where
+instance {m : Type w  Type w} : ForM m (Raw α β) (α × β) where
   forM m f := m.forM (fun a b => f (a, b))
 
-instance {m : Type w → Type w} : ForIn m (Raw α β) (α × β) where
+instance {m : Type w  Type w} : ForIn m (Raw α β) (α × β) where
   forIn m init f := m.forIn (fun a b acc => f (a, b) acc) init
 
 @[inline, inherit_doc DHashMap.Raw.Const.toList] def toList (m : Raw α β) : List (α × β) :=
@@ -298,7 +298,7 @@ theorem WF.getThenInsertIfNew? [BEq α] [Hashable α] {m : Raw α β} {a : α} {
 theorem WF.erase [BEq α] [Hashable α] {m : Raw α β} {a : α} (h : m.WF) : (m.erase a).WF :=
   ⟨DHashMap.Raw.WF.erase h.out⟩
 
-theorem WF.filter [BEq α] [Hashable α] {m : Raw α β} {f : α → β → Bool} (h : m.WF) :
+theorem WF.filter [BEq α] [Hashable α] {m : Raw α β} {f : α  β  Bool} (h : m.WF) :
     (m.filter f).WF :=
   ⟨DHashMap.Raw.WF.filter h.out⟩
 

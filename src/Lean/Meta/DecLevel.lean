@@ -16,7 +16,7 @@ structure DecLevelContext where
    -/
   canAssignMVars : Bool := true
 
-private partial def decAux? : Level → ReaderT DecLevelContext MetaM (Option Level)
+private partial def decAux? : Level  ReaderT DecLevelContext MetaM (Option Level)
   | Level.zero        => return none
   | Level.param _     => return none
   | Level.mvar mvarId => do

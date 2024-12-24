@@ -22,11 +22,11 @@ inductive Exception where
   | internal (id : InternalExceptionId) (extra : KVMap := {})
 
 /-- Convert exception into a structured message. -/
-def Exception.toMessageData : Exception → MessageData
+def Exception.toMessageData : Exception  MessageData
   | .error _ msg   => msg
   | .internal id _ => id.toString
 
-def Exception.hasSyntheticSorry : Exception → Bool
+def Exception.hasSyntheticSorry : Exception  Bool
   | Exception.error _ msg => msg.hasSyntheticSorry
   | _                     => false
 
@@ -34,7 +34,7 @@ def Exception.hasSyntheticSorry : Exception → Bool
 Return syntax object providing position information for the exception.
 Recall that internal exceptions do not have position information.
 -/
-def Exception.getRef : Exception → Syntax
+def Exception.getRef : Exception  Syntax
   | .error ref _  => ref
   | .internal _ _ => Syntax.missing
 
@@ -44,15 +44,15 @@ instance : Inhabited Exception := ⟨Exception.error default default⟩
    The default instance just uses `AddMessageContext`.
    In error messages, we may want to provide additional information (e.g., macro expansion stack),
    and refine the `(ref : Syntax)`. -/
-class AddErrorMessageContext (m : Type → Type) where
-  add : Syntax → MessageData → m (Syntax × MessageData)
+class AddErrorMessageContext (m : Type  Type) where
+  add : Syntax  MessageData  m (Syntax × MessageData)
 
-instance (m : Type → Type) [AddMessageContext m] [Monad m] : AddErrorMessageContext m where
+instance (m : Type  Type) [AddMessageContext m] [Monad m] : AddErrorMessageContext m where
   add ref msg := do
     let msg ← addMessageContext msg
     pure (ref, msg)
 
-class abbrev MonadError (m : Type → Type) :=
+class abbrev MonadError (m : Type  Type) :=
   MonadExceptOf Exception m
   MonadRef m
   AddErrorMessageContext m
@@ -100,8 +100,8 @@ def ofExceptKernelException [Monad m] [MonadError m] [MonadOptions m] (x : Excep
 
 end Methods
 
-class MonadRecDepth (m : Type → Type) where
-  withRecDepth {α} : Nat → m α → m α
+class MonadRecDepth (m : Type  Type) where
+  withRecDepth {α} : Nat  m α  m α
   getRecDepth      : m Nat
   getMaxRecDepth   : m Nat
 

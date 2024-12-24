@@ -12,7 +12,7 @@ import Init.ByCases
 namespace Array
 
 theorem rel_of_isEqvAux
-    {r : α → α → Bool} {a b : Array α} (hsz : a.size = b.size) {i : Nat} (hi : i ≤ a.size)
+    {r : α  α  Bool} {a b : Array α} (hsz : a.size = b.size) {i : Nat} (hi : i ≤ a.size)
     (heqv : Array.isEqvAux a b hsz r i hi)
     {j : Nat} (hj : j < i) : r (a[j]'(Nat.lt_of_lt_of_le hj hi)) (b[j]'(Nat.lt_of_lt_of_le hj (hsz ▸ hi))) := by
   induction i with
@@ -27,16 +27,16 @@ theorem rel_of_isEqvAux
       subst hj'
       exact heqv.left
 
-theorem isEqvAux_of_rel {r : α → α → Bool} {a b : Array α} (hsz : a.size = b.size) {i : Nat} (hi : i ≤ a.size)
-    (w : ∀ j, (hj : j < i) → r (a[j]'(Nat.lt_of_lt_of_le hj hi)) (b[j]'(Nat.lt_of_lt_of_le hj (hsz ▸ hi)))) : Array.isEqvAux a b hsz r i hi := by
+theorem isEqvAux_of_rel {r : α  α  Bool} {a b : Array α} (hsz : a.size = b.size) {i : Nat} (hi : i ≤ a.size)
+    (w : ∀ j, (hj : j < i)  r (a[j]'(Nat.lt_of_lt_of_le hj hi)) (b[j]'(Nat.lt_of_lt_of_le hj (hsz ▸ hi)))) : Array.isEqvAux a b hsz r i hi := by
   induction i with
   | zero => simp [Array.isEqvAux]
   | succ i ih =>
     simp only [isEqvAux, Bool.and_eq_true]
     exact ⟨w i (Nat.lt_add_one i), ih _ fun j hj => w j (Nat.lt_add_right 1 hj)⟩
 
-theorem rel_of_isEqv {r : α → α → Bool} {a b : Array α} :
-    Array.isEqv a b r → ∃ h : a.size = b.size, ∀ (i : Nat) (h' : i < a.size), r (a[i]) (b[i]'(h ▸ h')) := by
+theorem rel_of_isEqv {r : α  α  Bool} {a b : Array α} :
+    Array.isEqv a b r  ∃ h : a.size = b.size, ∀ (i : Nat) (h' : i < a.size), r (a[i]) (b[i]'(h ▸ h')) := by
   simp only [isEqv]
   split <;> rename_i h
   · exact fun h' => ⟨h, fun i => rel_of_isEqvAux h (Nat.le_refl ..) h'⟩
@@ -69,7 +69,7 @@ theorem eq_of_isEqv [DecidableEq α] (a b : Array α) (h : Array.isEqv a b (fun 
   have ⟨h, h'⟩ := rel_of_isEqv h
   exact ext _ _ h (fun i lt _ => by simpa using h' i lt)
 
-theorem isEqvAux_self (r : α → α → Bool) (hr : ∀ a, r a a) (a : Array α) (i : Nat) (h : i ≤ a.size) :
+theorem isEqvAux_self (r : α  α  Bool) (hr : ∀ a, r a a) (a : Array α) (i : Nat) (h : i ≤ a.size) :
     Array.isEqvAux a a rfl r i h = true := by
   induction i with
   | zero => simp [Array.isEqvAux]

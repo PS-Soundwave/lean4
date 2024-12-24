@@ -196,7 +196,7 @@ def mkBaseName (e : Expr) : MkNameM String := do
 Converts a module name into a suffix. Includes a leading `_`,
 so for example `Lean.Elab.DefView` becomes `_lean_elab_defView`.
 -/
-private def moduleToSuffix : Name → String
+private def moduleToSuffix : Name  String
   | .anonymous => ""
   | .num n _ => moduleToSuffix n
   | .str n s => moduleToSuffix n ++ "_" ++ s.decapitalize

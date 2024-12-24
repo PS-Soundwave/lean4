@@ -31,7 +31,7 @@ register_builtin_option backward.isDefEq.lazyWhnfCore : Bool := {
   But if it's not, we would most likely apply proof irrelevance, which is
   usually very expensive since it needs to unify the types as well.
 -/
-def isAbstractedUnassignedMVar : Expr → MetaM Bool
+def isAbstractedUnassignedMVar : Expr  MetaM Bool
   | .lam _ _ b _ => isAbstractedUnassignedMVar b
   | .app a _ => isAbstractedUnassignedMVar a
   | .mvar mvarId => do
@@ -201,9 +201,9 @@ inductive DefEqArgsFirstPassResult where
   contain higher order output parameters. Example:
   ```lean
   getElem :
-    {cont : Type u_1} → {idx : Type u_2} → {elem : Type u_3} →
-    {dom : cont → idx → Prop} → [self : GetElem cont idx elem dom] →
-    (xs : cont) → (i : idx) → (h : dom xs i) → elem
+    {cont : Type u_1}  {idx : Type u_2}  {elem : Type u_3} 
+    {dom : cont  idx  Prop}  [self : GetElem cont idx elem dom] 
+    (xs : cont)  (i : idx)  (h : dom xs i)  elem
   ```
   The arguments `dom` and `h` must be processed after all implicit arguments
   otherwise higher-order unification problems are generated. See issue #1299,
@@ -469,7 +469,7 @@ where
     or equal to the position of `xs.back` in the local context.
     The `Nat` context `(← read)` is the position of `xs[0]` in the local context.
   -/
-  collectLetDepsAux : Nat → ReaderT Nat (StateRefT FVarIdHashSet MetaM) Unit
+  collectLetDepsAux : Nat  ReaderT Nat (StateRefT FVarIdHashSet MetaM) Unit
     | 0   => return ()
     | i+1 => do
       if i+1 == (← read) then
@@ -1349,7 +1349,7 @@ private def tryHeuristic (t s : Expr) : MetaM Bool := do
         isListLevelDefEqAux tFn.constLevels! sFn.constLevels!
 
 /-- Auxiliary method for isDefEqDelta -/
-private abbrev unfold (e : Expr) (failK : MetaM α) (successK : Expr → MetaM α) : MetaM α := do
+private abbrev unfold (e : Expr) (failK : MetaM α) (successK : Expr  MetaM α) : MetaM α := do
   match (← unfoldDefinition? e) with
   | some e => successK e
   | none   => failK
@@ -1520,7 +1520,7 @@ private def isDefEqDelta (t s : Expr) : MetaM LBool := do
     else
       unfoldNonProjFnDefEq tInfo sInfo t s
 
-private def isAssigned : Expr → MetaM Bool
+private def isAssigned : Expr  MetaM Bool
   | .mvar mvarId => mvarId.isAssigned
   | _            => pure false
 
@@ -1553,7 +1553,7 @@ private def expandDelayedAssigned? (t : Expr) : MetaM (Option Expr) := do
   if tArgs.size < fvars.size then return none
   return some (mkAppRange (mkMVar mvarIdPending) fvars.size tArgs.size tArgs)
 
-private def isAssignable : Expr → MetaM Bool
+private def isAssignable : Expr  MetaM Bool
   | .mvar mvarId => do let b ← mvarId.isReadOnlyOrSyntheticOpaque; pure (!b)
   | _            => pure false
 
@@ -1629,7 +1629,7 @@ private def isDefEqMVarSelf (mvar : Expr) (args₁ args₂ : Array Expr) : MetaM
 /--
 Removes unnecessary let-decls (both true `let`s and `let_fun`s).
 -/
-private partial def consumeLet : Expr → Expr
+private partial def consumeLet : Expr  Expr
   | e@(.letE _ _ _ b _) => if b.hasLooseBVars then e else consumeLet b
   | e =>
     if let some (_, _, _, b) := e.letFun? then
@@ -1666,10 +1666,10 @@ private partial def isDefEqQuickOther (t s : Expr) : MetaM LBool := do
     but it was unnecessarily removing helpful annotations
     for the pretty-printer. For example, consider the following example.
     ```
-    constant p : Nat → Prop
-    constant q : Nat → Prop
+    constant p : Nat  Prop
+    constant q : Nat  Prop
 
-    theorem p_of_q : q x → p x := sorry
+    theorem p_of_q : q x  p x := sorry
 
     theorem pletfun : p (let_fun x := 0; x + 1) := by
       -- ⊢ p (let_fun x := 0; x + 1)
@@ -1803,7 +1803,7 @@ end
   | .false => return false
   | .undef => k
 
-@[specialize] private def unstuckMVar (e : Expr) (successK : Expr → MetaM Bool) (failK : MetaM Bool): MetaM Bool := do
+@[specialize] private def unstuckMVar (e : Expr) (successK : Expr  MetaM Bool) (failK : MetaM Bool): MetaM Bool := do
   match (← getStuckMVar? e) with
   | some mvarId =>
     trace[Meta.isDefEq.stuckMVar] "found stuck MVar {mkMVar mvarId} : {← inferType (mkMVar mvarId)}"
@@ -1917,7 +1917,7 @@ where
     | some t, some s => Meta.isExprDefEqAux t s
     | _, _ => Meta.isExprDefEqAux t s
 
-private def isDefEqProj : Expr → Expr → MetaM Bool
+private def isDefEqProj : Expr  Expr  MetaM Bool
   | .proj m i t, .proj n j s => do
     if (← read).inTypeClassResolution then
       -- See comment at `inTypeClassResolution`

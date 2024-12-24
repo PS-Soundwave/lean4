@@ -1,6 +1,6 @@
 namespace List
 
-@[simp] theorem filter_append' {as bs : List α} {p : α → Bool} :
+@[simp] theorem filter_append' {as bs : List α} {p : α  Bool} :
   filter p (as ++ bs) = filter p as ++ filter p bs :=
   match as with
   | []      => by simp
@@ -11,6 +11,6 @@ namespace List
     simp [filter_append]
 
 -- the previous contains a more complicated version of
-def f : Nat → Nat
+def f : Nat  Nat
   | 0 => 1
   | i+1 => (fun x => f x) i

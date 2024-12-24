@@ -1,4 +1,4 @@
-axiom n : Type → Type
+axiom n : Type  Type
 section
 local notation "ℕ" x => n x
 end

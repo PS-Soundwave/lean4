@@ -11,7 +11,7 @@
 
 inductive InfTree (α : Type u)
   | leaf (a : α)
-  | node (children : Nat → InfTree α)
+  | node (children : Nat  InfTree α)
 
 #reduce sizeOf <| InfTree.leaf 10
 

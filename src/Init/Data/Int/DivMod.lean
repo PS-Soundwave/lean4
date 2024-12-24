@@ -67,7 +67,7 @@ zero. Also note that division by zero is defined to equal zero.
   Implemented by efficient native code.
 -/
 @[extern "lean_int_div"]
-def tdiv : (@& Int) → (@& Int) → Int
+def tdiv : (@& Int)  (@& Int)  Int
   | ofNat m, ofNat n =>  ofNat (m / n)
   | ofNat m, -[n +1] => -ofNat (m / succ n)
   | -[m +1], ofNat n => -ofNat (succ m / n)
@@ -101,7 +101,7 @@ def tdiv : (@& Int) → (@& Int) → Int
 
   Implemented by efficient native code. -/
 @[extern "lean_int_mod"]
-def tmod : (@& Int) → (@& Int) → Int
+def tmod : (@& Int)  (@& Int)  Int
   | ofNat m, ofNat n =>  ofNat (m % n)
   | ofNat m, -[n +1] =>  ofNat (m % succ n)
   | -[m +1], ofNat n => -ofNat (succ m % n)
@@ -132,7 +132,7 @@ Examples:
 #eval (-12 : Int).fdiv (-7 : Int) -- 1
 ```
 -/
-def fdiv : Int → Int → Int
+def fdiv : Int  Int  Int
   | 0,       _       => 0
   | ofNat m, ofNat n => ofNat (m / n)
   | ofNat (succ m), -[n+1] => -[m / succ n +1]
@@ -162,7 +162,7 @@ Examples:
 #eval (-12 : Int).fmod (-7 : Int) -- -5
 ```
 -/
-def fmod : Int → Int → Int
+def fmod : Int  Int  Int
   | 0,       _       => 0
   | ofNat m, ofNat n => ofNat (m % n)
   | ofNat (succ m),  -[n+1]  => subNatNat (m % succ n) n
@@ -199,7 +199,7 @@ Examples:
 Implemented by efficient native code.
 -/
 @[extern "lean_int_ediv"]
-def ediv : (@& Int) → (@& Int) → Int
+def ediv : (@& Int)  (@& Int)  Int
   | ofNat m, ofNat n => ofNat (m / n)
   | ofNat m, -[n+1]  => -ofNat (m / succ n)
   | -[_+1],  0       => 0
@@ -232,7 +232,7 @@ Examples:
 Implemented by efficient native code.
 -/
 @[extern "lean_int_emod"]
-def emod : (@& Int) → (@& Int) → Int
+def emod : (@& Int)  (@& Int)  Int
   | ofNat m, n => ofNat (m % natAbs n)
   | -[m+1],  n => subNatNat (natAbs n) (succ (m % natAbs n))
 

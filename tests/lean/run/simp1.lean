@@ -9,22 +9,22 @@ import Lean
 @[simp] theorem ex3 (xs ys zs : List α) : (xs ++ ys) ++ zs = xs ++ (ys ++ zs) :=
   sorry
 
-@[simp] theorem ex5 (p : Prop) : p ∨ True :=
+@[simp] theorem ex5 (p : Prop) : p  True :=
   sorry
 
 @[simp] theorem ex4 (xs : List α) : ¬(x :: xs = []) :=
   sorry
 
-@[simp] theorem ex6 (p q : Prop) : p ∨ q ↔ q ∨ p:=
+@[simp] theorem ex6 (p q : Prop) : p  q ↔ q  p:=
   sorry
 
 @[simp high] theorem ex7 [Add α] (a b : α) : a + b = b + a :=
   sorry
 
-@[simp↓] theorem ex8 [Add α] (p q : Prop) : (¬ (p ∧ q)) = (¬p ∨ ¬q) :=
+@[simp↓] theorem ex8 [Add α] (p q : Prop) : (¬ (p ∧ q)) = (¬p  ¬q) :=
   sorry
 
-axiom aux {α} (f : List α → List α) (xs ys : List α) : f (xs ++ ys) ++ [] = f (xs ++ ys)
+axiom aux {α} (f : List α  List α) (xs ys : List α) : f (xs ++ ys) ++ [] = f (xs ++ ys)
 
 open Lean
 open Lean.Meta

@@ -22,7 +22,7 @@ Gets the zone rules for a specific time zone identifier, handling Windows and no
 In windows it uses the current `icu.h` in Windows SDK. If it's linux or macos then it will use the `tzdata`
 files.
 -/
-def defaultGetZoneRules : String → IO TimeZone.ZoneRules :=
+def defaultGetZoneRules : String  IO TimeZone.ZoneRules :=
   if System.Platform.isWindows
     then getZoneRules WindowsDb.default
     else getZoneRules TZdb.default

@@ -1,11 +1,11 @@
-theorem zero_lt_of_lt : {a b : Nat} → a < b → 0 < b
+theorem zero_lt_of_lt : {a b : Nat}  a < b  0 < b
 | 0,   _, h => h
 | a+1, b, h =>
   have : a < b := Nat.lt_trans (Nat.lt_succ_self _) h
   zero_lt_of_lt this
 
-def fold {m α β} [Monad m] (as : Array α) (b : β) (f : α → β → m β) : m β := do
-let rec loop : (i : Nat) → i ≤ as.size → β → m β
+def fold {m α β} [Monad m] (as : Array α) (b : β) (f : α  β  m β) : m β := do
+let rec loop : (i : Nat)  i ≤ as.size  β  m β
   | 0,   h, b => pure b
   | i+1, h, b => do
     have h' : i < as.size          := Nat.lt_of_lt_of_le (Nat.lt_succ_self i) h
@@ -20,7 +20,7 @@ loop as.size (Nat.le_refl _) b
 theorem ex : (Id.run $ fold #[1, 2, 3, 4] 0 (pure $ · + ·)) = 10 :=
 rfl
 
-def fold2 {m α β} [Monad m] (as : Array α) (b : β) (f : α → β → m β) : m β :=
+def fold2 {m α β} [Monad m] (as : Array α) (b : β) (f : α  β  m β) : m β :=
 let rec loop (i : Nat) (h : i ≤ as.size) (b : β) : m β := do
   match i, h with
   | 0,   h => return b

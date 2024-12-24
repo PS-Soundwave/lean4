@@ -44,7 +44,7 @@ private local instance : Quote Bool where
 
 /-! ## Value Encoders -/
 
-protected def BuildType.quote : BuildType → Term
+protected def BuildType.quote : BuildType  Term
 | .debug => mkCIdent ``debug
 | .minSizeRel => mkCIdent ``minSizeRel
 | .relWithDebInfo => mkCIdent ``relWithDebInfo
@@ -52,14 +52,14 @@ protected def BuildType.quote : BuildType → Term
 
 instance : Quote BuildType := ⟨BuildType.quote⟩
 
-protected def Backend.quote : Backend → Term
+protected def Backend.quote : Backend  Term
 | .c => mkCIdent ``c
 | .llvm => mkCIdent ``llvm
 | .default => mkCIdent ``default
 
 instance : Quote Backend := ⟨Backend.quote⟩
 
-def quoteLeanOptionValue : LeanOptionValue → Term
+def quoteLeanOptionValue : LeanOptionValue  Term
 | .ofString v => quote v
 | .ofBool v => quote v
 | .ofNat v => quote v
@@ -141,7 +141,7 @@ def PackageConfig.mkSyntax (cfg : PackageConfig)
         if n.isAnonymous || n == `default then none else
         Unhygienic.run `(.$(mkIdent n))
 
-private def getEscapedNameParts? (acc : List String) : Name → Option (List String)
+private def getEscapedNameParts? (acc : List String) : Name  Option (List String)
   | Name.anonymous => if acc.isEmpty then none else some acc
   | Name.str n s => do
     let s ← Name.escapePart s

@@ -27,6 +27,6 @@ No field notation even under binders. (That is, be aware of delayed assignment m
 
 /-- info: Try this: refine fun x => Nat.succ ?_ -/
 #guard_msgs in
-example : Nat → Nat := by
+example : Nat  Nat := by
   show_term refine fun _ => Nat.succ ?_
   exact default

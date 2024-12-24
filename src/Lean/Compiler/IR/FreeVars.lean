@@ -17,28 +17,28 @@ namespace MaxIndex
    our implementation.
 -/
 
-abbrev Collector := Index → Index
+abbrev Collector := Index  Index
 
 @[inline] private def skip : Collector := id
 @[inline] private def collect (x : Index) : Collector := fun y => if x > y then x else y
 @[inline] private def collectVar (x : VarId) : Collector := collect x.idx
 @[inline] private def collectJP (j : JoinPointId) : Collector := collect j.idx
-@[inline] private def seq (k₁ k₂ : Collector) : Collector := k₂ ∘ k₁
+@[inline] private def seq (k₁ k₂ : Collector) : Collector := k₂  k₁
 instance : AndThen Collector where
   andThen a b := seq a (b ())
 
-private def collectArg : Arg → Collector
+private def collectArg : Arg  Collector
   | Arg.var x  => collectVar x
   | _          => skip
 
-private def collectArray {α : Type} (as : Array α) (f : α → Collector) : Collector :=
+private def collectArray {α : Type} (as : Array α) (f : α  Collector) : Collector :=
   fun m => as.foldl (fun m a => f a m) m
 
 private def collectArgs (as : Array Arg) : Collector := collectArray as collectArg
 private def collectParam (p : Param) : Collector := collectVar p.x
 private def collectParams (ps : Array Param) : Collector := collectArray ps collectParam
 
-private def collectExpr : Expr → Collector
+private def collectExpr : Expr  Collector
   | Expr.ctor _ ys      => collectArgs ys
   | Expr.reset _ x      => collectVar x
   | Expr.reuse x _ _ ys => collectVar x >> collectArgs ys
@@ -53,10 +53,10 @@ private def collectExpr : Expr → Collector
   | Expr.lit _          => skip
   | Expr.isShared x     => collectVar x
 
-private def collectAlts (f : FnBody → Collector) (alts : Array Alt) : Collector :=
+private def collectAlts (f : FnBody  Collector) (alts : Array Alt) : Collector :=
   collectArray alts fun alt => f alt.body
 
-partial def collectFnBody : FnBody → Collector
+partial def collectFnBody : FnBody  Collector
   | FnBody.vdecl x _ v b    => collectVar x >> collectExpr v >> collectFnBody b
   | FnBody.jdecl j ys v b   => collectJP j >> collectFnBody v >> collectParams ys >> collectFnBody b
   | FnBody.set x _ y b      => collectVar x >> collectArg y >> collectFnBody b
@@ -72,7 +72,7 @@ partial def collectFnBody : FnBody → Collector
   | FnBody.ret x            => collectArg x
   | FnBody.unreachable      => skip
 
-partial def collectDecl : Decl → Collector
+partial def collectDecl : Decl  Collector
   | .fdecl (xs := xs) (body := b) .. => collectParams xs >> collectFnBody b
   | .extern (xs := xs) ..            => collectParams xs
 
@@ -88,7 +88,7 @@ namespace FreeIndices
 /-! We say a variable (join point) index (aka name) is free in a function body
    if there isn't a `FnBody.vdecl` (`Fnbody.jdecl`) binding it. -/
 
-abbrev Collector := IndexSet → IndexSet → IndexSet
+abbrev Collector := IndexSet  IndexSet  IndexSet
 
 @[inline] private def skip : Collector :=
   fun _ fv => fv
@@ -102,38 +102,38 @@ abbrev Collector := IndexSet → IndexSet → IndexSet
 @[inline] private def collectJP (x : JoinPointId) : Collector :=
   collectIndex x.idx
 
-@[inline] private def withIndex (x : Index) : Collector → Collector :=
+@[inline] private def withIndex (x : Index) : Collector  Collector :=
   fun k bv fv => k (bv.insert x) fv
 
-@[inline] private def withVar (x : VarId) : Collector → Collector :=
+@[inline] private def withVar (x : VarId) : Collector  Collector :=
   withIndex x.idx
 
-@[inline] private def withJP (x : JoinPointId) : Collector → Collector :=
+@[inline] private def withJP (x : JoinPointId) : Collector  Collector :=
   withIndex x.idx
 
 def insertParams (s : IndexSet) (ys : Array Param) : IndexSet :=
   ys.foldl (init := s) fun s p => s.insert p.x.idx
 
-@[inline] private def withParams (ys : Array Param) : Collector → Collector :=
+@[inline] private def withParams (ys : Array Param) : Collector  Collector :=
   fun k bv fv => k (insertParams bv ys) fv
 
-@[inline] private def seq : Collector → Collector → Collector :=
+@[inline] private def seq : Collector  Collector  Collector :=
   fun k₁ k₂ bv fv => k₂ bv (k₁ bv fv)
 
 instance : AndThen Collector where
   andThen a b := seq a (b ())
 
-private def collectArg : Arg → Collector
+private def collectArg : Arg  Collector
   | Arg.var x  => collectVar x
   | _          => skip
 
-private def collectArray {α : Type} (as : Array α) (f : α → Collector) : Collector :=
+private def collectArray {α : Type} (as : Array α) (f : α  Collector) : Collector :=
   fun bv fv => as.foldl (fun fv a => f a bv fv) fv
 
 private def collectArgs (as : Array Arg) : Collector :=
   collectArray as collectArg
 
-private def collectExpr : Expr → Collector
+private def collectExpr : Expr  Collector
   | Expr.ctor _ ys      => collectArgs ys
   | Expr.reset _ x      => collectVar x
   | Expr.reuse x _ _ ys => collectVar x >> collectArgs ys
@@ -148,10 +148,10 @@ private def collectExpr : Expr → Collector
   | Expr.lit _          => skip
   | Expr.isShared x     => collectVar x
 
-private def collectAlts (f : FnBody → Collector) (alts : Array Alt) : Collector :=
+private def collectAlts (f : FnBody  Collector) (alts : Array Alt) : Collector :=
   collectArray alts fun alt => f alt.body
 
-partial def collectFnBody : FnBody → Collector
+partial def collectFnBody : FnBody  Collector
   | FnBody.vdecl x _ v b    => collectExpr v >> withVar x (collectFnBody b)
   | FnBody.jdecl j ys v b   => withParams ys (collectFnBody v) >> withJP j (collectFnBody b)
   | FnBody.set x _ y b      => collectVar x >> collectArg y >> collectFnBody b
@@ -183,7 +183,7 @@ namespace HasIndex
 def visitVar (w : Index) (x : VarId) : Bool := w == x.idx
 def visitJP (w : Index) (x : JoinPointId) : Bool := w == x.idx
 
-def visitArg (w : Index) : Arg → Bool
+def visitArg (w : Index) : Arg  Bool
   | Arg.var x => visitVar w x
   | _         => false
 
@@ -193,7 +193,7 @@ def visitArgs (w : Index) (xs : Array Arg) : Bool :=
 def visitParams (w : Index) (ps : Array Param) : Bool :=
   ps.any (fun p => w == p.x.idx)
 
-def visitExpr (w : Index) : Expr → Bool
+def visitExpr (w : Index) : Expr  Bool
   | Expr.ctor _ ys      => visitArgs w ys
   | Expr.reset _ x      => visitVar w x
   | Expr.reuse x _ _ ys => visitVar w x || visitArgs w ys
@@ -208,7 +208,7 @@ def visitExpr (w : Index) : Expr → Bool
   | Expr.lit _          => false
   | Expr.isShared x     => visitVar w x
 
-partial def visitFnBody (w : Index) : FnBody → Bool
+partial def visitFnBody (w : Index) : FnBody  Bool
   | FnBody.vdecl _ _ v b    => visitExpr w v || visitFnBody w b
   | FnBody.jdecl _ _  v b   => visitFnBody w v || visitFnBody w b
   | FnBody.set x _ y b      => visitVar w x || visitArg w y || visitFnBody w b

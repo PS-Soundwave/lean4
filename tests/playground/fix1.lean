@@ -1,8 +1,8 @@
-def foo (rec : Nat → Nat → Nat) : Nat → Nat → Nat
+def foo (rec : Nat  Nat  Nat) : Nat  Nat  Nat
 | 0     a := a
 | (n+1) a := rec n a + a + rec n (a+1)
 
-partial def fix' (f: (Nat → Nat → Nat) → (Nat → Nat → Nat)) : Nat → Nat → Nat
+partial def fix' (f: (Nat  Nat  Nat)  (Nat  Nat  Nat)) : Nat  Nat  Nat
 | a b := f fix' a b
 
 def prof {α : Type} (msg : String) (p : IO α) : IO α :=

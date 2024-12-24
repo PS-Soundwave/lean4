@@ -39,7 +39,7 @@ instance : Min Date := minOfLe
 instance : Max Date := maxOfLe
 
 abbrev IsLeapYear (y : Nat) : Prop :=
-  y % 4 = 0 ∧ (y % 100 ≠ 0 ∨ y % 400 = 0)
+  y % 4 = 0 ∧ (y % 100 ≠ 0  y % 400 = 0)
 
 abbrev IsValidMonth (m : Nat) : Prop :=
   m ≥ 1 ∧ m ≤ 12

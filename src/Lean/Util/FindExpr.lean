@@ -10,9 +10,9 @@ namespace Lean
 namespace Expr
 
 @[extern "lean_find_expr"]
-opaque findImpl? (p : @& (Expr → Bool)) (e : @& Expr) : Option Expr
+opaque findImpl? (p : @& (Expr  Bool)) (e : @& Expr) : Option Expr
 
-@[inline] def find? (p : Expr → Bool) (e : Expr) : Option Expr := findImpl? p e
+@[inline] def find? (p : Expr  Bool) (e : Expr) : Option Expr := findImpl? p e
 
 /-- Returns true if `e` occurs in `t` -/
 def occurs (e : Expr) (t : Expr) : Bool :=
@@ -27,11 +27,11 @@ inductive FindStep where
   | /-- Do not search subterms -/ done
 
 @[extern "lean_find_ext_expr"]
-opaque findExtImpl? (p : @& (Expr → FindStep)) (e : @& Expr) : Option Expr
+opaque findExtImpl? (p : @& (Expr  FindStep)) (e : @& Expr) : Option Expr
 
 /--
 Similar to `find?`, but `p` can return `FindStep.done` to interrupt the search on subterms.
 Remark: Differently from `find?`, we do not invoke `p` for partial applications of an application. -/
-@[inline] def findExt? (p : Expr → FindStep) (e : Expr) : Option Expr := findExtImpl? p e
+@[inline] def findExt? (p : Expr  FindStep) (e : Expr) : Option Expr := findExtImpl? p e
 
 end Lean.Expr

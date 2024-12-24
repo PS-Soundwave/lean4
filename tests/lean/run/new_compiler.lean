@@ -33,10 +33,10 @@ match q with
 
 def tst2 (n : Nat) : Nat :=
 let p := (fun x => Nat.succ x, Nat.zero) ;
-let f := fun (p : (Nat → Nat) × Nat) => p.1;
+let f := fun (p : (Nat  Nat) × Nat) => p.1;
 f p n
 
-partial def add' : Nat → Nat → Nat
+partial def add' : Nat  Nat  Nat
 | 0, b     => Nat.succ b
 | a+1,   b => Nat.succ (Nat.succ (add' a b))
 
@@ -63,12 +63,12 @@ def bla (i : Nat) (h : i > 0 ∧ i ≠ 10) : Nat :=
 def bla' (i : Nat) (h : i > 0 ∧ i ≠ 10) : Nat :=
 @And.casesOn _ _ (fun _ => Nat) h (fun h₁ h₂ => aux i h₁ + aux i h₁)
 
-inductive vec (α : Type u) : Nat → Type u
+inductive vec (α : Type u) : Nat  Type u
 | nil   : vec α 0
-| cons  : ∀ {n}, α → vec α n → vec α (Nat.succ n)
+| cons  : ∀ {n}, α  vec α n  vec α (Nat.succ n)
 
 /-
-def vec.map {α β σ : Type u} (f : α → β → σ) : ∀ {n : Nat}, vec α n → vec β n → vec σ n
+def vec.map {α β σ : Type u} (f : α  β  σ) : ∀ {n : Nat}, vec α n  vec β n  vec σ n
 | _, nil, nil               => nil
 | _, cons a as, cons b bs   => cons (f a b) (map f as bs)
 -/

@@ -28,7 +28,7 @@ open Foo hiding bar
 end Ex2
 
 section Ex2
-open Foo renaming bar → bah
+open Foo renaming bar  bah
 #check bah
 end Ex2
 

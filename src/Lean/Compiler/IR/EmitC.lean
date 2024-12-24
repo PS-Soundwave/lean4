@@ -53,7 +53,7 @@ def argToCString (x : Arg) : String :=
 def emitArg (x : Arg) : M Unit :=
   emit (argToCString x)
 
-def toCType : IRType → String
+def toCType : IRType  String
   | IRType.float      => "double"
   | IRType.float32    => "float"
   | IRType.uint8      => "uint8_t"
@@ -255,7 +255,7 @@ def declareVar (x : VarId) (t : IRType) : M Unit := do
 def declareParams (ps : Array Param) : M Unit :=
   ps.forM fun p => declareVar p.x p.ty
 
-partial def declareVars : FnBody → Bool → M Bool
+partial def declareVars : FnBody  Bool  M Bool
   | e@(FnBody.vdecl x t _ b), d => do
     let ctx ← read
     if isTailCallTo ctx.mainFn e then
@@ -629,7 +629,7 @@ partial def emitBlock (b : FnBody) : M Unit := do
   | FnBody.jmp j xs            => emitJmp j xs
   | FnBody.unreachable         => emitLn "lean_internal_panic_unreachable();"
 
-partial def emitJPs : FnBody → M Unit
+partial def emitJPs : FnBody  M Unit
   | FnBody.jdecl j _  v b => do emit j; emitLn ":"; emitFnBody v; emitJPs b
   | e                     => do unless e.isTerminal do emitJPs e.body
 

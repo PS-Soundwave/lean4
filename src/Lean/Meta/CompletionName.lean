@@ -33,7 +33,7 @@ Checks whether a given name is internal due to something other than `_private`.
 Correctly deals with names like `_private.<SomeNamespace>.0.<SomeType>._sizeOf_1` in a private type
 `SomeType`, which `n.isInternal && !isPrivateName n` does not.
 -/
-private def isInternalNameModuloPrivate : Name → Bool
+private def isInternalNameModuloPrivate : Name  Bool
   | n@(.str p s) => s.get 0 == '_' && n != privateHeader || isInternalNameModuloPrivate p
   | .num p _ => isInternalNameModuloPrivate p
   | _       => false

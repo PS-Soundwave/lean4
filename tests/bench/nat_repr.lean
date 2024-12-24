@@ -1,4 +1,4 @@
-def main : List String → IO Unit
+def main : List String  IO Unit
 | [n] => do
   let mut s := 0
   for i in [0:n.toNat!] do

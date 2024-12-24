@@ -7,7 +7,7 @@ def f (x y z : Nat) : Nat :=
   | _, _, 5 => y
   | _, _, _ => 1
 
-example : x ≠ 5 → y ≠ 5 → z ≠ 5 → z = w → f x y w = 1 := by
+example : x ≠ 5  y ≠ 5  z ≠ 5  z = w  f x y w = 1 := by
   intros
   simp [f]
   split

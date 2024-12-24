@@ -2,7 +2,7 @@ import Lean
 
 open Lean
 
-partial def mkTerm : Nat → Expr
+partial def mkTerm : Nat  Expr
 | 0   => mkApp (mkConst `a) (mkConst `b)
 | n+1 => mkApp (mkTerm n) (mkTerm n)
 

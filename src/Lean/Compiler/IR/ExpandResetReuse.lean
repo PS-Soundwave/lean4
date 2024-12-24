@@ -12,7 +12,7 @@ namespace Lean.IR.ExpandResetReuse
 /-- Mapping from variable to projections -/
 abbrev ProjMap  := Std.HashMap VarId Expr
 namespace CollectProjMap
-abbrev Collector := ProjMap → ProjMap
+abbrev Collector := ProjMap  ProjMap
 @[inline] def collectVDecl (x : VarId) (v : Expr) : Collector := fun m =>
   match v with
   | .proj ..  => m.insert x v
@@ -20,9 +20,9 @@ abbrev Collector := ProjMap → ProjMap
   | .uproj .. => m.insert x v
   | _         => m
 
-partial def collectFnBody : FnBody → Collector
-  | .vdecl x _ v b   => collectVDecl x v ∘ collectFnBody b
-  | .jdecl _ _ v b   => collectFnBody v ∘ collectFnBody b
+partial def collectFnBody : FnBody  Collector
+  | .vdecl x _ v b   => collectVDecl x v  collectFnBody b
+  | .jdecl _ _ v b   => collectFnBody v  collectFnBody b
   | .case _ _ _ alts => fun s => alts.foldl (fun s alt => collectFnBody alt.body s) s
   | e                => if e.isTerminal then id else collectFnBody e.body
 end CollectProjMap
@@ -39,7 +39,7 @@ structure Context where
 
 /-- Return true iff `x` is consumed in all branches of the current block.
    Here consumption means the block contains a `dec x` or `reuse x ...`. -/
-partial def consumed (x : VarId) : FnBody → Bool
+partial def consumed (x : VarId) : FnBody  Bool
   | .vdecl _ _ v b   =>
     match v with
     | Expr.reuse y _ _ _ => x == y || consumed x b
@@ -88,7 +88,7 @@ def eraseProjIncFor (n : Nat) (y : VarId) (bs : Array FnBody) : Array FnBody × 
   eraseProjIncForAux y bs (mkArray n none) #[]
 
 /-- Replace `reuse x ctor ...` with `ctor ...`, and remove `dec x` -/
-partial def reuseToCtor (x : VarId) : FnBody → FnBody
+partial def reuseToCtor (x : VarId) : FnBody  FnBody
   | FnBody.dec y n c p b   =>
     if x == y then b -- n must be 1 since `x := reset ...`
     else FnBody.dec y n c p (reuseToCtor x b)
@@ -166,7 +166,7 @@ def isSelfSSet (ctx : Context) (x : VarId) (n : Nat) (i : Nat) (y : VarId) : Boo
   | _                       => false
 
 /-- Remove unnecessary `set/uset/sset` operations -/
-partial def removeSelfSet (ctx : Context) : FnBody → FnBody
+partial def removeSelfSet (ctx : Context) : FnBody  FnBody
   | FnBody.set x i y b   =>
     if isSelfSet ctx x i y then removeSelfSet ctx b
     else FnBody.set x i y (removeSelfSet ctx b)
@@ -186,7 +186,7 @@ partial def removeSelfSet (ctx : Context) : FnBody → FnBody
       let b := removeSelfSet ctx b
       instr.setBody b
 
-partial def reuseToSet (ctx : Context) (x y : VarId) : FnBody → FnBody
+partial def reuseToSet (ctx : Context) (x y : VarId) : FnBody  FnBody
   | FnBody.dec z n c p b   =>
     if x == z then FnBody.del y b
     else FnBody.dec z n c p (reuseToSet ctx x y b)
@@ -234,7 +234,7 @@ def mkFastPath (x y : VarId) (mask : Mask) (b : FnBody) : M FnBody := do
   releaseUnreadFields y mask b
 
 -- Expand `bs; x := reset[n] y; b`
-partial def expand (mainFn : FnBody → Array FnBody → M FnBody)
+partial def expand (mainFn : FnBody  Array FnBody  M FnBody)
     (bs : Array FnBody) (x : VarId) (n : Nat) (y : VarId) (b : FnBody) : M FnBody := do
   let (bs, mask) := eraseProjIncFor n y bs
   /- Remark: we may be duplicating variable/JP indices. That is, `bSlow` and `bFast` may
@@ -247,7 +247,7 @@ partial def expand (mainFn : FnBody → Array FnBody → M FnBody)
   let b := FnBody.vdecl c IRType.uint8 (Expr.isShared y) (mkIf c bSlow bFast)
   return reshape bs b
 
-partial def searchAndExpand : FnBody → Array FnBody → M FnBody
+partial def searchAndExpand : FnBody  Array FnBody  M FnBody
   | d@(FnBody.vdecl x _ (Expr.reset n y) b), bs =>
     if consumed x b then do
       expand searchAndExpand bs x n y b

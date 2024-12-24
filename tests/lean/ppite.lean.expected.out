@@ -1,4 +1,4 @@
-def f : List Nat → IO Unit :=
+def f : List Nat  IO Unit :=
 fun xs =>
   xs.forM fun x =>
     if (x == 0) = true then do

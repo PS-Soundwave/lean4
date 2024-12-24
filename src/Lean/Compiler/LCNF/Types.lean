@@ -17,13 +17,13 @@ def erasedExpr := mkConst ``lcErased
 def _root_.Lean.Expr.isErased (e : Expr) :=
   e.isAppOf ``lcErased
 
-def isPropFormerTypeQuick : Expr → Bool
+def isPropFormerTypeQuick : Expr  Bool
   | .forallE _ _ b _ => isPropFormerTypeQuick b
   | .sort .zero => true
   | _ => false
 
 /--
-Return true iff `type` is `Prop` or `As → Prop`.
+Return true iff `type` is `Prop` or `As  Prop`.
 -/
 partial def isPropFormerType (type : Expr) : MetaM Bool := do
   match isPropFormerTypeQuick type with
@@ -42,7 +42,7 @@ where
       | _ => return false
 
 /--
-Return true iff `e : Prop` or `e : As → Prop`.
+Return true iff `e : Prop` or `e : As  Prop`.
 -/
 def isPropFormer (e : Expr) : MetaM Bool := do
   isPropFormerType (← Meta.inferType e)
@@ -239,7 +239,7 @@ where
 
 /--
 Return `true` if `type` is a predicate.
-Examples: `Nat → Prop`, `Prop`, `Int → Bool → Prop`.
+Examples: `Nat  Prop`, `Prop`, `Int  Bool  Prop`.
 -/
 partial def isPredicateType (type : Expr) : Bool :=
   match type.headBeta with
@@ -250,7 +250,7 @@ partial def isPredicateType (type : Expr) : Bool :=
 /--
 Return `true` if `type` is a LCNF type former type or it is an "any" type.
 This function is similar to `isTypeFormerType`, but more liberal.
-For example, `isTypeFormerType` returns false for `◾` and `Nat → ◾`, but
+For example, `isTypeFormerType` returns false for `◾` and `Nat  ◾`, but
 this function returns true.
 -/
 partial def maybeTypeFormerType (type : Expr) : Bool :=

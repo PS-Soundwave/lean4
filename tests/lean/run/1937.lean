@@ -1,5 +1,5 @@
 structure BundledFunction (α β : Sort _) :=
-(toFun : α → β)
+(toFun : α  β)
 
 namespace BundledFunction
 
@@ -17,7 +17,7 @@ by rw [coe_id, id_eq] -- succeeds
 -- seems to be another instance of the same behaviour:
 -- https://leanprover.zulipchat.com/#narrow/stream/287929-mathlib4/topic/.60simp.60.20calls.20broken.20in.20mathlib4.23922/near/314790371
 
-def otherProjection (f : BundledFunction α β) : α → β := f.toFun
+def otherProjection (f : BundledFunction α β) : α  β := f.toFun
 
 -- Projections functions are expanded when populating the discrimination tree, and are indexed as `Expr.proj` objects.
 -- `@toFun α β` cannot be expanded into `Expr.proj` since there is a missing argument. The workaround is to add the missing argument.

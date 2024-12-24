@@ -11,8 +11,8 @@ namespace Lake
 /-- A process exit / return code. -/
 abbrev ExitCode := UInt32
 
-class MonadExit (m : Type u → Type v) where
-  exit {α : Type u} : ExitCode → m α
+class MonadExit (m : Type u  Type v) where
+  exit {α : Type u} : ExitCode  m α
 
 export MonadExit (exit)
 

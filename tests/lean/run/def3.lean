@@ -2,7 +2,7 @@
 
 abbrev N := Nat
 
-def f : N → Nat
+def f : N  Nat
 | 0   => 1
 | n+1 => n
 

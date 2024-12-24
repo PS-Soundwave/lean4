@@ -1,8 +1,8 @@
 inductive Arith : Type
-  | add : Arith → Arith → Arith  -- e + f
-  | mul : Arith → Arith → Arith  -- e * f
-  | int : Int → Arith  -- constant
-  | symbol : String → Arith  -- variable
+  | add : Arith  Arith  Arith  -- e + f
+  | mul : Arith  Arith  Arith  -- e * f
+  | int : Int  Arith  -- constant
+  | symbol : String  Arith  -- variable
 
 declare_syntax_cat arith
 

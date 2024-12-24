@@ -1,7 +1,7 @@
-inductive Palindrome : List α → Prop where
+inductive Palindrome : List α  Prop where
   | nil      : Palindrome []
-  | single   : (a : α) → Palindrome [a]
-  | sandwish : (a : α) → Palindrome as → Palindrome ([a] ++ as ++ [a])
+  | single   : (a : α)  Palindrome [a]
+  | sandwish : (a : α)  Palindrome as  Palindrome ([a] ++ as ++ [a])
 
 theorem palindrome_reverse (h : Palindrome as) : Palindrome as.reverse := by
   induction h with

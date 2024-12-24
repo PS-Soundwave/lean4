@@ -5303,7 +5303,7 @@ static lean_object* _init_l_term___u2218_____closed__1() {
 _start:
 {
 lean_object* x_1; 
-x_1 = lean_mk_string_unchecked("term_∘_", 9, 7);
+x_1 = lean_mk_string_unchecked("term__", 9, 7);
 return x_1;
 }
 }
@@ -5321,7 +5321,7 @@ static lean_object* _init_l_term___u2218_____closed__3() {
 _start:
 {
 lean_object* x_1; 
-x_1 = lean_mk_string_unchecked(" ∘ ", 5, 3);
+x_1 = lean_mk_string_unchecked("  ", 5, 3);
 return x_1;
 }
 }
@@ -10405,7 +10405,7 @@ static lean_object* _init_l_term_x7e_x7e_x7e_____closed__1() {
 _start:
 {
 lean_object* x_1; 
-x_1 = lean_mk_string_unchecked("term~~~_", 8, 8);
+x_1 = lean_mk_string_unchecked("term_", 8, 8);
 return x_1;
 }
 }
@@ -10423,7 +10423,7 @@ static lean_object* _init_l_term_x7e_x7e_x7e_____closed__3() {
 _start:
 {
 lean_object* x_1; 
-x_1 = lean_mk_string_unchecked("~~~", 3, 3);
+x_1 = lean_mk_string_unchecked("", 3, 3);
 return x_1;
 }
 }
@@ -15010,7 +15010,7 @@ static lean_object* _init_l_term___u2228_____closed__1() {
 _start:
 {
 lean_object* x_1; 
-x_1 = lean_mk_string_unchecked("term_∨_", 9, 7);
+x_1 = lean_mk_string_unchecked("term__", 9, 7);
 return x_1;
 }
 }
@@ -15028,7 +15028,7 @@ static lean_object* _init_l_term___u2228_____closed__3() {
 _start:
 {
 lean_object* x_1; 
-x_1 = lean_mk_string_unchecked(" ∨  ", 6, 4);
+x_1 = lean_mk_string_unchecked("   ", 6, 4);
 return x_1;
 }
 }

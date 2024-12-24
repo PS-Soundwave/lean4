@@ -27,7 +27,7 @@ def helloProvider : CodeActionProvider := fun params _snap => do
     }
   return #[ca, {eager := longRunner, lazy? := lazyResult}]
 
-theorem asdf : (x : Nat) → x = x := by
+theorem asdf : (x : Nat)  x = x := by
   intro x
   --^ codeAction
   rfl

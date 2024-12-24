@@ -24,7 +24,7 @@ structure ByteSlice := (arr : ByteArray) (off len : Nat)
 namespace ByteSlice
 
 /-- Convert a byte slice into an array, by copying the data if necessary. -/
-def toArray : ByteSlice → ByteArray
+def toArray : ByteSlice  ByteArray
 | ⟨arr, off, len⟩ => arr.extract off len
 
 /-- Index into a byte slice. The `getOp` function allows the use of the `buf[i]` notation. -/
@@ -32,7 +32,7 @@ def toArray : ByteSlice → ByteArray
 
 
 /-- The inner loop of the `forIn` implementation for byte slices. -/
-def forIn.loop [Monad m] (f : UInt8 → β → m (ForInStep β))
+def forIn.loop [Monad m] (f : UInt8  β  m (ForInStep β))
   (arr : ByteArray) (off _end : Nat) (i : Nat) (b : β) : m β :=
   if h : i < _end then do
     match ← f (arr.get! i) b with

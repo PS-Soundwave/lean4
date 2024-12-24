@@ -50,7 +50,7 @@ open Std.Tactic.BVDecide.LRAT.Internal in
 If the `check` functions succeeds on `lratProof` and `cnf` then the `cnf` is unsatisfiable.
 -/
 theorem check_sound (lratProof : Array IntAction) (cnf : CNF Nat) :
-    check lratProof cnf → cnf.Unsat := by
+    check lratProof cnf  cnf.Unsat := by
   intro h1
   unfold check at h1
   simp only [decide_eq_true_eq] at h1

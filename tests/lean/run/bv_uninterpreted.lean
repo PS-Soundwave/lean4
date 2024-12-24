@@ -4,7 +4,7 @@ import Std.Tactic.BVDecide
 example {x y z : BitVec w} :
     (x &&& y) ||| (x &&& z) ||| (y &&& z) ||| x ||| y ||| z
       =
-    ~~~ ((~~~ x) &&& (~~~ y) &&& (~~~ z)) := by
+     (( x) &&& ( y) &&& ( z)) := by
   ext i h
   simp [h]
   bv_decide

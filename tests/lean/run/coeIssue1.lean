@@ -3,15 +3,15 @@
 
 
 inductive MCType
-| bv : Nat → MCType
+| bv : Nat  MCType
 
 open MCType
 
-inductive Reg : MCType → Type
+inductive Reg : MCType  Type
 | rax (n : Nat) : Reg (bv n)
 
-inductive Expr : MCType → Type
-| r : ∀{tp:MCType}, Reg tp → Expr tp
+inductive Expr : MCType  Type
+| r : ∀{tp:MCType}, Reg tp  Expr tp
 | sextC {s:Nat} (x : Expr (bv s)) (t:Nat) : Expr (bv t)
 
 instance reg_is_expr {tp:MCType} : Coe (Reg tp) (Expr tp) := ⟨Expr.r⟩

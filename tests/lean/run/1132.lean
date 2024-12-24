@@ -1,5 +1,5 @@
 class FooClass (α : Type) where
-  mkFoo : {m : Type → Type} → [Monad m] → α → m Nat
+  mkFoo : {m : Type  Type}  [Monad m]  α  m Nat
 
 inductive Baz where | a | b
 

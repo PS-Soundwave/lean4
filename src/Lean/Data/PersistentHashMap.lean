@@ -24,7 +24,7 @@ inductive Node (α : Type u) (β : Type v) : Type (max u v) where
   | entries   (es : Array (Entry α β (Node α β))) : Node α β
   | collision (ks : Array α) (vs : Array β) (h : ks.size = vs.size) : Node α β
 
-partial def Node.isEmpty : Node α β → Bool
+partial def Node.isEmpty : Node α β  Bool
   | .collision .. => false
   | .entries es => es.all fun
     | .entry .. => false
@@ -52,7 +52,7 @@ namespace PersistentHashMap
 
 def empty [BEq α] [Hashable α] : PersistentHashMap α β := {}
 
-def isEmpty {_ : BEq α} {_ : Hashable α} : PersistentHashMap α β → Bool
+def isEmpty {_ : BEq α} {_ : Hashable α} : PersistentHashMap α β  Bool
   | { root } => root.isEmpty
 
 instance [BEq α] [Hashable α] : Inhabited (PersistentHashMap α β) := ⟨{}⟩
@@ -64,12 +64,12 @@ abbrev mul2Shift (i : USize) (shift : USize) : USize := i.shiftLeft shift
 abbrev div2Shift (i : USize) (shift : USize) : USize := i.shiftRight shift
 abbrev mod2Shift (i : USize) (shift : USize) : USize := USize.land i ((USize.shiftLeft 1 shift) - 1)
 
-inductive IsCollisionNode : Node α β → Prop where
+inductive IsCollisionNode : Node α β  Prop where
   | mk (keys : Array α) (vals : Array β) (h : keys.size = vals.size) : IsCollisionNode (Node.collision keys vals h)
 
 abbrev CollisionNode (α β) := { n : Node α β // IsCollisionNode n }
 
-inductive IsEntriesNode : Node α β → Prop where
+inductive IsEntriesNode : Node α β  Prop where
   | mk (entries : Array (Entry α β (Node α β))) : IsEntriesNode (Node.entries entries)
 
 abbrev EntriesNode (α β) := { n : Node α β // IsEntriesNode n }
@@ -81,7 +81,7 @@ private theorem size_set {ks : Array α} {vs : Array β} (h : ks.size = vs.size)
 private theorem size_push {ks : Array α} {vs : Array β} (h : ks.size = vs.size) (k : α) (v : β) : (ks.push k).size = (vs.push v).size := by
   simp [h]
 
-partial def insertAtCollisionNodeAux [BEq α] : CollisionNode α β → Nat → α → β → CollisionNode α β
+partial def insertAtCollisionNodeAux [BEq α] : CollisionNode α β  Nat  α  β  CollisionNode α β
   | n@⟨Node.collision keys vals heq, _⟩, i, k, v =>
     if h : i < keys.size then
       let k' := keys[i];
@@ -93,10 +93,10 @@ partial def insertAtCollisionNodeAux [BEq α] : CollisionNode α β → Nat → 
       ⟨Node.collision (keys.push k) (vals.push v) (size_push heq k v), IsCollisionNode.mk _ _ _⟩
   | ⟨Node.entries _, h⟩, _, _, _ => nomatch h
 
-def insertAtCollisionNode [BEq α] : CollisionNode α β → α → β → CollisionNode α β :=
+def insertAtCollisionNode [BEq α] : CollisionNode α β  α  β  CollisionNode α β :=
   fun n k v => insertAtCollisionNodeAux n 0 k v
 
-def getCollisionNodeSize : CollisionNode α β → Nat
+def getCollisionNodeSize : CollisionNode α β  Nat
   | ⟨Node.collision keys _ _, _⟩ => keys.size
   | ⟨Node.entries _, h⟩          => nomatch h
 
@@ -107,7 +107,7 @@ def mkCollisionNode (k₁ : α) (v₁ : β) (k₂ : α) (v₂ : β) : Node α β
   let vs := (vs.push v₁).push v₂
   Node.collision ks vs rfl
 
-partial def insertAux [BEq α] [Hashable α] : Node α β → USize → USize → α → β → Node α β
+partial def insertAux [BEq α] [Hashable α] : Node α β  USize  USize  α  β  Node α β
   | Node.collision keys vals heq, _, depth, k, v =>
     let newNode := insertAtCollisionNode ⟨Node.collision keys vals heq, IsCollisionNode.mk _ _ _⟩ k v
     if depth >= maxDepth || getCollisionNodeSize newNode < maxCollisions then newNode.val
@@ -135,7 +135,7 @@ partial def insertAux [BEq α] [Hashable α] : Node α β → USize → USize �
         if k == k' then Entry.entry k v
         else Entry.ref $ mkCollisionNode k' v' k v
 
-def insert {_ : BEq α} {_ : Hashable α} : PersistentHashMap α β → α → β → PersistentHashMap α β
+def insert {_ : BEq α} {_ : Hashable α} : PersistentHashMap α β  α  β  PersistentHashMap α β
   | { root }, k, v => { root := insertAux root (hash k |>.toUSize) 1 k v }
 
 partial def findAtAux [BEq α] (keys : Array α) (vals : Array β) (heq : keys.size = vals.size) (i : Nat) (k : α) : Option β :=
@@ -146,7 +146,7 @@ partial def findAtAux [BEq α] (keys : Array α) (vals : Array β) (heq : keys.s
     else findAtAux keys vals heq (i+1) k
   else none
 
-partial def findAux [BEq α] : Node α β → USize → α → Option β
+partial def findAux [BEq α] : Node α β  USize  α  Option β
   | Node.entries entries, h, k =>
     let j     := (mod2Shift h shift).toNat
     match entries.get! j with
@@ -155,7 +155,7 @@ partial def findAux [BEq α] : Node α β → USize → α → Option β
     | Entry.entry k' v => if k == k' then some v else none
   | Node.collision keys vals heq, _, k => findAtAux keys vals heq 0 k
 
-def find? {_ : BEq α} {_ : Hashable α} : PersistentHashMap α β → α → Option β
+def find? {_ : BEq α} {_ : Hashable α} : PersistentHashMap α β  α  Option β
   | { root }, k => findAux root (hash k |>.toUSize) k
 
 instance {_ : BEq α} {_ : Hashable α} : GetElem (PersistentHashMap α β) α (Option β) fun _ _ => True where
@@ -177,7 +177,7 @@ partial def findEntryAtAux [BEq α] (keys : Array α) (vals : Array β) (heq : k
     else findEntryAtAux keys vals heq (i+1) k
   else none
 
-partial def findEntryAux [BEq α] : Node α β → USize → α → Option (α × β)
+partial def findEntryAux [BEq α] : Node α β  USize  α  Option (α × β)
   | Node.entries entries, h, k =>
     let j     := (mod2Shift h shift).toNat
     match entries.get! j with
@@ -186,7 +186,7 @@ partial def findEntryAux [BEq α] : Node α β → USize → α → Option (α �
     | Entry.entry k' v => if k == k' then some (k', v) else none
   | Node.collision keys vals heq, _, k => findEntryAtAux keys vals heq 0 k
 
-def findEntry? {_ : BEq α} {_ : Hashable α} : PersistentHashMap α β → α → Option (α × β)
+def findEntry? {_ : BEq α} {_ : Hashable α} : PersistentHashMap α β  α  Option (α × β)
   | { root }, k => findEntryAux root (hash k |>.toUSize) k
 
 partial def containsAtAux [BEq α] (keys : Array α) (vals : Array β) (heq : keys.size = vals.size) (i : Nat) (k : α) : Bool :=
@@ -196,7 +196,7 @@ partial def containsAtAux [BEq α] (keys : Array α) (vals : Array β) (heq : ke
     else containsAtAux keys vals heq (i+1) k
   else false
 
-partial def containsAux [BEq α] : Node α β → USize → α → Bool
+partial def containsAux [BEq α] : Node α β  USize  α  Bool
   | Node.entries entries, h, k =>
     let j     := (mod2Shift h shift).toNat
     match entries.get! j with
@@ -205,7 +205,7 @@ partial def containsAux [BEq α] : Node α β → USize → α → Bool
     | Entry.entry k' _ => k == k'
   | Node.collision keys vals heq, _, k => containsAtAux keys vals heq 0 k
 
-def contains [BEq α] [Hashable α] : PersistentHashMap α β → α → Bool
+def contains [BEq α] [Hashable α] : PersistentHashMap α β  α  Bool
   | { root }, k => containsAux root (hash k |>.toUSize) k
 
 partial def isUnaryEntries (a : Array (Entry α β (Node α β))) (i : Nat) (acc : Option (α × β)) : Option (α × β) :=
@@ -219,7 +219,7 @@ partial def isUnaryEntries (a : Array (Entry α β (Node α β))) (i : Nat) (acc
       | some _ => none
   else acc
 
-def isUnaryNode : Node α β → Option (α × β)
+def isUnaryNode : Node α β  Option (α × β)
   | Node.entries entries         => isUnaryEntries entries 0 none
   | Node.collision keys vals heq =>
     if h : 1 = keys.size then
@@ -229,7 +229,7 @@ def isUnaryNode : Node α β → Option (α × β)
     else
       none
 
-partial def eraseAux [BEq α] : Node α β → USize → α → Node α β
+partial def eraseAux [BEq α] : Node α β  USize  α  Node α β
   | n@(Node.collision keys vals heq), _, k =>
     match keys.indexOf? k with
     | some idx =>
@@ -254,16 +254,16 @@ partial def eraseAux [BEq α] : Node α β → USize → α → Node α β
       | none        => Node.entries (entries.set! j (Entry.ref newNode))
       | some (k, v) => Node.entries (entries.set! j (Entry.entry k v))
 
-def erase {_ : BEq α} {_ : Hashable α} : PersistentHashMap α β → α → PersistentHashMap α β
+def erase {_ : BEq α} {_ : Hashable α} : PersistentHashMap α β  α  PersistentHashMap α β
   | { root }, k =>
     let h := hash k |>.toUSize
     { root := eraseAux root h k }
 
 section
-variable {m : Type w → Type w'} [Monad m]
+variable {m : Type w  Type w'} [Monad m]
 variable {σ : Type w}
 
-partial def foldlMAux (f : σ → α → β → m σ) : Node α β → σ → m σ
+partial def foldlMAux (f : σ  α  β  m σ) : Node α β  σ  m σ
   | Node.collision keys vals heq, acc =>
     let rec traverse (i : Nat) (acc : σ) : m σ := do
       if h : i < keys.size then
@@ -281,18 +281,18 @@ partial def foldlMAux (f : σ → α → β → m σ) : Node α β → σ → m 
     | Entry.ref node  => foldlMAux f node acc)
     acc
 
-def foldlM {_ : BEq α} {_ : Hashable α} (map : PersistentHashMap α β) (f : σ → α → β → m σ) (init : σ) : m σ :=
+def foldlM {_ : BEq α} {_ : Hashable α} (map : PersistentHashMap α β) (f : σ  α  β  m σ) (init : σ) : m σ :=
   foldlMAux f map.root init
 
-def forM {_ : BEq α} {_ : Hashable α} (map : PersistentHashMap α β) (f : α → β → m PUnit) : m PUnit :=
+def forM {_ : BEq α} {_ : Hashable α} (map : PersistentHashMap α β) (f : α  β  m PUnit) : m PUnit :=
   map.foldlM (fun _ => f) ⟨⟩
 
-def foldl {_ : BEq α} {_ : Hashable α} (map : PersistentHashMap α β) (f : σ → α → β → σ) (init : σ) : σ :=
+def foldl {_ : BEq α} {_ : Hashable α} (map : PersistentHashMap α β) (f : σ  α  β  σ) (init : σ) : σ :=
   Id.run <| map.foldlM f init
 
 protected def forIn {_ : BEq α} {_ : Hashable α} [Monad m]
-    (map : PersistentHashMap α β) (init : σ) (f : α × β → σ → m (ForInStep σ)) : m σ := do
-  let intoError : ForInStep σ → Except σ σ
+    (map : PersistentHashMap α β) (init : σ) (f : α × β  σ  m (ForInStep σ)) : m σ := do
+  let intoError : ForInStep σ  Except σ σ
   | .done s => .error s
   | .yield s => .ok s
   let result ← foldlM (m := ExceptT σ m) map (init := init) fun s a b =>
@@ -305,7 +305,7 @@ instance {_ : BEq α} {_ : Hashable α} : ForIn m (PersistentHashMap α β) (α 
 
 end
 
-partial def mapMAux {α : Type u} {β : Type v} {σ : Type u} {m : Type u → Type w} [Monad m] (f : β → m σ) (n : Node α β) : m (Node α σ) := do
+partial def mapMAux {α : Type u} {β : Type v} {σ : Type u} {m : Type u  Type w} [Monad m] (f : β  m σ) (n : Node α β) : m (Node α σ) := do
   match n with
   | .collision keys vals heq =>
     let ⟨vals', h⟩ ← vals.mapM' f
@@ -317,11 +317,11 @@ partial def mapMAux {α : Type u} {β : Type v} {σ : Type u} {m : Type u → Ty
       | .ref node  => return .ref (← mapMAux f node)
     return .entries entries'
 
-def mapM {α : Type u} {β : Type v} {σ : Type u} {m : Type u → Type w} [Monad m] {_ : BEq α} {_ : Hashable α} (pm : PersistentHashMap α β) (f : β → m σ) : m (PersistentHashMap α σ) := do
+def mapM {α : Type u} {β : Type v} {σ : Type u} {m : Type u  Type w} [Monad m] {_ : BEq α} {_ : Hashable α} (pm : PersistentHashMap α β) (f : β  m σ) : m (PersistentHashMap α σ) := do
   let root ← mapMAux f pm.root
   return { root }
 
-def map {α : Type u} {β : Type v} {σ : Type u} {_ : BEq α} {_ : Hashable α} (pm : PersistentHashMap α β) (f : β → σ) : PersistentHashMap α σ :=
+def map {α : Type u} {β : Type v} {σ : Type u} {_ : BEq α} {_ : Hashable α} (pm : PersistentHashMap α β) (f : β  σ) : PersistentHashMap α σ :=
   Id.run <| pm.mapM f
 
 def toList {_ : BEq α} {_ : Hashable α} (m : PersistentHashMap α β) : List (α × β) :=
@@ -336,7 +336,7 @@ structure Stats where
   numCollisions : Nat := 0
   maxDepth      : Nat := 0
 
-partial def collectStats : Node α β → Stats → Nat → Stats
+partial def collectStats : Node α β  Stats  Nat  Stats
   | Node.collision keys _ _, stats, depth =>
     { stats with
       numNodes      := stats.numNodes + 1,

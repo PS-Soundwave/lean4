@@ -10,7 +10,7 @@ import Lean.Data.Lsp
 namespace Lean.Lsp
 
 class FileSource (α : Type) where
-  fileSource : α → DocumentUri
+  fileSource : α  DocumentUri
 export FileSource (fileSource)
 
 instance : FileSource Location :=

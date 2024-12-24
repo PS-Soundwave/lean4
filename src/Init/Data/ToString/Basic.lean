@@ -12,7 +12,7 @@ open Sum Subtype Nat
 open Std
 
 class ToString (α : Type u) where
-  toString : α → String
+  toString : α  String
 
 export ToString (toString)
 
@@ -40,7 +40,7 @@ instance {p : Prop} : ToString (Decidable p) := ⟨fun h =>
   | Decidable.isTrue _  => "true"
   | Decidable.isFalse _ => "false"⟩
 
-protected def List.toString [ToString α] : List α → String
+protected def List.toString [ToString α] : List α  String
   | [] => "[]"
   | [x] => "[" ++ toString x ++ "]"
   | x::xs => xs.foldl (· ++ ", " ++ toString ·) ("[" ++ toString x) |>.push ']'
@@ -108,10 +108,10 @@ instance {α : Type u} {β : Type v} [ToString α] [ToString β] : ToString (Sum
 instance {α : Type u} {β : Type v} [ToString α] [ToString β] : ToString (α × β) := ⟨fun (a, b) =>
   "(" ++ toString a ++ ", " ++ toString b ++ ")"⟩
 
-instance {α : Type u} {β : α → Type v} [ToString α] [∀ x, ToString (β x)] : ToString (Sigma β) := ⟨fun ⟨a, b⟩ =>
+instance {α : Type u} {β : α  Type v} [ToString α] [∀ x, ToString (β x)] : ToString (Sigma β) := ⟨fun ⟨a, b⟩ =>
   "⟨"  ++ toString a ++ ", " ++ toString b ++ "⟩"⟩
 
-instance {α : Type u} {p : α → Prop} [ToString α] : ToString (Subtype p) := ⟨fun s =>
+instance {α : Type u} {p : α  Prop} [ToString α] : ToString (Subtype p) := ⟨fun s =>
   toString (val s)⟩
 
 def String.toInt? (s : String) : Option Int := do

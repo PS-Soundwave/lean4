@@ -9,10 +9,10 @@ section Mathlib.Algebra.Group.Defs
 universe u v w
 
 class HSMul (α : Type u) (β : Type v) (γ : outParam (Type w)) where
-  hSMul : α → β → γ
+  hSMul : α  β  γ
 
 class SMul (M : Type u) (α : Type v) where
-  smul : M → α → α
+  smul : M  α  α
 
 infixr:73 " • " => HSMul.hSMul
 
@@ -23,8 +23,8 @@ end Mathlib.Algebra.Group.Defs
 
 section Mathlib.Data.FunLike.Basic
 
-class DFunLike (F : Sort _) (α : outParam (Sort _)) (β : outParam <| α → Sort _) where
-  coe : F → ∀ a : α, β a
+class DFunLike (F : Sort _) (α : outParam (Sort _)) (β : outParam <| α  Sort _) where
+  coe : F  ∀ a : α, β a
 
 abbrev FunLike F α β := DFunLike F α fun _ => β
 
@@ -77,7 +77,7 @@ end Mathlib.Algebra.SMulWithZero
 section Mathlib.GroupTheory.GroupAction.Hom
 
 class MulActionSemiHomClass (F : Type _)
-    {M N : outParam (Type _)} (φ : outParam (M → N))
+    {M N : outParam (Type _)} (φ : outParam (M  N))
     (X Y : outParam (Type _)) [SMul M X] [SMul N Y] [FunLike F X Y] : Prop where
   map_smulₛₗ : ∀ (f : F) (c : M) (x : X), f (c • x) = (φ c) • (f x)
 
@@ -92,7 +92,7 @@ variable {R S S₃ T M M₃ : Type _}
 class LinearMapClass (F : Type _) (R : outParam (Type _))
   (M M₂ : outParam (Type _)) [Add M] [Add M₂]
     [SMul R M] [SMul R M₂] [FunLike F M M₂]
-    extends MulActionSemiHomClass F (id : R → R) M M₂ : Prop
+    extends MulActionSemiHomClass F (id : R  R) M M₂ : Prop
 
 variable (F : Type _)
 variable [Zero R]

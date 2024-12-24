@@ -1,6 +1,6 @@
 inductive Syntax
-| atom : String → Syntax
-| node : String → Array Syntax → Syntax
+| atom : String  Syntax
+| node : String  Array Syntax  Syntax
 
 instance coe1 : HasCoe String Syntax := ⟨Syntax.atom⟩
 instance coe2 {α} : HasCoe (List α) (Array α) := ⟨List.toArray⟩

@@ -21,7 +21,7 @@ set_option pp.all true
 #print CommMonoid.toCommSemigroup
 
 class Inv (α : Type u) where
-  inv : α → α
+  inv : α  α
 
 postfix:100 "⁻¹" => Inv.inv
 
@@ -70,13 +70,13 @@ class Ring (α : Type u) extends AddCommGroup α, Monoid α, Distrib α
 class CommRing (α : Type u) extends Ring α, CommSemigroup α
 
 class NoZeroDivisors (α : Type u) extends Mul α, Zero α where
-  eq_zero_or_eq_zero_of_mul_eq_zero (a b : α) : a * b = 0 → a = 0 ∨ b = 0
+  eq_zero_or_eq_zero_of_mul_eq_zero (a b : α) : a * b = 0  a = 0  b = 0
 
 class IntegralDomain (α : Type u) extends CommRing α, NoZeroDivisors α, ZeroNeOne α
 
 class DivisionRing (α : Type u) extends Ring α, Inv α, ZeroNeOne α where
-  mul_inv_cancel {a : α} : a ≠ 0 → a * a⁻¹ = 1
-  inv_mul_cancel {a : α} : a ≠ 0 → a⁻¹ * a = 1
+  mul_inv_cancel {a : α} : a ≠ 0  a * a⁻¹ = 1
+  inv_mul_cancel {a : α} : a ≠ 0  a⁻¹ * a = 1
 
 class Field (α : Type u) extends DivisionRing α, CommRing α
 

@@ -1,9 +1,9 @@
 /- Underapplying a projection notation applies the 'this' argument to the wrong parameter.
    It should either fail or (preferably) construct an explicit lambda. -/
 
--- Char → Bool
+-- Char  Bool
 #check fun c => ['a', 'b'].elem c
--- List (List Char) → Bool
+-- List (List Char)  Bool
 #check ['a', 'b'].elem
 -- works
 #check fun (s : String) => s.split (fun c => ['a', 'b'].elem c)

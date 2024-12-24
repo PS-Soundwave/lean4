@@ -1,4 +1,4 @@
-def Op1 (F : Type u → Type v) α := F α
+def Op1 (F : Type u  Type v) α := F α
 
 namespace Op1
 

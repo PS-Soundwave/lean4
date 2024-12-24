@@ -18,14 +18,14 @@ set_option autoImplicit false
 
 universe u v w
 
-variable {α : Type u} {β : α → Type v} {γ : α → Type w}
+variable {α : Type u} {β : α  Type v} {γ : α  Type w}
 
 open List (Pairwise)
 
 namespace Std.DHashMap.Internal.List
 
 /-- Internal implementation detail of the hash map -/
-def keys : List ((a : α) × β a) → List α
+def keys : List ((a : α) × β a)  List α
   | [] => []
   | ⟨k, _⟩ :: l => k :: keys l
 
@@ -35,7 +35,7 @@ structure DistinctKeys [BEq α] (l : List ((a : α) × β a)) : Prop where
   distinct : Pairwise (fun a b => (a == b) = false) (keys l)
 
 /-- Internal implementation detail of the hash map -/
-def values {β : Type v} : List ((_ : α) × β) → List β
+def values {β : Type v} : List ((_ : α) × β)  List β
   | [] => []
   | ⟨_, v⟩ :: l => v :: values l
 

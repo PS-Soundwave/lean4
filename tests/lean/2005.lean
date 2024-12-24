@@ -3,7 +3,7 @@ open Lean
 
 syntax (docComment)? "foo" term : command
 
-def foo2 : Syntax → Nat
+def foo2 : Syntax  Nat
   | `($[$_]? foo !$_) => 1
   | `(foo -$_) => 2
   | _ => 0

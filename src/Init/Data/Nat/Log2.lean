@@ -8,7 +8,7 @@ import Init.Data.Nat.Linear
 
 namespace Nat
 
-theorem log2_terminates : ∀ n, n ≥ 2 → n / 2 < n
+theorem log2_terminates : ∀ n, n ≥ 2  n / 2 < n
   | 2, _ => by decide
   | 3, _ => by decide
   | n+4, _ => by

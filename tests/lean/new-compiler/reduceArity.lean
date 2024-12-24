@@ -4,7 +4,7 @@ open Lean Compiler LCNF
 
 set_option pp.funBinderTypes true
 set_option trace.Compiler.result true in
-def g (n : Nat) (a b : α) (f : α → α) :=
+def g (n : Nat) (a b : α) (f : α  α) :=
   match n with
   | 0 => a
   | n+1 => f (g n a b f)

@@ -16,7 +16,7 @@ def mkEagerLambdaLiftingName (n : Name) (idx : Nat) : Name :=
   Name.mkStr n ("_elambda_" ++ toString idx)
 
 @[export lean_is_eager_lambda_lifting_name]
-def isEagerLambdaLiftingName : Name → Bool
+def isEagerLambdaLiftingName : Name  Bool
   | .str p s => "_elambda".isPrefixOf s || isEagerLambdaLiftingName p
   | .num p _ => isEagerLambdaLiftingName p
   | _        => false
@@ -24,7 +24,7 @@ def isEagerLambdaLiftingName : Name → Bool
 /-- Return the name of new definitions in the a given declaration.
     Here we consider only declarations we generate code for.
     We use this definition to implement `add_and_compile`. -/
-def getDeclNamesForCodeGen : Declaration → List Name
+def getDeclNamesForCodeGen : Declaration  List Name
   | Declaration.defnDecl { name := n, .. }   => [n]
   | Declaration.mutualDefnDecl defs          => defs.map fun d => d.name
   | Declaration.opaqueDecl { name := n, .. } => [n]
@@ -48,7 +48,7 @@ def mkUnsafeRecName (declName : Name) : Name :=
 
 /-- Return `some _` if the given name was created using `mkUnsafeRecName` -/
 @[export lean_is_unsafe_rec_name]
-def isUnsafeRecName? : Name → Option Name
+def isUnsafeRecName? : Name  Option Name
   | .str n "_unsafe_rec" => some n
   | _ => none
 

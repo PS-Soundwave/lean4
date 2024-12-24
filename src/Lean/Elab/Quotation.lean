@@ -24,7 +24,7 @@ open TSyntax.Compat
 -- We should replace this by non-dependent lets in the future.
 
 /-- `C[$(e)]` ~> `let a := e; C[$a]`. Used in the implementation of antiquot splices. -/
-private partial def floatOutAntiquotTerms (stx : Syntax) : StateT (Syntax → TermElabM Syntax) TermElabM Syntax :=
+private partial def floatOutAntiquotTerms (stx : Syntax) : StateT (Syntax  TermElabM Syntax) TermElabM Syntax :=
   if isAntiquots stx && !isEscapedAntiquot (getCanonicalAntiquot stx) then
     let e := getAntiquotTerm (getCanonicalAntiquot stx)
     if !e.isIdent || !e.getId.isAtomic then
@@ -54,7 +54,7 @@ private def getSepStxFromSplice (splice : Syntax) : Syntax := Unhygienic.run do
   | "" => `(mkNullNode) -- sepByIdent uses the null node for separator-less enumerations
   | sep => `(mkAtom $(Syntax.mkStrLit sep))
 
-partial def mkTuple : Array Syntax → TermElabM Syntax
+partial def mkTuple : Array Syntax  TermElabM Syntax
   | #[]  => `(Unit.unit)
   | #[e] => return e
   | es   => do
@@ -64,7 +64,7 @@ partial def mkTuple : Array Syntax → TermElabM Syntax
 def resolveSectionVariable (sectionVars : NameMap Name) (id : Name) : List (Name × List String) :=
   -- decode macro scopes from name before recursion
   let extractionResult := extractMacroScopes id
-  let rec loop : Name → List String → List (Name × List String)
+  let rec loop : Name  List String  List (Name × List String)
     | id@(.str p s), projs =>
       -- NOTE: we assume that macro scopes always belong to the projected constant, not the projections
       let id := { extractionResult with name := id }.review
@@ -81,7 +81,7 @@ namespace ArrayStxBuilder
 
 def empty : ArrayStxBuilder := .inl #[]
 
-def build : ArrayStxBuilder → Term
+def build : ArrayStxBuilder  Term
   | .inl elems => quote elems
   | .inr arr   => arr
 
@@ -123,7 +123,7 @@ instance : Quote Syntax.Preresolved where
     | .decl n fs    => Unhygienic.run ``(Syntax.Preresolved.decl $(quote n) $(quote fs))
 
 /-- Elaborate the content of a syntax quotation term -/
-private partial def quoteSyntax : Syntax → TermElabM Term
+private partial def quoteSyntax : Syntax  TermElabM Term
   | Syntax.ident _ rawVal val preresolved => do
     if !hygiene.get (← getOptions) then
       return ← `(Syntax.ident info $(quote rawVal) $(quote val) $(quote preresolved))
@@ -305,7 +305,7 @@ open HeadCheck
 inductive MatchResult where
   /-- Pattern agrees with head check, remove and transform remaining alternative.
   If `exhaustive` is `false`, *also* include unchanged alternative in the "no" branch. -/
-  | covered (f : Alt → TermElabM Alt) (exhaustive : Bool)
+  | covered (f : Alt  TermElabM Alt) (exhaustive : Bool)
   /-- Pattern disagrees with head check, include in "no" branch only -/
   | uncovered
   /-- Pattern is not quite sure yet; include unchanged in both branches -/
@@ -326,15 +326,15 @@ structure HeadInfo where
   /-- compute compatibility of pattern with given head check -/
   onMatch (taken : HeadCheck) : MatchResult
   /-- actually run the specified head check, with the discriminant bound to `__discr` -/
-  doMatch (yes : (newDiscrs : List Term) → TermElabM Term) (no : TermElabM Term) : TermElabM Term
+  doMatch (yes : (newDiscrs : List Term)  TermElabM Term) (no : TermElabM Term) : TermElabM Term
 
 /-- Adapt alternatives that do not introduce new discriminants in `doMatch`, but are covered by those that do so. -/
-private def noOpMatchAdaptPats : HeadCheck → Alt → Alt
+private def noOpMatchAdaptPats : HeadCheck  Alt  Alt
   | shape _ (some sz), (pats, rhs) => (List.replicate sz (Unhygienic.run `(_)) ++ pats, rhs)
   | slice p s,         (pats, rhs) => (List.replicate (p + 1 + s) (Unhygienic.run `(_)) ++ pats, rhs)
   | _,                 alt         => alt
 
-private def adaptRhs (fn : Term → TermElabM Term) : Alt → TermElabM Alt
+private def adaptRhs (fn : Term  TermElabM Term) : Alt  TermElabM Alt
   | (pats, rhs) => return (pats, ← fn rhs)
 
 private partial def getHeadInfo (alt : Alt) : TermElabM HeadInfo :=
@@ -342,7 +342,7 @@ private partial def getHeadInfo (alt : Alt) : TermElabM HeadInfo :=
   let unconditionally rhsFn := pure {
     check := unconditional,
     doMatch := fun yes _ => yes [],
-    onMatch := fun taken => covered (adaptRhs rhsFn ∘ noOpMatchAdaptPats taken) (taken matches unconditional)
+    onMatch := fun taken => covered (adaptRhs rhsFn  noOpMatchAdaptPats taken) (taken matches unconditional)
   }
   -- quotation pattern
   if isQuot pat then do
@@ -377,7 +377,7 @@ private partial def getHeadInfo (alt : Alt) : TermElabM HeadInfo :=
         onMatch := fun
           | taken@(shape ks' sz) =>
             if ks' == ks then
-              covered (adaptRhs rhsFn ∘ noOpMatchAdaptPats taken) (exhaustive := sz.isNone)
+              covered (adaptRhs rhsFn  noOpMatchAdaptPats taken) (exhaustive := sz.isNone)
             else uncovered
           | _ => undecided,
         doMatch := fun yes no => do
@@ -527,7 +527,7 @@ private partial def getHeadInfo (alt : Alt) : TermElabM HeadInfo :=
     | _               => throwErrorAt pat "match (syntax) : unexpected pattern kind {pat}"
 
 /-- Bind right-hand side to new `let_delayed` decl in order to prevent code duplication -/
-private def deduplicate (floatedLetDecls : Array Syntax) : Alt → TermElabM (Array Syntax × Alt)
+private def deduplicate (floatedLetDecls : Array Syntax) : Alt  TermElabM (Array Syntax × Alt)
   -- NOTE: new macro scope so that introduced bindings do not collide
   | (pats, rhs) => do
     if let `($_:ident $[ $_:ident]*) := rhs then
@@ -598,7 +598,7 @@ private partial def compileStxMatch (discrs : List Term) (alts : List Alt) : Ter
 
 abbrev IdxSet := Std.HashSet Nat
 
-private partial def hasNoErrorIfUnused : Syntax → Bool
+private partial def hasNoErrorIfUnused : Syntax  Bool
   | `(no_error_if_unused% $_) => true
   | `(clear% $_; $body) => hasNoErrorIfUnused body
   | _ => false

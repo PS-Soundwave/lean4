@@ -64,7 +64,7 @@ abbrev Delab := DelabM Term
 instance : Inhabited (DelabM α) where
   default := throw default
 
-@[inline] protected def orElse (d₁ : DelabM α) (d₂ : Unit → DelabM α) : DelabM α := do
+@[inline] protected def orElse (d₁ : DelabM α) (d₂ : Unit  DelabM α) : DelabM α := do
   catchInternalId delabFailureId d₁ fun _ => d₂ ()
 
 protected def failure : DelabM α :=
@@ -160,14 +160,14 @@ def getOptionsAtCurrPos : DelabM Options := do
   return opts
 
 /-- Evaluate option accessor, using subterm-specific options if set. -/
-def getPPOption (opt : Options → α) : DelabM α := do
+def getPPOption (opt : Options  α) : DelabM α := do
   return opt (← getOptionsAtCurrPos)
 
-def whenPPOption (opt : Options → Bool) (d : Delab) : Delab := do
+def whenPPOption (opt : Options  Bool) (d : Delab) : Delab := do
   let b ← getPPOption opt
   if b then d else failure
 
-def whenNotPPOption (opt : Options → Bool) (d : Delab) : Delab := do
+def whenNotPPOption (opt : Options  Bool) (d : Delab) : Delab := do
   let b ← getPPOption opt
   if b then failure else d
 
@@ -306,7 +306,7 @@ for the variable.
 If `preserveName` is `false` (the default), gives the binder an unused name.
 Otherwise, it tries to preserve the textual form of the name, preserving whether it is hygienic.
 -/
-def withBindingBodyUnusedName {α} (d : Syntax → DelabM α) (preserveName := false) : DelabM α := do
+def withBindingBodyUnusedName {α} (d : Syntax  DelabM α) (preserveName := false) : DelabM α := do
   let n ← getUnusedName (← getExpr).bindingName! (← getExpr).bindingBody! (preserveName := preserveName)
   withBindingBody' n (mkAnnotatedIdent n) (d ·)
 
@@ -315,7 +315,7 @@ inductive OmissionReason
   | proof
   | maxSteps
 
-def OmissionReason.toString : OmissionReason → String
+def OmissionReason.toString : OmissionReason  String
   | deep => "Term omitted due to its depth (see option `pp.deepTerms`)."
   | proof => "Proof omitted (see option `pp.proofs`)."
   | maxSteps => "Term omitted due to reaching the maximum number of steps allowed for pretty printing this expression (see option `pp.maxSteps`)."
@@ -399,7 +399,7 @@ def omission (reason : OmissionReason) : Delab := do
   addOmissionInfo (← getPos) stx (← getExpr) reason
   pure stx
 
-partial def delabFor : Name → Delab
+partial def delabFor : Name  Delab
   | Name.anonymous => failure
   | k              =>
     (do annotateTermInfoUnlessAnnotated (← (delabAttribute.getValues (← getEnv) k).firstM id))

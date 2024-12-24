@@ -6,4 +6,4 @@ foo
         (foo
           (foo
             (foo
-              (foo (foo (foo (foo (foo (foo (foo (foo (foo (foo (foo (foo (foo (foo id)))))))))))))))))))) : Nat → Nat
+              (foo (foo (foo (foo (foo (foo (foo (foo (foo (foo (foo (foo (foo (foo id)))))))))))))))))))) : Nat  Nat

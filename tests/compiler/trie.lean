@@ -36,19 +36,19 @@ def T := Trie String × Array String
 
 def T.empty : T := (.empty, .empty)
 
-def T.insert : T → String → T := fun (t,a) s =>
+def T.insert : T  String  T := fun (t,a) s =>
   (t.insert s s, if a.contains s then a else a.push s)
 
 /-- A convenience function for use in this test case -/
-def Array.sorted : Array String → Array String := fun a =>
+def Array.sorted : Array String  Array String := fun a =>
   a.qsort (fun s1 s2 => s1 < s2)
 
 /-- The intended semanics of `Trie.findPrefix` -/
-def Array.findPrefix : Array String → String → Array String := fun a s =>
+def Array.findPrefix : Array String  String  Array String := fun a s =>
   a.filter (fun s' => s.isPrefixOf s')
 
 /-- The intended semanics of `Trie.matchPrefix`: Longest prefix found in trie -/
-def Array.matchPrefix : Array String → String → Option String := fun a s => Id.run do
+def Array.matchPrefix : Array String  String  Option String := fun a s => Id.run do
   for i in List.reverse (List.range (s.length + 1)) do
     let pfix := s.take i
     if let some _ := a.find? (· == pfix) then
@@ -56,7 +56,7 @@ def Array.matchPrefix : Array String → String → Option String := fun a s => 
   return none
 
 
-def T.check : T → IO Unit := fun (t,a) => do
+def T.check : T  IO Unit := fun (t,a) => do
   -- Check lookup equivalence
   keys.forM fun s => do
     unless t.find? s = a.find? (· == s) do

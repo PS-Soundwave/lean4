@@ -1,5 +1,5 @@
 
-def f (x : Nat) : Nat × (Nat → String) :=
+def f (x : Nat) : Nat × (Nat  String) :=
 let x1 := x + 1;
 let x2 := x + 2;
 let x3 := x + 3;

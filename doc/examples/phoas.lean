@@ -16,7 +16,7 @@ lambda calculus with natural numbers as the base type.
 -/
 inductive Ty where
   | nat
-  | fn : Ty → Ty → Ty
+  | fn : Ty  Ty  Ty
 
 /-!
 We can write a function to translate `Ty` values to a Lean type
@@ -30,9 +30,9 @@ the builtin instance for `Add Nat` as the solution.
 Recall that the term `a.denote` is sugar for `denote a` where `denote` is the function being defined.
 We call it the "dot notation".
 -/
-@[reducible] def Ty.denote : Ty → Type
+@[reducible] def Ty.denote : Ty  Type
   | nat    => Nat
-  | fn a b => a.denote → b.denote
+  | fn a b => a.denote  b.denote
 
 /-!
 With HOAS, each object language binding construct is represented with a function of
@@ -42,13 +42,13 @@ imposed by the Lean kernel. An alternate higher-order encoding is parametric HOA
 and Weirich for Haskell and tweaked by Adam Chlipala for use in Coq. The key idea is to parameterize the
 declaration by a type family `rep` standing for a "representation of variables."
 -/
-inductive Term' (rep : Ty → Type) : Ty → Type
-  | var   : rep ty → Term' rep ty
-  | const : Nat → Term' rep .nat
-  | plus  : Term' rep .nat → Term' rep .nat → Term' rep .nat
-  | lam   : (rep dom → Term' rep ran) → Term' rep (.fn dom ran)
-  | app   : Term' rep (.fn dom ran) → Term' rep dom → Term' rep ran
-  | let   : Term' rep ty₁ → (rep ty₁ → Term' rep ty₂) → Term' rep ty₂
+inductive Term' (rep : Ty  Type) : Ty  Type
+  | var   : rep ty  Term' rep ty
+  | const : Nat  Term' rep .nat
+  | plus  : Term' rep .nat  Term' rep .nat  Term' rep .nat
+  | lam   : (rep dom  Term' rep ran)  Term' rep (.fn dom ran)
+  | app   : Term' rep (.fn dom ran)  Term' rep dom  Term' rep ran
+  | let   : Term' rep ty₁  (rep ty₁  Term' rep ty₂)  Term' rep ty₂
 
 /-!
 Lean accepts this definition because our embedded functions now merely take variables as
@@ -65,7 +65,7 @@ open Ty (nat fn)
 
 namespace FirstTry
 
-def Term (ty : Ty) := (rep : Ty → Type) → Term' rep ty
+def Term (ty : Ty) := (rep : Ty  Type)  Term' rep ty
 
 /-!
 In the next two example, note how each is written as a function over a `rep` choice,
@@ -86,7 +86,7 @@ we do not even need to name the `rep` argument! By using Lean implicit arguments
 we can completely hide `rep` in these examples.
 -/
 
-def Term (ty : Ty) := {rep : Ty → Type} → Term' rep ty
+def Term (ty : Ty) := {rep : Ty  Type}  Term' rep ty
 
 def add : Term (fn nat (fn nat nat)) :=
   .lam fun x => .lam fun y => .plus (.var x) (.var y)
@@ -105,7 +105,7 @@ cases for `lam` and `let`, we must provide the data value to annotate on the new
 pass beneath. For our current choice of `Unit` data, we always pass `()`.
 -/
 
-def countVars : Term' (fun _ => Unit) ty → Nat
+def countVars : Term' (fun _ => Unit) ty  Nat
   | .var _    => 1
   | .const _  => 0
   | .plus a b => countVars a + countVars b
@@ -149,7 +149,7 @@ with exactly one free variable, tagged with the appropriate substitute. During r
 new variables are added, but they are only tagged with their own term equivalents. Note
 that this function squash is parameterized over a specific `rep` choice.
 -/
-def squash : Term' (Term' rep) ty → Term' rep ty
+def squash : Term' (Term' rep) ty  Term' rep ty
  | .var e    => e
  | .const n  => .const n
  | .plus a b => .plus (squash a) (squash b)
@@ -161,7 +161,7 @@ def squash : Term' (Term' rep) ty → Term' rep ty
 To define the final substitution function over terms with single free variables, we define
 `Term1`, an analogue to Term that we defined before for closed terms.
 -/
-def Term1 (ty1 ty2 : Ty) := {rep : Ty → Type} → rep ty1 → Term' rep ty2
+def Term1 (ty1 ty2 : Ty) := {rep : Ty  Type}  rep ty1  Term' rep ty2
 
 /-!
 Substitution is defined by (1) instantiating a `Term1` to tag variables with terms and (2)
@@ -190,7 +190,7 @@ when we tag variables with their denotations.
 The attribute `[simp]` instructs Lean to always try to unfold `denote` applications when one applies
 the `simp` tactic. We also say this is a hint for the Lean term simplifier.
 -/
-@[simp] def denote : Term' Ty.denote ty → ty.denote
+@[simp] def denote : Term' Ty.denote ty  ty.denote
   | .var x    => x
   | .const n  => n
   | .plus a b => denote a + denote b
@@ -211,7 +211,7 @@ implement than usual, thanks to the novel ability to tag variables with data.
 We now define the constant folding optimization that traverses a term if replaces subterms such as
 `plus (const m) (const n)` with `const (n+m)`.
 -/
-@[simp] def constFold : Term' rep ty → Term' rep ty
+@[simp] def constFold : Term' rep ty  Term' rep ty
   | .var x    => .var x
   | .const n  => .const n
   | .app f a  => .app (constFold f) (constFold a)

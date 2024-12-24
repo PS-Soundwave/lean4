@@ -1,5 +1,5 @@
 
-def foo : Nat → Nat → Nat
+def foo : Nat  Nat  Nat
   | 0, m => match m with | 0 => 0 | m => m
   | n+1, m => foo n m
 termination_by n => n
@@ -7,7 +7,7 @@ termination_by n => n
 /--
 info: equations:
 theorem foo.eq_1 : foo 0 0 = 0
-theorem foo.eq_2 : ∀ (x : Nat), (x = 0 → False) → foo 0 x = x
+theorem foo.eq_2 : ∀ (x : Nat), (x = 0  False)  foo 0 x = x
 theorem foo.eq_3 : ∀ (x n : Nat), foo n.succ x = foo n x
 -/
 #guard_msgs in
@@ -32,7 +32,7 @@ info: foo.eq_def (x✝ x✝¹ : Nat) :
 
 
 set_option backward.eqns.deepRecursiveSplit false in
-def bar : Nat → Nat → Nat
+def bar : Nat  Nat  Nat
   | 0, m => match m with | 0 => 0 | m => m
   | n+1, m => bar n m
 termination_by n => n
@@ -66,7 +66,7 @@ info: bar.eq_def (x✝ x✝¹ : Nat) :
 
 namespace Structural
 
-def foo : Nat → Nat → Nat
+def foo : Nat  Nat  Nat
   | 0, m => match m with | 0 => 0 | m => m
   | n+1, m => foo n m
 termination_by structural n => n
@@ -74,7 +74,7 @@ termination_by structural n => n
 /--
 info: equations:
 theorem Structural.foo.eq_1 : foo 0 0 = 0
-theorem Structural.foo.eq_2 : ∀ (x : Nat), (x = 0 → False) → foo 0 x = x
+theorem Structural.foo.eq_2 : ∀ (x : Nat), (x = 0  False)  foo 0 x = x
 theorem Structural.foo.eq_3 : ∀ (x n : Nat), foo n.succ x = foo n x
 -/
 #guard_msgs in
@@ -99,7 +99,7 @@ info: Structural.foo.eq_def (x✝ x✝¹ : Nat) :
 
 
 set_option backward.eqns.deepRecursiveSplit false in
-def bar : Nat → Nat → Nat
+def bar : Nat  Nat  Nat
   | 0, m => match m with | 0 => 0 | m => m
   | n+1, m => bar n m
 termination_by n => n

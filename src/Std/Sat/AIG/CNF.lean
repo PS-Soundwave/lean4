@@ -38,10 +38,10 @@ def atomToCNF (output : α) (atom : α) : CNF α :=
 Produce a Tseitin style CNF for a `Decl.gate`, using `output` as the tree node variable.
 -/
 def gateToCNF (output : α) (lhs rhs : α) (linv rinv : Bool) : CNF α :=
-    -- a ↔ (b and c) as CNF: (¬a ∨ b) ∧ (¬a ∨ c) ∧ (a ∨ ¬b ∨ ¬c)
-    -- a ↔ (b and ¬c) as CNF: (¬a ∨ b) ∧ (¬a ∨ ¬c) ∧ (a ∨ ¬b ∨ c)
-    -- a ↔ (¬b and c) as CNF: (¬a ∨ ¬b) ∧ (¬a ∨ c) ∧ (a ∨ b ∨ ¬c)
-    -- a ↔ (¬b and ¬c) as CNF: (¬a ∨ ¬b) ∧ (¬a ∨ ¬c) ∧ (a ∨ b ∨ c)
+    -- a ↔ (b and c) as CNF: (¬a  b) ∧ (¬a  c) ∧ (a  ¬b  ¬c)
+    -- a ↔ (b and ¬c) as CNF: (¬a  b) ∧ (¬a  ¬c) ∧ (a  ¬b  c)
+    -- a ↔ (¬b and c) as CNF: (¬a  ¬b) ∧ (¬a  c) ∧ (a  b  ¬c)
+    -- a ↔ (¬b and ¬c) as CNF: (¬a  ¬b) ∧ (¬a  ¬c) ∧ (a  b  c)
    [
      [(output, false), (lhs, !linv)],
      [(output, false), (rhs, !rinv)],
@@ -90,20 +90,20 @@ Mix:
 2. An assignment for auxiliary Tseitin variables
 into an assignment that can be used by a CNF produced by our Tseitin transformation.
 -/
-def mixAssigns {aig : AIG Nat} (assign1 : Nat → Bool) (assign2 : Fin aig.decls.size → Bool) :
-    CNFVar aig → Bool
+def mixAssigns {aig : AIG Nat} (assign1 : Nat  Bool) (assign2 : Fin aig.decls.size  Bool) :
+    CNFVar aig  Bool
   | .inl var => assign1 var
   | .inr var => assign2 var
 
 /--
 Project the atom assignment out of a CNF assignment
 -/
-def projectLeftAssign (assign : CNFVar aig → Bool) : Nat → Bool := (assign <| .inl ·)
+def projectLeftAssign (assign : CNFVar aig  Bool) : Nat  Bool := (assign <| .inl ·)
 
 /--
 Project the auxiliary variable assignment out of a CNF assignment
 -/
-def projectRightAssign (assign : CNFVar aig → Bool) : (idx : Nat) → (idx < aig.decls.size) → Bool :=
+def projectRightAssign (assign : CNFVar aig  Bool) : (idx : Nat)  (idx < aig.decls.size)  Bool :=
   fun idx h => assign (.inr ⟨idx, h⟩)
 
 @[simp]
@@ -120,7 +120,7 @@ Given an atom assignment, produce an assignment that will always satisfy the CNF
 Tseitin transformation. This is done by combining the atom assignment with an assignment for the
 auxiliary variables, that just evaluates the AIG at the corresponding node.
 -/
-def cnfSatAssignment (aig : AIG Nat) (assign1 : Nat → Bool) : CNFVar aig → Bool :=
+def cnfSatAssignment (aig : AIG Nat) (assign1 : Nat  Bool) : CNFVar aig  Bool :=
   mixAssigns assign1 (fun idx => ⟦aig, ⟨idx.val, idx.isLt⟩, assign1⟧)
 
 @[simp]
@@ -154,7 +154,7 @@ structure Cache.Inv (cnf : CNF (CNFVar aig)) (marks : Array Bool) (hmarks : mark
   some assignment, we can evaluate the marked node under the atom part of that assignment and will
   get the value that was assigned to the corresponding auxiliary variable as a result.
   -/
-  heval : ∀ (assign : CNFVar aig → Bool) (_heval : cnf.eval assign = true) (idx : Nat)
+  heval : ∀ (assign : CNFVar aig  Bool) (_heval : cnf.eval assign = true) (idx : Nat)
             (hbound : idx < aig.decls.size) (_hmark : marks[idx]'(by omega) = true),
               ⟦aig, ⟨idx, hbound⟩, projectLeftAssign assign⟧ = (projectRightAssign assign) idx hbound
 
@@ -199,7 +199,7 @@ structure Cache.IsExtensionBy (cache1 : Cache aig cnf1) (cache2 : Cache aig cnf2
   -/
   extension : ∀ (idx : Nat) (hidx : idx < aig.decls.size),
                 cache1.marks[idx]'(by have := cache1.hmarks; omega) = true
-                  →
+                  
                 cache2.marks[idx]'(by have := cache2.hmarks; omega) = true
   /--
   The second cache is true at the new index.
@@ -389,7 +389,7 @@ The key invariant about the `State` itself (without cache): The CNF we produce i
 at `cnfSatAssignment`.
 -/
 def State.Inv (cnf : CNF (CNFVar aig)) : Prop :=
-  ∀ (assign1 : Nat → Bool), cnf.Sat (cnfSatAssignment aig assign1)
+  ∀ (assign1 : Nat  Bool), cnf.Sat (cnfSatAssignment aig assign1)
 
 /--
 The `State` invariant always holds when we have an empty CNF.
@@ -542,13 +542,13 @@ def State.addGate (state : State aig) {hlb} {hrb} (idx : Nat) (h : idx < aig.dec
 /--
 Evaluate the CNF contained within the state.
 -/
-def State.eval (assign : CNFVar aig → Bool) (state : State aig) : Bool :=
+def State.eval (assign : CNFVar aig  Bool) (state : State aig) : Bool :=
   state.cnf.eval assign
 
 /--
 The CNF within the state is sat.
 -/
-def State.Sat (assign : CNFVar aig → Bool) (state : State aig) : Prop :=
+def State.Sat (assign : CNFVar aig  Bool) (state : State aig) : Prop :=
   state.cnf.Sat assign
 
 /--
@@ -557,7 +557,7 @@ The CNF within the state is unsat.
 def State.Unsat (state : State aig) : Prop :=
   state.cnf.Unsat
 
-theorem State.sat_def (assign : CNFVar aig → Bool) (state : State aig) :
+theorem State.sat_def (assign : CNFVar aig  Bool) (state : State aig) :
     state.Sat assign ↔ state.cnf.Sat assign := by
   rfl
 
@@ -623,7 +623,7 @@ The function we use to convert from CNF with explicit auxiliary variables to jus
 in `toCNF` is an injection.
 -/
 theorem toCNF.inj_is_injection {aig : AIG Nat} (a b : CNFVar aig) :
-    toCNF.inj a = toCNF.inj b → a = b := by
+    toCNF.inj a = toCNF.inj b  a = b := by
   intro h
   cases a with
   | inl =>
@@ -657,7 +657,7 @@ theorem toCNF.go_marks :
 /--
 The CNF returned by `go` will always be SAT at `cnfSatAssignment`.
 -/
-theorem toCNF.go_sat (aig : AIG Nat) (start : Nat) (h1 : start < aig.decls.size) (assign1 : Nat → Bool)
+theorem toCNF.go_sat (aig : AIG Nat) (start : Nat) (h1 : start < aig.decls.size) (assign1 : Nat  Bool)
     (state : toCNF.State aig) :
     (go aig start h1 state).val.Sat (cnfSatAssignment aig assign1)  := by
   have := (go aig start h1 state).val.inv assign1
@@ -665,7 +665,7 @@ theorem toCNF.go_sat (aig : AIG Nat) (start : Nat) (h1 : start < aig.decls.size)
   simp [this]
 
 theorem toCNF.go_as_denote' (aig : AIG Nat) (start) (h1) (assign1) :
-    ⟦aig, ⟨start, h1⟩, assign1⟧ → (go aig start h1 (.empty aig)).val.eval (cnfSatAssignment aig assign1) := by
+    ⟦aig, ⟨start, h1⟩, assign1⟧  (go aig start h1 (.empty aig)).val.eval (cnfSatAssignment aig assign1) := by
   have := go_sat aig start h1 assign1 (.empty aig)
   simp only [State.Sat, CNF.sat_def] at this
   simp [this]
@@ -675,7 +675,7 @@ Connect SAT results about the CNF to SAT results about the AIG.
 -/
 theorem toCNF.go_as_denote (aig : AIG Nat) (start) (h1) (assign1) :
     ((⟦aig, ⟨start, h1⟩, assign1⟧ && (go aig start h1 (.empty aig)).val.eval (cnfSatAssignment aig assign1)) = sat?)
-      →
+      
     (⟦aig, ⟨start, h1⟩, assign1⟧ = sat?) := by
   have := go_as_denote' aig start h1 assign1
   by_cases CNF.eval (cnfSatAssignment aig assign1) (go aig start h1 (State.empty aig)).val.cnf <;> simp_all
@@ -683,9 +683,9 @@ theorem toCNF.go_as_denote (aig : AIG Nat) (start) (h1) (assign1) :
 /--
 Connect SAT results about the AIG to SAT results about the CNF.
 -/
-theorem toCNF.denote_as_go {assign : AIG.CNFVar aig → Bool}:
+theorem toCNF.denote_as_go {assign : AIG.CNFVar aig  Bool}:
     (⟦aig, ⟨start, h1⟩, projectLeftAssign assign⟧ = false)
-      →
+      
     CNF.eval assign (([(.inr ⟨start, h1⟩, true)] :: (go aig start h1 (.empty aig)).val.cnf)) = false := by
   intro h
   match heval1:(go aig start h1 (State.empty aig)).val.cnf.eval assign with

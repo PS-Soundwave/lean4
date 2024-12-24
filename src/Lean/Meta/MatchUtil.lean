@@ -10,13 +10,13 @@ import Lean.Meta.CtorRecognizer
 
 namespace Lean.Meta
 
-@[inline] def testHelper (e : Expr) (p : Expr → MetaM Bool) : MetaM Bool := do
+@[inline] def testHelper (e : Expr) (p : Expr  MetaM Bool) : MetaM Bool := do
   if (← p e) then
     return true
   else
     p (← whnf e)
 
-@[inline] def matchHelper? (e : Expr) (p? : Expr → MetaM (Option α)) : MetaM (Option α) := do
+@[inline] def matchHelper? (e : Expr) (p? : Expr  MetaM (Option α)) : MetaM (Option α) := do
   match (← p? e) with
   | none => p? (← whnf e)
   | s    => return s

@@ -26,7 +26,7 @@ theorem Bool.not_beq_not : ∀ (a b : Bool), ((!a) == (!b)) = (a == b) := by
   decide
 
 @[bv_normalize]
-theorem BitVec.not_beq_not (a b : BitVec w) : (~~~a == ~~~b) = (a == b) := by
+theorem BitVec.not_beq_not (a b : BitVec w) : (a == b) = (a == b) := by
   match h : a == b with
   | true => simp_all
   | false =>

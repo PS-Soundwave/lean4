@@ -4,7 +4,7 @@ import Lean.Meta
 open Lean
 open Lean.Meta
 
-axiom simple : forall {p q : Prop}, p → q → p
+axiom simple : forall {p q : Prop}, p  q  p
 
 def print (msg : MessageData) : MetaM Unit := do
 trace[Meta.Tactic] msg

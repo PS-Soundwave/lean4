@@ -9,7 +9,7 @@ def f1 (x : Nat) : Except String Nat :=
 namespace Lean.Elab
 open Lsp
 
-def identOf : Info → Option (RefIdent × Bool)
+def identOf : Info  Option (RefIdent × Bool)
   | .ofTermInfo ti => match ti.expr with
     | .const n .. => some (.const (`anonymous).toString n.toString, ti.isBinder)
     | .fvar id .. => some (.fvar (`anonymous).toString id.name.toString, ti.isBinder)

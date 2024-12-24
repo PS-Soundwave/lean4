@@ -15,15 +15,15 @@ namespace AIG
 variable {α : Type} [Hashable α] [DecidableEq α]
 
 class LawfulVecOperator (α : Type) [Hashable α] [DecidableEq α]
-    (β : AIG α → Nat → Type) (f : {len : Nat} → (aig : AIG α) → β aig len → RefVecEntry α len) where
+    (β : AIG α  Nat  Type) (f : {len : Nat}  (aig : AIG α)  β aig len  RefVecEntry α len) where
   le_size : ∀ (aig : AIG α) (input : β aig len), aig.decls.size ≤ (f aig input).aig.decls.size
   decl_eq : ∀ (aig : AIG α) (input : β aig len) (idx : Nat) (h1 : idx < aig.decls.size) (h2),
     (f aig input).aig.decls[idx]'h2 = aig.decls[idx]'h1
 
 namespace LawfulVecOperator
 
-variable {β : AIG α → Nat → Type}
-variable {f : {len : Nat} → (aig : AIG α) → β aig len → RefVecEntry α len}
+variable {β : AIG α  Nat  Type}
+variable {f : {len : Nat}  (aig : AIG α)  β aig len  RefVecEntry α len}
 variable [LawfulVecOperator α β f]
 
 theorem isPrefix_aig (aig : AIG α) (input : β aig len) :

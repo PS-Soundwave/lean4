@@ -24,7 +24,7 @@ open Nat
 -- because the definition in terms of `foldl` is not useful for proofs.
 theorem min?_cons' [Min α] {xs : List α} : (x :: xs).min? = foldl min x xs := rfl
 
-@[simp] theorem min?_cons [Min α] [Std.Associative (min : α → α → α)] {xs : List α} :
+@[simp] theorem min?_cons [Min α] [Std.Associative (min : α  α  α)] {xs : List α} :
     (x :: xs).min? = some (xs.min?.elim x (min x)) := by
   cases xs <;> simp [min?_cons', foldl_assoc]
 
@@ -35,8 +35,8 @@ theorem isSome_min?_of_mem {l : List α} [Min α] {a : α} (h : a ∈ l) :
     l.min?.isSome := by
   cases l <;> simp_all [List.min?_cons']
 
-theorem min?_mem [Min α] (min_eq_or : ∀ a b : α, min a b = a ∨ min a b = b) :
-    {xs : List α} → xs.min? = some a → a ∈ xs := by
+theorem min?_mem [Min α] (min_eq_or : ∀ a b : α, min a b = a  min a b = b) :
+    {xs : List α}  xs.min? = some a  a ∈ xs := by
   intro xs
   match xs with
   | nil => simp
@@ -59,7 +59,7 @@ theorem min?_mem [Min α] (min_eq_or : ∀ a b : α, min a b = a ∨ min a b = b
 
 theorem le_min?_iff [Min α] [LE α]
     (le_min_iff : ∀ a b c : α, a ≤ min b c ↔ a ≤ b ∧ a ≤ c) :
-    {xs : List α} → xs.min? = some a → ∀ {x}, x ≤ a ↔ ∀ b, b ∈ xs → x ≤ b
+    {xs : List α}  xs.min? = some a  ∀ {x}, x ≤ a ↔ ∀ b, b ∈ xs  x ≤ b
   | nil => by simp
   | cons x xs => by
     rw [min?]
@@ -77,9 +77,9 @@ theorem le_min?_iff [Min α] [LE α]
 -- and `le_min_iff`.
 theorem min?_eq_some_iff [Min α] [LE α] [anti : Std.Antisymm ((· : α) ≤ ·)]
     (le_refl : ∀ a : α, a ≤ a)
-    (min_eq_or : ∀ a b : α, min a b = a ∨ min a b = b)
+    (min_eq_or : ∀ a b : α, min a b = a  min a b = b)
     (le_min_iff : ∀ a b c : α, a ≤ min b c ↔ a ≤ b ∧ a ≤ c) {xs : List α} :
-    xs.min? = some a ↔ a ∈ xs ∧ ∀ b, b ∈ xs → a ≤ b := by
+    xs.min? = some a ↔ a ∈ xs ∧ ∀ b, b ∈ xs  a ≤ b := by
   refine ⟨fun h => ⟨min?_mem min_eq_or h, (le_min?_iff le_min_iff h).1 (le_refl _)⟩, ?_⟩
   intro ⟨h₁, h₂⟩
   cases xs with
@@ -99,7 +99,7 @@ theorem min?_replicate [Min α] {n : Nat} {a : α} (w : min a a = a) :
     (replicate n a).min? = some a := by
   simp [min?_replicate, Nat.ne_of_gt h, w]
 
-theorem foldl_min [Min α] [Std.IdempotentOp (min : α → α → α)] [Std.Associative (min : α → α → α)]
+theorem foldl_min [Min α] [Std.IdempotentOp (min : α  α  α)] [Std.Associative (min : α  α  α)]
     {l : List α} {a : α} : l.foldl (init := a) min = min a (l.min?.getD a) := by
   cases l <;> simp [min?, foldl_assoc, Std.IdempotentOp.idempotent]
 
@@ -111,7 +111,7 @@ theorem foldl_min [Min α] [Std.IdempotentOp (min : α → α → α)] [Std.Asso
 -- because the definition in terms of `foldl` is not useful for proofs.
 theorem max?_cons' [Max α] {xs : List α} : (x :: xs).max? = foldl max x xs := rfl
 
-@[simp] theorem max?_cons [Max α] [Std.Associative (max : α → α → α)] {xs : List α} :
+@[simp] theorem max?_cons [Max α] [Std.Associative (max : α  α  α)] {xs : List α} :
     (x :: xs).max? = some (xs.max?.elim x (max x)) := by
   cases xs <;> simp [max?_cons', foldl_assoc]
 
@@ -122,8 +122,8 @@ theorem isSome_max?_of_mem {l : List α} [Max α] {a : α} (h : a ∈ l) :
     l.max?.isSome := by
   cases l <;> simp_all [List.max?_cons']
 
-theorem max?_mem [Max α] (min_eq_or : ∀ a b : α, max a b = a ∨ max a b = b) :
-    {xs : List α} → xs.max? = some a → a ∈ xs
+theorem max?_mem [Max α] (min_eq_or : ∀ a b : α, max a b = a  max a b = b) :
+    {xs : List α}  xs.max? = some a  a ∈ xs
   | nil => by simp
   | cons x xs => by
     rw [max?]; rintro ⟨⟩
@@ -136,7 +136,7 @@ theorem max?_mem [Max α] (min_eq_or : ∀ a b : α, max a b = a ∨ max a b = b
 
 theorem max?_le_iff [Max α] [LE α]
     (max_le_iff : ∀ a b c : α, max b c ≤ a ↔ b ≤ a ∧ c ≤ a) :
-    {xs : List α} → xs.max? = some a → ∀ {x}, a ≤ x ↔ ∀ b ∈ xs, b ≤ x
+    {xs : List α}  xs.max? = some a  ∀ {x}, a ≤ x ↔ ∀ b ∈ xs, b ≤ x
   | nil => by simp
   | cons x xs => by
     rw [max?]; rintro ⟨⟩ y
@@ -148,7 +148,7 @@ theorem max?_le_iff [Max α] [LE α]
 -- and `le_min_iff`.
 theorem max?_eq_some_iff [Max α] [LE α] [anti : Std.Antisymm ((· : α) ≤ ·)]
     (le_refl : ∀ a : α, a ≤ a)
-    (max_eq_or : ∀ a b : α, max a b = a ∨ max a b = b)
+    (max_eq_or : ∀ a b : α, max a b = a  max a b = b)
     (max_le_iff : ∀ a b c : α, max b c ≤ a ↔ b ≤ a ∧ c ≤ a) {xs : List α} :
     xs.max? = some a ↔ a ∈ xs ∧ ∀ b ∈ xs, b ≤ a := by
   refine ⟨fun h => ⟨max?_mem max_eq_or h, (max?_le_iff max_le_iff h).1 (le_refl _)⟩, ?_⟩
@@ -170,7 +170,7 @@ theorem max?_replicate [Max α] {n : Nat} {a : α} (w : max a a = a) :
     (replicate n a).max? = some a := by
   simp [max?_replicate, Nat.ne_of_gt h, w]
 
-theorem foldl_max [Max α] [Std.IdempotentOp (max : α → α → α)] [Std.Associative (max : α → α → α)]
+theorem foldl_max [Max α] [Std.IdempotentOp (max : α  α  α)] [Std.Associative (max : α  α  α)]
     {l : List α} {a : α} : l.foldl (init := a) max = max a (l.max?.getD a) := by
   cases l <;> simp [max?, foldl_assoc, Std.IdempotentOp.idempotent]
 

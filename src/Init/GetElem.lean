@@ -60,7 +60,7 @@ Important instances include:
 
 -/
 class GetElem (coll : Type u) (idx : Type v) (elem : outParam (Type w))
-              (valid : outParam (coll → idx → Prop)) where
+              (valid : outParam (coll  idx  Prop)) where
   /--
   The syntax `arr[i]` gets the `i`'th element of the collection `arr`. If there
   are proof side conditions to the application, they will be automatically
@@ -85,12 +85,12 @@ abbrev decidableGetElem? [GetElem coll idx elem valid] (xs : coll) (i : idx) [De
 
 @[inherit_doc GetElem]
 class GetElem? (coll : Type u) (idx : Type v) (elem : outParam (Type w))
-    (valid : outParam (coll → idx → Prop)) extends GetElem coll idx elem valid where
+    (valid : outParam (coll  idx  Prop)) extends GetElem coll idx elem valid where
   /--
   The syntax `arr[i]?` gets the `i`'th element of the collection `arr`,
   if it is present (and wraps it in `some`), and otherwise returns `none`.
   -/
-  getElem? : coll → idx → Option elem
+  getElem? : coll  idx  Option elem
 
   /--
   The syntax `arr[i]!` gets the `i`'th element of the collection `arr`,
@@ -131,7 +131,7 @@ theorem getElem_congr_idx [GetElem coll idx elem valid] {c : coll} {i j : idx} {
   cases h'; rfl
 
 class LawfulGetElem (cont : Type u) (idx : Type v) (elem : outParam (Type w))
-   (dom : outParam (cont → idx → Prop)) [ge : GetElem? cont idx elem dom] : Prop where
+   (dom : outParam (cont  idx  Prop)) [ge : GetElem? cont idx elem dom] : Prop where
 
   getElem?_def (c : cont) (i : idx) [Decidable (dom c i)] :
       c[i]? = if h : dom c i then some (c[i]'h) else none := by

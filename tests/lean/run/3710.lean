@@ -1,4 +1,4 @@
-def Set := Nat → Prop
+def Set := Nat  Prop
 
 namespace Set
 

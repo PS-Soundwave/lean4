@@ -15,7 +15,7 @@ The set of expressions in Lean is defined inductively as follows:
 * ``x`` : where ``x`` is a variable in the local context in which the expression is interpreted
 * `m?`  : where `m?` is a metavariable in the metavariable context in which the expression is interpreted,
   you can view metavariable as a "hole" that still needs to be synthesized
-* ``(x : α) → β`` : the type of functions taking an element ``x`` of ``α`` to an element of ``β``,
+* ``(x : α)  β`` : the type of functions taking an element ``x`` of ``α`` to an element of ``β``,
   where ``β`` is an expression whose type is a ``Sort``
 * ``s t`` : the result of applying ``s`` to ``t``, where ``s`` and ``t`` are expressions
 * ``fun x : α => t`` or `λ x : α => t`: the function mapping any value ``x`` of type ``α`` to ``t``, where ``t`` is an expression
@@ -32,9 +32,9 @@ For an expression to be well formed, its components have to satisfy certain typi
 * ``c : α``, where ``α`` is the type that ``c`` has been declared or defined to have
 * ``x : α``, where ``α`` is the type that ``x`` has been assigned in the local context where it is interpreted
 * ``?m : α``, where ``α`` is the type that ``?m`` has been declared in the metavariable context where it is interpreted
-* ``(x : α) → β : Sort (imax u v)`` where ``α : Sort u``, and ``β : Sort v`` assuming ``x : α``
-* ``s t : β[t/x]`` where ``s`` has type ``(x : α) → β`` and ``t`` has type ``α``
-* ``(fun x : α => t) : (x : α) → β`` if ``t`` has type ``β`` whenever ``x`` has type ``α``
+* ``(x : α)  β : Sort (imax u v)`` where ``α : Sort u``, and ``β : Sort v`` assuming ``x : α``
+* ``s t : β[t/x]`` where ``s`` has type ``(x : α)  β`` and ``t`` has type ``α``
+* ``(fun x : α => t) : (x : α)  β`` if ``t`` has type ``β`` whenever ``x`` has type ``α``
 * ``(let x := t; s) : β[t/x]`` where ``t`` has type ``α`` and ``s`` has type ``β`` assuming ``x : α``
 * `lit : Nat` if `lit` is a numeral
 * `lit : String` if `lit` is a string literal
@@ -50,10 +50,10 @@ variable. We say "``α`` is a type" to express ``α : Type u`` for some
 contrast, given ``α : Type u`` for some ``u`` and ``t : α``, we
 sometimes refer to ``t`` as *data*.
 
-When the expression ``β`` in ``(x : α) → β`` does not depend on ``x``,
-it can be written ``α → β``. As usual, the variable ``x`` is bound in
-``(x : α) →  β``, ``fun x : α => t``, and ``let x := t; s``. The
-expression ``∀ x : α, β`` is alternative syntax for ``(x : α) →  β``,
+When the expression ``β`` in ``(x : α)  β`` does not depend on ``x``,
+it can be written ``α  β``. As usual, the variable ``x`` is bound in
+``(x : α)   β``, ``fun x : α => t``, and ``let x := t; s``. The
+expression ``∀ x : α, β`` is alternative syntax for ``(x : α)   β``,
 and is intended to be used when ``β`` is a proposition. An underscore
 can be used to generate an internal variable in a binder, as in
 ``fun _ : α => t``.
@@ -85,9 +85,9 @@ universe u
 #check Sort u
 #check Sort (u+1)
 
-#check Nat → Bool
-#check (α : Type u) → List α
-#check (α : Type u) → (β : Type u) → Sum α β
+#check Nat  Bool
+#check (α : Type u)  List α
+#check (α : Type u)  (β : Type u)  Sum α β
 #check fun x : Nat => x
 #check fun (α : Type u) (x : α) => x
 #check let x := 5; x * 2
@@ -154,7 +154,7 @@ def id3 {{α : Type u}} (x : α) : α := x
 
 #check id3 3
 #check @id3 Nat 3
-#check (id3 : (α : Type) → α → α)
+#check (id3 : (α : Type)  α  α)
 
 class Cls where
   val : Nat
@@ -254,9 +254,9 @@ end
 
 /- assertions -/
 #check ∀ a b c n : Nat,
-  a ≠ 0 ∧ b ≠ 0 ∧ c ≠ 0 ∧ n > 2 → a^n + b^n ≠ c^n
+  a ≠ 0 ∧ b ≠ 0 ∧ c ≠ 0 ∧ n > 2  a^n + b^n ≠ c^n
 
-def unbounded (f : Nat → Nat) : Prop := ∀ M, ∃ n, f n ≥ M
+def unbounded (f : Nat  Nat) : Prop := ∀ M, ∃ n, f n ≥ M
 ```
 .. _constructors_projections_and_matching:
 
@@ -296,7 +296,7 @@ Finally, for data types with one constructor, one destruct an element by pattern
     #check [1, 2, 3].append [2, 3, 4]
     #check [1, 2, 3].map (λ x, x^2)
 
-    example (p q : Prop) : p ∧ q → q ∧ p :=
+    example (p q : Prop) : p ∧ q  q ∧ p :=
     λ h, ⟨h.right, h.left⟩
 
     def swap_pair' (p : α × β) : β × α :=
@@ -305,10 +305,10 @@ Finally, for data types with one constructor, one destruct an element by pattern
     theorem swap_conj' {a b : Prop} (h : a ∧ b) : b ∧ a :=
     let ⟨ha, hb⟩ := h in ⟨hb, ha⟩
 
-    def swap_pair'' : α × β → β × α :=
+    def swap_pair'' : α × β  β × α :=
     λ ⟨x, y⟩, (y, x)
 
-    theorem swap_conj'' {a b : Prop} : a ∧ b → b ∧ a :=
+    theorem swap_conj'' {a b : Prop} : a ∧ b  b ∧ a :=
     assume ⟨ha, hb⟩, ⟨hb, ha⟩
 
 Structured Proofs
@@ -335,19 +335,19 @@ anonymous constructors and projections and match syntax can be used in proofs ju
 
 .. code-block:: lean
 
-    example (p q r : Prop) : p → (q ∧ r) → p ∧ q :=
+    example (p q r : Prop) : p  (q ∧ r)  p ∧ q :=
     assume h₁ : p,
     assume h₂ : q ∧ r,
     have h₃ : q, from and.left h₂,
     show p ∧ q, from and.intro h₁ h₃
 
-    example (p q r : Prop) : p → (q ∧ r) → p ∧ q :=
+    example (p q r : Prop) : p  (q ∧ r)  p ∧ q :=
     assume : p,
     assume : q ∧ r,
     have q, from and.left this,
     show p ∧ q, from and.intro ‹p› this
 
-    example (p q r : Prop) : p → (q ∧ r) → p ∧ q :=
+    example (p q r : Prop) : p  (q ∧ r)  p ∧ q :=
     assume h₁ : p,
     assume h₂ : q ∧ r,
     suffices h₃ : q, from and.intro h₁ h₃,
@@ -433,7 +433,7 @@ Every computable definition in Lean is compiled to bytecode at definition time. 
     #reduce @Nat.rec (λ n => Nat) (0 : Nat)
                      (λ n recval : Nat => recval + n + 1) (5 : Nat)
 
-    def g : Nat → Nat
+    def g : Nat  Nat
     | 0     => 0
     | (n+1) => g n + n + 1
 
@@ -477,7 +477,7 @@ In addition, the core library defines (and trusts) the following axiomatic exten
      namespace hide
 
      -- BEGIN
-     axiom propext {a b : Prop} : (a ↔ b) → a = b
+     axiom propext {a b : Prop} : (a ↔ b)  a = b
      -- END
 
      end hide
@@ -490,23 +490,23 @@ In addition, the core library defines (and trusts) the following axiomatic exten
      -- BEGIN
      universes u v
 
-     constant quot      : Π {α : Sort u}, (α → α → Prop) → Sort u
+     constant quot      : Π {α : Sort u}, (α  α  Prop)  Sort u
 
-     constant quot.mk   : Π {α : Sort u} (r : α → α → Prop),
-                          α → quot r
+     constant quot.mk   : Π {α : Sort u} (r : α  α  Prop),
+                          α  quot r
 
-     axiom    quot.ind  : ∀ {α : Sort u} {r : α → α → Prop}
-                            {β : quot r → Prop},
-                          (∀ a, β (quot.mk r a)) →
+     axiom    quot.ind  : ∀ {α : Sort u} {r : α  α  Prop}
+                            {β : quot r  Prop},
+                          (∀ a, β (quot.mk r a)) 
                             ∀ (q : quot r), β q
 
-     constant quot.lift : Π {α : Sort u} {r : α → α → Prop}
-                            {β : Sort u} (f : α → β),
-                          (∀ a b, r a b → f a = f b) → quot r → β
+     constant quot.lift : Π {α : Sort u} {r : α  α  Prop}
+                            {β : Sort u} (f : α  β),
+                          (∀ a b, r a b  f a = f b)  quot r  β
 
-     axiom quot.sound   : ∀ {α : Type u} {r : α → α → Prop}
+     axiom quot.sound   : ∀ {α : Type u} {r : α  α  Prop}
                             {a b : α},
-                          r a b → quot.mk r a = quot.mk r b
+                          r a b  quot.mk r a = quot.mk r b
      -- END
      end hide
 
@@ -524,7 +524,7 @@ In addition, the core library defines (and trusts) the following axiomatic exten
      universe u
 
      -- BEGIN
-     axiom choice {α : Sort u} : nonempty α → α
+     axiom choice {α : Sort u} : nonempty α  α
      -- END
 
      end hide
@@ -538,7 +538,7 @@ In addition, the core library defines (and trusts) the following axiomatic exten
 
      -- BEGIN
      class inductive nonempty (α : Sort u) : Prop
-     | intro : α → nonempty
+     | intro : α  nonempty
      -- END
 
      end hide

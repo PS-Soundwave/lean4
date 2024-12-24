@@ -1,2 +1,2 @@
 inductive Bug
-  | mk : (Unit → Nat → Bug) → Bug
+  | mk : (Unit  Nat  Bug)  Bug

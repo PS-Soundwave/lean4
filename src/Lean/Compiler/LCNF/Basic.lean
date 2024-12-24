@@ -44,7 +44,7 @@ inductive LitValue where
   -- TODO: add constructors for `Int`, `Float`, `UInt` ...
   deriving Inhabited, BEq, Hashable
 
-def LitValue.toExpr : LitValue → Expr
+def LitValue.toExpr : LitValue  Expr
   | .natVal v => .lit (.natVal v)
   | .strVal v => .lit (.strVal v)
 
@@ -183,7 +183,7 @@ inductive CodeDecl where
   | jp (decl : FunDecl)
   deriving Inhabited
 
-def CodeDecl.fvarId : CodeDecl → FVarId
+def CodeDecl.fvarId : CodeDecl  FVarId
   | .let decl | .fun decl | .jp decl => decl.fvarId
 
 def attachCodeDecls (decls : Array CodeDecl) (code : Code) : Code :=
@@ -231,25 +231,25 @@ mutual
     | _, _ => false
 end
 
-@[implemented_by eqImp] protected opaque Code.beq : Code → Code → Bool
+@[implemented_by eqImp] protected opaque Code.beq : Code  Code  Bool
 
 instance : BEq Code where
   beq := Code.beq
 
-@[implemented_by eqFunDecl] protected opaque FunDecl.beq : FunDecl → FunDecl → Bool
+@[implemented_by eqFunDecl] protected opaque FunDecl.beq : FunDecl  FunDecl  Bool
 
 instance : BEq FunDecl where
   beq := FunDecl.beq
 
-def AltCore.getCode : Alt → Code
+def AltCore.getCode : Alt  Code
   | .default k => k
   | .alt _ _ k => k
 
-def AltCore.getParams : Alt → Array Param
+def AltCore.getParams : Alt  Array Param
   | .default _ => #[]
   | .alt _ ps _ => ps
 
-def AltCore.forCodeM [Monad m] (alt : Alt) (f : Code → m Unit) : m Unit := do
+def AltCore.forCodeM [Monad m] (alt : Alt) (f : Code  m Unit) : m Unit := do
   match alt with
   | .default k => f k
   | .alt _ _ k => f k
@@ -335,7 +335,7 @@ private unsafe def updateParamCoreImp (p : Param) (type : Expr) : Param :=
 
 /--
 Low-level update `Param` function. It does not update the local context.
-Consider using `Param.update : Param → Expr → CompilerM Param` if you want the local context
+Consider using `Param.update : Param  Expr  CompilerM Param` if you want the local context
 to be updated.
 -/
 @[implemented_by updateParamCoreImp] opaque Param.updateCore (p : Param) (type : Expr) : Param
@@ -348,7 +348,7 @@ private unsafe def updateLetDeclCoreImp (decl : LetDecl) (type : Expr) (value : 
 
 /--
 Low-level update `LetDecl` function. It does not update the local context.
-Consider using `LetDecl.update : LetDecl → Expr → Expr → CompilerM LetDecl` if you want the local context
+Consider using `LetDecl.update : LetDecl  Expr  Expr  CompilerM LetDecl` if you want the local context
 to be updated.
 -/
 @[implemented_by updateLetDeclCoreImp] opaque LetDecl.updateCore (decl : LetDecl) (type : Expr) (value : LetValue) : LetDecl
@@ -361,7 +361,7 @@ private unsafe def updateFunDeclCoreImp (decl: FunDecl) (type : Expr) (params : 
 
 /--
 Low-level update `FunDecl` function. It does not update the local context.
-Consider using `FunDecl.update : LetDecl → Expr → Array Param → Code → CompilerM FunDecl` if you want the local context
+Consider using `FunDecl.update : LetDecl  Expr  Array Param  Code  CompilerM FunDecl` if you want the local context
 to be updated.
 -/
 @[implemented_by updateFunDeclCoreImp] opaque FunDeclCore.updateCore (decl: FunDecl) (type : Expr) (params : Array Param) (value : Code) : FunDecl
@@ -375,18 +375,18 @@ def CasesCore.extractAlt! (cases : Cases) (ctorName : Name) : Alt × Cases :=
   else
     unreachable!
 
-def AltCore.mapCodeM [Monad m] (alt : Alt) (f : Code → m Code) : m Alt := do
+def AltCore.mapCodeM [Monad m] (alt : Alt) (f : Code  m Code) : m Alt := do
   return alt.updateCode (← f alt.getCode)
 
-def Code.isDecl : Code → Bool
+def Code.isDecl : Code  Bool
   | .let .. | .fun .. | .jp .. => true
   | _ => false
 
-def Code.isFun : Code → Bool
+def Code.isFun : Code  Bool
   | .fun .. => true
   | _ => false
 
-def Code.isReturnOf : Code → FVarId → Bool
+def Code.isReturnOf : Code  FVarId  Bool
   | .return fvarId, fvarId' => fvarId == fvarId'
   | _, _ => false
 
@@ -419,7 +419,7 @@ where
     | .jmp .. => inc
     | .return .. | unreach .. => return ()
 
-partial def Code.forM [Monad m] (c : Code) (f : Code → m Unit) : m Unit :=
+partial def Code.forM [Monad m] (c : Code) (f : Code  m Unit) : m Unit :=
   go c
 where
   go (c : Code) : m Unit := do
@@ -478,28 +478,28 @@ inductive DeclValue where
   | extern (externAttrData : ExternAttrData)
   deriving Inhabited, BEq
 
-partial def DeclValue.size : DeclValue → Nat
+partial def DeclValue.size : DeclValue  Nat
   | .code c => c.size
   | .extern .. => 0
 
-def DeclValue.mapCode (f : Code → Code) : DeclValue → DeclValue :=
+def DeclValue.mapCode (f : Code  Code) : DeclValue  DeclValue :=
   fun
     | .code c => .code (f c)
     | .extern e => .extern e
 
-def DeclValue.mapCodeM [Monad m] (f : Code → m Code) : DeclValue → m DeclValue :=
+def DeclValue.mapCodeM [Monad m] (f : Code  m Code) : DeclValue  m DeclValue :=
   fun v => do
     match v with
     | .code c => return .code (← f c)
     | .extern .. => return v
 
-def DeclValue.forCodeM [Monad m] (f : Code → m Unit) : DeclValue → m Unit :=
+def DeclValue.forCodeM [Monad m] (f : Code  m Unit) : DeclValue  m Unit :=
   fun v => do
     match v with
     | .code c => f c
     | .extern .. => return ()
 
-def DeclValue.isCodeAndM [Monad m] (v : DeclValue) (f : Code → m Bool) : m Bool :=
+def DeclValue.isCodeAndM [Monad m] (v : DeclValue) (f : Code  m Bool) : m Bool :=
   match v with
   | .code c => f c
   | .extern .. => pure false
@@ -648,11 +648,11 @@ def Decl.isTemplateLike (decl : Decl) : CoreM Bool := do
   else
     return false
 
-private partial def collectType (e : Expr) : FVarIdSet → FVarIdSet :=
+private partial def collectType (e : Expr) : FVarIdSet  FVarIdSet :=
   match e with
-  | .forallE _ d b _ => collectType b ∘ collectType d
-  | .lam _ d b _     => collectType b ∘ collectType d
-  | .app f a         => collectType f ∘ collectType a
+  | .forallE _ d b _ => collectType b  collectType d
+  | .lam _ d b _     => collectType b  collectType d
+  | .app f a         => collectType f  collectType a
   | .fvar fvarId     => fun s => s.insert fvarId
   | .proj .. | .letE .. | .mdata .. => unreachable!
   | _                => id

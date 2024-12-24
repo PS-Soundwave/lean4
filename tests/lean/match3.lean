@@ -36,37 +36,37 @@ by {
   assumption
 }
 
-theorem ex7 (a : Bool) (p q : Prop) (h₁ : a = true → p) (h₂ : a = false → q) : p ∨ q :=
+theorem ex7 (a : Bool) (p q : Prop) (h₁ : a = true  p) (h₂ : a = false  q) : p  q :=
   match (generalizing := false) h:a with
   | true  => Or.inl $ h₁ h
   | false => Or.inr $ h₂ h
 
-theorem ex7' (a : Bool) (p q : Prop) (h₁ : a = true → p) (h₂ : a = false → q) : p ∨ q :=
+theorem ex7' (a : Bool) (p q : Prop) (h₁ : a = true  p) (h₂ : a = false  q) : p  q :=
   match a with
   | true  => Or.inl $ h₁ rfl
   | false => Or.inr $ h₂ rfl
 
-def head {α} (xs : List α) (h : xs = [] → False) : α :=
+def head {α} (xs : List α) (h : xs = []  False) : α :=
   match he:xs with
   | []   => by contradiction
   | x::_ => x
 
-variable {α : Type u} {p : α → Prop}
+variable {α : Type u} {p : α  Prop}
 
 theorem ex8 {a1 a2 : {x // p x}} (h : a1.val = a2.val) : a1 = a2 :=
 match a1, a2, h with
 | ⟨_, _⟩, ⟨_, _⟩, rfl => rfl
 
 universe v
-variable {β : α → Type v}
+variable {β : α  Type v}
 
 theorem ex9 {p₁ p₂ : Sigma (fun a => β a)} (h₁ : p₁.1 = p₂.1) (h : p₁.2 ≅ p₂.2) : p₁ = p₂ :=
 match p₁, p₂, h₁, h with
 | ⟨_, _⟩, ⟨_, _⟩, rfl, HEq.refl _ => rfl
 
-inductive F : Nat → Type
-| z : {n : Nat} → F (n+1)
-| s : {n : Nat} → F n → F (n+1)
+inductive F : Nat  Type
+| z : {n : Nat}  F (n+1)
+| s : {n : Nat}  F n  F (n+1)
 
 def f0 {α : Sort u} (x : F 0) : α :=
 nomatch x

@@ -24,8 +24,8 @@ open Lean Elab Server Lsp RequestM Snapshots
 
 /-- A hole code action extension. -/
 abbrev HoleCodeAction :=
-  CodeActionParams → Snapshot →
-  (ctx : ContextInfo) → (hole : TermInfo) → RequestM (Array LazyCodeAction)
+  CodeActionParams  Snapshot 
+  (ctx : ContextInfo)  (hole : TermInfo)  RequestM (Array LazyCodeAction)
 
 /-- Read a hole code action from a declaration of the right type. -/
 def mkHoleCodeAction (n : Name) : ImportM HoleCodeAction := do
@@ -58,7 +58,7 @@ builtin_initialize
 
 /-- A command code action extension. -/
 abbrev CommandCodeAction :=
-  CodeActionParams → Snapshot → (ctx : ContextInfo) → (node : InfoTree) →
+  CodeActionParams  Snapshot  (ctx : ContextInfo)  (node : InfoTree) 
   RequestM (Array LazyCodeAction)
 
 /-- Read a command code action from a declaration of the right type. -/

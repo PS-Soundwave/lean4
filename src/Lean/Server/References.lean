@@ -511,7 +511,7 @@ def definitionOf?
 def definitionsMatching
     (self          : References)
     (srcSearchPath : SearchPath)
-    (filter        : Name → Option α)
+    (filter        : Name  Option α)
     (maxAmount?    : Option Nat := none) : IO $ Array (α × Location) := do
   let mut result := #[]
   for (module, refs) in self.allRefs.toList do

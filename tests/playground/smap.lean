@@ -3,7 +3,7 @@ import init.lean.smap
 abbrev Map : Type := Lean.SMap Nat Bool (λ a b, a < b)
 
 @[extern "lean_smap_foreach_test"]
-constant foreachTest : Map → Nat := default _
+constant foreachTest : Map  Nat := default _
 
 def test1 (n₁ n₂ : Nat) : IO Unit :=
 let m : Map := {} in

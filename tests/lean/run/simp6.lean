@@ -39,7 +39,7 @@ theorem ex7 : (if "hello" = "world" then 1 else 2) = 2 := by
 theorem ex8 : (10 + 2000 = 20) = False :=
   by simp
 
-def fact : Nat → Nat
+def fact : Nat  Nat
   | 0 => 1
   | x+1 => (x+1) * fact x
 

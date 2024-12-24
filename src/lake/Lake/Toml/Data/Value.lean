@@ -36,7 +36,7 @@ abbrev Table := NameDict Value
 @[match_pattern] abbrev Value.table (ref : Syntax) (t : Table) :=
   Value.table' ref t
 
-@[inline] def Value.ref : Value → Syntax
+@[inline] def Value.ref : Value  Syntax
 | .string (ref := ref) .. => ref
 | .integer (ref := ref) .. => ref
 | .float (ref := ref) .. => ref

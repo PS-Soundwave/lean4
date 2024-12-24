@@ -1,5 +1,5 @@
 mutual
-  def f : Nat → α → α → α
+  def f : Nat  α  α  α
     | 0, a, b => a
     | n, a, b => g a n b |>.1
   termination_by n _ _ => (n, 2)
@@ -7,7 +7,7 @@ mutual
     apply Prod.Lex.right
     decide
 
-  def g : α → Nat → α → (α × α)
+  def g : α  Nat  α  (α × α)
     | a, 0, b => (a, b)
     | a, n, b => (h a b n, a)
   termination_by _ n _ => (n, 1)
@@ -15,7 +15,7 @@ mutual
     apply Prod.Lex.right
     decide
 
-  def h : α → α → Nat → α
+  def h : α  α  Nat  α
     | a, b, 0 => b
     | a, b, n+1 => f n a b
   termination_by _ _ n => (n, 0)
@@ -32,7 +32,7 @@ end
 #guard_msgs in
 #check @f.eq_1
 /--
-info: @f.eq_2 : ∀ {α : Type u_1} (x : Nat) (x_1 x_2 : α), (x = 0 → False) → f x x_1 x_2 = (g x_1 x x_2).fst
+info: @f.eq_2 : ∀ {α : Type u_1} (x : Nat) (x_1 x_2 : α), (x = 0  False)  f x x_1 x_2 = (g x_1 x x_2).fst
 -/
 #guard_msgs in
 #check @f.eq_2

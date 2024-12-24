@@ -2,11 +2,11 @@ set_option pp.mvars false
 
 namespace Test
 
-abbrev Set (α : Type) := α → Prop
-axiom setOf {α : Type} : (α → Prop) → Set α
-axiom mem {α : Type} : α → Set α → Prop
+abbrev Set (α : Type) := α  Prop
+axiom setOf {α : Type} : (α  Prop)  Set α
+axiom mem {α : Type} : α  Set α  Prop
 axiom univ {α : Type} : Set α
-axiom Union {α : Type} : Set (Set α) → Set α
+axiom Union {α : Type} : Set (Set α)  Set α
 
 syntax:100 (priority := high) term " ∈ " term:99 : term
 
@@ -33,9 +33,9 @@ macro_rules
 #guard_msgs in
 #check { 1 ≤ x < 10 | x ≠ 5 }
 
-/-- info: setOf fun f => f 1 > 0 : Set (Nat → Nat) -/
+/-- info: setOf fun f => f 1 > 0 : Set (Nat  Nat) -/
 #guard_msgs in
-#check { f : Nat → Nat | f 1  > 0 }
+#check { f : Nat  Nat | f 1  > 0 }
 
 syntax "⋃ " term ", " term : term
 

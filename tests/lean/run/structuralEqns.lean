@@ -33,7 +33,7 @@ def foo (xs ys zs : List Nat) : List Nat :=
 #guard_msgs in
 #eval tst ``foo
 
-def g : List Nat → List Nat → Nat
+def g : List Nat  List Nat  Nat
   | [],         y::ys => y
   | [],         ys    => 0
   | [x1],       ys    => g [] ys
@@ -82,7 +82,7 @@ def r (i j : Nat) : Nat :=
 #check r.eq_3
 #check r.eq_def
 
-def bla (f g : α → α → α) (a : α) (i : α) (j : Nat) : α :=
+def bla (f g : α  α  α) (a : α) (i : α) (j : Nat) : α :=
   f i <|
     match j with
     | Nat.zero => i

@@ -1,6 +1,6 @@
-inductive Vector' (α : Type u) : Nat → Type u
+inductive Vector' (α : Type u) : Nat  Type u
   | nil  : Vector' α 0
-  | cons : α → Vector' α n → Vector' α (n + 1)
+  | cons : α  Vector' α n  Vector' α (n + 1)
 
 def test [Monad m] (xs : Vector' α a) : m Unit :=
   match xs with

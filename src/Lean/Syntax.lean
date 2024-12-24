@@ -26,7 +26,7 @@ def String.Range.includes (super sub : String.Range) : Bool :=
 
 namespace Lean
 
-def SourceInfo.updateTrailing (trailing : Substring) : SourceInfo → SourceInfo
+def SourceInfo.updateTrailing (trailing : Substring) : SourceInfo  SourceInfo
   | SourceInfo.original leading pos _ endPos => SourceInfo.original leading pos trailing endPos
   | info                                     => info
 
@@ -38,7 +38,7 @@ Converts an `original` or `synthetic (canonical := true)` `SourceInfo` to a
 `synthetic (canonical := false)` `SourceInfo`.
 This is sometimes useful when `SourceInfo` is being moved around between `Syntax`es.
 -/
-def SourceInfo.nonCanonicalSynthetic : SourceInfo → SourceInfo
+def SourceInfo.nonCanonicalSynthetic : SourceInfo  SourceInfo
   | SourceInfo.original _ pos _ endPos => SourceInfo.synthetic pos endPos false
   | SourceInfo.synthetic pos endPos _  => SourceInfo.synthetic pos endPos false
   | SourceInfo.none                    => SourceInfo.none
@@ -47,14 +47,14 @@ deriving instance BEq for SourceInfo
 
 /-! # Syntax AST -/
 
-inductive IsNode : Syntax → Prop where
+inductive IsNode : Syntax  Prop where
   | mk (info : SourceInfo) (kind : SyntaxNodeKind) (args : Array Syntax) : IsNode (Syntax.node info kind args)
 
 def SyntaxNode : Type := {s : Syntax // IsNode s }
 
-def unreachIsNodeMissing {β} : IsNode Syntax.missing → β := nofun
-def unreachIsNodeAtom {β} {info val} : IsNode (Syntax.atom info val) → β := nofun
-def unreachIsNodeIdent {β info rawVal val preresolved} : IsNode (Syntax.ident info rawVal val preresolved) → β := nofun
+def unreachIsNodeMissing {β} : IsNode Syntax.missing  β := nofun
+def unreachIsNodeAtom {β} {info val} : IsNode (Syntax.atom info val)  β := nofun
+def unreachIsNodeIdent {β info rawVal val preresolved} : IsNode (Syntax.ident info rawVal val preresolved)  β := nofun
 
 def isLitKind (k : SyntaxNodeKind) : Bool :=
   k == strLitKind || k == numLitKind || k == charLitKind || k == nameLitKind || k == scientificLitKind
@@ -68,7 +68,7 @@ namespace SyntaxNode
   | ⟨Syntax.atom .., h⟩     => unreachIsNodeAtom h
   | ⟨Syntax.ident .., h⟩    => unreachIsNodeIdent h
 
-@[inline] def withArgs {β} (n : SyntaxNode) (fn : Array Syntax → β) : β :=
+@[inline] def withArgs {β} (n : SyntaxNode) (fn : Array Syntax  β) : β :=
   match n with
   | ⟨Syntax.node _ _ args, _⟩   => fn args
   | ⟨Syntax.missing, h⟩       => unreachIsNodeMissing h
@@ -84,7 +84,7 @@ namespace SyntaxNode
 @[inline] def getArgs (n : SyntaxNode) : Array Syntax :=
   withArgs n fun args => args
 
-@[inline] def modifyArgs (n : SyntaxNode) (fn : Array Syntax → Array Syntax) : Syntax :=
+@[inline] def modifyArgs (n : SyntaxNode) (fn : Array Syntax  Array Syntax) : Syntax :=
   match n with
   | ⟨Syntax.node i k args, _⟩  => Syntax.node i k (fn args)
   | ⟨Syntax.missing, h⟩        => unreachIsNodeMissing h
@@ -102,7 +102,7 @@ in e.g. diagnostics and the info tree. However, as we have a few request handler
 that are sensitive to whitespace information in the info tree, we currently use `eqWithInfo` instead
 for reuse checks.
 -/
-partial def structRangeEq : Syntax → Syntax → Bool
+partial def structRangeEq : Syntax  Syntax  Bool
   | .missing, .missing => true
   | .node info k args, .node info' k' args' =>
     info.getRange? == info'.getRange? && k == k' && args.isEqv args' structRangeEq
@@ -127,7 +127,7 @@ def structRangeEqWithTraceReuse (opts : Options) (stx1 stx2 : Syntax) : Bool :=
 
 
 /-- Full comparison of syntax structures and source infos.  -/
-partial def eqWithInfo : Syntax → Syntax → Bool
+partial def eqWithInfo : Syntax  Syntax  Bool
   | .missing, .missing => true
   | .node info k args, .node info' k' args' =>
     info == info' && k == k' && args.isEqv args' eqWithInfo
@@ -149,25 +149,25 @@ def eqWithInfoAndTraceReuse (opts : Options) (stx1 stx2 : Syntax) : Bool :=
     else
       false
 
-def getAtomVal : Syntax → String
+def getAtomVal : Syntax  String
   | atom _ val => val
   | _          => ""
 
-def setAtomVal : Syntax → String → Syntax
+def setAtomVal : Syntax  String  Syntax
   | atom info _, v => (atom info v)
   | stx,         _ => stx
 
-@[inline] def ifNode {β} (stx : Syntax) (hyes : SyntaxNode → β) (hno : Unit → β) : β :=
+@[inline] def ifNode {β} (stx : Syntax) (hyes : SyntaxNode  β) (hno : Unit  β) : β :=
   match stx with
   | Syntax.node i k args => hyes ⟨Syntax.node i k args, IsNode.mk i k args⟩
   | _                    => hno ()
 
-@[inline] def ifNodeKind {β} (stx : Syntax) (kind : SyntaxNodeKind) (hyes : SyntaxNode → β) (hno : Unit → β) : β :=
+@[inline] def ifNodeKind {β} (stx : Syntax) (kind : SyntaxNodeKind) (hyes : SyntaxNode  β) (hno : Unit  β) : β :=
   match stx with
   | Syntax.node i k args => if k == kind then hyes ⟨Syntax.node i k args, IsNode.mk i k args⟩ else hno ()
   | _                    => hno ()
 
-def asNode : Syntax → SyntaxNode
+def asNode : Syntax  SyntaxNode
   | Syntax.node info kind args => ⟨Syntax.node info kind args, IsNode.mk info kind args⟩
   | _                          => ⟨mkNullNode, IsNode.mk _ _ _⟩
 
@@ -179,22 +179,22 @@ Check for a `Syntax.ident` of the given name anywhere in the tree.
 This is usually a bad idea since it does not check for shadowing bindings,
 but in the delaborator we assume that bindings are never shadowed.
 -/
-partial def hasIdent (id : Name) : Syntax → Bool
+partial def hasIdent (id : Name) : Syntax  Bool
   | ident _ _ id' _ => id == id'
   | node _ _ args   => args.any (hasIdent id)
   | _               => false
 
-@[inline] def modifyArgs (stx : Syntax) (fn : Array Syntax → Array Syntax) : Syntax :=
+@[inline] def modifyArgs (stx : Syntax) (fn : Array Syntax  Array Syntax) : Syntax :=
   match stx with
   | node i k args => node i k (fn args)
   | stx           => stx
 
-@[inline] def modifyArg (stx : Syntax) (i : Nat) (fn : Syntax → Syntax) : Syntax :=
+@[inline] def modifyArg (stx : Syntax) (i : Nat) (fn : Syntax  Syntax) : Syntax :=
   match stx with
   | node info k args => node info k (args.modify i fn)
   | stx              => stx
 
-@[specialize] partial def replaceM {m : Type → Type} [Monad m] (fn : Syntax → m (Option Syntax)) : Syntax → m (Syntax)
+@[specialize] partial def replaceM {m : Type  Type} [Monad m] (fn : Syntax  m (Option Syntax)) : Syntax  m (Syntax)
   | stx@(node info kind args) => do
     match (← fn stx) with
     | some stx => return stx
@@ -203,16 +203,16 @@ partial def hasIdent (id : Name) : Syntax → Bool
     let o ← fn stx
     return o.getD stx
 
-@[specialize] partial def rewriteBottomUpM {m : Type → Type} [Monad m] (fn : Syntax → m (Syntax)) : Syntax → m (Syntax)
+@[specialize] partial def rewriteBottomUpM {m : Type  Type} [Monad m] (fn : Syntax  m (Syntax)) : Syntax  m (Syntax)
   | node info kind args   => do
     let args ← args.mapM (rewriteBottomUpM fn)
     fn (node info kind args)
   | stx => fn stx
 
-@[inline] def rewriteBottomUp (fn : Syntax → Syntax) (stx : Syntax) : Syntax :=
+@[inline] def rewriteBottomUp (fn : Syntax  Syntax) (stx : Syntax) : Syntax :=
   Id.run <| stx.rewriteBottomUpM fn
 
-private def updateInfo : SourceInfo → String.Pos → String.Pos → SourceInfo
+private def updateInfo : SourceInfo  String.Pos  String.Pos  SourceInfo
   | SourceInfo.original lead pos trail endPos, leadStart, trailStop =>
     SourceInfo.original { lead with startPos := leadStart } pos { trail with stopPos := trailStop } endPos
   | info, _, _ => info
@@ -223,7 +223,7 @@ trail.startPos + trail.posOf '\n'
 /-- Remark: the State `String.Pos` is the `SourceInfo.trailing.stopPos` of the previous token,
    or the beginning of the String. -/
 @[inline]
-private def updateLeadingAux : Syntax → StateM String.Pos (Option Syntax)
+private def updateLeadingAux : Syntax  StateM String.Pos (Option Syntax)
   | atom info@(SourceInfo.original _ _ trail _) val => do
     let trailStop := chooseNiceTrailStop trail
     let newInfo := updateInfo info (← get) trailStop
@@ -251,10 +251,10 @@ private def updateLeadingAux : Syntax → StateM String.Pos (Option Syntax)
 
     Note that the `SourceInfo.trailing` fields must be correct.
     The implementation of this Function relies on this property. -/
-def updateLeading : Syntax → Syntax :=
+def updateLeading : Syntax  Syntax :=
   fun stx => (replaceM updateLeadingAux stx).run' 0
 
-partial def updateTrailing (trailing : Substring) : Syntax → Syntax
+partial def updateTrailing (trailing : Substring) : Syntax  Syntax
   | Syntax.atom info val               => Syntax.atom (info.updateTrailing trailing) val
   | Syntax.ident info rawVal val pre   => Syntax.ident (info.updateTrailing trailing) rawVal val pre
   | n@(Syntax.node info k args)        =>
@@ -434,12 +434,12 @@ def right (t : Traverser) : Traverser :=
 end Traverser
 
 /-- Monad class that gives read/write access to a `Traverser`. -/
-class MonadTraverser (m : Type → Type) where
+class MonadTraverser (m : Type  Type) where
   st : MonadState Traverser m
 
 namespace MonadTraverser
 
-variable {m : Type → Type} [Monad m] [t : MonadTraverser m]
+variable {m : Type  Type} [Monad m] [t : MonadTraverser m]
 
 def getCur : m Syntax := Traverser.cur <$> t.st.get
 def setCur (stx : Syntax) : m Unit := @modify _ _ t.st (fun t => t.setCur stx)
@@ -468,7 +468,7 @@ def mkListNode (args : Array Syntax) : Syntax :=
 namespace Syntax
 
 -- quotation node kinds are formed from a unique quotation name plus "quot"
-def isQuot : Syntax → Bool
+def isQuot : Syntax  Bool
   | Syntax.node _ (Name.str _ "quot")           _ => true
   | Syntax.node _ `Lean.Parser.Term.dynamicQuot _ => true
   | _                                             => false
@@ -481,7 +481,7 @@ def getQuotContent (stx : Syntax) : Syntax :=
     stx[1]
 
 -- antiquotation node kinds are formed from the original node kind (if any) plus "antiquot"
-def isAntiquot : Syntax → Bool
+def isAntiquot : Syntax  Bool
   | .node _ (.str _ "antiquot") _ => true
   | _                             => false
 
@@ -526,7 +526,7 @@ def getAntiquotTerm (stx : Syntax) : Syntax :=
     e[1]
 
 /-- Return kind of parser expected at this antiquotation, and whether it is a "pseudo" kind (see `mkAntiquot`). -/
-def antiquotKind? : Syntax → Option (SyntaxNodeKind × Bool)
+def antiquotKind? : Syntax  Option (SyntaxNodeKind × Bool)
   | .node _ (.str (.str k "pseudo") "antiquot") _ => (k, true)
   | .node _ (.str k                 "antiquot") _ => (k, false)
   | _                                             => none
@@ -540,7 +540,7 @@ def antiquotKinds (stx : Syntax) : List (SyntaxNodeKind × Bool) :=
     | none     => []
 
 -- An "antiquotation splice" is something like `$[...]?` or `$[...]*`.
-def antiquotSpliceKind? : Syntax → Option SyntaxNodeKind
+def antiquotSpliceKind? : Syntax  Option SyntaxNodeKind
   | .node _ (.str k "antiquot_scope") _ => some k
   | _ => none
 
@@ -562,7 +562,7 @@ def mkAntiquotSpliceNode (kind : SyntaxNodeKind) (contents : Array Syntax) (suff
   mkNode (kind ++ `antiquot_splice) #[mkAtom "$", nesting, mkAtom "[", mkNullNode contents, mkAtom "]", mkAtom suffix]
 
 -- `$x,*` etc.
-def antiquotSuffixSplice? : Syntax → Option SyntaxNodeKind
+def antiquotSuffixSplice? : Syntax  Option SyntaxNodeKind
   | .node _ (.str k "antiquot_suffix_splice") _ => some k
   | _ => none
 
@@ -588,7 +588,7 @@ list of children of the current element. -/
 protected abbrev Stack := List (Syntax × Nat)
 
 /-- Return stack of syntax nodes satisfying `visit`, starting with such a node that also fulfills `accept` (default "is leaf"), and ending with the root. -/
-partial def findStack? (root : Syntax) (visit : Syntax → Bool) (accept : Syntax → Bool := fun stx => !stx.hasArgs) : Option Syntax.Stack :=
+partial def findStack? (root : Syntax) (visit : Syntax  Bool) (accept : Syntax  Bool := fun stx => !stx.hasArgs) : Option Syntax.Stack :=
   if visit root then go [] root else none
 where
   go (stack : Syntax.Stack) (stx : Syntax) : Option Syntax.Stack := Id.run do

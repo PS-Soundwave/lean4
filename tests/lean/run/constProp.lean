@@ -45,7 +45,7 @@ instance : Coe Var Expr where
 instance : OfNat Expr n where
   ofNat := .val n
 
-@[simp] def BinOp.eval : BinOp → Val → Val → Option Val
+@[simp] def BinOp.eval : BinOp  Val  Val  Option Val
   | .eq,  v₁,        v₂      => some (.bool (v₁ = v₂))
   | .and, .bool b₁, .bool b₂ => some (.bool (b₁ && b₂))
   | .lt,  .int i₁,  .int i₂  => some (.bool (i₁ < i₂))
@@ -53,7 +53,7 @@ instance : OfNat Expr n where
   | .sub, .int i₁,  .int i₂  => some (.int (i₁ - i₂))
   | _,    _,        _        => none
 
-@[simp] def UnaryOp.eval : UnaryOp → Val → Option Val
+@[simp] def UnaryOp.eval : UnaryOp  Val  Option Val
   | .not, .bool b => some (.bool !b)
   | _,    _       => none
 
@@ -226,11 +226,11 @@ example : State.get [x ↦ .int 10, y ↦ .int 20] "x" = .int 10 := rfl
 example : State.get [x ↦ 10, y ↦ 20] "x" = 10     := rfl
 example : State.get [x ↦ 10, y ↦ true] "y" = true := rfl
 
-@[simp] def Expr.eval (σ : State) : Expr → Option Val
+@[simp] def Expr.eval (σ : State) : Expr  Option Val
   | val v   => some v
   | var x   => σ.get x
   | bin lhs op rhs => match lhs.eval σ, rhs.eval σ with
-    | some v₁, some v₂ => op.eval v₁ v₂  -- BinOp.eval : BinOp → Val → Val → Option Val
+    | some v₁, some v₂ => op.eval v₁ v₂  -- BinOp.eval : BinOp  Val  Val  Option Val
     | _,       _       => none
   | una op arg => match arg.eval σ with
     | some v => op.eval v
@@ -244,14 +244,14 @@ section
 set_option hygiene false -- HACK: allow forward reference in notation
 local notation:60 "(" σ ", " s ")"  " ⇓ " σ':60 => Bigstep σ s σ'
 
-inductive Bigstep : State → Stmt → State → Prop where
+inductive Bigstep : State  Stmt  State  Prop where
   | skip       : (σ, .skip) ⇓ σ
-  | assign     : e.eval σ = some v → (σ,  x ::= e) ⇓ σ.update x v
-  | seq        : (σ₁, s₁) ⇓ σ₂ → (σ₂, s₂) ⇓ σ₃ → (σ₁, s₁ ;; s₂) ⇓ σ₃
-  | ifTrue     : evalTrue c σ₁ → (σ₁, t) ⇓ σ₂ → (σ₁, .ite c t e) ⇓ σ₂
-  | ifFalse    : evalFalse c σ₁ → (σ₁, e) ⇓ σ₂ → (σ₁, .ite c t e) ⇓ σ₂
-  | whileTrue  : evalTrue c σ₁ → (σ₁, b) ⇓ σ₂ → (σ₂, .while c b) ⇓ σ₃ → (σ₁, .while c b) ⇓ σ₃
-  | whileFalse : evalFalse c σ → (σ, .while c b) ⇓ σ
+  | assign     : e.eval σ = some v  (σ,  x ::= e) ⇓ σ.update x v
+  | seq        : (σ₁, s₁) ⇓ σ₂  (σ₂, s₂) ⇓ σ₃  (σ₁, s₁ ;; s₂) ⇓ σ₃
+  | ifTrue     : evalTrue c σ₁  (σ₁, t) ⇓ σ₂  (σ₁, .ite c t e) ⇓ σ₂
+  | ifFalse    : evalFalse c σ₁  (σ₁, e) ⇓ σ₂  (σ₁, .ite c t e) ⇓ σ₂
+  | whileTrue  : evalTrue c σ₁  (σ₁, b) ⇓ σ₂  (σ₂, .while c b) ⇓ σ₃  (σ₁, .while c b) ⇓ σ₃
+  | whileFalse : evalFalse c σ  (σ, .while c b) ⇓ σ
 
 end
 
@@ -320,7 +320,7 @@ instance : Repr State where
 #guard_msgs in
 #eval `[Stmt| x := 3; y := 5; x := x + y; ].eval |>.run {}
 
-@[simp] def BinOp.simplify : BinOp → Expr → Expr → Expr
+@[simp] def BinOp.simplify : BinOp  Expr  Expr  Expr
   | .eq,  .val v₁,  .val  v₂ => .val (.bool (v₁ = v₂))
   | .and, .val (.bool a), .val (.bool b) => .val (.bool (a && b))
   | .lt,  .val (.int a),  .val (.int b)  => .val (.bool (a < b))
@@ -328,11 +328,11 @@ instance : Repr State where
   | .sub, .val (.int a), .val (.int b) => .val (.int (a - b))
   | op, a, b => .bin a op b
 
-@[simp] def UnaryOp.simplify : UnaryOp → Expr → Expr
+@[simp] def UnaryOp.simplify : UnaryOp  Expr  Expr
   | .not, .val (.bool b) => .val (.bool !b)
   | op, a => .una op a
 
-@[simp] def Expr.simplify : Expr → Expr
+@[simp] def Expr.simplify : Expr  Expr
   | bin lhs op rhs => op.simplify lhs.simplify rhs.simplify
   | una op arg => op.simplify arg.simplify
   | e => e
@@ -348,7 +348,7 @@ instance : Repr State where
     simp [← ih_arg]
     split <;> simp [*]
 
-@[simp] def Stmt.simplify : Stmt → Stmt
+@[simp] def Stmt.simplify : Stmt  Stmt
   | skip => skip
   | assign x e => assign x e.simplify
   | seq s₁ s₂ => seq s₁.simplify s₂.simplify
@@ -453,14 +453,14 @@ local notation "⊥" => []
   | .while c b => (.while (c.constProp ⊥) (b.constProp ⊥).1, ⊥)
 
 def State.le (σ₁ σ₂ : State) : Prop :=
-  ∀ ⦃x : Var⦄ ⦃v : Val⦄, σ₁.find? x = some v → σ₂.find? x = some v
+  ∀ ⦃x : Var⦄ ⦃v : Val⦄, σ₁.find? x = some v  σ₂.find? x = some v
 
 infix:50 " ≼ " => State.le
 
 theorem State.le_refl (σ : State) : σ ≼ σ :=
   fun _ _ h => h
 
-theorem State.le_trans : σ₁ ≼ σ₂ → σ₂ ≼ σ₃ → σ₁ ≼ σ₃ :=
+theorem State.le_trans : σ₁ ≼ σ₂  σ₂ ≼ σ₃  σ₁ ≼ σ₃ :=
   fun h₁ h₂ x v h => h₂ (h₁ h)
 
 theorem State.bot_le (σ : State) : ⊥ ≼ σ :=

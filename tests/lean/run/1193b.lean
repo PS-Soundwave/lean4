@@ -4,7 +4,7 @@ inductive Foo (n : Nat) : Type
 
 namespace Foo
 
-@[simp] def bar: {n: Nat} → Foo n → Foo n → Bool
+@[simp] def bar: {n: Nat}  Foo n  Foo n  Bool
 | n+1, cons a, cons b => bar a b
 | _, _, _ => true
 

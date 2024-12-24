@@ -20,7 +20,7 @@ def myif (c : Prop) [Decidable c] (a b : α) : α :=
   simp [myif, h]
 
 @[congr] theorem myif_congr {x y u v : α} {s : Decidable b} [Decidable c]
-    (h₁ : b = c) (h₂ : c → x = u) (h₃ : ¬ c → y = v) : myif b x y = myif c u v := by
+    (h₁ : b = c) (h₂ : c  x = u) (h₃ : ¬ c  y = v) : myif b x y = myif c u v := by
   unfold myif
   apply @ite_congr <;> assumption
 

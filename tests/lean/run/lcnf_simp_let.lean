@@ -1,6 +1,6 @@
-class OMonad (W : Type u → Type v) where
+class OMonad (W : Type u  Type v) where
 
-class MonadTrans (T : (Type _ → Type _) → (Type _ → Type _)) where
+class MonadTrans (T : (Type _  Type _)  (Type _  Type _)) where
 
 instance [OMonad m] [MonadTrans T] : OMonad (T m) where
 

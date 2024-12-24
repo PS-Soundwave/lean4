@@ -1,17 +1,17 @@
 inductive Foo : Type
-| mk : Nat → Foo
+| mk : Nat  Foo
 
 namespace Foo
-def worksInNamespace : Foo → Nat
+def worksInNamespace : Foo  Nat
 | mk n => n --works
 end Foo
 
 -- The following fails, because `namespace Foo` is not open,
 -- despite the `Foo.` prefix in the name.
-def Foo.failsWithPrefix : Foo → Nat
+def Foo.failsWithPrefix : Foo  Nat
 | mk n => n -- error: invalid application, function expected
 
-def Foo.worksWithQualifiedName : Foo → Nat
+def Foo.worksWithQualifiedName : Foo  Nat
 | Foo.mk n => n -- works
 
 /-

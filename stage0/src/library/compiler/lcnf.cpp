@@ -225,7 +225,7 @@ public:
 
                    On the other hand, we want the transformation to be applied to:
                    ```
-                   def flatten : Format → Format
+                   def flatten : Format  Format
                    | nil                     := nil
                    | line                    := text " "
                    | f@(text _)              := f

@@ -143,12 +143,12 @@ Delayed assignment metavariables respecting `pp.mvars.anonymous`
 section
 set_option pp.mvars.anonymous false
 
-/-- info: fun x => ?a : (x : Nat) → ?_ x -/
+/-- info: fun x => ?a : (x : Nat)  ?_ x -/
 #guard_msgs in #check fun _ : Nat => ?a
 
 set_option pp.mvars.delayed true
 
-/-- info: fun x => ?_ x : (x : Nat) → ?_ x -/
+/-- info: fun x => ?_ x : (x : Nat)  ?_ x -/
 #guard_msgs in #check fun _ : Nat => ?a
 
 end

@@ -9,8 +9,8 @@ structure Foo where
 #eval hash <| { name := "Joe", val := List.iota 40, flag := true, inv := by decide : Foo }
 
 inductive Tree (α : Type) where
-  | node : List (Tree α) → Bool → Tree α
-  | leaf : α → Tree α
+  | node : List (Tree α)  Bool  Tree α
+  | leaf : α  Tree α
   deriving Hashable
 
 #eval hash <| Tree.node (List.iota 10 |>.map fun i => Tree.node [Tree.leaf i] (i%2==0)) true
@@ -24,13 +24,13 @@ inductive StructureLikeInductive where
 namespace Foo
 mutual
 inductive Tree (α : Type u) where
-  | node : TreeList α → Tree α
-  | leaf : α → Tree α
+  | node : TreeList α  Tree α
+  | leaf : α  Tree α
   deriving Hashable
 
 inductive TreeList (α : Type u) where
   | nil : TreeList α
-  | cons : Tree α → TreeList α → TreeList α
+  | cons : Tree α  TreeList α  TreeList α
   deriving Hashable
 end
 

@@ -1,6 +1,6 @@
 structure Foo where
-  (p : Nat → Prop)
-  (q : String → Prop)
+  (p : Nat  Prop)
+  (q : String  Prop)
   [inst0 : DecidablePred p]
   [inst1 : DecidablePred q]
 

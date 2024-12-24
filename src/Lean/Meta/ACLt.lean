@@ -10,7 +10,7 @@ import Lean.Meta.DiscrTree
 
 namespace Lean
 
-def Expr.ctorWeight : Expr → UInt8
+def Expr.ctorWeight : Expr  UInt8
   | bvar ..    => 0
   | fvar ..    => 1
   | mvar ..    => 2

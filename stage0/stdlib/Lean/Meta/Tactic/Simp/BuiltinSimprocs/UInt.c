@@ -3620,7 +3620,7 @@ static lean_object* _init_l___aux__Lean__Meta__Tactic__Simp__BuiltinSimprocs__UI
 _start:
 {
 lean_object* x_1; 
-x_1 = lean_mk_string_unchecked("→", 3, 1);
+x_1 = lean_mk_string_unchecked("", 3, 1);
 return x_1;
 }
 }

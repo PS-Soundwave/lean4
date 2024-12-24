@@ -1,5 +1,5 @@
 
-partial def f : List Nat → Bool
+partial def f : List Nat  Bool
 | []      => false
 | (a::as) => a > 0 && f as
 
@@ -8,19 +8,19 @@ partial def f : List Nat → Bool
 #exit
 
 mutual def f1, f2, f3, f4, f5
-with f1 : Nat → Bool
+with f1 : Nat  Bool
 | 0 := f3 0
 | x := f2 x
-with f2 : Nat → Bool
+with f2 : Nat  Bool
 | 0 := f4 0
 | x := f3 x
-with f3 : Nat → Bool
+with f3 : Nat  Bool
 | 0 := f5 0
 | x := f4 x
-with f4 : Nat → Bool
+with f4 : Nat  Bool
 | 0     := f5 0
 | (x+1) := f4 x
-with f5 : Nat → Bool
+with f5 : Nat  Bool
 | 0 := true
 | _ := false
 

@@ -3,13 +3,13 @@ import Init.Control.Option
 
 universe u v
 
-def OptionT2 (m : Type u → Type v) (α : Type u) : Type v :=
+def OptionT2 (m : Type u  Type v) (α : Type u) : Type v :=
 m (Option α)
 
 namespace OptionT2
-variable {m : Type u → Type v} [Monad m] {α β : Type u}
+variable {m : Type u  Type v} [Monad m] {α β : Type u}
 
-@[inline] protected def bind (ma : OptionT2 m α) (f : α → OptionT2 m β) : OptionT2 m β :=
+@[inline] protected def bind (ma : OptionT2 m α) (f : α  OptionT2 m β) : OptionT2 m β :=
 (do {
     let a? ← ma;
     (match a? with
@@ -20,7 +20,7 @@ variable {m : Type u → Type v} [Monad m] {α β : Type u}
 @[inline] protected def pure (a : α) : OptionT2 m α :=
 (Pure.pure (some a) : m (Option α))
 
-@[inline] protected def orelse (ma : OptionT2 m α) (mb : Unit → OptionT2 m α) : OptionT2 m α :=
+@[inline] protected def orelse (ma : OptionT2 m α) (mb : Unit  OptionT2 m α) : OptionT2 m α :=
 (do { let a? ← ma;
         (match a? with
         | some a => pure (some a)

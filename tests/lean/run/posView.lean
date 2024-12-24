@@ -2,7 +2,7 @@ structure Pos where
   protected succ :: protected pred : Nat
   deriving Repr
 
-protected def Pos.add : Pos → Pos → Pos
+protected def Pos.add : Pos  Pos  Pos
   | .succ x, .succ y => .succ (x + y).succ
 
 instance : Add Pos := ⟨Pos.add⟩

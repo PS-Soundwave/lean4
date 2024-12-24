@@ -135,7 +135,7 @@ structure Config where
   -/
   maxDischargeDepth : Nat  := 2
   /--
-  When `contextual` is true (default: `false`) and simplification encounters an implication `p → q`
+  When `contextual` is true (default: `false`) and simplification encounters an implication `p  q`
   it includes `p` as an additional simp lemma when simplifying `q`.
   -/
   contextual        : Bool := false

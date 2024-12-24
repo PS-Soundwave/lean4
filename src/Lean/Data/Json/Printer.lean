@@ -49,7 +49,7 @@ def renderString (s : String) (acc : String := "") : String :=
 
 section
 
-partial def render : Json → Format
+partial def render : Json  Format
   | null       => "null"
   | bool true  => "true"
   | bool false => "false"
@@ -59,7 +59,7 @@ partial def render : Json → Format
     let elems := Format.joinSep (elems.map render).toList ("," ++ Format.line);
     Format.bracket "[" elems "]"
   | obj kvs =>
-    let renderKV : String → Json → Format := fun k v =>
+    let renderKV : String  Json  Format := fun k v =>
       Format.group (renderString k ++ ":" ++ Format.line ++ render v);
     let kvs := Format.joinSep (kvs.fold (fun acc k j => renderKV k j :: acc) []) ("," ++ Format.line);
     Format.bracket "{" kvs "}"
@@ -79,7 +79,7 @@ protected inductive CompressWorkItem
 open Json.CompressWorkItem in
 partial def compress (j : Json) : String :=
   go "" [json j]
-where go (acc : String) : List Json.CompressWorkItem → String
+where go (acc : String) : List Json.CompressWorkItem  String
   | []               => acc
   | json j :: is =>
     match j with

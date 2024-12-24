@@ -88,8 +88,8 @@ In practice, it is used by the client to pass data
 between various RPC methods provided by the server. -/
 -- TODO(WN): for Lean.js, compile `WithRpcRef` to "opaque reference" on the client
 class RpcEncodable (α : Type) where
-  rpcEncode : α → StateM RpcObjectStore Json
-  rpcDecode : Json → ExceptT String (ReaderT RpcObjectStore Id) α
+  rpcEncode : α  StateM RpcObjectStore Json
+  rpcDecode : Json  ExceptT String (ReaderT RpcObjectStore Id) α
 export RpcEncodable (rpcEncode rpcDecode)
 
 instance : Nonempty (RpcEncodable α) :=

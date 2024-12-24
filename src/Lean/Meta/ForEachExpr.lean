@@ -13,8 +13,8 @@ namespace Lean.Meta
 variable {m} [Monad m] [MonadLiftT MetaM m] [MonadControlT MetaM m]
 
 /-- Given an expression `e = fun (x₁ : α₁) .. (xₙ : αₙ) => b`, runs `f` on each `αᵢ` and `b`. -/
-def visitLambda (f : Expr → m Unit) (e : Expr) : m Unit := visit #[] e
-  where visit (fvars : Array Expr) : Expr → m Unit
+def visitLambda (f : Expr  m Unit) (e : Expr) : m Unit := visit #[] e
+  where visit (fvars : Array Expr) : Expr  m Unit
     | Expr.lam n d b c => do
       let d := d.instantiateRev fvars
       f d
@@ -23,9 +23,9 @@ def visitLambda (f : Expr → m Unit) (e : Expr) : m Unit := visit #[] e
     | e => do
       f <| e.instantiateRev fvars
 
-/-- Given an expression `e =  (x₁ : α₁) → .. (xₙ : αₙ) → b`, runs `f` on each `αᵢ` and `b`. -/
-def visitForall (f : Expr → m Unit) (e : Expr) : m Unit := visit #[] e
-  where visit (fvars : Array Expr) : Expr → m Unit
+/-- Given an expression `e =  (x₁ : α₁)  .. (xₙ : αₙ)  b`, runs `f` on each `αᵢ` and `b`. -/
+def visitForall (f : Expr  m Unit) (e : Expr) : m Unit := visit #[] e
+  where visit (fvars : Array Expr) : Expr  m Unit
     | Expr.forallE n d b c => do
       let d := d.instantiateRev fvars
       f d
@@ -35,8 +35,8 @@ def visitForall (f : Expr → m Unit) (e : Expr) : m Unit := visit #[] e
       f <| e.instantiateRev fvars
 
 /-- Given a sequence of let binders `let (x₁ : α₁ := v₁) ... in b`, runs `f` on each `αᵢ`, `vᵢ` and `b`. -/
-def visitLet (f : Expr → m Unit) (e : Expr) : m Unit := visit #[] e
-  where visit (fvars : Array Expr) : Expr → m Unit
+def visitLet (f : Expr  m Unit) (e : Expr) : m Unit := visit #[] e
+  where visit (fvars : Array Expr) : Expr  m Unit
     | Expr.letE n d v b _ => do
       let d := d.instantiateRev fvars
       let v := v.instantiateRev fvars
@@ -52,7 +52,7 @@ If the inner function returns `false`, deeper subexpressions will not be visited
  -/
 partial def forEachExpr'
   (input : Expr)
-  (fn : Expr → m Bool)
+  (fn : Expr  m Bool)
   : m Unit := do
   let _ : STWorld IO.RealWorld m := ⟨⟩
   let _ : MonadLiftT (ST IO.RealWorld) m := { monadLift := fun x => liftM (m := MetaM) (liftM (m := ST IO.RealWorld) x) }
@@ -70,7 +70,7 @@ partial def forEachExpr'
   visit input |>.run
 
 /-- Similar to `Expr.forEach`, but creates free variables whenever going inside of a binder. -/
-def forEachExpr (e : Expr) (f : Expr → m Unit) : m Unit :=
+def forEachExpr (e : Expr) (f : Expr  m Unit) : m Unit :=
   forEachExpr' e fun e => do
     f e
     return true

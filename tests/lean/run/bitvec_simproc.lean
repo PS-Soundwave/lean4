@@ -7,7 +7,7 @@ open BitVec
 
 example (h : x = (6 : BitVec 3)) : x = -2 := by
   simp; guard_target =ₛ x = 6#3; assumption
-example (h : x = (5 : BitVec 3)) : x = ~~~2 := by
+example (h : x = (5 : BitVec 3)) : x = 2 := by
   simp; guard_target =ₛ x = 5#3; assumption
 example (h : x = (1 : BitVec 32)) : x = BitVec.abs (-1#32) := by
   simp; guard_target =ₛ x = 1#32; assumption

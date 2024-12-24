@@ -53,7 +53,7 @@ private theorem size_eq (r : Std.Range) (h : i < r.stop) :
     omega
 
 private theorem forIn'_loop_eq_forIn'_range' [Monad m] (r : Std.Range)
-    (init : β) (f : (a : Nat) → a ∈ r → β → m (ForInStep β)) (i) (w₁) (w₂) :
+    (init : β) (f : (a : Nat)  a ∈ r  β  m (ForInStep β)) (i) (w₁) (w₂) :
     forIn'.loop r f init i w₁ w₂ =
       forIn' (List.range' i ((r.stop - i + r.step - 1) / r.step) r.step) init
         fun a h => f a (mem_of_mem_range'_aux w₁ w₂ h) := by
@@ -71,7 +71,7 @@ private theorem forIn'_loop_eq_forIn'_range' [Monad m] (r : Std.Range)
     simp [this]
 
 @[simp] theorem forIn'_eq_forIn'_range' [Monad m] (r : Std.Range)
-    (init : β) (f : (a : Nat) → a ∈ r → β → m (ForInStep β)) :
+    (init : β) (f : (a : Nat)  a ∈ r  β  m (ForInStep β)) :
     forIn' r init f =
       forIn' (List.range' r.start r.size r.step) init (fun a h => f a (mem_of_mem_range' h)) := by
   conv => lhs; simp only [forIn', Range.forIn']
@@ -79,11 +79,11 @@ private theorem forIn'_loop_eq_forIn'_range' [Monad m] (r : Std.Range)
   rw [forIn'_loop_eq_forIn'_range']
 
 @[simp] theorem forIn_eq_forIn_range' [Monad m] (r : Std.Range)
-    (init : β) (f : Nat → β → m (ForInStep β)) :
+    (init : β) (f : Nat  β  m (ForInStep β)) :
     forIn r init f = forIn (List.range' r.start r.size r.step) init f := by
   simp only [forIn, forIn'_eq_forIn'_range']
 
-private theorem forM_loop_eq_forM_range' [Monad m] (r : Std.Range) (f : Nat → m PUnit) :
+private theorem forM_loop_eq_forM_range' [Monad m] (r : Std.Range) (f : Nat  m PUnit) :
     forM.loop r f i = forM (List.range' i ((r.stop - i + r.step - 1) / r.step) r.step) f := by
   have w := r.step_pos
   rw [forM.loop]
@@ -96,7 +96,7 @@ private theorem forM_loop_eq_forM_range' [Monad m] (r : Std.Range) (f : Nat → 
       rw [Nat.div_eq_iff] <;> omega
     simp [this]
 
-@[simp] theorem forM_eq_forM_range' [Monad m] (r : Std.Range) (f : Nat → m PUnit) :
+@[simp] theorem forM_eq_forM_range' [Monad m] (r : Std.Range) (f : Nat  m PUnit) :
     forM r f = forM (List.range' r.start r.size r.step) f := by
   simp only [forM, Range.forM, forM_loop_eq_forM_range', size]
 

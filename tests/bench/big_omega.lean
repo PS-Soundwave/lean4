@@ -21,7 +21,7 @@ theorem memcpy_extracted_2 (six0 s0x0 : BitVec 64)
 (h_width_lt : (16#64).toNat * (s0x0 - (six0 - 1#64)).toNat < 2 ^ 64)
 (hmemSeparate_omega : s0x1.toNat + s0x0.toNat * 16 ≤ 2 ^ 64 ∧
   s0x2.toNat + s0x0.toNat * 16 ≤ 2 ^ 64 ∧
-    (s0x1.toNat + s0x0.toNat * 16 ≤ s0x2.toNat ∨ s0x1.toNat ≥ s0x2.toNat + s0x0.toNat * 16))
+    (s0x1.toNat + s0x0.toNat * 16 ≤ s0x2.toNat  s0x1.toNat ≥ s0x2.toNat + s0x0.toNat * 16))
 (hmemLegal_omega : s0x1.toNat + s0x0.toNat * 16 ≤ 2 ^ 64)
 (hmemLegal_omega : s0x2.toNat + s0x0.toNat * 16 ≤ 2 ^ 64)
 (hmemSeparate_omega : s0x2.toNat + 16 % 2 ^ 64 * ((2 ^ 64 - (2 ^ 64 - 1 % 2 ^ 64 + six0.toNat) % 2 ^ 64 + s0x0.toNat) % 2 ^ 64) % 2 ^ 64 ≤
@@ -29,12 +29,12 @@ theorem memcpy_extracted_2 (six0 s0x0 : BitVec 64)
   addr.toNat + n ≤ 2 ^ 64 ∧
     (s0x2.toNat +
           16 % 2 ^ 64 * ((2 ^ 64 - (2 ^ 64 - 1 % 2 ^ 64 + six0.toNat) % 2 ^ 64 + s0x0.toNat) % 2 ^ 64) % 2 ^ 64 ≤
-        addr.toNat ∨
+        addr.toNat 
       s0x2.toNat ≥ addr.toNat + n))
 (hmemLegal_omega : s0x2.toNat + 16 % 2 ^ 64 * ((2 ^ 64 - (2 ^ 64 - 1 % 2 ^ 64 + six0.toNat) % 2 ^ 64 + s0x0.toNat) % 2 ^ 64) % 2 ^ 64 ≤
   2 ^ 64)
 (hmemLegal_omega : addr.toNat + n ≤ 2 ^ 64) :
  s0x2.toNat + (16#64 * (s0x0 - six0)).toNat ≤ 2 ^ 64 ∧
   addr.toNat + n ≤ 2 ^ 64 ∧
-    (s0x2.toNat + (16#64 * (s0x0 - six0)).toNat ≤ addr.toNat ∨ s0x2.toNat ≥ addr.toNat + n) := by
+    (s0x2.toNat + (16#64 * (s0x0 - six0)).toNat ≤ addr.toNat  s0x2.toNat ≥ addr.toNat + n) := by
     bv_omega

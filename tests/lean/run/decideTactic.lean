@@ -123,7 +123,7 @@ example (x : Nat) (h : x < 5) : x + 1 ≤ 5 := by decide +revert
 Can handle universe levels.
 -/
 
-instance (p : PUnit.{u} → Prop) [Decidable (p PUnit.unit)] : Decidable (∀ x : PUnit.{u}, p x) :=
+instance (p : PUnit.{u}  Prop) [Decidable (p PUnit.unit)] : Decidable (∀ x : PUnit.{u}, p x) :=
   decidable_of_iff (p PUnit.unit) (by constructor; rintro _ ⟨⟩; assumption; intro h; apply h)
 
 example : ∀ (x : PUnit.{u}), x = PUnit.unit := by decide

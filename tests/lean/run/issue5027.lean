@@ -1,6 +1,6 @@
 inductive Term (α: Type): Type where
-  | Composite : Array (Term α) → Term α
-  | Atom: α → Term α
+  | Composite : Array (Term α)  Term α
+  | Atom: α  Term α
 
 -- height of a term
 def height (f: Term α): Nat :=

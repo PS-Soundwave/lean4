@@ -21,10 +21,10 @@ set_option pp.all true in
 #print r
 
 structure ConstantFunction (α β : Type) :=
-(f : α → β)
+(f : α  β)
 (h : ∀ a₁ a₂, f a₁ = f a₂)
 
-instance constFunCoe {α β : Type} : CoeFun (ConstantFunction α β) (fun _ => α → β) :=
+instance constFunCoe {α β : Type} : CoeFun (ConstantFunction α β) (fun _ => α  β) :=
 { coe := fun c => c.f }
 
 def myFun {α : Type} : ConstantFunction α (Option α) :=

@@ -16,7 +16,7 @@ open Meta
 
   Unlike `Meta.etaExpand` does not use `withDefault`.
 -/
-def withAppN (n : Nat) (e : Expr) (k : Array Expr → MetaM Expr) : MetaM Expr := do
+def withAppN (n : Nat) (e : Expr) (k : Array Expr  MetaM Expr) : MetaM Expr := do
   let args := e.getAppArgs
   if n ≤ args.size then
     let e' ← k args[:n]

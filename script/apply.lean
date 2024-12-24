@@ -10,7 +10,7 @@ abbrev M := ReaderT IO.FS.Stream IO
 def M.run (a : M Unit) (out? : Option String := none) : IO Unit :=
   match out? with
   | some out => do
-    IO.FS.withFile out .write (ReaderT.run a ∘ .ofHandle)
+    IO.FS.withFile out .write (ReaderT.run a  .ofHandle)
   | none => IO.getStdout >>= (ReaderT.run a)
 
 def emit (s : String) : M Unit := do
@@ -21,7 +21,7 @@ def mkTypedefFn (i : Nat) : M Unit := do
   emit s!"typedef obj* (*fn{i})({args}); // NOLINT\n"
   emit s!"#define FN{i}(f) reinterpret_cast<fn{i}>(lean_closure_fun(f))\n"
 
-def genSeq (n : Nat) (f : Nat → String) (sep := ", ") : String :=
+def genSeq (n : Nat) (f : Nat  String) (sep := ", ") : String :=
   List.range n |>.map f |>.intersperse sep |> .join
 
 -- make string: "obj* a1, obj* a2, ..., obj* an"

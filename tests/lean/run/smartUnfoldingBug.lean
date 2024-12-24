@@ -3,8 +3,8 @@ open Nat
 
 structure ProvedSkip(n m: Nat) where
   result : Nat
-  lt : m < n → result = m
-  ge : n ≤ m → result = m + 1
+  lt : m < n  result = m
+  ge : n ≤ m  result = m + 1
 
 def provedSkip (n m : Nat) : ProvedSkip n m :=
   if c : m < n then
@@ -12,16 +12,16 @@ def provedSkip (n m : Nat) : ProvedSkip n m :=
   else
     ⟨m + 1, fun hyp => absurd hyp c, fun _ => rfl⟩
 
-def skip: Nat → Nat → Nat :=
+def skip: Nat  Nat  Nat :=
   fun n m => (provedSkip n m).result
 
-theorem skip_below_eq(n m : Nat) : m < n → (skip n m = m) :=
+theorem skip_below_eq(n m : Nat) : m < n  (skip n m = m) :=
   fun hyp => (provedSkip n m).lt hyp
 
-theorem skip_above_eq(n m : Nat) : n ≤ m → (skip n m = m + 1) :=
+theorem skip_above_eq(n m : Nat) : n ≤ m  (skip n m = m + 1) :=
   fun hyp => (provedSkip n m).ge hyp
 
-theorem skip_not_below_eq(n m : Nat) : Not (m < n) → (skip n m = m + 1) :=
+theorem skip_not_below_eq(n m : Nat) : Not (m < n)  (skip n m = m + 1) :=
   fun hyp =>
     let lem : n ≤ m :=
       match Nat.lt_or_ge m n with
@@ -29,7 +29,7 @@ theorem skip_not_below_eq(n m : Nat) : Not (m < n) → (skip n m = m + 1) :=
       | Or.inr ge => ge
     skip_above_eq n m lem
 
-theorem skip_lt: (k j: Nat) →  skip k j < j + 2 :=
+theorem skip_lt: (k j: Nat)   skip k j < j + 2 :=
     fun k j =>
       if c : j < k then
         let eqn := skip_below_eq k j c
@@ -45,18 +45,18 @@ theorem skip_lt: (k j: Nat) →  skip k j < j + 2 :=
           apply Nat.le_refl
           done
 
-theorem skip_le_succ {n k j : Nat} : j < n → skip k j < n + 1 :=
+theorem skip_le_succ {n k j : Nat} : j < n  skip k j < n + 1 :=
    by
     intro hyp
     apply Nat.le_trans (skip_lt k j)
     apply Nat.succ_lt_succ
     exact hyp
 
-def FinSeq (n: Nat) (α : Type) : Type := (k : Nat) → k < n → α
+def FinSeq (n: Nat) (α : Type) : Type := (k : Nat)  k < n  α
 
 theorem witness_independent{α : Type}{n : Nat}(seq: FinSeq n α) :
-    (i : Nat)→ (j : Nat) → (iw : i < n) → (jw : j < n) →
-        (i = j) → seq i iw = seq j jw :=
+    (i : Nat) (j : Nat)  (iw : i < n)  (jw : j < n) 
+        (i = j)  seq i iw = seq j jw :=
         fun i j iw jw eqn =>
           match j, eqn, jw with
           | .(i), rfl, ijw =>
@@ -76,7 +76,7 @@ def delete{α : Type}{n: Nat}(k : Nat) (kw : k < (n + 1)) (seq : FinSeq (n + 1) 
 
 end FinSeq
 
-inductive Vector' (α : Type) : Nat → Type where
+inductive Vector' (α : Type) : Nat  Type where
   | nil : Vector' α zero
   | cons{n: Nat}(head: α) (tail: Vector'  α n) : Vector' α  (n + 1)
 
@@ -91,8 +91,8 @@ def Vector'.coords {α : Type}{n : Nat}(v: Vector' α n) : FinSeq n α :=
   | m + 1, cons head tail, zero, lt => head
   | m + 1, cons head tail, j + 1, w =>  tail.coords j (Nat.le_of_succ_le_succ w)
 
-def seqVecAux {α: Type}{n m l: Nat}: (s : n + m = l) →
-    (seq1 : FinSeq n α) → (accum : Vector' α m) →
+def seqVecAux {α: Type}{n m l: Nat}: (s : n + m = l) 
+    (seq1 : FinSeq n α)  (accum : Vector' α m) 
        Vector' α l:=
     match n with
     | zero => fun s => fun _ => fun seq2 =>
@@ -114,7 +114,7 @@ def seqVecAux {α: Type}{n m l: Nat}: (s : n + m = l) →
           done
       seqVecAux ss (seq1.init) ((seq1.last) +: seq2)
 
-def FinSeq.vec {α : Type}{n: Nat} : FinSeq n α  →  Vector' α n :=
+def FinSeq.vec {α : Type}{n: Nat} : FinSeq n α    Vector' α n :=
     fun seq => seqVecAux (Nat.add_zero n) seq Vector'.nil
 
 def Clause(n : Nat) : Type := Vector' (Option Bool) n
@@ -132,8 +132,8 @@ structure SimpleRestrictionClauses{dom n: Nat}
 
 def prependRes{dom n: Nat}(branch: Bool)(focus: Nat)(focusLt : focus < n + 1)
     (clauses: Vector' (Clause (n + 1)) dom):
-        (rd : SimpleRestrictionClauses clauses) →
-           (head : Clause (n + 1)) →
+        (rd : SimpleRestrictionClauses clauses) 
+           (head : Clause (n + 1)) 
         SimpleRestrictionClauses (head +: clauses) :=
         fun rd  head =>
           if c : head.coords focus focusLt = some branch then
@@ -150,7 +150,7 @@ def restClauses{dom n: Nat}(branch: Bool)(focus: Nat)(focusLt : focus < n + 1)
                 prependRes branch focus focusLt clauses
                             (restClauses branch focus focusLt clauses) head
 
-def answerSAT{n dom : Nat}: (clauses : Vector' (Clause n) dom) →  SatAnswer clauses :=
+def answerSAT{n dom : Nat}: (clauses : Vector' (Clause n) dom)   SatAnswer clauses :=
       match n with
       | zero =>
            match dom with

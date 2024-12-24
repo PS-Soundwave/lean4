@@ -28,7 +28,7 @@ def mkLam1 : MetaM Expr :=
 #guard_msgs in
 #eval execShow mkLam1
 
-/-- info: Nat → Nat → Nat -/
+/-- info: Nat  Nat  Nat -/
 #guard_msgs in
 #eval execShow do let e ← mkLam1; inferType e
 
@@ -69,7 +69,7 @@ def mkGoal : MetaM Expr :=
     let b ← mkEq y x
     mkForallFVars #[x, y, h] b
 
-/-- info: ∀ (x y : Nat), x = y → y = x -/
+/-- info: ∀ (x y : Nat), x = y  y = x -/
 #guard_msgs in
 #eval execShow mkGoal
 
@@ -94,7 +94,7 @@ def proveGoal : MetaM Unit := do
   IO.println (← ppExpr (← inferType main))
 
 /--
-info: ⊢ ∀ (x y : Nat), x = y → y = x
+info: ⊢ ∀ (x y : Nat), x = y  y = x
 -----
 x y : Nat
 h : x = y
@@ -106,7 +106,7 @@ h : x = y
 ⊢ x = y
 -----
 fun x y h => Eq.symm h
-∀ (x y : Nat), x = y → y = x
+∀ (x y : Nat), x = y  y = x
 -/
 #guard_msgs in
 #eval proveGoal

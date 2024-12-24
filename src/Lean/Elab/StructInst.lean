@@ -200,7 +200,7 @@ structure SourcesView where
   deriving Inhabited
 
 /-- Returns `true` if the structure instance has no sources (neither explicit sources nor a `..`). -/
-def SourcesView.isNone : SourcesView → Bool
+def SourcesView.isNone : SourcesView  Bool
   | { explicit := #[], implicit := none } => true
   | _ => false
 
@@ -313,7 +313,7 @@ Otherwise, we use the type of the first source.
 -/
 private def getStructName (expectedType? : Option Expr) (sourceView : SourcesView) : TermElabM Name := do
   tryPostponeIfNoneOrMVar expectedType?
-  let useSource : Unit → TermElabM Name := fun _ => do
+  let useSource : Unit  TermElabM Name := fun _ => do
     unless sourceView.explicit.isEmpty do
       return sourceView.explicit[0]!.structName
     match expectedType? with
@@ -405,7 +405,7 @@ end
 /--
 Returns if the field has a single component in its LHS.
 -/
-def Field.isSimple : Field → Bool
+def Field.isSimple : Field  Bool
   | { lhs := [_], .. } => true
   | _                  => false
 
@@ -416,14 +416,14 @@ partial def StructInstView.allDefault (s : StructInstView) : Bool :=
     | .default  => true
     | .nested s => allDefault s
 
-def formatField (formatStruct : StructInstView → Format) (field : Field) : Format :=
+def formatField (formatStruct : StructInstView  Format) (field : Field) : Format :=
   Format.joinSep field.lhs " . " ++ " := " ++
     match field.val with
     | .term v   => v.prettyPrint
     | .nested s => formatStruct s
     | .default  => "<default>"
 
-partial def formatStruct : StructInstView → Format
+partial def formatStruct : StructInstView  Format
   | ⟨_, _,          _, fields, source⟩ =>
     let fieldsFmt := Format.joinSep (fields.map (formatField formatStruct)) ", "
     let implicitFmt := if source.implicit.isSome then " .. " else ""
@@ -433,10 +433,10 @@ partial def formatStruct : StructInstView → Format
       "{" ++ format (source.explicit.map (·.stx)) ++ " with " ++ fieldsFmt ++ implicitFmt ++ "}"
 
 instance : ToFormat StructInstView := ⟨formatStruct⟩
-instance : ToString StructInstView := ⟨toString ∘ format⟩
+instance : ToString StructInstView := ⟨toString  format⟩
 
 instance : ToFormat Field := ⟨formatField formatStruct⟩
-instance : ToString Field := ⟨toString ∘ format⟩
+instance : ToString Field := ⟨toString  format⟩
 
 /--
 Converts a `FieldLHS` back into syntax. This assumes the `ref` fields have the correct structure.
@@ -449,7 +449,7 @@ def structInstArrayRef := leading_parser "[" >> termParser >>"]"
 ```
 -/
 -- Remark: this code relies on the fact that `expandStruct` only transforms `fieldLHS.fieldName`
-private def FieldLHS.toSyntax (first : Bool) : FieldLHS → Syntax
+private def FieldLHS.toSyntax (first : Bool) : FieldLHS  Syntax
   | .modifyOp   stx _    => stx
   | .fieldName  stx name => if first then mkIdentFrom stx name else mkGroupNode #[mkAtomFrom stx ".", mkIdentFrom stx name]
   | .fieldIndex stx _    => if first then stx else mkGroupNode #[mkAtomFrom stx ".", stx]
@@ -457,14 +457,14 @@ private def FieldLHS.toSyntax (first : Bool) : FieldLHS → Syntax
 /--
 Converts a `FieldVal StructInstView` back into syntax. Only supports `.term`, and it assumes the `stx` field has the correct structure.
 -/
-private def FieldVal.toSyntax : FieldVal → Syntax
+private def FieldVal.toSyntax : FieldVal  Syntax
   | .term stx => stx
   | _         => unreachable!
 
 /--
 Converts a `Field StructInstView` back into syntax. Used to construct synthetic structure instance notation for subobjects in `StructInst.expandStruct` processing.
 -/
-private def Field.toSyntax : Field → Syntax
+private def Field.toSyntax : Field  Syntax
   | field =>
     let stx := field.ref
     let stx := stx.setArg 1 <| stx[1].setArg 2 <| stx[1][2].setArg 1 field.val.toSyntax
@@ -509,11 +509,11 @@ private def mkStructView (stx : Syntax) (structName : Name) (sources : SourcesVi
     return { ref := fieldStx, lhs := first :: rest, val := FieldVal.term val : Field }
   return { ref := stx, structName, params := #[], fields, sources }
 
-def StructInstView.modifyFieldsM {m : Type → Type} [Monad m] (s : StructInstView) (f : List Field → m (List Field)) : m StructInstView :=
+def StructInstView.modifyFieldsM {m : Type  Type} [Monad m] (s : StructInstView) (f : List Field  m (List Field)) : m StructInstView :=
   match s with
   | { ref, structName, params, fields, sources } => return { ref, structName, params, fields := (← f fields), sources }
 
-def StructInstView.modifyFields (s : StructInstView) (f : List Field → List Field) : StructInstView :=
+def StructInstView.modifyFields (s : StructInstView) (f : List Field  List Field) : StructInstView :=
   Id.run <| s.modifyFieldsM f
 
 /-- Expands name field LHSs with multi-component names into multi-component LHSs. -/
@@ -602,7 +602,7 @@ private def mkFieldMap (fields : List Field) : TermElabM FieldMap :=
 /--
 Given a value of the hash map created by `mkFieldMap`, returns true if the value corresponds to a simple field.
 -/
-private def isSimpleField? : List Field → Option Field
+private def isSimpleField? : List Field  Option Field
   | [field] => if field.isSimple then some field else none
   | _       => none
 
@@ -742,7 +742,7 @@ structure CtorHeaderResult where
   /-- Type parameter names and metavariables for each parameter. Used to seed `StructInstView.params`. -/
   params     : Array (Name × Expr)
 
-private def mkCtorHeaderAux : Nat → Expr → Expr → Array MVarId → Array (Name × Expr) → TermElabM CtorHeaderResult
+private def mkCtorHeaderAux : Nat  Expr  Expr  Array MVarId  Array (Name × Expr)  TermElabM CtorHeaderResult
   | 0,   type, ctorFn, instMVars, params => return { ctorFn , ctorFnType := type, instMVars, params }
   | n+1, type, ctorFn, instMVars, params => do
     match (← whnfForall type) with
@@ -756,7 +756,7 @@ private def mkCtorHeaderAux : Nat → Expr → Expr → Array MVarId → Array (
         mkCtorHeaderAux n (b.instantiate1 a) (mkApp ctorFn a) instMVars (params.push (paramName, a))
     | _ => throwError "unexpected constructor type"
 
-private partial def getForallBody : Nat → Expr → Option Expr
+private partial def getForallBody : Nat  Expr  Option Expr
   | i+1, .forallE _ _ b _ => getForallBody i b
   | _+1, _                => none
   | 0,   type             => type
@@ -984,7 +984,7 @@ partial def mkDefaultValue? (struct : StructInstView) (cinfo : ConstantInfo) : T
   let us ← mkFreshLevelMVarsFor cinfo
   process (← instantiateValueLevelParams cinfo us)
 where
-  process : Expr → TermElabM (Option Expr)
+  process : Expr  TermElabM (Option Expr)
   | .lam n d b c => withRef struct.ref do
     if c.isExplicit then
       let fieldName := n

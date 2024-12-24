@@ -1,10 +1,10 @@
 import Lean.Meta.Basic
 
 inductive StructLike α where
-  | mk : α → StructLike α
+  | mk : α  StructLike α
 
 inductive Nested where
-  | nest : StructLike Nested → Nested
+  | nest : StructLike Nested  Nested
   | other
 
 /--
@@ -49,13 +49,13 @@ instance : DecidableEq Value := sorry
 
 mutual
 
-def Value.lt : Value → Value → Bool
+def Value.lt : Value  Value  Bool
   | .prim, .prim => false
   | .set (.mk vs₁), .set (.mk vs₂) => Values.lt vs₁ vs₂
   | .prim, .set _ => true
   | .set _, .prim => false
 
-def Values.lt : List Value → List Value → Bool
+def Values.lt : List Value  List Value  Bool
   | [], [] => false
   | [], _ => true
   | _, [] => false

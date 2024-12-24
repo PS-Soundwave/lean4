@@ -72,7 +72,7 @@ def toACExpr (op l r : Expr) : MetaM (Array Expr × ACExpr) := do
 
   return (vars, toACExpr varMap preExpr)
   where
-    toPreExpr : Expr → StateT ExprSet MetaM PreExpr
+    toPreExpr : Expr  StateT ExprSet MetaM PreExpr
     | e@(bin op₂ l r) => do
       if ←isDefEq op op₂ then
         return PreExpr.op (←toPreExpr l) (←toPreExpr r)
@@ -82,7 +82,7 @@ def toACExpr (op l r : Expr) : MetaM (Array Expr × ACExpr) := do
       modify fun vars => vars.insert e
       return PreExpr.var e
 
-    toACExpr (varMap : Expr → Nat) : PreExpr → ACExpr
+    toACExpr (varMap : Expr  Nat) : PreExpr  ACExpr
     | PreExpr.op l r => Data.AC.Expr.op (toACExpr varMap l) (toACExpr varMap r)
     | PreExpr.var x => Data.AC.Expr.var (varMap x)
 
@@ -92,7 +92,7 @@ over them. But `ac_rfl` proofs are not completely abstract in the value of the a
 neutral elements. So we have to abstract over these proofs as well.
 -/
 def abstractAtoms (preContext : PreContext) (atoms : Array Expr)
-    (k : Array (Expr × Option Expr) → MetaM Expr) : MetaM Expr := do
+    (k : Array (Expr × Option Expr)  MetaM Expr) : MetaM Expr := do
   let α ← inferType atoms[0]!
   let u ← getLevel α
   let rec go i (acc : Array (Expr × Option Expr)) (vars : Array Expr) (args : Array Expr) := do
@@ -160,11 +160,11 @@ where
 
     return mkApp7 (mkConst ``Lean.Data.AC.Context.mk [u]) α preContext.op preContext.assoc comm idem vars arbitrary
 
-  convert : ACExpr → Expr
+  convert : ACExpr  Expr
     | .op l r => mkApp2 (mkConst ``Data.AC.Expr.op) (convert l) (convert r)
     | .var x => mkApp (mkConst ``Data.AC.Expr.var) $ mkNatLit x
 
-  convertTarget (vars : Array Expr) : ACExpr → Expr
+  convertTarget (vars : Array Expr) : ACExpr  Expr
     | .op l r => mkApp2 preContext.op (convertTarget vars l) (convertTarget vars r)
     | .var x => vars[x]!
 

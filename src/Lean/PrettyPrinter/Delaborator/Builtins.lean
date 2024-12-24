@@ -241,7 +241,7 @@ def unexpandStructureInstance (stx : Syntax) : Delab := whenPPOption getPPStruct
     let field ← `(structInstField|$fieldId:ident := $(stx[1][idx]))
     fields := fields.push field
   let tyStx ← withType do
-    if (← getPPOption getPPStructureInstanceType) then delab >>= pure ∘ some else pure none
+    if (← getPPOption getPPStructureInstanceType) then delab >>= pure  some else pure none
   `({ $fields,* $[: $tyStx]? })
 
 /--
@@ -323,7 +323,7 @@ Delaborates a function application in explicit mode.
 * If `fieldNotation` is true, then allows the application to be pretty printed using field notation.
   Field notation will not be used when `insertExplicit` is true.
 -/
-def delabAppExplicitCore (fieldNotation : Bool) (numArgs : Nat) (delabHead : (insertExplicit : Bool) → Delab) (paramKinds : Array ParamKind) : Delab := do
+def delabAppExplicitCore (fieldNotation : Bool) (numArgs : Nat) (delabHead : (insertExplicit : Bool)  Delab) (paramKinds : Array ParamKind) : Delab := do
   let insertExplicit := needsExplicit ((← getExpr).getBoundedAppFn numArgs) numArgs paramKinds
   let fieldNotation ← pure (fieldNotation && !insertExplicit) <&&> getPPOption getPPFieldNotation
     <&&> not <$> getPPOption getPPAnalysisNoDot
@@ -366,12 +366,12 @@ inductive AppImplicitArg
   deriving Inhabited
 
 /-- Whether unexpanding is allowed with this argument. -/
-def AppImplicitArg.canUnexpand : AppImplicitArg → Bool
+def AppImplicitArg.canUnexpand : AppImplicitArg  Bool
   | .regular .. | .optional .. | .skip => true
   | .named .. => false
 
 /-- If the argument has associated syntax, returns it. -/
-def AppImplicitArg.syntax? : AppImplicitArg → Option Syntax
+def AppImplicitArg.syntax? : AppImplicitArg  Option Syntax
   | .skip => none
   | .regular s => s
   | .optional _ s => s
@@ -533,7 +533,7 @@ Delaborates applications. Removes up to `maxArgs` arguments to form the "head" o
 
 Propagates `pp.tagAppFns` into the head for `delabHead`.
 -/
-def delabAppCore (maxArgs : Nat) (delabHead : (insertExplicit : Bool) → Delab) (unexpand : Bool) : Delab := do
+def delabAppCore (maxArgs : Nat) (delabHead : (insertExplicit : Bool)  Delab) (unexpand : Bool) : Delab := do
   let tagAppFn ← getPPOption getPPTagAppFns
   let delabHead' (insertExplicit : Bool) : Delab := withOptionAtCurrPos `pp.tagAppFns tagAppFn (delabHead insertExplicit)
   let e ← getExpr
@@ -560,9 +560,9 @@ def delabApp : Delab := do
 The `withOverApp` combinator allows delaborators to handle "over-application" by using the core
 application delaborator to handle additional arguments.
 
-For example, suppose `f : {A : Type} → Foo A → A` and we want to implement a delaborator for
+For example, suppose `f : {A : Type}  Foo A  A` and we want to implement a delaborator for
 applications `f x` to pretty print as `F[x]`. Because `A` is a type variable we might encounter
-a term of the form `@f (A → B) x y`, which has an additional argument `y`.
+a term of the form `@f (A  B) x y`, which has an additional argument `y`.
 With this combinator one can use an arity-2 delaborator to pretty print this as `F[x] y`.
 
 * `arity`: the expected number of arguments to `f`.
@@ -629,7 +629,7 @@ Skips `numParams` binders, and execute `x varNames` where `varNames` contains th
 The `hNames` array is used for the last params.
 Helper for `delabAppMatch`.
 -/
-private partial def skippingBinders {α} (numParams : Nat) (hNames : Array Name) (x : Array Name → DelabM α) : DelabM α := do
+private partial def skippingBinders {α} (numParams : Nat) (hNames : Array Name) (x : Array Name  DelabM α) : DelabM α := do
   loop 0 #[]
 where
   loop (i : Nat) (varNames : Array Name) : DelabM α := do
@@ -669,9 +669,9 @@ where
 /--
 Delaborates applications of "matchers" such as
 ```
-List.map.match_1 : {α : Type _} →
-  (motive : List α → Sort _) →
-    (x : List α) → (Unit → motive List.nil) → ((a : α) → (as : List α) → motive (a :: as)) → motive x
+List.map.match_1 : {α : Type _} 
+  (motive : List α  Sort _) 
+    (x : List α)  (Unit  motive List.nil)  ((a : α)  (as : List α)  motive (a :: as))  motive x
 ```
 -/
 @[builtin_delab app]
@@ -758,7 +758,7 @@ partial def delabAppMatch : Delab := whenNotPPOption getPPExplicit <| whenPPOpti
 where
   /-- Adds hNames to the local context to reserve their names and runs `m` in that context. -/
   withDummyBinders {α : Type} (hNames? : Array (Option Name)) (body : Expr)
-      (m : Array (Option Name) → DelabM α) (acc : Array (Option Name) := #[]) : DelabM α := do
+      (m : Array (Option Name)  DelabM α) (acc : Array (Option Name) := #[]) : DelabM α := do
     let i := acc.size
     if i < hNames?.size then
       if let some name := hNames?[i]! then
@@ -832,7 +832,7 @@ where
   getPPBinderTypes (e : Expr) :=
     if e.isForall then getPPPiBinderTypes else getPPFunBinderTypes
 
-private partial def delabBinders (delabGroup : Array Syntax → Syntax → Delab) : optParam (Array Syntax) #[] → Delab
+private partial def delabBinders (delabGroup : Array Syntax  Syntax  Delab) : optParam (Array Syntax) #[]  Delab
   -- Accumulate names (`Syntax.ident`s with position information) of the current, unfinished
   -- binder group `(d e ...)` as determined by `shouldGroupWithNext`. We cannot do grouping
   -- inside-out, on the Syntax level, because it depends on comparing the Expr binder types.
@@ -911,7 +911,7 @@ Similar to `delabBinders`, but tracking whether `forallE` is dependent or not.
 
 See issue #1571
 -/
-private partial def delabForallBinders (delabGroup : Array Syntax → Bool → Syntax → Delab) (curNames : Array Syntax := #[]) (curDep := false) : Delab := do
+private partial def delabForallBinders (delabGroup : Array Syntax  Bool  Syntax  Delab) (curNames : Array Syntax := #[]) (curDep := false) : Delab := do
   -- Logic note: wanting to print with binder names is equivalent to pretending the forall is dependent.
   let dep := !(← getExpr).isArrow || (← getOptionsAtCurrPos).get ppPiBinderNames false
   if !curNames.isEmpty && dep != curDep then
@@ -947,13 +947,13 @@ def delabForall : Delab := do
         else
           `(bracketedBinderF|($curNames* : $stxT))
       else
-        return ← curNames.foldrM (fun _ stxBody => `($stxT → $stxBody)) stxBody
+        return ← curNames.foldrM (fun _ stxBody => `($stxT  $stxBody)) stxBody
     if prop then
       match stxBody with
       | `(∀ $groups*, $stxBody) => `(∀ $group $groups*, $stxBody)
       | _                       => `(∀ $group, $stxBody)
     else
-      `($group:bracketedBinder → $stxBody)
+      `($group:bracketedBinder  $stxBody)
 
 @[builtin_delab letE]
 def delabLetE : Delab := do
@@ -1206,7 +1206,7 @@ def delabMProdMk : Delab := delabPProdMkCore ``MProd.mk
 partial def delabDoElems : DelabM (List Syntax) := do
   let e ← getExpr
   if e.isAppOfArity ``Bind.bind 6 then
-    -- Bind.bind.{u, v} : {m : Type u → Type v} → [self : Bind m] → {α β : Type u} → m α → (α → m β) → m β
+    -- Bind.bind.{u, v} : {m : Type u  Type v}  [self : Bind m]  {α β : Type u}  m α  (α  m β)  m β
     let α := e.getAppArgs[2]!
     let ma ← withAppFn $ withAppArg delab
     withAppArg do
@@ -1230,7 +1230,7 @@ partial def delabDoElems : DelabM (List Syntax) := do
       descend b 2 $
         prependAndRec `(doElem|let $(mkIdent n) : $stxT := $stxV)
   else if e.isLetFun then
-    -- letFun.{u, v} : {α : Sort u} → {β : α → Sort v} → (v : α) → ((x : α) → β x) → β v
+    -- letFun.{u, v} : {α : Sort u}  {β : α  Sort v}  (v : α)  ((x : α)  β x)  β v
     let stxT ← withNaryArg 0 delab
     let stxV ← withNaryArg 2 delab
     withAppArg do
@@ -1253,7 +1253,7 @@ def delabDo : Delab := whenNotPPOption getPPExplicit <| whenPPOption getPPNotati
   `(do $items:doSeqItem*)
 
 /-- Delaborates a function application of the form `f ... x (fun _ : Unit => y)`. -/
-def delabLazyBinop (arity : Nat) (k : Term → Term → DelabM Term) : DelabM Term :=
+def delabLazyBinop (arity : Nat) (k : Term  Term  DelabM Term) : DelabM Term :=
   whenNotPPOption getPPExplicit <| whenPPOption getPPNotation <| withOverApp arity do
     let y ← withAppArg do
       let b := (← getExpr).beta #[mkConst ``Unit.unit]

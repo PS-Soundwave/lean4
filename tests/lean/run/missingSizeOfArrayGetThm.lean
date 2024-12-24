@@ -3,7 +3,7 @@ inductive Node (Data : Type) : Type where
 | node  (children : Array (Node Data)) : Node Data
 | leaf  (data : Data) : Node Data
 
-def Node.FixedBranching (n : Nat) : Node Data → Prop
+def Node.FixedBranching (n : Nat) : Node Data  Prop
   | empty => True
   | node children => children.size = n ∧ ∀ (i : Nat) h, (children[i]'h).FixedBranching n
   | leaf _ => True

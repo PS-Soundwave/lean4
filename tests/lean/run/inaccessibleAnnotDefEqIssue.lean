@@ -1,4 +1,4 @@
-example : Int → Nat
+example : Int  Nat
 | (_ : Nat)     => 0
 | Int.negSucc n => 0
 

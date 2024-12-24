@@ -71,7 +71,7 @@ def addArg (matcherApp : MatcherApp) (e : Expr) : MetaM MatcherApp :=
         let uElim ← getLevel motiveBody
         pure <| matcherApp.matcherLevels.set! pos uElim
     let motive ← mkLambdaFVars motiveArgs motiveBody
-    -- Construct `aux` `match_i As (fun xs => B[xs] → motive[xs]) discrs`, and infer its type `auxType`.
+    -- Construct `aux` `match_i As (fun xs => B[xs]  motive[xs]) discrs`, and infer its type `auxType`.
     -- We use `auxType` to infer the type `B[C_i[ys_i]]` of the new argument in each alternative.
     let aux := mkAppN (mkConst matcherApp.matcherName matcherLevels.toList) matcherApp.params
     let aux := mkApp aux motive
@@ -180,7 +180,7 @@ def withUserNames {n} [MonadControlT MetaM n] [Monad n]
 private def forallAltTelescope'
     {n} [Monad n] [MonadControlT MetaM n]
     {α} (origAltType : Expr) (numParams numDiscrEqs : Nat)
-    (k : Array Expr → Array Expr → n α) : n α := do
+    (k : Array Expr  Array Expr  n α) : n α := do
   map2MetaM (fun k =>
     Match.forallAltTelescope origAltType (numParams - numDiscrEqs) 0
       fun ys _eqs args _mask _bodyType => k ys args
@@ -212,10 +212,10 @@ def transform
     (matcherApp : MatcherApp)
     (useSplitter := false)
     (addEqualities : Bool := false)
-    (onParams : Expr → n Expr := pure)
-    (onMotive : Array Expr → Expr → n Expr := fun _ e => pure e)
-    (onAlt : Expr → Expr → n Expr := fun _ e => pure e)
-    (onRemaining : Array Expr → n (Array Expr) := pure) :
+    (onParams : Expr  n Expr := pure)
+    (onMotive : Array Expr  Expr  n Expr := fun _ e => pure e)
+    (onAlt : Expr  Expr  n Expr := fun _ e => pure e)
+    (onRemaining : Array Expr  n (Array Expr) := pure) :
     n MatcherApp := do
 
   -- We also handle CasesOn applications here, and need to treat them specially in a
@@ -238,7 +238,7 @@ def transform
       throwError "unexpected matcher application, motive must be lambda expression with #{matcherApp.discrs.size} arguments"
     let mut motiveBody' ← onMotive motiveArgs motiveBody
 
-    -- Prepend `(x = e) →` or `(HEq x e) → ` to the motive when an equality is requested
+    -- Prepend `(x = e) ` or `(HEq x e)  ` to the motive when an equality is requested
     -- and not already present, and remember whether we added an Eq or a HEq
     let mut addHEqualities : Array (Option Bool) := #[]
     for arg in motiveArgs, discr in discrs', di in matcherApp.discrInfos do
@@ -364,7 +364,7 @@ alternatives.
 
 For example, given
 ```
-(match (motive := Nat → Unit → ?) n with
+(match (motive := Nat  Unit  ?) n with
  0 => 1
  _ => true) ()
 ```

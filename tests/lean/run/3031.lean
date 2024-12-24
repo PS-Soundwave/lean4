@@ -55,7 +55,7 @@ structure A
 structure B extends A
 def Common.A.x (_ : A) : Nat := 0
 export Common (A.x)
-/-- info: fun b => A.x b.toA : B → Nat -/
+/-- info: fun b => A.x b.toA : B  Nat -/
 #guard_msgs in #check fun (b : B) => b.x
 end Ex1
 
@@ -95,15 +95,15 @@ True projections were ok.
 -/
 def A.x' {n : Nat} (a : A n) := a.x
 
-/-- info: fun a => a.x' : A 2 → Nat -/
+/-- info: fun a => a.x' : A 2  Nat -/
 #guard_msgs in #check fun (a : A 2) => @a.x'
 end Ex2
 
 namespace Ex3
-variable (f : α → β) (g : β → γ)
+variable (f : α  β) (g : β  γ)
 /-!
 Functions use the "top-level" dot notation rule: they use the first explicit argument, rather than the first function argument.
 -/
-/-- info: g ∘ f : α → γ -/
+/-- info: g  f : α  γ -/
 #guard_msgs in #check g.comp f
 end Ex3

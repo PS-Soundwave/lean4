@@ -46,7 +46,7 @@ structure InfoPopup where
 The intended usage of this is for the infoview to pass the `InfoWithCtx` which
 was stored for a particular `SubexprInfo` tag in a `TaggedText` generated with `ppExprTagged`.
  -/
-def makePopup : WithRpcRef InfoWithCtx → RequestM (RequestTask InfoPopup)
+def makePopup : WithRpcRef InfoWithCtx  RequestM (RequestTask InfoPopup)
   | ⟨i⟩ => RequestM.asTask do
     i.ctx.runMetaM i.info.lctx do
       let type? ← match (← i.info.type?) with

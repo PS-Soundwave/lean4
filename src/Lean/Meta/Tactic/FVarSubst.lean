@@ -61,7 +61,7 @@ def apply (s : FVarSubst) (e : Expr) : Expr :=
 def domain (s : FVarSubst) : List FVarId :=
   s.map.foldl (init := []) fun r k _ => k :: r
 
-def any (p : FVarId → Expr → Bool) (s : FVarSubst) : Bool :=
+def any (p : FVarId  Expr  Bool) (s : FVarSubst) : Bool :=
   s.map.any p
 
 /--
@@ -74,7 +74,7 @@ def append (s t : FVarSubst) : FVarSubst :=
 end FVarSubst
 end Meta
 
-def LocalDecl.applyFVarSubst (s : Meta.FVarSubst) : LocalDecl → LocalDecl
+def LocalDecl.applyFVarSubst (s : Meta.FVarSubst) : LocalDecl  LocalDecl
   | LocalDecl.cdecl i id n t bi k   => LocalDecl.cdecl i id n (s.apply t) bi k
   | LocalDecl.ldecl i id n t v nd k => LocalDecl.ldecl i id n (s.apply t) (s.apply v) nd k
 

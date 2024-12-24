@@ -49,14 +49,14 @@ instance : ToString Constraint where
 def sat (c : Constraint) (t : Int) : Bool := c.lowerBound.sat t ∧ c.upperBound.sat t
 
 /-- Apply a function to both the lower bound and upper bound. -/
-def map (c : Constraint) (f : Int → Int) : Constraint where
+def map (c : Constraint) (f : Int  Int) : Constraint where
   lowerBound := c.lowerBound.map f
   upperBound := c.upperBound.map f
 
 /-- Translate a constraint. -/
 def translate (c : Constraint) (t : Int) : Constraint := c.map (· + t)
 
-theorem translate_sat : {c : Constraint} → {v : Int} → sat c v → sat (c.translate t) (v + t) := by
+theorem translate_sat : {c : Constraint}  {v : Int}  sat c v  sat (c.translate t) (v + t) := by
   rintro ⟨_ | l, _ | u⟩ v w <;> simp_all [sat, translate, map]
   · exact Int.add_le_add_right w t
   · exact Int.add_le_add_right w t
@@ -77,7 +77,7 @@ Negate a constraint. `[x, y]` becomes `[-y, -x]`.
 -/
 def neg (c : Constraint) : Constraint := c.flip.map (- ·)
 
-theorem neg_sat : {c : Constraint} → {v : Int} → sat c v → sat (c.neg) (-v) := by
+theorem neg_sat : {c : Constraint}  {v : Int}  sat c v  sat (c.neg) (-v) := by
   rintro ⟨_ | l, _ | u⟩ v w <;> simp_all [sat, neg, flip, map]
   · exact Int.neg_le_neg w
   · exact Int.neg_le_neg w
@@ -100,12 +100,12 @@ def exact (r : Int) : Constraint := ⟨some r, some r⟩
   exact Int.eq_iff_le_and_ge.symm
 
 /-- Check if a constraint is unsatisfiable. -/
-def isImpossible : Constraint → Bool
+def isImpossible : Constraint  Bool
   | ⟨some x, some y⟩ => y < x
   | _ => false
 
 /-- Check if a constraint requires an exact value. -/
-def isExact : Constraint → Bool
+def isExact : Constraint  Bool
   | ⟨some x, some y⟩ => x = y
   | _ => false
 
@@ -184,7 +184,7 @@ def combine (x y : Constraint) : Constraint where
   lowerBound := max x.lowerBound y.lowerBound
   upperBound := min x.upperBound y.upperBound
 
-theorem combine_sat : (c : Constraint) → (c' : Constraint) → (t : Int) →
+theorem combine_sat : (c : Constraint)  (c' : Constraint)  (t : Int) 
     (c.combine c').sat t = (c.sat t ∧ c'.sat t) := by
   rintro ⟨_ | l₁, _ | u₁⟩ <;> rintro ⟨_ | l₂, _ | u₂⟩ t
     <;> simp [sat, LowerBound.sat, UpperBound.sat, combine, Int.le_min, Int.max_le] at *
@@ -264,7 +264,7 @@ Normalize a constraint, by dividing through by the GCD.
 
 Return `none` if there is nothing to do, to avoid adding unnecessary steps to the proof term.
 -/
-def normalize? : Constraint × Coeffs → Option (Constraint × Coeffs)
+def normalize? : Constraint × Coeffs  Option (Constraint × Coeffs)
   | ⟨s, x⟩ =>
     let gcd := Coeffs.gcd x -- TODO should we be caching this?
     if gcd = 0 then
@@ -308,7 +308,7 @@ theorem normalize_sat {s x v} (w : s.sat' x v) :
     · exact Constraint.div_sat' h w
 
 /-- Multiply by `-1` if the leading coefficient is negative, otherwise return `none`. -/
-def positivize? : Constraint × Coeffs → Option (Constraint × Coeffs)
+def positivize? : Constraint × Coeffs  Option (Constraint × Coeffs)
   | ⟨s, x⟩ =>
     if 0 ≤ x.leading then
       none
@@ -340,7 +340,7 @@ theorem positivize_sat {s x v} (w : s.sat' x v) :
     exact Constraint.neg_sat w
 
 /-- `positivize` and `normalize`, returning `none` if neither does anything. -/
-def tidy? : Constraint × Coeffs → Option (Constraint × Coeffs)
+def tidy? : Constraint × Coeffs  Option (Constraint × Coeffs)
   | ⟨s, x⟩ =>
     match positivize? (s, x) with
     | none => match normalize? (s, x) with

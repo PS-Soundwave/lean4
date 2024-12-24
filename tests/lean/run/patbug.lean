@@ -1,6 +1,6 @@
 open Lean
 
-def f : Name → Name
+def f : Name  Name
 | n@(`foo.bla) => n
 | _ => Name.anonymous
 

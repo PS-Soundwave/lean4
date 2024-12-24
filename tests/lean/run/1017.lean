@@ -2,7 +2,7 @@ namespace Stream
 
 variable [Stream ρ τ] (s : ρ)
 
-def take (s : ρ) : Nat → List τ × ρ
+def take (s : ρ) : Nat  List τ × ρ
 | 0 => ([], s)
 | n+1 =>
   match next? s with
@@ -17,7 +17,7 @@ def isEmpty : Bool :=
 def lengthBoundedBy (n : Nat) : Prop :=
   isEmpty (take s n).2
 
-def hasNext : ρ → ρ → Prop
+def hasNext : ρ  ρ  Prop
   := λ s1 s2 => ∃ x, next? s1 = some ⟨x,s2⟩
 
 def isFinite : Prop :=
@@ -43,7 +43,7 @@ instance hasNextWF : WellFoundedRelation {s : ρ // isFinite s} where
       exact Acc.intro (⟨s',h'⟩ : {s : ρ // isFinite s}) (by simpa only [Subtype.forall])
   ⟩⟩
 
-def mwe [Stream ρ τ] (acc : α) : {l : ρ // isFinite l} → α
+def mwe [Stream ρ τ] (acc : α) : {l : ρ // isFinite l}  α
   | ⟨l,h⟩ =>
     match h:next? l with
     | none => acc

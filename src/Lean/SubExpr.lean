@@ -30,7 +30,7 @@ def maxChildren := 4
 reserved to denote the type of the expression. -/
 def typeCoord : Nat := maxChildren - 1
 
-def asNat : Pos → Nat := id
+def asNat : Pos  Nat := id
 
 /-- The Pos representing the root subexpression. -/
 def root : Pos := (1 : Nat)
@@ -55,30 +55,30 @@ def push (p : Pos) (c : Nat) : Pos :=
 variable {α : Type} [Inhabited α]
 
 /-- Fold over the position starting at the root and heading to the leaf-/
-partial def foldl  (f : α → Nat → α) (init : α) (p : Pos) : α :=
+partial def foldl  (f : α  Nat  α) (init : α) (p : Pos) : α :=
   if p.isRoot then init else f (foldl f init p.tail) p.head
 
 /-- Fold over the position starting at the leaf and heading to the root-/
-partial def foldr  (f : Nat → α → α) (p : Pos) (init : α) : α :=
+partial def foldr  (f : Nat  α  α) (p : Pos) (init : α) : α :=
   if p.isRoot then init else foldr f p.tail (f p.head init)
 
 /-- monad-fold over the position starting at the root and heading to the leaf -/
-partial def foldlM  [Monad M] (f : α → Nat → M α) (init : α) (p : Pos) : M α :=
+partial def foldlM  [Monad M] (f : α  Nat  M α) (init : α) (p : Pos) : M α :=
   have : Inhabited (M α) := inferInstance
   if p.isRoot then pure init else do foldlM f init p.tail >>= (f · p.head)
 
 /-- monad-fold over the position starting at the leaf and finishing at the root. -/
-partial def foldrM [Monad M] (f : Nat → α → M α) (p : Pos) (init : α) : M α :=
+partial def foldrM [Monad M] (f : Nat  α  M α) (p : Pos) (init : α) : M α :=
   if p.isRoot then pure init else f p.head init >>= foldrM f p.tail
 
 def depth (p : Pos) :=
   p.foldr (init := 0) fun _ => Nat.succ
 
 /-- Returns true if `pred` is true for each coordinate in `p`.-/
-def all (pred : Nat → Bool) (p : Pos) : Bool :=
+def all (pred : Nat  Bool) (p : Pos) : Bool :=
   OptionT.run (m := Id) (foldrM (fun n a => if pred n then pure a else failure) p ()) |>.isSome
 
-def append : Pos → Pos → Pos := foldl push
+def append : Pos  Pos  Pos := foldl push
 
 /-- Creates a subexpression `Pos` from an array of 'coordinates'.
 Each coordinate is a number {0,1,2} expressing which child subexpression should be explored.
@@ -107,11 +107,11 @@ def pushNaryFn (numArgs : Nat) (p : Pos) : Pos :=
 def pushNaryArg (numArgs argIdx : Nat) (p : Pos) : Pos :=
   show Nat from p.asNat * (maxChildren ^ (numArgs - argIdx)) + 1
 
-def pushNthBindingDomain : (binderIdx : Nat) → Pos → Pos
+def pushNthBindingDomain : (binderIdx : Nat)  Pos  Pos
   | 0, p => p.pushBindingDomain
   | (n+1), p => pushNthBindingDomain n p.pushBindingBody
 
-def pushNthBindingBody : (numBinders : Nat) → Pos → Pos
+def pushNthBindingBody : (numBinders : Nat)  Pos  Pos
   | 0, p => p
   | (n+1), p => pushNthBindingBody n p.pushBindingBody
 
@@ -122,12 +122,12 @@ protected def toString (p : Pos) : String :=
   |> ("/" ++ ·)
 
 open Except in
-private def ofStringCoord : String → Except String Nat
+private def ofStringCoord : String  Except String Nat
   | "0" => ok 0 | "1" => ok 1 | "2" => ok 2 | "3" => ok 3
   | c => error s!"Invalid coordinate {c}"
 
 open Except in
-protected def fromString? : String → Except String Pos
+protected def fromString? : String  Except String Pos
   | "/" => Except.ok Pos.root
   | s =>
     match String.splitOn s "/" with
@@ -149,7 +149,7 @@ instance : Repr Pos where
 
 -- Note: we can't send the bare Nat over the wire because Json will convert to float
 -- if the nat is too big and least significant bits will be lost.
-instance : ToJson Pos := ⟨toJson ∘ Pos.toString⟩
+instance : ToJson Pos := ⟨toJson  Pos.toString⟩
 instance : FromJson Pos := ⟨fun j => fromJson? j >>= Pos.fromString?⟩
 
 end SubExpr.Pos
@@ -173,12 +173,12 @@ def isRoot (s : SubExpr) : Bool := s.pos.isRoot
 /-- Map from subexpr positions to values. -/
 abbrev PosMap (α : Type u) := RBMap Pos α compare
 
-def bindingBody! : SubExpr → SubExpr
+def bindingBody! : SubExpr  SubExpr
   | ⟨.forallE _ _ b _, p⟩ => ⟨b, p.pushBindingBody⟩
   | ⟨.lam _ _ b _, p⟩ => ⟨b, p.pushBindingBody⟩
   | _ => panic! "subexpr is not a binder"
 
-def bindingDomain! : SubExpr → SubExpr
+def bindingDomain! : SubExpr  SubExpr
   | ⟨.forallE _ t _ _, p⟩ => ⟨t, p.pushBindingDomain⟩
   | ⟨.lam _ t _ _, p⟩ => ⟨t, p.pushBindingDomain⟩
   | _ => panic! "subexpr is not a binder"
@@ -191,13 +191,13 @@ instance : FromJson MVarId := ⟨fun j => MVarId.mk <$> fromJson? j⟩
 /-- A location within a goal. -/
 inductive GoalLocation where
   /-- One of the hypotheses. -/
-  | hyp : FVarId → GoalLocation
+  | hyp : FVarId  GoalLocation
   /-- A subexpression of the type of one of the hypotheses. -/
-  | hypType : FVarId → SubExpr.Pos → GoalLocation
+  | hypType : FVarId  SubExpr.Pos  GoalLocation
   /-- A subexpression of the value of one of the let-bound hypotheses. -/
-  | hypValue : FVarId → SubExpr.Pos → GoalLocation
+  | hypValue : FVarId  SubExpr.Pos  GoalLocation
   /-- A subexpression of the goal type. -/
-  | target : SubExpr.Pos → GoalLocation
+  | target : SubExpr.Pos  GoalLocation
   deriving FromJson, ToJson
 
 /-- A location within a goal state. It identifies a specific goal together with a `GoalLocation`
@@ -213,7 +213,7 @@ end SubExpr
 open SubExpr in
 /-- Same as `Expr.traverseApp` but also includes a
 `SubExpr.Pos` argument for tracking subexpression position. -/
-def Expr.traverseAppWithPos {M} [Monad M] (visit : Pos → Expr → M Expr) (p : Pos) (e : Expr) : M Expr :=
+def Expr.traverseAppWithPos {M} [Monad M] (visit : Pos  Expr  M Expr) (p : Pos) (e : Expr) : M Expr :=
   match e with
   | .app f a =>
     e.updateApp!

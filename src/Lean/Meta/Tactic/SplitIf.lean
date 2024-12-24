@@ -12,11 +12,11 @@ namespace Lean.Meta
 inductive SplitKind where
   | ite | match | both
 
-def SplitKind.considerIte : SplitKind → Bool
+def SplitKind.considerIte : SplitKind  Bool
   | .ite | .both => true
   | _ => false
 
-def SplitKind.considerMatch : SplitKind → Bool
+def SplitKind.considerMatch : SplitKind  Bool
   | .match | .both => true
   | _ => false
 
@@ -68,7 +68,7 @@ unsafe def visit (e : Expr) : OptionT FindM Expr := do
     match e with
     | .lam _ _ b _ | .proj _ _ b -- We do not look for split candidates in the binder of lambdas.
     | .mdata _ b       => visit b
-    | .forallE _ d b _ => visit d <|> visit b -- We want to look for candidates at `A → B`
+    | .forallE _ d b _ => visit d <|> visit b -- We want to look for candidates at `A  B`
     | .letE _ _ v b _  => visit v <|> visit b
     | .app ..          => visitApp? e
     | _                => failure

@@ -35,7 +35,7 @@ private theorem List.of_toArrayAux_eq_toArrayAux {as bs : List α} {cs ds : Arra
 theorem List.toArray_eq_toArray_eq (as bs : List α) : (as.toArray = bs.toArray) = (as = bs) := by
   simp
 
-def Array.mapM' [Monad m] (f : α → m β) (as : Array α) : m { bs : Array β // bs.size = as.size } :=
+def Array.mapM' [Monad m] (f : α  m β) (as : Array α) : m { bs : Array β // bs.size = as.size } :=
   go 0 ⟨mkEmpty as.size, rfl⟩ (by simp)
 where
   go (i : Nat) (acc : { bs : Array β // bs.size = i }) (hle : i ≤ as.size) : m { bs : Array β // bs.size = as.size } := do
@@ -48,7 +48,7 @@ where
   termination_by as.size - i
   decreasing_by decreasing_trivial_pre_omega
 
-@[inline] private unsafe def mapMonoMImp [Monad m] (as : Array α) (f : α → m α) : m (Array α) :=
+@[inline] private unsafe def mapMonoMImp [Monad m] (as : Array α) (f : α  m α) : m (Array α) :=
   go 0 as
 where
   @[specialize] go (i : Nat) (as : Array α) : m (Array α) := do
@@ -66,8 +66,8 @@ where
 Monomorphic `Array.mapM`. The internal implementation uses pointer equality, and does not allocate a new array
 if the result of each `f a` is a pointer equal value `a`.
 -/
-@[implemented_by mapMonoMImp] def Array.mapMonoM [Monad m] (as : Array α) (f : α → m α) : m (Array α) :=
+@[implemented_by mapMonoMImp] def Array.mapMonoM [Monad m] (as : Array α) (f : α  m α) : m (Array α) :=
   as.mapM f
 
-@[inline] def Array.mapMono (as : Array α) (f : α → α) : Array α :=
+@[inline] def Array.mapMono (as : Array α) (f : α  α) : Array α :=
   Id.run <| as.mapMonoM f

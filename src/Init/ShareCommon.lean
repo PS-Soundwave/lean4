@@ -25,7 +25,7 @@ unsafe abbrev Object.ptrHash (a : Object) : UInt64 :=
 
 structure StateFactoryImpl where
   (Map Set : Type)
-  mkState : Unit → Map × Set
+  mkState : Unit  Map × Set
   mapFind? (m : Map) (k : Object) : Option Object
   mapInsert (m : Map) (k v : Object) : Map
   setFind? (m : Set) (k : Object) : Option Object
@@ -44,14 +44,14 @@ unsafe opaque Object.hash (a : @& Object) : UInt64
 structure StateFactoryBuilder where
   Map (α _β : Type) [BEq α] [Hashable α] : Type
   mkMap {α β : Type} [BEq α] [Hashable α] (capacity : Nat) : Map α β
-  mapFind? {α β : Type} [BEq α] [Hashable α] : Map α β → α → Option β
-  mapInsert {α β : Type} [BEq α] [Hashable α] : Map α β → α → β → Map α β
+  mapFind? {α β : Type} [BEq α] [Hashable α] : Map α β  α  Option β
+  mapInsert {α β : Type} [BEq α] [Hashable α] : Map α β  α  β  Map α β
   Set (α : Type) [BEq α] [Hashable α] : Type
   mkSet {α : Type} [BEq α] [Hashable α] (capacity : Nat) : Set α
-  setFind? {α : Type} [BEq α] [Hashable α] : Set α → α → Option α
-  setInsert {α : Type} [BEq α] [Hashable α] : Set α → α → Set α
+  setFind? {α : Type} [BEq α] [Hashable α] : Set α  α  Option α
+  setInsert {α : Type} [BEq α] [Hashable α] : Set α  α  Set α
 
-unsafe def StateFactory.mkImpl : StateFactoryBuilder → StateFactory
+unsafe def StateFactory.mkImpl : StateFactoryBuilder  StateFactory
   | { Map, mkMap, mapFind?, mapInsert, Set, mkSet, setFind?, setInsert } =>
     unsafeCast {
       Map := @Map Object Object ⟨Object.ptrEq⟩ ⟨Object.ptrHash⟩
@@ -66,9 +66,9 @@ unsafe def StateFactory.mkImpl : StateFactoryBuilder → StateFactory
     : StateFactoryImpl }
 
 @[implemented_by StateFactory.mkImpl]
-opaque StateFactory.mk : StateFactoryBuilder → StateFactory
+opaque StateFactory.mk : StateFactoryBuilder  StateFactory
 
-unsafe def StateFactory.get : StateFactory → StateFactoryImpl := unsafeCast
+unsafe def StateFactory.get : StateFactory  StateFactoryImpl := unsafeCast
 
 /-- Internally `State` is implemented as a pair `ObjectMap` and `ObjectSet` -/
 opaque StatePointed (σ : StateFactory) : NonemptyType
@@ -84,15 +84,15 @@ def State.shareCommon {σ : @& StateFactory} (s : State σ) (a : α) : α × Sta
 
 end ShareCommon
 
-class MonadShareCommon (m : Type u → Type v) where
-  withShareCommon {α : Type u} : α → m α
+class MonadShareCommon (m : Type u  Type v) where
+  withShareCommon {α : Type u} : α  m α
 
 abbrev withShareCommon := @MonadShareCommon.withShareCommon
 
 abbrev shareCommonM [MonadShareCommon m] (a : α) : m α :=
   withShareCommon a
 
-abbrev ShareCommonT (σ) (m : Type u → Type v) := StateT (ShareCommon.State σ) m
+abbrev ShareCommonT (σ) (m : Type u  Type v) := StateT (ShareCommon.State σ) m
 abbrev ShareCommonM (σ) := ShareCommonT σ Id
 
 @[specialize] def ShareCommonT.withShareCommon [Monad m] (a : α) : ShareCommonT σ m α :=

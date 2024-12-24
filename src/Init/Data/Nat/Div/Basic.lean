@@ -17,7 +17,7 @@ there is some `c` such that `b = a * c`.
 instance : Dvd Nat where
   dvd a b := Exists (fun c => b = a * c)
 
-theorem div_rec_lemma {x y : Nat} : 0 < y ∧ y ≤ x → x - y < x :=
+theorem div_rec_lemma {x y : Nat} : 0 < y ∧ y ≤ x  x - y < x :=
   fun ⟨ypos, ylex⟩ => sub_lt (Nat.lt_of_lt_of_le ypos ylex) ypos
 
 @[extern "lean_nat_div"]
@@ -36,10 +36,10 @@ theorem div_eq (x y : Nat) : x / y = if 0 < y ∧ y ≤ x then (x - y) / y + 1 e
   rfl
 
 def div.inductionOn.{u}
-      {motive : Nat → Nat → Sort u}
+      {motive : Nat  Nat  Sort u}
       (x y : Nat)
-      (ind  : ∀ x y, 0 < y ∧ y ≤ x → motive (x - y) y → motive x y)
-      (base : ∀ x y, ¬(0 < y ∧ y ≤ x) → motive x y)
+      (ind  : ∀ x y, 0 < y ∧ y ≤ x  motive (x - y) y  motive x y)
+      (base : ∀ x y, ¬(0 < y ∧ y ≤ x)  motive x y)
       : motive x y :=
   if h : 0 < y ∧ y ≤ x then
     ind x y h (inductionOn (x - y) y ind base)
@@ -81,7 +81,7 @@ protected def modCore (x y : @& Nat) : Nat :=
 decreasing_by apply div_rec_lemma; assumption
 
 @[extern "lean_nat_mod"]
-protected def mod : @& Nat → @& Nat → Nat
+protected def mod : @& Nat  @& Nat  Nat
   /-
   Nat.modCore is defined by well-founded recursion and thus irreducible. Nevertheless it is
   desirable if trivial `Nat.mod` calculations, namely
@@ -115,10 +115,10 @@ theorem mod_eq (x y : Nat) : x % y = if 0 < y ∧ y ≤ x then (x - y) % y else 
   rw [←Nat.modCore_eq_mod, ←Nat.modCore_eq_mod, Nat.modCore]
 
 def mod.inductionOn.{u}
-      {motive : Nat → Nat → Sort u}
+      {motive : Nat  Nat  Sort u}
       (x y  : Nat)
-      (ind  : ∀ x y, 0 < y ∧ y ≤ x → motive (x - y) y → motive x y)
-      (base : ∀ x y, ¬(0 < y ∧ y ≤ x) → motive x y)
+      (ind  : ∀ x y, 0 < y ∧ y ≤ x  motive (x - y) y  motive x y)
+      (base : ∀ x y, ¬(0 < y ∧ y ≤ x)  motive x y)
       : motive x y :=
   div.inductionOn x y ind base
 
@@ -152,11 +152,11 @@ theorem mod_eq_sub_mod {a b : Nat} (h : a ≥ b) : a % b = (a - b) % b :=
   | Or.inl h₁ => h₁.symm ▸ (Nat.sub_zero a).symm ▸ rfl
   | Or.inr h₁ => (mod_eq a b).symm ▸ if_pos ⟨h₁, h⟩
 
-theorem mod_lt (x : Nat) {y : Nat} : y > 0 → x % y < y := by
+theorem mod_lt (x : Nat) {y : Nat} : y > 0  x % y < y := by
   induction x, y using mod.inductionOn with
   | base x y h₁ =>
     intro h₂
-    have h₁ : ¬ 0 < y ∨ ¬ y ≤ x := Decidable.not_and_iff_or_not.mp h₁
+    have h₁ : ¬ 0 < y  ¬ y ≤ x := Decidable.not_and_iff_or_not.mp h₁
     match h₁ with
     | Or.inl h₁ => exact absurd h₂ h₁
     | Or.inr h₁ =>
@@ -196,7 +196,7 @@ theorem mod_le (x y : Nat) : x % y ≤ x := by
 
 theorem mod_one (x : Nat) : x % 1 = 0 := by
   have h : x % 1 < 1 := mod_lt x (by decide)
-  have : (y : Nat) → y < 1 → y = 0 := by
+  have : (y : Nat)  y < 1  y = 0 := by
     intro y
     cases y with
     | zero   => intro _; rfl
@@ -395,7 +395,7 @@ protected theorem mul_div_cancel (m : Nat) {n : Nat} (H : 0 < n) : m * n / n = m
 protected theorem mul_div_cancel_left (m : Nat) {n : Nat} (H : 0 < n) : n * m / n = m := by
   rw [Nat.mul_comm, Nat.mul_div_cancel _ H]
 
-protected theorem div_le_of_le_mul {m n : Nat} : ∀ {k}, m ≤ k * n → m / k ≤ n
+protected theorem div_le_of_le_mul {m n : Nat} : ∀ {k}, m ≤ k * n  m / k ≤ n
   | 0, _ => by simp [Nat.div_zero, n.zero_le]
   | succ k, h => by
     suffices succ k * (m / succ k) ≤ succ k * n from

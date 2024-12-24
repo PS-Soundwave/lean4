@@ -1,25 +1,25 @@
 inductive Expr where
-  | nat  : Nat → Expr
-  | plus : Expr → Expr → Expr
-  | bool : Bool → Expr
-  | and  : Expr → Expr → Expr
+  | nat  : Nat  Expr
+  | plus : Expr  Expr  Expr
+  | bool : Bool  Expr
+  | and  : Expr  Expr  Expr
 
 inductive Ty where
   | nat
   | bool
   deriving DecidableEq
 
-inductive HasType : Expr → Ty → Prop
+inductive HasType : Expr  Ty  Prop
   | nat  : HasType (.nat v) .nat
-  | plus : HasType a .nat → HasType b .nat → HasType (.plus a b) .nat
+  | plus : HasType a .nat  HasType b .nat  HasType (.plus a b) .nat
   | bool : HasType (.bool v) .bool
-  | and  : HasType a .bool → HasType b .bool → HasType (.and a b) .bool
+  | and  : HasType a .bool  HasType b .bool  HasType (.and a b) .bool
 
 theorem HasType.det (h₁ : HasType e t₁) (h₂ : HasType e t₂) : t₁ = t₂ := by
   cases h₁ <;> cases h₂ <;> rfl
 
-inductive Maybe (p : α → Prop) where
-  | found : (a : α) → p a → Maybe p
+inductive Maybe (p : α  Prop) where
+  | found : (a : α)  p a  Maybe p
   | unknown
 
 notation "{{ " x " | " p " }}" => Maybe (fun x => p)

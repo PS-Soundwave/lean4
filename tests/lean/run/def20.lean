@@ -1,4 +1,4 @@
-def f : Char → Nat
+def f : Char  Nat
 | 'a' => 0
 | 'b' => 1
 | 'c' => 2
@@ -9,7 +9,7 @@ def f : Char → Nat
 theorem ex1 : (f 'a', f 'b', f 'c', f 'd', f 'e', f 'f') = (0, 1, 2, 3, 4, 5) :=
 rfl
 
-def g : Nat → Nat
+def g : Nat  Nat
 | 100000 => 0
 | 200000 => 1
 | 300000 => 2
@@ -19,7 +19,7 @@ def g : Nat → Nat
 theorem ex2 : (g 100000, g 200000, g 300000, g 400000, g 0) = (0, 1, 2, 3, 5) :=
 rfl
 
-def h : String → Nat
+def h : String  Nat
 | "hello" => 0
 | "world" => 1
 | "bla"   => 2
@@ -29,7 +29,7 @@ def h : String → Nat
 theorem ex3 : (h "hello", h "world", h "bla", h "boo", h "zoo") = (0, 1, 2, 3, 5) :=
 rfl
 
-def r : String × String → Nat
+def r : String × String  Nat
 | ("hello", "world") => 0
 | ("world", "hello") => 1
 | _                  => 2

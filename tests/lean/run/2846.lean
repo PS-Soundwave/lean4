@@ -5,13 +5,13 @@
 /-!
 Defined without named arguments, prints without named arguments.
 -/
-/-- info: String.append : String → String → String -/
+/-- info: String.append : String  String  String -/
 #guard_msgs in #check String.append
 
 /-!
 The List argument is not named, it is not printed as a named argument.
 -/
-/-- info: List.length.{u_1} {α : Type u_1} : List α → Nat -/
+/-- info: List.length.{u_1} {α : Type u_1} : List α  Nat -/
 #guard_msgs in #check List.length
 
 /-!
@@ -23,9 +23,9 @@ All arguments are named, all are printed as named arguments.
 /-!
 The hypothesis is not a named argument, so it's not printed as a named argument.
 -/
-def Nat.pos_pow_of_pos' {n : Nat} (m : Nat) : 0 < n → 0 < n ^ m := Nat.pos_pow_of_pos m
+def Nat.pos_pow_of_pos' {n : Nat} (m : Nat) : 0 < n  0 < n ^ m := Nat.pos_pow_of_pos m
 
-/-- info: Nat.pos_pow_of_pos' {n : Nat} (m : Nat) : 0 < n → 0 < n ^ m -/
+/-- info: Nat.pos_pow_of_pos' {n : Nat} (m : Nat) : 0 < n  0 < n ^ m -/
 #guard_msgs in #check Nat.pos_pow_of_pos'
 
 /-!
@@ -50,9 +50,9 @@ def foo' (n n : Nat) (a : Fin ((by clear n; exact n) + 1)) : Fin (n + 1) := 0
 Named argument after non-dependent inaccessible name, still stays after the colon.
 Prints with named pi notation.
 -/
-def foo'' : String → (needle : String) → String := fun _ yo => yo
+def foo'' : String  (needle : String)  String := fun _ yo => yo
 
-/-- info: foo'' : String → (needle : String) → String -/
+/-- info: foo'' : String  (needle : String)  String -/
 #guard_msgs in #check foo''
 
 /-!
@@ -60,7 +60,7 @@ Named argument after inaccessible name that's still a dependent argument.
 Stays before the colon, and the names are grouped.
 -/
 
-def foo''' : (_ : Nat) → (n : Nat) → Fin (n + by clear n; assumption) := sorry
+def foo''' : (_ : Nat)  (n : Nat)  Fin (n + by clear n; assumption) := sorry
 
 /-- info: foo''' (x✝ n : Nat) : Fin (n + x✝) -/
 #guard_msgs in #check foo'''
@@ -69,9 +69,9 @@ def foo''' : (_ : Nat) → (n : Nat) → Fin (n + by clear n; assumption) := sor
 Named argument after inaccessible name, still stays after the colon.
 Here, because it's a dependent type the named pi notation shows the name.
 -/
-def bar : String → (n : Nat) → Fin (n+1) := fun _ n => ⟨0, Nat.zero_lt_succ n⟩
+def bar : String  (n : Nat)  Fin (n+1) := fun _ n => ⟨0, Nat.zero_lt_succ n⟩
 
-/-- info: bar : String → (n : Nat) → Fin (n + 1) -/
+/-- info: bar : String  (n : Nat)  Fin (n + 1) -/
 #guard_msgs in #check bar
 
 /-!

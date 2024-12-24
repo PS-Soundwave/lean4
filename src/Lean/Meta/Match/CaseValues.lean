@@ -81,7 +81,7 @@ structure CaseValuesSubgoal where
   If `substNewEqs = true`, then the new `h_i` equality hypotheses are substituted in the first `n` cases.
 -/
 def caseValues (mvarId : MVarId) (fvarId : FVarId) (values : Array Expr) (hNamePrefix := `h) (substNewEqs := false) : MetaM (Array CaseValuesSubgoal) :=
-  let rec loop : Nat → MVarId → List Expr → Array FVarId → Array CaseValuesSubgoal → MetaM (Array CaseValuesSubgoal)
+  let rec loop : Nat  MVarId  List Expr  Array FVarId  Array CaseValuesSubgoal  MetaM (Array CaseValuesSubgoal)
     | _, mvarId, [],    _,  _        => throwTacticEx `caseValues mvarId "list of values must not be empty"
     | i, mvarId, v::vs, hs, subgoals => do
       let (thenSubgoal, elseSubgoal) ← caseValueAux mvarId fvarId v (hNamePrefix.appendIndexAfter i) {}

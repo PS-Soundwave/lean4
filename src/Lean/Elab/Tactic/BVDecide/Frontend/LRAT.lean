@@ -167,9 +167,9 @@ def mkAuxDecl (name : Name) (value type : Expr) : CoreM Unit :=
 Turn an `LratCert` into a proof that some `reflected` expression is UNSAT by providing a `verifier`
 function together with a correctness theorem for it.
 
-- `verifier` is expected to have type `α → LratCert → Bool`
+- `verifier` is expected to have type `α  LratCert  Bool`
 - `unsat_of_verifier_eq_true` is expected to have type
-  `∀ (b : α) (c : LratCert), verifier b c = true → unsat b`
+  `∀ (b : α) (c : LratCert), verifier b c = true  unsat b`
 -/
 def LratCert.toReflectionProof [ToExpr α] (cert : LratCert) (cfg : TacticContext) (reflected : α)
     (verifier : Name) (unsat_of_verifier_eq_true : Name) : MetaM Expr := do

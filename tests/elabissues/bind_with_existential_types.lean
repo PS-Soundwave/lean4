@@ -2,8 +2,8 @@
 Problem: existential types do not play well with monads.
 
 ```
-class Bind (m : Type u → Type v) :=
-(bind : ∀ {α β : Type u}, m α → (α → m β) → m β)
+class Bind (m : Type u  Type v) :=
+(bind : ∀ {α β : Type u}, m α  (α  m β)  m β)
 ```
 
 Even if we fix a universe-polymorphic monad M.{u v} : Type u -> Type v,
@@ -12,7 +12,7 @@ So, we can not naively write:
 -/
 
 universes u v
-axiom Foo : Type u → Type v
+axiom Foo : Type u  Type v
 @[instance] axiom fooMonad : Monad Foo
 
 noncomputable def doesNotWork : Foo Unit := do

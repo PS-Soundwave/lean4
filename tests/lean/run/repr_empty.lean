@@ -11,7 +11,7 @@ The Empty type is used to exclude the `other` constructor from the `Prim` type.
 inductive Prim (special : Type) where
   | plus
   | minus
-  | other : special → Prim special
+  | other : special  Prim special
 deriving Repr
 
 /-!

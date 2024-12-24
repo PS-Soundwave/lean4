@@ -1,7 +1,7 @@
 /-! Tests that options affecting equational theorems work as expected. -/
 
 namespace Test1
-def nonrecfun : Bool → Nat
+def nonrecfun : Bool  Nat
   | false => 0
   | true => 0
 
@@ -18,7 +18,7 @@ end Test1
 namespace Test2
 
 set_option backward.eqns.nonrecursive false in
-def nonrecfun : Bool → Nat
+def nonrecfun : Bool  Nat
   | false => 0
   | true => 0
 
@@ -37,7 +37,7 @@ end Test2
 
 namespace Test3
 
-def nonrecfun : Bool → Nat
+def nonrecfun : Bool  Nat
   | false => 0
   | true => 0
 

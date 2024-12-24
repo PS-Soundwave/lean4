@@ -55,7 +55,7 @@ inductive Format where
   -/
   | align (force : Bool) : Format
   /-- A node containing a plain string. -/
-  | text                : String → Format
+  | text                : String  Format
   /-- `nest n f` tells the formatter that `f` is nested inside something with length `n`
   so that it is pretty-printed with the correct indentation on a line break.
   For example, we can define a formatter for list `l : List Format` as:
@@ -68,19 +68,19 @@ inductive Format where
   This will be written all on one line, but if the text is too large,
   the formatter will put in linebreaks after the commas and indent later lines by 1.
   -/
-  | nest (indent : Int) : Format → Format
+  | nest (indent : Int) : Format  Format
   /-- Concatenation of two Formats. -/
-  | append              : Format → Format → Format
+  | append              : Format  Format  Format
   /-- Creates a new flattening group for the given inner format.  -/
-  | group               : Format → (behavior : FlattenBehavior := FlattenBehavior.allOrNone) → Format
+  | group               : Format  (behavior : FlattenBehavior := FlattenBehavior.allOrNone)  Format
   /-- Used for associating auxiliary information (e.g. `Expr`s) with `Format` objects. -/
-  | tag                 : Nat → Format → Format
+  | tag                 : Nat  Format  Format
   deriving Inhabited
 
 namespace Format
 
 /-- Check whether the given format contains no characters. -/
-def isEmpty : Format → Bool
+def isEmpty : Format  Bool
   | nil          => true
   | line         => false
   | align _      => true
@@ -100,7 +100,7 @@ instance : Coe String Format := ⟨text⟩
 def join (xs : List Format) : Format :=
   xs.foldl (·++·) ""
 
-def isNil : Format → Bool
+def isNil : Format  Bool
   | nil => true
   | _   => false
 
@@ -110,14 +110,14 @@ private structure SpaceResult where
   space                  : Nat  := 0
   deriving Inhabited
 
-@[inline] private def merge (w : Nat) (r₁ : SpaceResult) (r₂ : Nat → SpaceResult) : SpaceResult :=
+@[inline] private def merge (w : Nat) (r₁ : SpaceResult) (r₂ : Nat  SpaceResult) : SpaceResult :=
   if r₁.space > w || r₁.foundLine then
     r₁
   else
     let r₂ := r₂ (w - r₁.space);
     { r₂ with space := r₁.space + r₂.space }
 
-private def spaceUptoLine : Format → Bool → Int → Nat → SpaceResult
+private def spaceUptoLine : Format  Bool  Int  Nat  SpaceResult
   | nil,          _,       _, _ => {}
   | line,         flatten, _, _ => if flatten then { space := 1 } else { foundLine := true }
   | align force,  flatten, m, w =>
@@ -145,7 +145,7 @@ private structure WorkGroup where
   flb     : FlattenBehavior
   items   : List WorkItem
 
-private partial def spaceUptoLine' : List WorkGroup → Nat → Nat → SpaceResult
+private partial def spaceUptoLine' : List WorkGroup  Nat  Nat  SpaceResult
   |   [],                         _,   _ => {}
   |   { items := [],    .. }::gs, col, w => spaceUptoLine' gs col w
   | g@{ items := i::is, .. }::gs, col, w =>
@@ -154,14 +154,14 @@ private partial def spaceUptoLine' : List WorkGroup → Nat → Nat → SpaceRes
       (spaceUptoLine' ({ g with items := is }::gs) col)
 
 /-- A monad in which we can pretty-print `Format` objects. -/
-class MonadPrettyFormat (m : Type → Type) where
+class MonadPrettyFormat (m : Type  Type) where
   pushOutput (s : String)    : m Unit
   pushNewline (indent : Nat) : m Unit
   currColumn                 : m Nat
   /-- Start a scope tagged with `n`. -/
-  startTag                   : Nat → m Unit
+  startTag                   : Nat  m Unit
   /-- Exit the scope of `n`-many opened tags. -/
-  endTags                    : Nat → m Unit
+  endTags                    : Nat  m Unit
 open MonadPrettyFormat
 
 private def pushGroup (flb : FlattenBehavior) (items : List WorkItem) (gs : List WorkGroup) (w : Nat) [Monad m] [MonadPrettyFormat m] : m (List WorkGroup) := do
@@ -173,7 +173,7 @@ private def pushGroup (flb : FlattenBehavior) (items : List WorkItem) (gs : List
   -- Prevent flattening if any item contains a hard line break, except within `fill` if it is ungrouped (=> unflattened)
   return { g with flatten := !r.foundFlattenedHardLine && r'.space <= w-k }::gs
 
-private partial def be (w : Nat) [Monad m] [MonadPrettyFormat m] : List WorkGroup → m Unit
+private partial def be (w : Nat) [Monad m] [MonadPrettyFormat m] : List WorkGroup  m Unit
   | []                           => pure ()
   |   { items := [],    .. }::gs => be w gs
   | g@{ items := i::is, .. }::gs => do
@@ -318,7 +318,7 @@ end Format
 /-- Class for converting a given type α to a `Format` object for pretty-printing.
 See also `Repr`, which also outputs a `Format` object. -/
 class ToFormat (α : Type u) where
-  format : α → Format
+  format : α  Format
 
 export ToFormat (format)
 
@@ -330,18 +330,18 @@ instance : ToFormat String where
   format s := Format.text s
 
 /-- Intersperse the given list (each item printed with `format`) with the given `sep` format. -/
-def Format.joinSep {α : Type u} [ToFormat α] : List α → Format → Format
+def Format.joinSep {α : Type u} [ToFormat α] : List α  Format  Format
   | [],    _   => nil
   | [a],   _   => format a
   | a::as, sep => as.foldl (· ++ sep ++ format ·) (format a)
 
 /-- Format each item in `items` and prepend prefix `pre`. -/
-def Format.prefixJoin {α : Type u} [ToFormat α] (pre : Format) : List α → Format
+def Format.prefixJoin {α : Type u} [ToFormat α] (pre : Format) : List α  Format
   | []    => nil
   | a::as => as.foldl (· ++ pre ++ format ·) (pre ++ format a)
 
 /-- Format each item in `items` and append `suffix`. -/
-def Format.joinSuffix {α : Type u} [ToFormat α] : List α → Format → Format
+def Format.joinSuffix {α : Type u} [ToFormat α] : List α  Format  Format
   | [],    _      => nil
   | a::as, suffix => as.foldl (· ++ format · ++ suffix) (format a ++ suffix)
 

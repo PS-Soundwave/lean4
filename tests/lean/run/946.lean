@@ -53,12 +53,12 @@ abbrev Header := List (DataType × String)
 
 abbrev Row := List DataEntry
 
-@[simp] def rowOfTypes : Row → List DataType → Prop
+@[simp] def rowOfTypes : Row  List DataType  Prop
   | [],       []       => True
   | eh :: et, th :: tt => eh.isOf th ∧ rowOfTypes et tt
   | _,        _        => False
 
-@[simp] def rowsOfTypes : List Row → List DataType → Prop
+@[simp] def rowsOfTypes : List Row  List DataType  Prop
   | row :: rows, types => rowOfTypes row types ∧ rowsOfTypes rows types
   | [],          _     => True
 

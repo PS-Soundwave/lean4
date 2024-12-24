@@ -202,7 +202,7 @@ def congrArg? (e : Expr) : MetaM (Option (Expr × Expr × Expr)) := do
     return some (α', f', h)
   return none
 
-/-- Given `f : α → β` and `h : a = b`, returns a proof of `f a = f b`.-/
+/-- Given `f : α  β` and `h : a = b`, returns a proof of `f a = f b`.-/
 partial def mkCongrArg (f h : Expr) : MetaM Expr := do
   if let some a := isRefl? h then
     mkEqRefl (mkApp f a)
@@ -334,7 +334,7 @@ private def withAppBuilderTrace [ToMessageData α] [ToMessageData β]
   Remark:
   ``mkAppM `arbitrary #[α]`` returns `@arbitrary.{u} α` without synthesizing
   the implicit argument occurring after `α`.
-  Given a `x : ([Decidable p] → Bool) × Nat`, ``mkAppM `Prod.fst #[x]`` returns `@Prod.fst ([Decidable p] → Bool) Nat x`.
+  Given a `x : ([Decidable p]  Bool) × Nat`, ``mkAppM `Prod.fst #[x]`` returns `@Prod.fst ([Decidable p]  Bool) Nat x`.
 -/
 def mkAppM (constName : Name) (xs : Array Expr) : MetaM Expr := do
   withAppBuilderTrace constName xs do withNewMCtxDepth do
@@ -347,7 +347,7 @@ def mkAppM' (f : Expr) (xs : Array Expr) : MetaM Expr := do
   withAppBuilderTrace f xs do withNewMCtxDepth do
     mkAppMArgs f fType xs
 
-private partial def mkAppOptMAux (f : Expr) (xs : Array (Option Expr)) : Nat → Array Expr → Nat → Array MVarId → Expr → MetaM Expr
+private partial def mkAppOptMAux (f : Expr) (xs : Array (Option Expr)) : Nat  Array Expr  Nat  Array MVarId  Expr  MetaM Expr
   | i, args, j, instMVars, Expr.forallE n d b bi => do
     let d  := d.instantiateRevRange j args.size args
     if h : i < xs.size then
@@ -382,7 +382,7 @@ private partial def mkAppOptMAux (f : Expr) (xs : Array (Option Expr)) : Nat →
 /--
   Similar to `mkAppM`, but it allows us to specify which arguments are provided explicitly using `Option` type.
   Example:
-  Given `Pure.pure {m : Type u → Type v} [Pure m] {α : Type u} (a : α) : m α`,
+  Given `Pure.pure {m : Type u  Type v} [Pure m] {α : Type u} (a : α) : m α`,
   ```
   mkAppOptM `Pure.pure #[m, none, none, a]
   ```
@@ -486,7 +486,7 @@ partial def mkProjection (s : Expr) (fieldName : Name) : MetaM Expr := do
       | none   => throwAppBuilderException `mkProjection ("invalid field name '" ++ toString fieldName ++ "' for" ++ hasTypeMsg s type)
   | _ => throwAppBuilderException `mkProjection ("structure expected" ++ hasTypeMsg s type)
 
-private def mkListLitAux (nil : Expr) (cons : Expr) : List Expr → Expr
+private def mkListLitAux (nil : Expr) (cons : Expr) : List Expr  Expr
   | []    => nil
   | x::xs => mkApp (mkApp cons x) (mkListLitAux nil cons xs)
 
@@ -577,7 +577,7 @@ def mkEqFalse (h : Expr) : MetaM Expr :=
 
 /--
   Return `eq_false' h`
-  `h` must have type definitionally equal to `p → False` in the current
+  `h` must have type definitionally equal to `p  False` in the current
   reducibility setting. -/
 def mkEqFalse' (h : Expr) : MetaM Expr :=
   mkAppM ``eq_false' #[h]

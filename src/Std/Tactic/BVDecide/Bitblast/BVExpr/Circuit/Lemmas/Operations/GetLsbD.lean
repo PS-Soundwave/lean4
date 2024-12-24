@@ -20,7 +20,7 @@ namespace BVPred
 
 variable [Hashable α] [DecidableEq α]
 
-theorem denote_getD_eq_getLsbD (aig : AIG α) (assign : α → Bool) (x : BitVec w)
+theorem denote_getD_eq_getLsbD (aig : AIG α) (assign : α  Bool) (x : BitVec w)
     (xv : AIG.RefVec aig w) (falseRef : AIG.Ref aig)
     (hx : ∀ idx hidx, ⟦aig, xv.get idx hidx, assign⟧ = x.getLsbD idx)
     (hfalse : ⟦aig, falseRef, assign⟧ = false) :
@@ -36,7 +36,7 @@ theorem denote_getD_eq_getLsbD (aig : AIG α) (assign : α → Bool) (x : BitVec
 
 @[simp]
 theorem denote_blastGetLsbD (aig : AIG α) (target : GetLsbDTarget aig)
-    (assign : α → Bool) :
+    (assign : α  Bool) :
     ⟦blastGetLsbD aig target, assign⟧
       =
     if h : target.idx < target.w then

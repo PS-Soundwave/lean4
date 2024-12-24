@@ -322,7 +322,7 @@ where
 
     1- It improves the effectiveness of incremental reuse. Consider the following example:
     ```lean
-    example (h₁ : p ∨ q) (h₂ : p → x = 0) (h₃ : q → y = 0) : x * y = 0 := by
+    example (h₁ : p  q) (h₂ : p  x = 0) (h₃ : q  y = 0) : x * y = 0 := by
       cases h₁ with
       | inr h =>
         sleep 5000 -- sleeps for 5 seconds
@@ -492,7 +492,7 @@ runs `cont alts` where `alts` is an array containing all `inductionAlt`s while d
 reuse if any other syntax changed.
 -/
 private def withAltsOfOptInductionAlts (optInductionAlts : Syntax)
-    (cont : Array Syntax → TacticM α) : TacticM α :=
+    (cont : Array Syntax  TacticM α) : TacticM α :=
   Term.withNarrowedTacticReuse (stx := optInductionAlts) (fun optInductionAlts =>
     if optInductionAlts.isNone then
       -- if there are no alternatives, what to compare is irrelevant as there will be no reuse

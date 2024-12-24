@@ -14,10 +14,10 @@ open Foo (Bar)
 
 #check Bar.a
 
-def isA : Bar → Bool
+def isA : Bar  Bool
   | Foo.Bar.a => true
   | Foo.Bar.b => false
 
-def isB : Bar → Bool
+def isB : Bar  Bool
   | Bar.a => true
   | Bar.b => false

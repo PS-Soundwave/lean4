@@ -13,7 +13,7 @@ namespace Nat
 theorem bitwise_rec_lemma {n : Nat} (hNe : n ≠ 0) : n / 2 < n :=
   Nat.div_lt_self (Nat.zero_lt_of_ne_zero hNe) (Nat.lt_succ_self _)
 
-def bitwise (f : Bool → Bool → Bool) (n m : Nat) : Nat :=
+def bitwise (f : Bool  Bool  Bool) (n m : Nat) : Nat :=
   if n = 0 then
     if f false true then m else 0
   else if m = 0 then
@@ -31,17 +31,17 @@ def bitwise (f : Bool → Bool → Bool) (n m : Nat) : Nat :=
 decreasing_by apply bitwise_rec_lemma; assumption
 
 @[extern "lean_nat_land"]
-def land : @& Nat → @& Nat → Nat := bitwise and
+def land : @& Nat  @& Nat  Nat := bitwise and
 @[extern "lean_nat_lor"]
-def lor  : @& Nat → @& Nat → Nat := bitwise or
+def lor  : @& Nat  @& Nat  Nat := bitwise or
 @[extern "lean_nat_lxor"]
-def xor  : @& Nat → @& Nat → Nat := bitwise bne
+def xor  : @& Nat  @& Nat  Nat := bitwise bne
 @[extern "lean_nat_shiftl"]
-def shiftLeft : @& Nat → @& Nat → Nat
+def shiftLeft : @& Nat  @& Nat  Nat
   | n, 0 => n
   | n, succ m => shiftLeft (2*n) m
 @[extern "lean_nat_shiftr"]
-def shiftRight : @& Nat → @& Nat → Nat
+def shiftRight : @& Nat  @& Nat  Nat
   | n, 0 => n
   | n, succ m => shiftRight n m / 2
 

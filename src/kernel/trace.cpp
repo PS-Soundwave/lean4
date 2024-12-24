@@ -153,7 +153,7 @@ void finalize_trace() {
 
 /*
 @[export lean_mk_metavar_ctx]
-def mkMetavarContext : Unit → MetavarContext := fun _ => {}
+def mkMetavarContext : Unit  MetavarContext := fun _ => {}
 */
 extern "C" lean_object* lean_mk_metavar_ctx(lean_object*);
 

@@ -1,13 +1,13 @@
 structure Equiv (α : Sort _) (β : Sort _) where
-  toFun : α → β
-  invFun : β → α
+  toFun : α  β
+  invFun : β  α
   left_inv : ∀ x, invFun (toFun x) = x
 
 infixl:25 " ≃ " => Equiv
 
 /-- A product of types can be split as the binary product of one of the types and the product
   of all the remaining types. -/
-def piSplitAt {α : Type _} [DecidableEq α] (i : α) (β : α → Type _) :
+def piSplitAt {α : Type _} [DecidableEq α] (i : α) (β : α  Type _) :
     (∀ j, β j) ≃ β i × ∀ j : { j // j ≠ i }, β j where
   toFun f := ⟨f i, fun j => f j⟩
   invFun f j := if h : j = i then h.symm.rec f.1 else f.2 ⟨j, h⟩

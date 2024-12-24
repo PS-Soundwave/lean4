@@ -128,7 +128,7 @@ example : id (fun x y => 0 + x + y) = Nat.add := by
     rw [Nat.zero_add]
   rfl
 
-example (p : Nat → Prop) (h : ∀ a, p a) : ∀ a, p (id (0 + a)) := by
+example (p : Nat  Prop) (h : ∀ a, p a) : ∀ a, p (id (0 + a)) := by
   conv =>
     intro x
     trace_state
@@ -139,7 +139,7 @@ example (p : Nat → Prop) (h : ∀ a, p a) : ∀ a, p (id (0 + a)) := by
     rw [Nat.zero_add]
   exact h
 
-example (p : Prop) (x : Nat) : (x = x → p) → p := by
+example (p : Prop) (x : Nat) : (x = x  p)  p := by
   conv =>
     congr
     . trace_state
@@ -160,7 +160,7 @@ example : (fun x => 0 + x) = id := by
     rw [Nat.zero_add]
   rfl
 
-example (p : Prop) (x : Nat) : (x = x → p) → p := by
+example (p : Prop) (x : Nat) : (x = x  p)  p := by
   conv =>
     apply implies_congr
     . apply implies_congr
@@ -171,7 +171,7 @@ example (p : Prop) (x : Nat) : (x = x → p) → p := by
     simp
   intros; assumption
 
-example (x y : Nat) (f : Nat → Nat → Nat) (g : Nat → Nat) (h₁ : ∀ z, f z z = z) (h₂ : ∀ x y, f (g x) (g y) = y) : f (g (0 + y)) (f (g x) (g (0 + x))) = x := by
+example (x y : Nat) (f : Nat  Nat  Nat) (g : Nat  Nat) (h₁ : ∀ z, f z z = z) (h₂ : ∀ x y, f (g x) (g y) = y) : f (g (0 + y)) (f (g x) (g (0 + x))) = x := by
   conv =>
     pattern _ + _
     apply Nat.zero_add
@@ -190,7 +190,7 @@ example (x y : Nat) (h : y = 0) : x + ((y + x) + x) = x + (x + x) := by
     trace_state
     rw [h, Nat.zero_add]
 
-example (p : Nat → Prop) (x y : Nat) (h1 : y = 0) (h2 : p x) : p (y + x) := by
+example (p : Nat  Prop) (x y : Nat) (h1 : y = 0) (h2 : p x) : p (y + x) := by
   conv =>
     rhs
     trace_state
@@ -198,14 +198,14 @@ example (p : Nat → Prop) (x y : Nat) (h1 : y = 0) (h2 : p x) : p (y + x) := by
     apply Nat.zero_add
   exact h2
 
-example (p : (n : Nat) → Fin n → Prop) (i : Fin 5) (hp : p 5 i) (hi : j = i) : p 5 j := by
+example (p : (n : Nat)  Fin n  Prop) (i : Fin 5) (hp : p 5 i) (hi : j = i) : p 5 j := by
   conv =>
     arg 2
     trace_state
     rw [hi]
   exact hp
 
-example (p : {_ : Nat} → Nat → Prop) (x y : Nat) (h1 : y = 0) (h2 : @p x x) : @p (y + x) (y + x) := by
+example (p : {_ : Nat}  Nat  Prop) (x y : Nat) (h1 : y = 0) (h2 : @p x x) : @p (y + x) (y + x) := by
   conv =>
     enter [@1, 1]
     trace_state
@@ -217,16 +217,16 @@ example (p : {_ : Nat} → Nat → Prop) (x y : Nat) (h1 : y = 0) (h2 : @p x x) 
   rw [Nat.zero_add]
   exact h2
 
-example (p : Nat → Prop) (x y : Nat) (h : y = 0) : p (y + x) := by
+example (p : Nat  Prop) (x y : Nat) (h : y = 0) : p (y + x) := by
   conv => lhs
 
-example (p : Nat → Prop) (x y : Nat) (h : y = 0) : p (y + x) := by
+example (p : Nat  Prop) (x y : Nat) (h : y = 0) : p (y + x) := by
   conv => arg 2
 
 example (p : Prop) : p := by
   conv => rhs
 
-example (p : (n : Nat) → Fin n → Prop) (i : Fin 5) (hp : p 5 i) : p 5 j := by
+example (p : (n : Nat)  Fin n  Prop) (i : Fin 5) (hp : p 5 i) : p 5 j := by
   conv => arg 1
 
 -- repeated `zeta`
@@ -259,7 +259,7 @@ example (h : a = a') (H : a + a' = 0) : a + a = 0 := by
 
 
 -- Testing conv => fun
-example (P Q : Nat → Nat → Nat → Prop) (h : P = Q) (h2 : Q 1 2 3) : P 1 2 3 := by
+example (P Q : Nat  Nat  Nat  Prop) (h : P = Q) (h2 : Q 1 2 3) : P 1 2 3 := by
   conv =>
     trace_state
     fun
@@ -275,7 +275,7 @@ example (p : Prop) : p := by
   conv => fun -- error
 
 -- Testing conv => arg 0
-example (P Q : Nat → Nat → Nat → Prop) (h : P = Q) (h2 : Q 1 2 3) : P 1 2 3 := by
+example (P Q : Nat  Nat  Nat  Prop) (h : P = Q) (h2 : Q 1 2 3) : P 1 2 3 := by
   conv =>
     trace_state
     arg 0

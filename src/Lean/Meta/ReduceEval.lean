@@ -11,7 +11,7 @@ import Lean.Meta.Offset
 namespace Lean.Meta
 
 class ReduceEval (α : Type) where
-  reduceEval : Expr → MetaM α
+  reduceEval : Expr  MetaM α
 
 def reduceEval [ReduceEval α] (e : Expr) : MetaM α :=
   withAtLeastTransparency TransparencyMode.default $

@@ -2,7 +2,7 @@ import init.lean.parser.module
 open Lean
 open Lean.Parser
 
-partial def parseCommands (env : Environment) (displayStx : Bool) : ModuleParser → IO ModuleParser
+partial def parseCommands (env : Environment) (displayStx : Bool) : ModuleParser  IO ModuleParser
 | p =>
   match parseCommand env p with
   | (stx, p) =>
@@ -29,7 +29,7 @@ import init.core
 universes u v
   def b : Type
 
-class Alternative (f : Type u → Type v) extends Applicative f : Type (max (u+1) v) :=
+class Alternative (f : Type u  Type v) extends Applicative f : Type (max (u+1) v) :=
 (failure : ∀ {α : Type u}, f α)
-(orelse  : ∀ {α : Type u}, f α → f α → f α)
+(orelse  : ∀ {α : Type u}, f α  f α  f α)
 "

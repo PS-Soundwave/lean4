@@ -1,6 +1,6 @@
 namespace Ex1
 mutual
-  def f : Nat → Bool → Nat
+  def f : Nat  Bool  Nat
     | n, true  => 2 * f n false
     | 0, false => 1
     | n, false => n + g n
@@ -25,7 +25,7 @@ end Ex1
 
 namespace Ex2
 mutual
-  def f : Nat → Bool → Nat
+  def f : Nat  Bool  Nat
     | n, true  => 2 * f n false
     | 0, false => 1
     | n, false => n + g (n+1) -- Error

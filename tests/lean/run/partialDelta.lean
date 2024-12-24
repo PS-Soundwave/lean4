@@ -14,7 +14,7 @@ partial def myLessGreatFunction (n : Nat) : MyGreatType Nat := myLessGreatFuncti
 /-!
 In the following, it needs to unfold underneath a forall.
 -/
-def MyGreaterType (α : Type) := α → MyGreatType α
+def MyGreaterType (α : Type) := α  MyGreatType α
 
 partial def myEvenLessGreatFunction (n : Nat) : MyGreaterType Nat := myEvenLessGreatFunction n
 
@@ -39,7 +39,7 @@ Error message.
 -/
 /--
 error: failed to compile 'partial' definition 'test4', could not prove that the type
-  {α : Sort u_1} → Nat → α
+  {α : Sort u_1}  Nat  α
 is nonempty.
 
 This process uses multiple strategies:
@@ -56,6 +56,6 @@ Add arguments as inhabited instances.
 Example adapted from https://leanprover.zulipchat.com/#narrow/channel/113489-new-members/topic/Why.20return.20type.20of.20partial.20function.20MUST.20.60inhabited.60.3F/near/477905312
 -/
 inductive ListNode where
-  | mk : Nat → Option ListNode → ListNode
+  | mk : Nat  Option ListNode  ListNode
 
 partial def checkMyList (head : ListNode) : Bool × ListNode := checkMyList head

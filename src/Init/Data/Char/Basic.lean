@@ -11,7 +11,7 @@ import Init.Data.UInt.BasicAux
 Note that values in `[0xd800, 0xdfff]` are reserved for [UTF-16 surrogate pairs](https://en.wikipedia.org/wiki/Universal_Character_Set_characters#Surrogates).
 -/
 @[inline, reducible] def isValidChar (n : UInt32) : Prop :=
-  n < 0xd800 ∨ (0xdfff < n ∧ n < 0x110000)
+  n < 0xd800  (0xdfff < n ∧ n < 0x110000)
 
 namespace Char
 
@@ -29,7 +29,7 @@ instance (a b : Char) : Decidable (a ≤ b) :=
 
 /-- Determines if the given nat is a valid [Unicode scalar value](https://www.unicode.org/glossary/#unicode_scalar_value).-/
 abbrev isValidCharNat (n : Nat) : Prop :=
-  n < 0xd800 ∨ (0xdfff < n ∧ n < 0x110000)
+  n < 0xd800  (0xdfff < n ∧ n < 0x110000)
 
 theorem isValidUInt32 (n : Nat) (h : isValidCharNat n) : n < UInt32.size := by
   match h with

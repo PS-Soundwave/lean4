@@ -71,7 +71,7 @@ def kindOfBinderName (binderName : Name) : LocalDeclKind :=
   else
     .default
 
-partial def quoteAutoTactic : Syntax → CoreM Expr
+partial def quoteAutoTactic : Syntax  CoreM Expr
   | .ident _ _ val preresolved =>
     return mkApp4 (.const ``Syntax.ident [])
       (.const ``SourceInfo.none [])
@@ -197,7 +197,7 @@ private partial def checkLocalInstanceParameters (type : Expr) : TermElabM Unit 
     throwError "invalid parametric local instance, parameter with type{indentExpr d}\ndoes not have forward dependencies, type class resolution cannot use this kind of local instance because it will not be able to infer a value for this parameter."
   withLocalDecl n bi d fun x => checkLocalInstanceParameters (b.instantiate1 x)
 
-private partial def elabBinderViews (binderViews : Array BinderView) (fvars : Array (Syntax × Expr)) (k : Array (Syntax × Expr) → TermElabM α)
+private partial def elabBinderViews (binderViews : Array BinderView) (fvars : Array (Syntax × Expr)) (k : Array (Syntax × Expr)  TermElabM α)
     : TermElabM α :=
   let rec loop (i : Nat) (fvars : Array (Syntax × Expr)) : TermElabM α := do
     if h : i < binderViews.size then
@@ -218,7 +218,7 @@ private partial def elabBinderViews (binderViews : Array BinderView) (fvars : Ar
       k fvars
   loop 0 fvars
 
-private partial def elabBindersAux (binders : Array Syntax) (k : Array (Syntax × Expr) → TermElabM α) : TermElabM α :=
+private partial def elabBindersAux (binders : Array Syntax) (k : Array (Syntax × Expr)  TermElabM α) : TermElabM α :=
   let rec loop (i : Nat) (fvars : Array (Syntax × Expr)) : TermElabM α := do
     if h : i < binders.size then
       let binderViews ← toBinderViews binders[i]
@@ -232,7 +232,7 @@ private partial def elabBindersAux (binders : Array Syntax) (k : Array (Syntax �
   `elabBinders(Ex)` automatically adds binder info nodes for the produced fvars, but storing the syntax nodes
   might be necessary when later adding the same binders back to the local context so that info nodes can
   manually be added for the new fvars; see `MutualDef` for an example. -/
-def elabBindersEx (binders : Array Syntax) (k : Array (Syntax × Expr) → TermElabM α) : TermElabM α :=
+def elabBindersEx (binders : Array Syntax) (k : Array (Syntax × Expr)  TermElabM α) : TermElabM α :=
   universeConstraintsCheckpoint do
     if binders.isEmpty then
       k #[]
@@ -248,11 +248,11 @@ def elabBindersEx (binders : Array Syntax) (k : Array (Syntax × Expr) → TermE
   For example, suppose you have binders `[(a : α), (b : β a)]`, then the elaborator will
   create two new free variables `a` and `b`, push these to the context and pass to `k #[a,b]`.
   -/
-def elabBinders (binders : Array Syntax) (k : Array Expr → TermElabM α) : TermElabM α :=
+def elabBinders (binders : Array Syntax) (k : Array Expr  TermElabM α) : TermElabM α :=
   elabBindersEx binders (fun fvars => k (fvars.map (·.2)))
 
 /-- Same as `elabBinder` with a single binder.-/
-def elabBinder (binder : Syntax) (x : Expr → TermElabM α) : TermElabM α :=
+def elabBinder (binder : Syntax) (x : Expr  TermElabM α) : TermElabM α :=
   elabBinders #[binder] fun fvars => x fvars[0]!
 
 /-- If `binder` is a `_` or an identifier, return a `bracketedBinder` using `type` otherwise throw an exception. -/
@@ -293,7 +293,7 @@ open Lean.Elab.Term.Quotation in
   | _                    => throwUnsupportedSyntax
 
 /--
-The dependent arrow. `(x : α) → β` is equivalent to `∀ x : α, β`, but we usually
+The dependent arrow. `(x : α)  β` is equivalent to `∀ x : α, β`, but we usually
 reserve the latter for propositions. Also written as `Π x : α, β` (the "Pi-type")
 in the literature. -/
 @[builtin_term_elab depArrow] def elabDepArrow : TermElab := fun stx _ =>
@@ -350,7 +350,7 @@ partial def expandFunBinders (binders : Array Syntax) (body : Syntax) : MacroM (
   let rec loop (body : Syntax) (i : Nat) (newBinders : Array Syntax) := do
     if h : i < binders.size then
       let binder := binders[i]
-      let processAsPattern : Unit → MacroM (Array Syntax × Syntax × Bool) := fun _ => do
+      let processAsPattern : Unit  MacroM (Array Syntax × Syntax × Bool) := fun _ => do
         let pattern := binder
         let major ← mkFreshIdent binder
         let (binders, newBody, _) ← loop body (i+1) (newBinders.push $ mkExplicitBinder major (mkHole binder))
@@ -448,7 +448,7 @@ partial def elabFunBindersAux (binders : Array Syntax) (i : Nat) (s : State) : T
 
 end FunBinders
 
-def elabFunBinders (binders : Array Syntax) (expectedType? : Option Expr) (x : Array Expr → Option Expr → TermElabM α) : TermElabM α :=
+def elabFunBinders (binders : Array Syntax) (expectedType? : Option Expr) (x : Array Expr  Option Expr  TermElabM α) : TermElabM α :=
   if binders.isEmpty then
     x #[] expectedType?
   else do
@@ -472,7 +472,7 @@ def expandWhereDeclsOpt (whereDeclsOpt : Syntax) (body : Syntax) : MacroM Syntax
 /--
  Helper function for `expandMatchAltsIntoMatch`.
 -/
-private def expandMatchAltsIntoMatchAux (matchAlts : Syntax) (isTactic : Bool) (useExplicit : Bool) : Nat → Array Syntax → Array Ident → MacroM Syntax
+private def expandMatchAltsIntoMatchAux (matchAlts : Syntax) (isTactic : Bool) (useExplicit : Bool) : Nat  Array Syntax  Array Ident  MacroM Syntax
   | 0,   discrs, xs => do
     if isTactic then
       `(tactic|match $[$discrs:term],* with $matchAlts:matchAlts)
@@ -515,7 +515,7 @@ private def expandMatchAltsIntoMatchAux (matchAlts : Syntax) (isTactic : Bool) (
   If `useExplicit = true`, we add a `@` before `fun` to disable implicit lambdas. We disable them when processing `let` and `let rec` declarations
   to make sure the behavior is consistent with top-level declarations where we can write
   ```
-  def f : {α : Type} → α → α
+  def f : {α : Type}  α  α
     | _, a => a
   ```
   We use `useExplicit = false` when we are elaborating the `fun | ... => ... | ...` notation. See issue #1132.
@@ -559,7 +559,7 @@ def expandMatchAltsIntoMatchTactic (ref : Syntax) (matchAlts : Syntax) : MacroM 
   where
     f x := g x + 1
 
-    g : Nat → Nat
+    g : Nat  Nat
       | 0   => 1
       | x+1 => f x
   ```
@@ -568,7 +568,7 @@ def expandMatchAltsIntoMatchTactic (ref : Syntax) (matchAlts : Syntax) : MacroM 
   fux x_1 x_2 =>
     let rec
       f x := g x + 1,
-      g : Nat → Nat
+      g : Nat  Nat
         | 0   => 1
         | x+1 => f x
     match x_1, x_2 with
@@ -633,7 +633,7 @@ open Lean.Elab.Term.Quotation in
     let (binders, body, _) ← liftMacroM <| expandFunBinders binders body
     elabFunBinders binders expectedType? fun xs expectedType? => do
       /- We ensure the expectedType here since it will force coercions to be applied if needed.
-          If we just use `elabTerm`, then we will need to a coercion `Coe (α → β) (α → δ)` whenever there is a coercion `Coe β δ`,
+          If we just use `elabTerm`, then we will need to a coercion `Coe (α  β) (α  δ)` whenever there is a coercion `Coe β δ`,
           and another instance for the dependent version. -/
       let e ← elabTermEnsuringType body expectedType?
       mkLambdaFVars xs e

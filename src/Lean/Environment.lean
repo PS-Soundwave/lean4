@@ -48,11 +48,11 @@ instance : ToString Import := ⟨fun imp => toString imp.module ++ if imp.runtim
 def CompactedRegion := USize
 
 @[extern "lean_compacted_region_is_memory_mapped"]
-opaque CompactedRegion.isMemoryMapped : CompactedRegion → Bool
+opaque CompactedRegion.isMemoryMapped : CompactedRegion  Bool
 
 /-- Free a compacted region and its contents. No live references to the contents may exist at the time of invocation. -/
 @[extern "lean_compacted_region_free"]
-unsafe opaque CompactedRegion.free : CompactedRegion → IO Unit
+unsafe opaque CompactedRegion.free : CompactedRegion  IO Unit
 
 /-- Opaque persistent environment extension entry. -/
 opaque EnvExtensionEntrySpec : NonemptyType.{0}
@@ -274,14 +274,14 @@ end ConstantInfo
 
 /-- Interface for managing environment extensions. -/
 structure EnvExtensionInterface where
-  ext          : Type → Type
-  inhabitedExt : Inhabited σ → Inhabited (ext σ)
+  ext          : Type  Type
+  inhabitedExt : Inhabited σ  Inhabited (ext σ)
   registerExt  (mkInitial : IO σ) : IO (ext σ)
-  setState     (e : ext σ) (exts : Array EnvExtensionState) : σ → Array EnvExtensionState
-  modifyState  (e : ext σ) (exts : Array EnvExtensionState) : (σ → σ) → Array EnvExtensionState
+  setState     (e : ext σ) (exts : Array EnvExtensionState) : σ  Array EnvExtensionState
+  modifyState  (e : ext σ) (exts : Array EnvExtensionState) : (σ  σ)  Array EnvExtensionState
   getState     [Inhabited σ] (e : ext σ) (exts : Array EnvExtensionState) : σ
   mkInitialExtStates : IO (Array EnvExtensionState)
-  ensureExtensionsSize : Array EnvExtensionState → IO (Array EnvExtensionState)
+  ensureExtensionsSize : Array EnvExtensionState  IO (Array EnvExtensionState)
 
 instance : Inhabited EnvExtensionInterface where
   default := {
@@ -333,7 +333,7 @@ unsafe def setState {σ} (ext : Ext σ) (exts : Array EnvExtensionState) (s : σ
     have : Inhabited (Array EnvExtensionState) := ⟨exts⟩
     panic! invalidExtMsg
 
-@[inline] unsafe def modifyState {σ : Type} (ext : Ext σ) (exts : Array EnvExtensionState) (f : σ → σ) : Array EnvExtensionState :=
+@[inline] unsafe def modifyState {σ : Type} (ext : Ext σ) (exts : Array EnvExtensionState) (f : σ  σ) : Array EnvExtensionState :=
   if ext.idx < exts.size then
     exts.modify ext.idx fun s =>
       let s : σ := unsafeCast s
@@ -394,7 +394,7 @@ instance {σ} [s : Inhabited σ] : Inhabited (EnvExtension σ) := EnvExtensionIn
 def setState {σ : Type} (ext : EnvExtension σ) (env : Environment) (s : σ) : Environment :=
   { env with extensions := EnvExtensionInterfaceImp.setState ext env.extensions s }
 
-def modifyState {σ : Type} (ext : EnvExtension σ) (env : Environment) (f : σ → σ) : Environment :=
+def modifyState {σ : Type} (ext : EnvExtension σ) (env : Environment) (f : σ  σ) : Environment :=
   { env with extensions := EnvExtensionInterfaceImp.modifyState ext env.extensions f }
 
 def getState {σ : Type} [Inhabited σ] (ext : EnvExtension σ) (env : Environment) : σ :=
@@ -483,10 +483,10 @@ without using `IO`. We have many functions like `addAlias`.
 structure PersistentEnvExtension (α : Type) (β : Type) (σ : Type) where
   toEnvExtension  : EnvExtension (PersistentEnvExtensionState α σ)
   name            : Name
-  addImportedFn   : Array (Array α) → ImportM σ
-  addEntryFn      : σ → β → σ
-  exportEntriesFn : σ → Array α
-  statsFn         : σ → Format
+  addImportedFn   : Array (Array α)  ImportM σ
+  addEntryFn      : σ  β  σ
+  exportEntriesFn : σ  Array α
+  statsFn         : σ  Format
 
 instance {α σ} [Inhabited σ] : Inhabited (PersistentEnvExtensionState α σ) :=
   ⟨{importedEntries := #[], state := default }⟩
@@ -520,7 +520,7 @@ def setState {α β σ : Type} (ext : PersistentEnvExtension α β σ) (env : En
   ext.toEnvExtension.modifyState env fun ps => { ps with  state := s }
 
 /-- Modify the state of the given extension in the given environment by applying the given function. -/
-def modifyState {α β σ : Type} (ext : PersistentEnvExtension α β σ) (env : Environment) (f : σ → σ) : Environment :=
+def modifyState {α β σ : Type} (ext : PersistentEnvExtension α β σ) (env : Environment) (f : σ  σ) : Environment :=
   ext.toEnvExtension.modifyState env fun ps => { ps with state := f (ps.state) }
 
 end PersistentEnvExtension
@@ -530,10 +530,10 @@ builtin_initialize persistentEnvExtensionsRef : IO.Ref (Array (PersistentEnvExte
 structure PersistentEnvExtensionDescr (α β σ : Type) where
   name            : Name := by exact decl_name%
   mkInitial       : IO σ
-  addImportedFn   : Array (Array α) → ImportM σ
-  addEntryFn      : σ → β → σ
-  exportEntriesFn : σ → Array α
-  statsFn         : σ → Format := fun _ => Format.nil
+  addImportedFn   : Array (Array α)  ImportM σ
+  addEntryFn      : σ  β  σ
+  exportEntriesFn : σ  Array α
+  statsFn         : σ  Format := fun _ => Format.nil
 
 unsafe def registerPersistentEnvExtensionUnsafe {α β σ : Type} [Inhabited σ] (descr : PersistentEnvExtensionDescr α β σ) : IO (PersistentEnvExtension α β σ) := do
   let pExts ← persistentEnvExtensionsRef.get
@@ -562,14 +562,14 @@ opaque registerPersistentEnvExtension {α β σ : Type} [Inhabited σ] (descr : 
 /-- Simple `PersistentEnvExtension` that implements `exportEntriesFn` using a list of entries. -/
 def SimplePersistentEnvExtension (α σ : Type) := PersistentEnvExtension α α (List α × σ)
 
-@[specialize] def mkStateFromImportedEntries {α σ : Type} (addEntryFn : σ → α → σ) (initState : σ) (as : Array (Array α)) : σ :=
+@[specialize] def mkStateFromImportedEntries {α σ : Type} (addEntryFn : σ  α  σ) (initState : σ) (as : Array (Array α)) : σ :=
   as.foldl (fun r es => es.foldl (fun r e => addEntryFn r e) r) initState
 
 structure SimplePersistentEnvExtensionDescr (α σ : Type) where
   name          : Name := by exact decl_name%
-  addEntryFn    : σ → α → σ
-  addImportedFn : Array (Array α) → σ
-  toArrayFn     : List α → Array α := fun es => es.toArray
+  addEntryFn    : σ  α  σ
+  addImportedFn : Array (Array α)  σ
+  toArrayFn     : List α  Array α := fun es => es.toArray
 
 def registerSimplePersistentEnvExtension {α σ : Type} [Inhabited σ] (descr : SimplePersistentEnvExtensionDescr α σ) : IO (SimplePersistentEnvExtension α σ) :=
   registerPersistentEnvExtension {
@@ -601,7 +601,7 @@ def setState {α σ : Type} (ext : SimplePersistentEnvExtension α σ) (env : En
   PersistentEnvExtension.modifyState ext env (fun ⟨entries, _⟩ => (entries, s))
 
 /-- Modify the state of the given extension in the given environment by applying the given function. This change is *not* persisted across files. -/
-def modifyState {α σ : Type} (ext : SimplePersistentEnvExtension α σ) (env : Environment) (f : σ → σ) : Environment :=
+def modifyState {α σ : Type} (ext : SimplePersistentEnvExtension α σ) (env : Environment) (f : σ  σ) : Environment :=
   PersistentEnvExtension.modifyState ext env (fun ⟨entries, s⟩ => (entries, f s))
 
 end SimplePersistentEnvExtension
@@ -754,7 +754,7 @@ private def setImportedEntries (env : Environment) (mods : Array ModuleData) (st
   When we a new user-defined attribute declaration is imported, `attributeMapRef` is updated.
   Later, we set this method with code that adds the user-defined attributes that were imported after we initialized `attributeExtension`.
 -/
-@[extern 2 "lean_update_env_attributes"] opaque updateEnvAttributes : Environment → IO Environment
+@[extern 2 "lean_update_env_attributes"] opaque updateEnvAttributes : Environment  IO Environment
 /-- "Forward declaration" for retrieving the number of builtin attributes. -/
 @[extern 1 "lean_get_num_attributes"] opaque getNumBuiltinAttributes : IO Nat
 
@@ -924,7 +924,7 @@ def importModules (imports : Array Import) (opts : Options) (trustLevel : UInt32
 /--
   Create environment object from imports and free compacted regions after calling `act`. No live references to the
   environment object or imported objects may exist after `act` finishes. -/
-unsafe def withImportModules {α : Type} (imports : Array Import) (opts : Options) (trustLevel : UInt32 := 0) (act : Environment → IO α) : IO α := do
+unsafe def withImportModules {α : Type} (imports : Array Import) (opts : Options) (trustLevel : UInt32 := 0) (act : Environment  IO α) : IO α := do
   let env ← importModules imports opts trustLevel
   try act env finally env.freeRegions
 
@@ -1009,12 +1009,12 @@ def isNamespace (env : Environment) (n : Name) : Bool :=
 def getNamespaceSet (env : Environment) : NameSSet :=
   namespacesExt.getState env
 
-private def isNamespaceName : Name → Bool
+private def isNamespaceName : Name  Bool
   | .str .anonymous _ => true
   | .str p _          => isNamespaceName p
   | _                 => false
 
-private def registerNamePrefixes : Environment → Name → Environment
+private def registerNamePrefixes : Environment  Name  Environment
   | env, .str p _ => if isNamespaceName p then registerNamePrefixes (registerNamespace env p) p else env
   | env, _        => env
 
@@ -1109,9 +1109,9 @@ opaque check (env : Environment) (lctx : LocalContext) (a : Expr) : Except Kerne
 
 end Kernel
 
-class MonadEnv (m : Type → Type) where
+class MonadEnv (m : Type  Type) where
   getEnv    : m Environment
-  modifyEnv : (Environment → Environment) → m Unit
+  modifyEnv : (Environment  Environment)  m Unit
 
 export MonadEnv (getEnv modifyEnv)
 

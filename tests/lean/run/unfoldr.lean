@@ -1,6 +1,6 @@
 notation "#(" a ")" => ⟨a, by decreasing_tactic⟩
 
-def List.unfoldr {α β : Type u} [sz : SizeOf β] (f : (b : β) → Option (α × { b' : β // sizeOf b' < sizeOf b})) (b : β) : List α :=
+def List.unfoldr {α β : Type u} [sz : SizeOf β] (f : (b : β)  Option (α × { b' : β // sizeOf b' < sizeOf b})) (b : β) : List α :=
   match f b with
   | none => []
   | some (a, ⟨b', h⟩) => a :: unfoldr f b'
@@ -23,7 +23,7 @@ def tst2 (n : Nat) : List Nat :=
 #guard tst2 10 == [0, 2, 4, 6, 8, 10, 12, 14, 16, 18]
 
 -- More general (and less convenient to use) version that can take an arbitrary well-founded relation.
-def List.unfoldr' {α β : Type u} [w : WellFoundedRelation β] (f : (b : β) → Option (α × { b' : β // w.rel b' b})) (b : β) : List α :=
+def List.unfoldr' {α β : Type u} [w : WellFoundedRelation β] (f : (b : β)  Option (α × { b' : β // w.rel b' b})) (b : β) : List α :=
   match f b with
   | none => []
   | some (a, ⟨b', h⟩) => a :: unfoldr' f b'

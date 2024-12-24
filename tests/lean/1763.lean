@@ -1,4 +1,4 @@
-axiom P : Prop → Prop
+axiom P : Prop  Prop
 
 @[congr]
 axiom P_congr (a b : Prop) (h : a ↔ b) : P a ↔ P b

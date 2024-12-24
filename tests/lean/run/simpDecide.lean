@@ -4,7 +4,7 @@ example : 0 < 4 := by
   fail_if_success { simp only }
   simp (config := { decide := true }) only
 
-def fib : Nat → Nat
+def fib : Nat  Nat
 | 0 => 0
 | 1 => 1
 | n+2 => fib (n+1) + fib n

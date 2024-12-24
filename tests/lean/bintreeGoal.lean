@@ -25,21 +25,21 @@ def Tree.insert (t : Tree β) (k : Nat) (v : β) : Tree β :=
     else
       node left k v right
 
-inductive ForallTree (p : Nat → β → Prop) : Tree β → Prop
+inductive ForallTree (p : Nat  β  Prop) : Tree β  Prop
   | leaf : ForallTree p .leaf
   | node :
-     ForallTree p left →
-     p key value →
-     ForallTree p right →
+     ForallTree p left 
+     p key value 
+     ForallTree p right 
      ForallTree p (.node left key value right)
 
-inductive BST : Tree β → Prop
+inductive BST : Tree β  Prop
   | leaf : BST .leaf
   | node :
-     {value : β} →
-     ForallTree (fun k v => k < key) left →
-     ForallTree (fun k v => key < k) right →
-     BST left → BST right →
+     {value : β} 
+     ForallTree (fun k v => k < key) left 
+     ForallTree (fun k v => key < k) right 
+     BST left  BST right 
      BST (.node left key value right)
 
 def BinTree (β : Type u) := { t : Tree β // BST t }

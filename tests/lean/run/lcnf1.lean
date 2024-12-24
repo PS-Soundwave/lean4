@@ -14,29 +14,29 @@ def g1 (x : Nat) (h : Nat = Int) : Int :=
 run_meta Compiler.compile #[``g1]
 
 def f (h : False) (x : Nat) : Nat :=
-  (h.rec : Nat → Nat) x
+  (h.rec : Nat  Nat) x
 
 run_meta Compiler.compile #[``f]
 
-def g (as : Array (Nat → Nat)) (h : i < as.size ∧ q) : Nat :=
+def g (as : Array (Nat  Nat)) (h : i < as.size ∧ q) : Nat :=
   h.casesOn (fun _ _ => as[i]) i
 
 run_meta Compiler.compile #[``g]
 
-def f2 {r : Nat → Nat → Prop} (q : Quot r) : Nat :=
-  (q.lift (·+·) sorry : Nat → Nat) 2
+def f2 {r : Nat  Nat  Prop} (q : Quot r) : Nat :=
+  (q.lift (·+·) sorry : Nat  Nat) 2
 
 run_meta Compiler.compile #[``f2]
 
-inductive Vec (α : Type u) : Nat → Type u
+inductive Vec (α : Type u) : Nat  Type u
   | nil : Vec α 0
-  | cons : α → Vec α n → Vec α (n+1)
+  | cons : α  Vec α n  Vec α (n+1)
 
-def Vec.zip : Vec α n → Vec β n → Vec (α × β) n
+def Vec.zip : Vec α n  Vec β n  Vec (α × β) n
   | .cons a as, .cons b bs => .cons (a, b) (zip as bs)
   | .nil, .nil => .nil
 
-def Vec.head : Vec α (n+1) → α
+def Vec.head : Vec α (n+1)  α
   | .cons a _ => a
 
 run_meta Compiler.compile #[``Lean.Elab.Term.reportStuckSyntheticMVar]
@@ -68,17 +68,17 @@ def foo1 :=  Foo.mk Type Nat
 
 run_meta Compiler.compile #[``foo1]
 
-def Tuple (α : Type u) : Nat → Type u
+def Tuple (α : Type u) : Nat  Type u
   | 0   => PUnit
   | 1   => α
   | n+2 => α × Tuple α (n+1)
 
-def mkConstTuple (a : α) : (n : Nat) → Tuple α n
+def mkConstTuple (a : α) : (n : Nat)  Tuple α n
   | 0 => ⟨⟩
   | 1 => a
   | n+2 => (a, mkConstTuple a (n+1))
 
-def Tuple.map (f : α → β) (xs : Tuple α n) : Tuple β n :=
+def Tuple.map (f : α  β) (xs : Tuple α n) : Tuple β n :=
   match n with
   | 0 => ⟨⟩
   | 1 => f xs

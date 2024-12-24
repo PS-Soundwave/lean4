@@ -31,7 +31,7 @@ def kabstract (e : Expr) (p : Expr) (occs : Occurrences := .all) : MetaM Expr :=
     let pHeadIdx := p.toHeadIndex
     let pNumArgs := p.headNumArgs
     let rec visit (e : Expr) (offset : Nat) : StateRefT Nat MetaM Expr := do
-      let visitChildren : Unit → StateRefT Nat MetaM Expr := fun _ => do
+      let visitChildren : Unit  StateRefT Nat MetaM Expr := fun _ => do
         match e with
         | .app f a         => return e.updateApp! (← visit f offset) (← visit a offset)
         | .mdata _ b       => return e.updateMData! (← visit b offset)

@@ -89,16 +89,16 @@ Defining a recursive function on a recursive structure
 structure Foo' where
   name     : String
   n : Nat
-  children : Fin n → Foo'
+  children : Fin n  Foo'
 
-def Foo'.preorder : Foo' → String
+def Foo'.preorder : Foo'  String
   | {name, n, children} => Id.run do
     let mut acc := name
     for h : i in [0:n] do
       acc := acc ++ (children ⟨i, h.2.1⟩).preorder
     return acc
 
-/-- info: Foo'.preorder : Foo' → String -/
+/-- info: Foo'.preorder : Foo'  String -/
 #guard_msgs in #check Foo'.preorder
 
 /-!
@@ -125,7 +125,7 @@ Incidental new feature: checking projections when the structure is Prop.
 -/
 /-- error: failed to generate projections for 'Prop' structure, field 'x' is not a proof -/
 #guard_msgs in
-structure Exists' {α : Sort _} (p : α → Prop) : Prop where
+structure Exists' {α : Sort _} (p : α  Prop) : Prop where
   x : α
   h : p x
 
@@ -134,14 +134,14 @@ Testing numeric projections on recursive inductive types now that the elaborator
 -/
 inductive I1 where
   | mk (x : Nat) (xs : I1)
-/-- info: fun v => v.1 : I1 → Nat -/
+/-- info: fun v => v.1 : I1  Nat -/
 #guard_msgs in #check fun (v : I1) => v.1
-/-- info: fun v => v.2 : I1 → I1 -/
+/-- info: fun v => v.2 : I1  I1 -/
 #guard_msgs in #check fun (v : I1) => v.2
 
-inductive I2 : Nat → Type where
+inductive I2 : Nat  Type where
   | mk (x : Nat) (xs : I2 (x + 1)) : I2 x
-/-- info: fun v => v.1 : I2 2 → Nat -/
+/-- info: fun v => v.1 : I2 2  Nat -/
 #guard_msgs in #check fun (v : I2 2) => v.1
-/-- info: fun v => v.2 : (v : I2 2) → I2 (v.1 + 1) -/
+/-- info: fun v => v.2 : (v : I2 2)  I2 (v.1 + 1) -/
 #guard_msgs in #check fun (v : I2 2) => v.2

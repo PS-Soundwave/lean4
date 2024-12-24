@@ -63,11 +63,11 @@ def processDefDeriving (className : Name) (declName : Name) : TermElabM Bool := 
 
 end Term
 
-def DerivingHandler := (typeNames : Array Name) → CommandElabM Bool
+def DerivingHandler := (typeNames : Array Name)  CommandElabM Bool
 
 /-- Deprecated - `DerivingHandler` no longer assumes arguments -/
 @[deprecated DerivingHandler (since := "2024-09-09")]
-def DerivingHandlerNoArgs := (typeNames : Array Name) → CommandElabM Bool
+def DerivingHandlerNoArgs := (typeNames : Array Name)  CommandElabM Bool
 
 builtin_initialize derivingHandlersRef : IO.Ref (NameMap (List DerivingHandler)) ← IO.mkRef {}
 

@@ -2,22 +2,22 @@ import Lean
 
 inductive Tree
   | leaf : Tree
-  | node : Tree → Tree → Tree
+  | node : Tree  Tree  Tree
 
 abbrev notSubtree (x : Tree) (t : Tree) : Prop :=
   Tree.ibelow (motive := fun z => x ≠ z) t
 
 infix:50 "≮" => notSubtree
 
-theorem Tree.acyclic (x t : Tree) : x = t → x ≮ t := by
+theorem Tree.acyclic (x t : Tree) : x = t  x ≮ t := by
   let rec right (x s : Tree) (b : Tree) (h : x ≮ b) : node s x ≠ b ∧ node s x ≮ b := by
     match b, h with
     | leaf,     h =>
       apply And.intro _ trivial
       intro h; injection h
     | node l r, h =>
-      have ihl : x ≮ l → node s x ≠ l ∧ node s x ≮ l := right x s l
-      have ihr : x ≮ r → node s x ≠ r ∧ node s x ≮ r := right x s r
+      have ihl : x ≮ l  node s x ≠ l ∧ node s x ≮ l := right x s l
+      have ihr : x ≮ r  node s x ≠ r ∧ node s x ≮ r := right x s r
       have hl : x ≠ l ∧ x ≮ l := h.1
       have hr : x ≠ r ∧ x ≮ r := h.2
       have ihl : node s x ≠ l ∧ node s x ≮ l := ihl hl.2
@@ -38,8 +38,8 @@ theorem Tree.acyclic (x t : Tree) : x = t → x ≮ t := by
       apply And.intro _ trivial
       intro h; injection h
     | node l r, h =>
-      have ihl : x ≮ l → node x t ≠ l ∧ node x t ≮ l := left x t l
-      have ihr : x ≮ r → node x t ≠ r ∧ node x t ≮ r := left x t r
+      have ihl : x ≮ l  node x t ≠ l ∧ node x t ≮ l := left x t l
+      have ihr : x ≮ r  node x t ≠ r ∧ node x t ≮ r := left x t r
       have hl : x ≠ l ∧ x ≮ l := h.1
       have hr : x ≠ r ∧ x ≮ r := h.2
       have ihl : node x t ≠ l ∧ node x t ≮ l := ihl hl.2
@@ -54,7 +54,7 @@ theorem Tree.acyclic (x t : Tree) : x = t → x ≮ t := by
         apply And.intro
         apply ihl
         apply ihr
-  let rec aux : (x : Tree) → x ≮ x
+  let rec aux : (x : Tree)  x ≮ x
     | leaf     => trivial
     | node l r => by
         have ih₁ : l ≮ l := aux l

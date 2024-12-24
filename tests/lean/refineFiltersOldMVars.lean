@@ -39,7 +39,7 @@ example : True := by
 should stay at the bottom of the list. -/
 
 inductive Foo where
-| mk (α : Type) : α → Foo
+| mk (α : Type) : α  Foo
 
 example : Foo := by
   have h : Type := ?a

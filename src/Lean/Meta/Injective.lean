@@ -45,8 +45,8 @@ def elimOptParam (type : Expr) : CoreM Expr := do
   `T` is considered non-fixed despite the fact that `A : T -> Tyₛ`.
   This leads to an ill-typed injectivity theorem signature:
   ```lean
-  theorem Tmₛ.app.inj {T : Type u} {A : T → Tyₛ} {a : Tmₛ (Tyₛ.SPi T A)} {arg : T} {T_1 : Type u} {a_1 : Tmₛ (Tyₛ.SPi T_1 A)} :
-  Tmₛ.app a arg = Tmₛ.app a_1 arg →
+  theorem Tmₛ.app.inj {T : Type u} {A : T  Tyₛ} {a : Tmₛ (Tyₛ.SPi T A)} {arg : T} {T_1 : Type u} {a_1 : Tmₛ (Tyₛ.SPi T_1 A)} :
+  Tmₛ.app a arg = Tmₛ.app a_1 arg 
     T = T_1 ∧ HEq a a_1 := fun x => Tmₛ.noConfusion x fun T_eq A_eq a_eq arg_eq => eq_of_heq a_eq
   ```
   Instead of checking the type of every subterm, we only need to check the type of free variables, since free variables introduced in

@@ -1,4 +1,4 @@
-opaque q : Nat → Nat
+opaque q : Nat  Nat
 def f (x : Nat) : Nat :=
   match x with
   | 0 => 1

@@ -85,11 +85,11 @@ and indices still forall-abstracted.
 
 For example given a nested inductive
 ```
-inductive Tree α where | node : α → Vector (Tree α) n → Tree α
+inductive Tree α where | node : α  Vector (Tree α) n  Tree α
 ```
 (where `n` is an index of `Vector`) and the instantiation `Tree Int` it will return
 ```
-#[(n : Nat) → Vector (Tree Int) n]
+#[(n : Nat)  Vector (Tree Int) n]
 ```
 
 -/

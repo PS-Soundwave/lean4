@@ -16,7 +16,7 @@ xs.foldl (init := 10) (· + ·)
 
 #check tst
 
-#check (fun stx => if True then let e := stx; Pure.pure e else Pure.pure stx : Nat → Id Nat)
+#check (fun stx => if True then let e := stx; Pure.pure e else Pure.pure stx : Nat  Id Nat)
 
 #check let x : Nat := 1; x
 
@@ -46,7 +46,7 @@ by {
   assumption
 }
 
-theorem simple2 (x y : Nat) : x = y → x = y :=
+theorem simple2 (x y : Nat) : x = y  x = y :=
 by {
   intro h;
   assumption
@@ -57,7 +57,7 @@ syntax "intro2" : tactic
 macro_rules
 | `(tactic| intro2) => `(tactic| intro; intro )
 
-theorem simple3 (x y : Nat) : x = x → x = y → x = y :=
+theorem simple3 (x y : Nat) : x = x  x = y  x = y :=
 by {
   intro2;
   assumption
@@ -72,26 +72,26 @@ set_option pp.all false
 check2 0+1
 check2 foo 0,1
 
-theorem simple4 (x y : Nat) : y = y → x = x → x = y → x = y :=
+theorem simple4 (x y : Nat) : y = y  x = x  x = y  x = y :=
 by {
   intro3;
   assumption
 }
 
-theorem simple5 (x y z : Nat) : y = z → x = x → x = y → x = z :=
+theorem simple5 (x y z : Nat) : y = z  x = x  x = y  x = z :=
 by {
   intro h1; intro _; intro h3;
   exact Eq.trans h3 h1
 }
 
-theorem simple6 (x y z : Nat) : y = z → x = x → x = y → x = z :=
+theorem simple6 (x y z : Nat) : y = z  x = x  x = y  x = z :=
 by {
   intro h1; intro _; intro h3;
   refine Eq.trans ?_ h1;
   assumption
 }
 
-theorem simple7 (x y z : Nat) : y = z → x = x → x = y → x = z :=
+theorem simple7 (x y z : Nat) : y = z  x = x  x = y  x = z :=
 by {
   intro h1; intro _; intro h3;
   refine' Eq.trans ?pre ?post;
@@ -100,13 +100,13 @@ by {
   { exact h1 }
 }
 
-theorem simple8 (x y z : Nat) : y = z → x = x → x = y → x = z := by
+theorem simple8 (x y z : Nat) : y = z  x = x  x = y  x = z := by
 intro h1; intro _; intro h3
 refine' Eq.trans ?pre ?post
 case post => exact h1
 case pre => exact h3
 
-theorem simple9 (x y z : Nat) : y = z → x = x → x = y → x = z := by
+theorem simple9 (x y z : Nat) : y = z  x = x  x = y  x = z := by
 intros h1 _ h3
 trace_state
 focus
@@ -118,7 +118,7 @@ focus
       exact h3
       assumption
 
-theorem simple9b (x y z : Nat) : y = z → x = x → x = y → x = z := by
+theorem simple9b (x y z : Nat) : y = z  x = x  x = y  x = z := by
 intros h1 _ h3
 trace_state
 focus
@@ -128,14 +128,14 @@ focus
     | exact y; exact h3
   assumption
 
-theorem simple9c (x y z : Nat) : y = z → x = x → x = y → x = z := by
+theorem simple9c (x y z : Nat) : y = z  x = x  x = y  x = z := by
   intros h1 _ h3
   solve
     | exact h1
     | refine' Eq.trans ?pre ?post; exact y; exact h3; assumption
     | exact h3
 
-theorem simple9d (x y z : Nat) : y = z → x = x → x = y → x = z := by
+theorem simple9d (x y z : Nat) : y = z  x = x  x = y  x = z := by
   intros h1 _ h3
   refine' Eq.trans ?pre ?post
   solve
@@ -155,7 +155,7 @@ namespace Foo
   #check (⟨2, 3⟩ : Prod _ _)
 end Foo
 
-theorem simple10 (x y z : Nat) : y = z → x = x → x = y → x = z :=
+theorem simple10 (x y z : Nat) : y = z  x = x  x = y  x = z :=
 by {
   intro h1; intro h2; intro h3;
   skip;
@@ -164,7 +164,7 @@ by {
   assumption
 }
 
-theorem simple11 (x y z : Nat) : y = z → x = x → x = y → x = z :=
+theorem simple11 (x y z : Nat) : y = z  x = x  x = y  x = z :=
 by {
   intro h1; intro h2; intro h3;
   apply @Eq.trans;
@@ -173,7 +173,7 @@ by {
   assumption
 }
 
-theorem simple12 (x y z : Nat) : y = z → x = x → x = y → x = z :=
+theorem simple12 (x y z : Nat) : y = z  x = x  x = y  x = z :=
 by {
   intro h1; intro h2; intro h3;
   apply @Eq.trans;
@@ -184,7 +184,7 @@ by {
   try exact h1;
 }
 
-theorem simple13 (x y z : Nat) : y = z → x = x → x = y → x = z := by
+theorem simple13 (x y z : Nat) : y = z  x = x  x = y  x = z := by
 intros h1 h2 h3
 trace_state
 apply @Eq.trans
@@ -192,7 +192,7 @@ case b => exact y
 trace_state
 repeat assumption
 
-theorem simple13b (x y z : Nat) : y = z → x = x → x = y → x = z := by {
+theorem simple13b (x y z : Nat) : y = z  x = x  x = y  x = z := by {
 intros h1 h2 h3;
 trace_state;
 apply @Eq.trans;
@@ -201,13 +201,13 @@ trace_state;
 repeat assumption
 }
 
-theorem simple14 (x y z : Nat) : y = z → x = x → x = y → x = z := by
+theorem simple14 (x y z : Nat) : y = z  x = x  x = y  x = z := by
 intros
 apply @Eq.trans
 case b => exact y
 repeat assumption
 
-theorem simple15 (x y z : Nat) : y = z → x = x → x = y → x = z :=
+theorem simple15 (x y z : Nat) : y = z  x = x  x = y  x = z :=
 by {
   intros h1 h2 h3;
   revert y;
@@ -217,7 +217,7 @@ by {
   exact h1
 }
 
-theorem simple16 (x y z : Nat) : y = z → x = x → x = y → x = z :=
+theorem simple16 (x y z : Nat) : y = z  x = x  x = y  x = z :=
 by {
   intros h1 h2 h3;
   try clear x; -- should fail
@@ -266,31 +266,31 @@ set_option pp.all true
 def g1 {α} (a₁ a₂ : α) {β} (b : β) : α × α × β :=
 (a₁, a₂, b)
 
-def id1 : {α : Type} → α → α :=
+def id1 : {α : Type}  α  α :=
 fun x => x
 
-def listId : List ({α : Type} → α → α) :=
+def listId : List ({α : Type}  α  α) :=
 (fun x => x) :: []
 
-def id2 : {α : Type} → α → α :=
+def id2 : {α : Type}  α  α :=
 @(fun α (x : α) => id1 x)
 
-def id3 : {α : Type} → α → α :=
+def id3 : {α : Type}  α  α :=
 @(fun α x => id1 x)
 
-def id4 : {α : Type} → α → α :=
+def id4 : {α : Type}  α  α :=
 fun x => id1 x
 
-def id5 : {α : Type} → α → α :=
+def id5 : {α : Type}  α  α :=
 fun {α} x => id1 x
 
-def id6 : {α : Type} → α → α :=
+def id6 : {α : Type}  α  α :=
 @(fun {α} x => id1 x)
 
-def id7 : {α : Type} → α → α :=
+def id7 : {α : Type}  α  α :=
 fun {α} x => @id α x
 
-def id8 : {α : Type} → α → α :=
+def id8 : {α : Type}  α  α :=
 fun {α} x => id (@id α x)
 
 def altTst1 {m σ} [Alternative m] [Monad m] : Alternative (StateT σ m) :=
@@ -314,8 +314,8 @@ set_option pp.raw.maxDepth 100
 set_option trace.Elab true
 
 
-def adapt {m m' σ σ'} {n n' : Type → Type} [MonadFunctor m m' n n'] [MonadStateAdapter σ σ' m m'] : MonadStateAdapter σ σ' n n' :=
-⟨fun split join => monadMap (adaptState split join : m α → m' α)⟩
+def adapt {m m' σ σ'} {n n' : Type  Type} [MonadFunctor m m' n n'] [MonadStateAdapter σ σ' m m'] : MonadStateAdapter σ σ' n n' :=
+⟨fun split join => monadMap (adaptState split join : m α  m' α)⟩
 
 -/
 
@@ -330,7 +330,7 @@ set_option pp.all false
 
 #check fn α (a : α) => a
 
-def tst1 : {α : Type} → α → α :=
+def tst1 : {α : Type}  α  α :=
 @(fn α a => a)
 
 #check @tst1
@@ -345,19 +345,19 @@ macro_rules
 
 #check x ==> x+1
 
-def tst2a : {α : Type} → α → α :=
+def tst2a : {α : Type}  α  α :=
 @(α ==> a ==> a)
 
-def tst2b : {α : Type} → α → α :=
+def tst2b : {α : Type}  α  α :=
 {α} ==> a ==> a
 
 #check @tst2a
 #check @tst2b
 
-def tst3a : {α : Type} → {β : Type} → α → β → α × β :=
+def tst3a : {α : Type}  {β : Type}  α  β  α × β :=
 @(α ==> @(β ==> a ==> b ==> (a, b)))
 
-def tst3b : {α : Type} → {β : Type} → α → β → α × β :=
+def tst3b : {α : Type}  {β : Type}  α  β  α × β :=
 {α} ==> {β} ==> a ==> b ==> (a, b)
 
 syntax "function" (term:max)+ "=>" term : term
@@ -365,10 +365,10 @@ syntax "function" (term:max)+ "=>" term : term
 macro_rules
 | `(function $xs* => $b) => `(@(fun $xs* => $b))
 
-def tst4 : {α : Type} → {β : Type} → α → β → α × β :=
+def tst4 : {α : Type}  {β : Type}  α  β  α × β :=
 function α β a b => (a, b)
 
-theorem simple20 (x y z : Nat) : y = z → x = x → x = y → x = z :=
+theorem simple20 (x y z : Nat) : y = z  x = x  x = y  x = z :=
 by intros h1 h2 h3;
    try clear x; -- should fail
    clear h2;
@@ -377,24 +377,24 @@ by intros h1 h2 h3;
    exact h3;
    exact h1
 
-theorem simple21 (x y z : Nat) : y = z → x = x → y = x → x = z :=
+theorem simple21 (x y z : Nat) : y = z  x = x  y = x  x = z :=
 fun h1 _ h3 =>
   have : x = y := by { apply Eq.symm; assumption };
   Eq.trans this (by assumption)
 
-theorem simple22 (x y z : Nat) : y = z → y = x → id (x = z + 0) :=
+theorem simple22 (x y z : Nat) : y = z  y = x  id (x = z + 0) :=
 fun h1 h2 => show x = z + 0 by
   apply Eq.trans
   exact h2.symm
   assumption
   skip
 
-theorem simple23 (x y z : Nat) : y = z → x = x → y = x → x = z :=
+theorem simple23 (x y z : Nat) : y = z  x = x  y = x  x = z :=
 fun h1 _ h3 =>
   have : x = y := by apply Eq.symm; assumption
   Eq.trans this (by assumption)
 
-theorem simple24 (x y z : Nat) : y = z → x = x → y = x → x = z :=
+theorem simple24 (x y z : Nat) : y = z  x = x  y = x  x = z :=
 fun h1 _ h3 =>
   have h : x = y := by apply Eq.symm; assumption
   Eq.trans h (by assumption)

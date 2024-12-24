@@ -9,7 +9,7 @@ import Lean.Meta.Check
 
 namespace Lean.Meta
 
-def forallTelescopeCompatibleAux (k : Array Expr → Expr → Expr → MetaM α) : Nat → Expr → Expr → Array Expr → MetaM α
+def forallTelescopeCompatibleAux (k : Array Expr  Expr  Expr  MetaM α) : Nat  Expr  Expr  Array Expr  MetaM α
   | 0, type₁, type₂, xs   => k xs type₁ type₂
   | i+1, type₁, type₂, xs => do
     let type₁ ← whnf type₁
@@ -36,7 +36,7 @@ def forallTelescopeCompatibleAux (k : Array Expr → Expr → Expr → MetaM α)
 
 /-- Given two forall-expressions `type₁` and `type₂`, ensure the first `numParams` parameters are compatible, and
     then execute `k` with the parameters and remaining types. -/
-def forallTelescopeCompatible [Monad m] [MonadControlT MetaM m] (type₁ type₂ : Expr) (numParams : Nat) (k : Array Expr → Expr → Expr → m α) : m α :=
+def forallTelescopeCompatible [Monad m] [MonadControlT MetaM m] (type₁ type₂ : Expr) (numParams : Nat) (k : Array Expr  Expr  Expr  m α) : m α :=
   controlAt MetaM fun runInBase =>
     forallTelescopeCompatibleAux (fun xs type₁ type₂ => runInBase $ k xs type₁ type₂) numParams type₁ type₂ #[]
 

@@ -33,11 +33,11 @@ end Int
 
 namespace Lean.AssocList
 
-  def map (f : α → β → δ) : AssocList α β → AssocList α δ
+  def map (f : α  β  δ) : AssocList α β  AssocList α δ
     | AssocList.nil        => AssocList.nil
     | AssocList.cons k v t => AssocList.cons k (f k v) (map f t)
 
-  def filter (p : α → β → Bool) : AssocList α β → AssocList α β
+  def filter (p : α  β  Bool) : AssocList α β  AssocList α β
     | AssocList.nil        => AssocList.nil
     | AssocList.cons k v t =>
       if p k v then
@@ -51,8 +51,8 @@ namespace Lean.HashMap
 
   variable [BEq α] [Hashable α]
 
-  @[inline] protected def forIn {δ : Type w} {m : Type w → Type w'} [Monad m]
-    (as : HashMap α β) (init : δ) (f : (α × β) → δ → m (ForInStep δ)) : m δ := do
+  @[inline] protected def forIn {δ : Type w} {m : Type w  Type w'} [Monad m]
+    (as : HashMap α β) (init : δ) (f : (α × β)  δ  m (ForInStep δ)) : m δ := do
     forIn as.val.buckets.val init fun bucket acc => do
       let (done, v) ← bucket.forIn (false, acc) fun v (_, acc) => do
         let r ← f v acc
@@ -69,28 +69,28 @@ namespace Lean.HashMap
   instance : ForIn m (HashMap α β) (α × β) where
     forIn := HashMap.forIn
 
-  def modify! [Inhabited β] (xs : HashMap α β) (k : α) (f : β → β) : HashMap α β :=
+  def modify! [Inhabited β] (xs : HashMap α β) (k : α) (f : β  β) : HashMap α β :=
     let v := xs.find! k
     xs.erase k |>.insert k (f v)
 
-  def any (xs : HashMap α β) (p : α → β → Bool) : Bool := Id.run <| do
+  def any (xs : HashMap α β) (p : α  β  Bool) : Bool := Id.run <| do
     for (k, v) in xs do
       if p k v then
         return true
     return false
 
-  def mapValsM [Monad m] (f : β → m γ) (xs : HashMap α β) : m (HashMap α γ) :=
+  def mapValsM [Monad m] (f : β  m γ) (xs : HashMap α β) : m (HashMap α γ) :=
     mkHashMap (capacity := xs.size) |> xs.foldM fun acc k v => return acc.insert k (←f v)
 
-  def mapVals (f : β → γ) (xs : HashMap α β) : HashMap α γ :=
+  def mapVals (f : β  γ) (xs : HashMap α β) : HashMap α γ :=
     mkHashMap (capacity := xs.size) |> xs.fold fun acc k v => acc.insert k (f v)
 
-  def fastMapVals (f : α → β → β) (xs : HashMap α β) : HashMap α β :=
+  def fastMapVals (f : α  β  β) (xs : HashMap α β) : HashMap α β :=
     let size := xs.val.size
     let buckets := xs.val.buckets.val.map (·.map f)
     ⟨⟨size, ⟨buckets, sorry⟩⟩, sorry⟩
 
-  def filter (p : α → β → Bool) (xs : HashMap α β) : HashMap α β :=
+  def filter (p : α  β  Bool) (xs : HashMap α β) : HashMap α β :=
     let buckets := xs.val.buckets.val.map (·.filter p)
     let size := buckets.foldl (fun acc bucket => bucket.foldl (fun acc _ _ => acc + 1) acc) 0
     ⟨⟨size, ⟨buckets, sorry⟩⟩, sorry⟩
@@ -186,7 +186,7 @@ namespace Equation
 
   def findSingleton? (e : Equation) : Option (Nat × Int) := Id.run <| do
     for (i, coeff) in e.coeffs do
-      if coeff = 1 ∨ coeff = -1 then
+      if coeff = 1  coeff = -1 then
         return some (i, coeff)
     return none
 

@@ -9,13 +9,13 @@ They also created unelaboratable terms such as `?_ (id (r.symm h₂))`.
 set_option linter.unusedVariables false
 
 -- set up a binary relation
-axiom r : Nat → Nat → Prop
+axiom r : Nat  Nat  Prop
 
 -- that is symmetric
-axiom r.symm {a b : Nat} : r a b → r b a
+axiom r.symm {a b : Nat} : r a b  r b a
 
 -- and has some other property
-axiom r.trans {a b c : Nat} : r a b → r b c → r a c
+axiom r.trans {a b c : Nat} : r a b  r b c  r a c
 
 /--
 info: Try this: refine r.symm ?_

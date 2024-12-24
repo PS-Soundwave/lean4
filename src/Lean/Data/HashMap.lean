@@ -48,26 +48,26 @@ private def mkIdx {sz : Nat} (hash : UInt64) (h : sz.isPowerOfTwo) : { u : USize
   else
     ⟨0, by simp; apply Nat.pos_of_isPowerOfTwo h⟩
 
-@[inline] def reinsertAux (hashFn : α → UInt64) (data : HashMapBucket α β) (a : α) (b : β) : HashMapBucket α β :=
+@[inline] def reinsertAux (hashFn : α  UInt64) (data : HashMapBucket α β) (a : α) (b : β) : HashMapBucket α β :=
   let ⟨i, h⟩ := mkIdx (hashFn a) data.property
   data.update i (AssocList.cons a b data.val[i]) h
 
-@[inline] def foldBucketsM {δ : Type w} {m : Type w → Type w} [Monad m] (data : HashMapBucket α β) (d : δ) (f : δ → α → β → m δ) : m δ :=
+@[inline] def foldBucketsM {δ : Type w} {m : Type w  Type w} [Monad m] (data : HashMapBucket α β) (d : δ) (f : δ  α  β  m δ) : m δ :=
   data.val.foldlM (init := d) fun d b => b.foldlM f d
 
-@[inline] def foldBuckets {δ : Type w} (data : HashMapBucket α β) (d : δ) (f : δ → α → β → δ) : δ :=
+@[inline] def foldBuckets {δ : Type w} (data : HashMapBucket α β) (d : δ) (f : δ  α  β  δ) : δ :=
   Id.run $ foldBucketsM data d f
 
-@[inline] def foldM {δ : Type w} {m : Type w → Type w} [Monad m] (f : δ → α → β → m δ) (d : δ) (h : HashMapImp α β) : m δ :=
+@[inline] def foldM {δ : Type w} {m : Type w  Type w} [Monad m] (f : δ  α  β  m δ) (d : δ) (h : HashMapImp α β) : m δ :=
   foldBucketsM h.buckets d f
 
-@[inline] def fold {δ : Type w} (f : δ → α → β → δ) (d : δ) (m : HashMapImp α β) : δ :=
+@[inline] def fold {δ : Type w} (f : δ  α  β  δ) (d : δ) (m : HashMapImp α β) : δ :=
   foldBuckets m.buckets d f
 
-@[inline] def forBucketsM {m : Type w → Type w} [Monad m] (data : HashMapBucket α β) (f : α → β → m PUnit) : m PUnit :=
+@[inline] def forBucketsM {m : Type w  Type w} [Monad m] (data : HashMapBucket α β) (f : α  β  m PUnit) : m PUnit :=
   data.val.forM fun b => b.forM f
 
-@[inline] def forM {m : Type w → Type w} [Monad m] (f : α → β → m PUnit) (h : HashMapImp α β) : m PUnit :=
+@[inline] def forM {m : Type w  Type w} [Monad m] (f : α  β  m PUnit) (h : HashMapImp α β) : m PUnit :=
   forBucketsM h.buckets f
 
 def findEntry? [BEq α] [Hashable α] (m : HashMapImp α β) (a : α) : Option (α × β) :=
@@ -152,11 +152,11 @@ def erase [BEq α] [Hashable α] (m : HashMapImp α β) (a : α) : HashMapImp α
     else
       ⟨size, buckets⟩
 
-inductive WellFormed [BEq α] [Hashable α] : HashMapImp α β → Prop where
+inductive WellFormed [BEq α] [Hashable α] : HashMapImp α β  Prop where
   | mkWff          : ∀ n,                    WellFormed (mkHashMapImp n)
-  | insertWff      : ∀ m a b, WellFormed m → WellFormed (insert m a b |>.1)
-  | insertIfNewWff : ∀ m a b, WellFormed m → WellFormed (insertIfNew m a b |>.1)
-  | eraseWff       : ∀ m a,   WellFormed m → WellFormed (erase m a)
+  | insertWff      : ∀ m a b, WellFormed m  WellFormed (insert m a b |>.1)
+  | insertIfNewWff : ∀ m a b, WellFormed m  WellFormed (insertIfNew m a b |>.1)
+  | eraseWff       : ∀ m a,   WellFormed m  WellFormed (erase m a)
 
 end HashMapImp
 
@@ -193,7 +193,7 @@ def insert' (m : HashMap α β) (a : α) (b : β) : HashMap α β × Bool :=
     | (m', replaced) => (⟨ m', by have aux := WellFormed.insertWff m a b hw; rw [h] at aux; assumption ⟩, replaced)
 
 /--
-Similar to `insert`, but returns `some old` if the map already had an entry `α → old`.
+Similar to `insert`, but returns `some old` if the map already had an entry `α  old`.
 If the result is `some old`, the resulting map is equal to `m`. -/
 def insertIfNew (m : HashMap α β) (a : α) (b : β) : HashMap α β × Option β :=
   match m with
@@ -228,15 +228,15 @@ instance : GetElem (HashMap α β) α (Option β) fun _ _ => True where
   match m with
   | ⟨ m, _ ⟩ => m.contains a
 
-@[inline] def foldM {δ : Type w} {m : Type w → Type w} [Monad m] (f : δ → α → β → m δ) (init : δ) (h : HashMap α β) : m δ :=
+@[inline] def foldM {δ : Type w} {m : Type w  Type w} [Monad m] (f : δ  α  β  m δ) (init : δ) (h : HashMap α β) : m δ :=
   match h with
   | ⟨ h, _ ⟩ => h.foldM f init
 
-@[inline] def fold {δ : Type w} (f : δ → α → β → δ) (init : δ) (m : HashMap α β) : δ :=
+@[inline] def fold {δ : Type w} (f : δ  α  β  δ) (init : δ) (m : HashMap α β) : δ :=
   match m with
   | ⟨ m, _ ⟩ => m.fold f init
 
-@[inline] def forM {m : Type w → Type w} [Monad m] (f : α → β → m PUnit) (h : HashMap α β) : m PUnit :=
+@[inline] def forM {m : Type w  Type w} [Monad m] (f : α  β  m PUnit) (h : HashMap α β) : m PUnit :=
   match h with
   | ⟨ h, _ ⟩ => h.forM f
 
@@ -263,7 +263,7 @@ def ofList (l : List (α × β)) : HashMap α β :=
   l.foldl (init := HashMap.empty) (fun m p => m.insert p.fst p.snd)
 
 /-- Variant of `ofList` which accepts a function that combines values of duplicated keys. -/
-def ofListWith (l : List (α × β)) (f : β → β → β) : HashMap α β :=
+def ofListWith (l : List (α × β)) (f : β  β  β) : HashMap α β :=
   l.foldl (init := HashMap.empty)
     (fun m p =>
       match m.find? p.fst with

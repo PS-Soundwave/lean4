@@ -2,16 +2,16 @@ namespace Mutual
 
 mutual
 inductive Tree (α : Type u) where
-  | node : TreeList α → Tree α
-  | leaf : α → Tree α
+  | node : TreeList α  Tree α
+  | leaf : α  Tree α
 
 inductive TreeList (α : Type u) where
   | nil : TreeList α
-  | cons : Tree α → TreeList α → TreeList α
+  | cons : Tree α  TreeList α  TreeList α
 end
 
 mutual
-def Tree.size : Tree α → Nat
+def Tree.size : Tree α  Nat
   | Tree.node l =>
     -- see "TODO: linarith" in Init.WFTactics
     have : sizeOf l < 1 + sizeOf l := by
@@ -22,7 +22,7 @@ def Tree.size : Tree α → Nat
 -- use automatically synthesized size function, which is not quite the number of leaves
 termination_by t => sizeOf t
 
-def Tree.sizeList : TreeList α → Nat
+def Tree.sizeList : TreeList α  Nat
   | TreeList.nil => 0
   | TreeList.cons t l =>
     have : sizeOf t < 1 + sizeOf t + sizeOf l := by
@@ -42,11 +42,11 @@ end Mutual
 namespace Nested
 
 inductive Tree (α : Type u) where
-  | node : List (Tree α) → Tree α
-  | leaf : α → Tree α
+  | node : List (Tree α)  Tree α
+  | leaf : α  Tree α
 
 mutual
-def Tree.size : Tree α → Nat
+def Tree.size : Tree α  Nat
   | Tree.node l =>
     have : sizeOf l < 1 + sizeOf l := by
       rw [Nat.add_comm]
@@ -55,7 +55,7 @@ def Tree.size : Tree α → Nat
   | Tree.leaf _ => 1
 termination_by t => sizeOf t
 
-def Tree.sizeList : List (Tree α) → Nat
+def Tree.sizeList : List (Tree α)  Nat
   | [] => 0
   | t :: l =>
     have : sizeOf t < 1 + sizeOf t + sizeOf l := by

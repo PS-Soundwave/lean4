@@ -9,7 +9,7 @@ import Lean.PrettyPrinter
 namespace Lean.Elab
 open Meta
 
-private def withInhabitedInstances (xs : Array Expr) (k : Array Expr → MetaM α) : MetaM α := do
+private def withInhabitedInstances (xs : Array Expr) (k : Array Expr  MetaM α) : MetaM α := do
   let rec go (i : Nat) (insts : Array Expr) : MetaM α := do
     if h : i < xs.size then
       let x := xs[i]

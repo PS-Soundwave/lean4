@@ -8,7 +8,7 @@ https://github.com/leanprover/lean4/issues/5668
 /-- info: none <|> some false : Option Bool -/
 #guard_msgs in #check none <|> some false
 
-variable [Monad m] (a : m α) (b : m β) (f : m (α → β))
+variable [Monad m] (a : m α) (b : m β) (f : m (α  β))
 
 /-- info: f <*> a : m β -/
 #guard_msgs in #check f <*> a

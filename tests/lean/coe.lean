@@ -4,7 +4,7 @@ structure WrappedNat where
   val : Nat
 
 structure WrappedFun (α) where
-  fn : Nat → α
+  fn : Nat  α
 
 structure WrappedType where
   typ : Type
@@ -13,7 +13,7 @@ attribute [coe] WrappedNat.val
 instance : Coe WrappedNat Nat where coe := WrappedNat.val
 
 #eval Lean.Meta.registerCoercion ``WrappedFun.fn (some ⟨2, 1, .coeFun⟩)
-instance : CoeFun (WrappedFun α) (fun _ => Nat → α) where coe := WrappedFun.fn
+instance : CoeFun (WrappedFun α) (fun _ => Nat  α) where coe := WrappedFun.fn
 
 #eval Lean.Meta.registerCoercion ``WrappedType.typ (some ⟨1, 0, .coeSort⟩)
 instance : CoeSort WrappedType Type where coe := WrappedType.typ
@@ -28,7 +28,7 @@ variable (n : WrappedNat)
 end coe
 
 section coeFun
-variable (f : WrappedFun Nat) (g : Nat → WrappedFun Nat) (h : WrappedFun (WrappedFun Nat))
+variable (f : WrappedFun Nat) (g : Nat  WrappedFun Nat) (h : WrappedFun (WrappedFun Nat))
 
 #check f.fn
 

@@ -1,4 +1,4 @@
-inductive Foo (β : Type u) : Sort v → Type (max u v)
+inductive Foo (β : Type u) : Sort v  Type (max u v)
   | mk {α : Sort v} (b : β) (a : α) : Foo β α
   | mk₂ : Foo β PUnit
 inductive Bla (α : Type u) : Type (u+1) where

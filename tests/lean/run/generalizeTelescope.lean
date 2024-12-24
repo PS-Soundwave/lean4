@@ -3,9 +3,9 @@ import Lean
 open Lean
 open Lean.Meta
 
-inductive Vec (α : Type) : Nat → Type
+inductive Vec (α : Type) : Nat  Type
 | nil      : Vec α 0
-| cons {n} : α → Vec α n → Vec α (n+1)
+| cons {n} : α  Vec α n  Vec α (n+1)
 
 set_option trace.Meta.debug true
 

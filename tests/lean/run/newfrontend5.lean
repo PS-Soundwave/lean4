@@ -1,17 +1,17 @@
-def foo {α} (f : {β : Type _} → β → β) (a : α) : α :=
+def foo {α} (f : {β : Type _}  β  β) (a : α) : α :=
 f a
 
 #check_failure let g := id; foo g true -- fails
 /-
 Expands to
 ```
-let g : ?γ → ?γ := @id ?γ;
+let g : ?γ  ?γ := @id ?γ;
 @foo ?α (fun (β : Sort ?u) => g) true
 ```
 
 Unification constraint
 ```
-  ?γ → ?γ =?= β → β
+  ?γ  ?γ =?= β  β
 ```
 fails because `β` is not in the scope of `?γ`
 
@@ -24,13 +24,13 @@ the issue is the scope of the metavariable. Not sure yet how to improve it.
 /-
 Expands into
 ```
-let g : {γ : Sort ?v} → γ → γ := @id;
+let g : {γ : Sort ?v}  γ  γ := @id;
 @foo ?α @g true
 ```
 Note that `@g` also disables implicit lambdas.
 The unification constraint is easily solved
 ```
-{γ : Sort ?v} → γ → γ =?= {β : Sort ?u} → β → β
+{γ : Sort ?v}  γ  γ =?= {β : Sort ?u}  β  β
 ```
 -/
 
@@ -53,7 +53,7 @@ set_option pp.explicit true
 
 def h (x := 10) (y := 20) : Nat := x + y
 #check h -- h 10 20 : Nat
-#check let f := @h; f -- (let f : optParam Nat 10 → optParam Nat 20 → Nat := @h; f 10 20) : Nat
+#check let f := @h; f -- (let f : optParam Nat 10  optParam Nat 20  Nat := @h; f 10 20) : Nat
 
 #check let f := fun (x : optParam Nat 10) => x + 1; f + f 1
 #check (fun (x : optParam Nat 10) => x)

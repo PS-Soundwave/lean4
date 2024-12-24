@@ -1,4 +1,4 @@
-def f : List Nat → List Nat
+def f : List Nat  List Nat
   | a::xs@(b::bs) => xs
   | _             => []
 

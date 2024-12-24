@@ -36,7 +36,7 @@ abbrev Proof : Type := OmegaM Expr
 Our internal representation of an argument "justifying" that a constraint holds on some coefficients.
 We'll use this to construct the proof term once a contradiction is found.
 -/
-inductive Justification : Constraint → Coeffs → Type
+inductive Justification : Constraint  Coeffs  Type
   /--
   `Problem.assumptions[i]` generates a proof that `s.sat' coeffs atoms`
   -/
@@ -66,7 +66,7 @@ namespace Justification
 private def bullet (s : String) := "• " ++ s.replace "\n" "\n  "
 
 /-- Print a `Justification` as an indented tree structure. -/
-def toString : Justification s x → String
+def toString : Justification s x  String
   | assumption _ _ i => s!"{x} ∈ {s}: assumption {i}"
   | @tidy s' x' j =>
     if s == s' && x == x' then j.toString else s!"{x} ∈ {s}: tidying up:\n" ++ bullet j.toString
@@ -111,7 +111,7 @@ def bmodProof (m : Nat) (r : Int) (i : Nat) (x : Coeffs) (v : Expr) (w : Expr) :
 -- TODO could we increase sharing in the proof term here?
 
 /-- Constructs a proof that `s.sat' c v = true` -/
-def proof (v : Expr) (assumptions : Array Proof) : Justification s c → Proof
+def proof (v : Expr) (assumptions : Array Proof) : Justification s c  Proof
   | assumption s c i => assumptions[i]!
   | @tidy s c j => return tidyProof s c v (← proof v assumptions j)
   | @combine s t c j k =>
@@ -223,7 +223,7 @@ def proveFalse {s x} (j : Justification s x) (assumptions : Array Proof) : Proof
 Insert a constraint into the problem,
 without checking if there is already a constraint for these coefficients.
 -/
-def insertConstraint (p : Problem) : Fact → Problem
+def insertConstraint (p : Problem) : Fact  Problem
   | f@⟨x, s, j⟩ =>
     if s.isImpossible then
       { p with
@@ -246,7 +246,7 @@ def insertConstraint (p : Problem) : Fact → Problem
 Add a constraint into the problem,
 combining it with any existing constraints for the same coefficients.
 -/
-def addConstraint (p : Problem) : Fact → Problem
+def addConstraint (p : Problem) : Fact  Problem
   | f@⟨x, s, j⟩ =>
     if p.possible then
       match p.constraints[x]? with

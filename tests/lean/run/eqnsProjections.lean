@@ -6,7 +6,7 @@ various tactics
 structure S where
   proj : Nat
 
-variable (P : Nat → Prop)
+variable (P : Nat  Prop)
 
 section structure_abstract
 
@@ -14,7 +14,7 @@ variable (s : S)
 
 /--
 error: tactic 'fail' failed
-P : Nat → Prop
+P : Nat  Prop
 s : S
 ⊢ P s.1
 -/
@@ -28,7 +28,7 @@ example : P (s.proj) := by
 
 /--
 error: tactic 'fail' failed
-P : Nat → Prop
+P : Nat  Prop
 s : S
 ⊢ P s.1
 -/
@@ -50,7 +50,7 @@ section structure_concrete
 variable (n : Nat)
 /--
 error: tactic 'fail' failed
-P : Nat → Prop
+P : Nat  Prop
 n : Nat
 ⊢ P { proj := n }.1
 -/
@@ -62,7 +62,7 @@ example : P (S.proj ⟨n⟩) := by rw [S.proj]; fail
 
 /--
 error: tactic 'fail' failed
-P : Nat → Prop
+P : Nat  Prop
 n : Nat
 ⊢ P { proj := n }.1
 -/
@@ -71,7 +71,7 @@ example : P (S.proj ⟨n⟩) := by unfold S.proj; fail
 
 /--
 error: tactic 'fail' failed
-P : Nat → Prop
+P : Nat  Prop
 n : Nat
 ⊢ P n
 -/
@@ -92,7 +92,7 @@ variable (α : Type) [C α]
 
 /--
 error: tactic 'fail' failed
-P : Nat → Prop
+P : Nat  Prop
 α : Type
 inst✝ : C α
 ⊢ P inst✝.1
@@ -102,7 +102,7 @@ example : P (C.meth α) := by rw [C.meth]; fail
 
 /--
 error: tactic 'fail' failed
-P : Nat → Prop
+P : Nat  Prop
 α : Type
 inst✝ : C α
 ⊢ P inst✝.1
@@ -120,7 +120,7 @@ section class_concrete
 
 /--
 error: tactic 'fail' failed
-P : Nat → Prop
+P : Nat  Prop
 ⊢ P instCBool.1
 -/
 #guard_msgs in
@@ -128,7 +128,7 @@ example : P (C.meth Bool) := by rw [C.meth]; fail
 
 /--
 error: tactic 'fail' failed
-P : Nat → Prop
+P : Nat  Prop
 ⊢ P instCBool.1
 -/
 #guard_msgs in
@@ -136,7 +136,7 @@ example : P (C.meth Bool) := by unfold C.meth; fail
 
 /--
 error: tactic 'fail' failed
-P : Nat → Prop
+P : Nat  Prop
 ⊢ P 42
 -/
 #guard_msgs in

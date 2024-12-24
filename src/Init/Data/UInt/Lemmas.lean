@@ -35,7 +35,7 @@ macro "declare_uint_theorems" typeName:ident bits:term:arg : command => do
   @[simp] theorem mk_toBitVec_eq : ∀ (a : $typeName), mk a.toBitVec = a
     | ⟨_, _⟩ => rfl
 
-  theorem toBitVec_eq_of_lt {a : Nat} : a < size → (ofNat a).toBitVec.toNat = a :=
+  theorem toBitVec_eq_of_lt {a : Nat} : a < size  (ofNat a).toBitVec.toNat = a :=
     Nat.mod_eq_of_lt
 
   theorem toNat_ofNat_of_lt {n : Nat} (h : n < size) : (ofNat n).toNat = n := by
@@ -57,13 +57,13 @@ macro "declare_uint_theorems" typeName:ident bits:term:arg : command => do
 
   @[simp] protected theorem lt_irrefl (a : $typeName) : ¬ a < a := by simp
 
-  protected theorem le_trans {a b c : $typeName} : a ≤ b → b ≤ c → a ≤ c := BitVec.le_trans
+  protected theorem le_trans {a b c : $typeName} : a ≤ b  b ≤ c  a ≤ c := BitVec.le_trans
 
-  protected theorem lt_trans {a b c : $typeName} : a < b → b < c → a < c := BitVec.lt_trans
+  protected theorem lt_trans {a b c : $typeName} : a < b  b < c  a < c := BitVec.lt_trans
 
-  protected theorem le_total (a b : $typeName) : a ≤ b ∨ b ≤ a := BitVec.le_total ..
+  protected theorem le_total (a b : $typeName) : a ≤ b  b ≤ a := BitVec.le_total ..
 
-  protected theorem lt_asymm {a b : $typeName} : a < b → ¬ b < a := BitVec.lt_asymm
+  protected theorem lt_asymm {a b : $typeName} : a < b  ¬ b < a := BitVec.lt_asymm
 
   protected theorem toBitVec_eq_of_eq {a b : $typeName} (h : a = b) : a.toBitVec = b.toBitVec := h ▸ rfl
 
@@ -104,12 +104,12 @@ macro "declare_uint_theorems" typeName:ident bits:term:arg : command => do
 
   @[simp] protected theorem toNat_div (a b : $typeName) : (a / b).toNat = a.toNat / b.toNat := BitVec.toNat_udiv  ..
 
-  @[simp] protected theorem toNat_sub_of_le (a b : $typeName) : b ≤ a → (a - b).toNat = a.toNat - b.toNat := BitVec.toNat_sub_of_le
+  @[simp] protected theorem toNat_sub_of_le (a b : $typeName) : b ≤ a  (a - b).toNat = a.toNat - b.toNat := BitVec.toNat_sub_of_le
 
   protected theorem toNat_lt_size (a : $typeName) : a.toNat < size := a.toBitVec.isLt
 
   open $typeName (toNat_mod toNat_lt_size) in
-  protected theorem toNat_mod_lt {m : Nat} : ∀ (u : $typeName), m > 0 → toNat (u % ofNat m) < m := by
+  protected theorem toNat_mod_lt {m : Nat} : ∀ (u : $typeName), m > 0  toNat (u % ofNat m) < m := by
     intro u h1
     by_cases h2 : m < size
     · rw [toNat_mod, toNat_ofNat_of_lt h2]
@@ -121,7 +121,7 @@ macro "declare_uint_theorems" typeName:ident bits:term:arg : command => do
   open $typeName (toNat_mod_lt) in
   set_option linter.deprecated false in
   @[deprecated toNat_mod_lt (since := "2024-09-24")]
-  protected theorem modn_lt {m : Nat} : ∀ (u : $typeName), m > 0 → toNat (u % m) < m := by
+  protected theorem modn_lt {m : Nat} : ∀ (u : $typeName), m > 0  toNat (u % m) < m := by
     intro u
     simp only [(· % ·)]
     simp only [gt_iff_lt, toNat, modn, Fin.modn_val, BitVec.natCast_eq_ofNat, BitVec.toNat_ofNat,
@@ -132,11 +132,11 @@ macro "declare_uint_theorems" typeName:ident bits:term:arg : command => do
       · apply Nat.mod_le
       · apply Fin.is_lt
 
-  protected theorem mod_lt (a : $typeName) {b : $typeName} : 0 < b → a % b < b := by
+  protected theorem mod_lt (a : $typeName) {b : $typeName} : 0 < b  a % b < b := by
     simp only [lt_def, mod_def]
     apply BitVec.umod_lt
 
-  protected theorem toNat.inj : ∀ {a b : $typeName}, a.toNat = b.toNat → a = b
+  protected theorem toNat.inj : ∀ {a b : $typeName}, a.toNat = b.toNat  a = b
     | ⟨_, _⟩, ⟨_, _⟩, rfl => rfl
 
   protected theorem toNat_inj : ∀ {a b : $typeName}, a.toNat = b.toNat ↔ a = b :=
@@ -209,16 +209,16 @@ declare_uint_theorems USize System.Platform.numBits
 theorem USize.toNat_ofNat_of_lt_32 {n : Nat} (h : n < 4294967296) : toNat (ofNat n) = n :=
   toNat_ofNat_of_lt (Nat.lt_of_lt_of_le h le_usize_size)
 
-theorem UInt32.toNat_lt_of_lt {n : UInt32} {m : Nat} (h : m < size) : n < ofNat m → n.toNat < m := by
+theorem UInt32.toNat_lt_of_lt {n : UInt32} {m : Nat} (h : m < size) : n < ofNat m  n.toNat < m := by
   simp [lt_def, BitVec.lt_def, UInt32.toNat, toBitVec_eq_of_lt h]
 
-theorem UInt32.lt_toNat_of_lt {n : UInt32} {m : Nat} (h : m < size) : ofNat m < n → m < n.toNat := by
+theorem UInt32.lt_toNat_of_lt {n : UInt32} {m : Nat} (h : m < size) : ofNat m < n  m < n.toNat := by
   simp [lt_def, BitVec.lt_def, UInt32.toNat, toBitVec_eq_of_lt h]
 
-theorem UInt32.toNat_le_of_le {n : UInt32} {m : Nat} (h : m < size) : n ≤ ofNat m → n.toNat ≤ m := by
+theorem UInt32.toNat_le_of_le {n : UInt32} {m : Nat} (h : m < size) : n ≤ ofNat m  n.toNat ≤ m := by
   simp [le_def, BitVec.le_def, UInt32.toNat, toBitVec_eq_of_lt h]
 
-theorem UInt32.le_toNat_of_le {n : UInt32} {m : Nat} (h : m < size) : ofNat m ≤ n → m ≤ n.toNat := by
+theorem UInt32.le_toNat_of_le {n : UInt32} {m : Nat} (h : m < size) : ofNat m ≤ n  m ≤ n.toNat := by
   simp [le_def, BitVec.le_def, UInt32.toNat, toBitVec_eq_of_lt h]
 
 @[deprecated UInt8.toNat_zero (since := "2024-06-23")] protected abbrev UInt8.zero_toNat := @UInt8.toNat_zero

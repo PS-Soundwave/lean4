@@ -40,10 +40,10 @@ def lintDoc (x : Nat) := x
 
 inductive Ind where
   | ind1
-  | ind2 : Ind → Ind
+  | ind2 : Ind  Ind
   /-- A doc string -/ | doc : Ind
 with
-  @[computed_field] field : Ind → Nat
+  @[computed_field] field : Ind  Nat
   | _ => 1
 
 structure Foo where

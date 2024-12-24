@@ -20,11 +20,11 @@ where
       `(¬ $p[natLit! $(quote low)])
     else
       let mid := (low + high)/2
-      `($(← loop low mid) ∨ $(← loop (mid + 1) high))
+      `($(← loop low mid)  $(← loop (mid + 1) high))
 
 macro "bigOrNot! " n:num p:ident : term => mkBigOrNot n.toNat p
 
-@[simp] axiom not_and (p q : Prop) : (¬ (p ∧ q)) = (¬ p ∨ ¬ q)
+@[simp] axiom not_and (p q : Prop) : (¬ (p ∧ q)) = (¬ p  ¬ q)
 
 theorem ex (p : Array Prop) : (¬ bigAnd! 2000 p) = bigOrNot! 2000 p := by
   simp only [not_and]

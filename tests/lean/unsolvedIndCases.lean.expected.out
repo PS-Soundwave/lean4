@@ -21,7 +21,7 @@ unsolvedIndCases.lean:18:18-18:25: error: unsolved goals
 case ind
 x y : Nat
 h₁ : 0 < y ∧ y ≤ x
-ih : y > 0 → (x - y) % y < y
+ih : y > 0  (x - y) % y < y
 h : y > 0
 ⊢ x % y < y
 unsolvedIndCases.lean:19:18-19:25: error: unsolved goals
@@ -35,7 +35,7 @@ case ind
 x y : Nat
 h : y > 0
 h₁ : 0 < y ∧ y ≤ x
-ih : x = x - y → y = y → x % y < y
+ih : x = x - y  y = y  x % y < y
 ⊢ x % y < y
 unsolvedIndCases.lean:24:18-24:25: error: unsolved goals
 case base

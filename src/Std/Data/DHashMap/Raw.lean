@@ -27,7 +27,7 @@ set_option autoImplicit false
 
 universe u v w
 
-variable {α : Type u} {β : α → Type v} {δ : Type w} {m : Type w → Type w} [Monad m]
+variable {α : Type u} {β : α  Type v} {δ : Type w} {m : Type w  Type w} [Monad m]
 
 namespace Std
 
@@ -304,20 +304,20 @@ section Unverified
 Updates the values of the hash map by applying the given function to all mappings, keeping
 only those mappings where the function returns `some` value.
 -/
-@[inline] def filterMap {γ : α → Type w} (f : (a : α) → β a → Option (γ a)) (m : Raw α β) :
+@[inline] def filterMap {γ : α  Type w} (f : (a : α)  β a  Option (γ a)) (m : Raw α β) :
     Raw α γ :=
   if h : 0 < m.buckets.size then
     Raw₀.filterMap f ⟨m, h⟩
   else ∅ -- will never happen for well-formed inputs
 
 /-- Updates the values of the hash map by applying the given function to all mappings. -/
-@[inline] def map {γ : α → Type w} (f : (a : α) → β a → γ a) (m : Raw α β) : Raw α γ :=
+@[inline] def map {γ : α  Type w} (f : (a : α)  β a  γ a) (m : Raw α β) : Raw α γ :=
   if h : 0 < m.buckets.size then
     Raw₀.map f ⟨m, h⟩
   else ∅ -- will never happen for well-formed inputs
 
 /-- Removes all mappings of the hash map for which the given function returns `false`. -/
-@[inline] def filter (f : (a : α) → β a → Bool) (m : Raw α β) : Raw α β :=
+@[inline] def filter (f : (a : α)  β a  Bool) (m : Raw α β) : Raw α β :=
   if h : 0 < m.buckets.size then
     Raw₀.filter f ⟨m, h⟩
   else ∅ -- will never happen for well-formed inputs
@@ -326,32 +326,32 @@ only those mappings where the function returns `some` value.
 Monadically computes a value by folding the given function over the mappings in the hash
 map in some order.
 -/
-@[inline] def foldM (f : δ → (a : α) → β a → m δ) (init : δ) (b : Raw α β) : m δ :=
+@[inline] def foldM (f : δ  (a : α)  β a  m δ) (init : δ) (b : Raw α β) : m δ :=
   b.buckets.foldlM (fun acc l => l.foldlM f acc) init
 
 /-- Folds the given function over the mappings in the hash map in some order. -/
-@[inline] def fold (f : δ → (a : α) → β a → δ) (init : δ) (b : Raw α β) : δ :=
+@[inline] def fold (f : δ  (a : α)  β a  δ) (init : δ) (b : Raw α β) : δ :=
   Id.run (b.foldM f init)
 
 /--
 Monadically computes a value by folding the given function over the mappings in the hash
 map in the reverse order used by `foldM`.
 -/
-@[inline] def foldRevM (f : δ → (a : α) → β a → m δ) (init : δ) (b : Raw α β) : m δ :=
+@[inline] def foldRevM (f : δ  (a : α)  β a  m δ) (init : δ) (b : Raw α β) : m δ :=
   b.buckets.foldrM (fun l acc => l.foldrM (fun a b d => f d a b) acc) init
 
 /--
 Folds the given function over the mappings in the hash map in the reverse order used
 by `foldM`. -/
-@[inline] def foldRev (f : δ → (a : α) → β a → δ) (init : δ) (b : Raw α β) : δ :=
+@[inline] def foldRev (f : δ  (a : α)  β a  δ) (init : δ) (b : Raw α β) : δ :=
   Id.run (b.foldRevM f init)
 
 /-- Carries out a monadic action on each mapping in the hash map in some order. -/
-@[inline] def forM (f : (a : α) → β a → m PUnit) (b : Raw α β) : m PUnit :=
+@[inline] def forM (f : (a : α)  β a  m PUnit) (b : Raw α β) : m PUnit :=
   b.buckets.forM (AssocList.forM f)
 
 /-- Support for the `for` loop construct in `do` blocks. -/
-@[inline] def forIn (f : (a : α) → β a → δ → m (ForInStep δ)) (init : δ) (b : Raw α β) : m δ :=
+@[inline] def forIn (f : (a : α)  β a  δ  m (ForInStep δ)) (init : δ) (b : Raw α β) : m δ :=
   ForIn.forIn b.buckets init (fun bucket acc => bucket.forInStep acc f)
 
 instance : ForM m (Raw α β) ((a : α) × β a) where
@@ -461,7 +461,7 @@ implementation detail.
 def Internal.numBuckets (m : Raw α β) : Nat :=
   m.buckets.size
 
-instance [Repr α] [(a : α) → Repr (β a)] : Repr (Raw α β) where
+instance [Repr α] [(a : α)  Repr (β a)] : Repr (Raw α β) where
   reprPrec m prec := Repr.addAppParen ("Std.DHashMap.Raw.ofList " ++ reprArg m.toList) prec
 
 end Unverified
@@ -479,39 +479,39 @@ like `WF.empty` and `WF.insert` (which are always named exactly like the operati
 to show that map operations preserve well-formedness. The constructors of this type are internal
 implementation details and should not be accessed by users.
 -/
-inductive WF : {α : Type u} → {β : α → Type v} → [BEq α] → [Hashable α] → Raw α β → Prop where
+inductive WF : {α : Type u}  {β : α  Type v}  [BEq α]  [Hashable α]  Raw α β  Prop where
   -- Implementation note: the reason why we provide the `[EquivBEq α] [LawfulHashable α]` is so that
   -- we can write down `DHashMap.map` and `DHashMap.filterMap` in `AdditionalOperations.lean`
   -- without requiring these proofs just to invoke the operations.
   /-- Internal implementation detail of the hash map -/
-  | wf {α β} [BEq α] [Hashable α] {m : Raw α β} : 0 < m.buckets.size →
-      (∀ [EquivBEq α] [LawfulHashable α], Raw.WFImp m) → WF m
+  | wf {α β} [BEq α] [Hashable α] {m : Raw α β} : 0 < m.buckets.size 
+      (∀ [EquivBEq α] [LawfulHashable α], Raw.WFImp m)  WF m
   /-- Internal implementation detail of the hash map -/
   | empty₀ {α β} [BEq α] [Hashable α] {c} : WF (Raw₀.empty c : Raw₀ α β).1
   /-- Internal implementation detail of the hash map -/
-  | insert₀ {α β} [BEq α] [Hashable α] {m : Raw α β} {h a b} : WF m → WF (Raw₀.insert ⟨m, h⟩ a b).1
+  | insert₀ {α β} [BEq α] [Hashable α] {m : Raw α β} {h a b} : WF m  WF (Raw₀.insert ⟨m, h⟩ a b).1
   /-- Internal implementation detail of the hash map -/
   | containsThenInsert₀ {α β} [BEq α] [Hashable α] {m : Raw α β} {h a b} :
-      WF m → WF (Raw₀.containsThenInsert ⟨m, h⟩ a b).2.1
+      WF m  WF (Raw₀.containsThenInsert ⟨m, h⟩ a b).2.1
   /-- Internal implementation detail of the hash map -/
   | containsThenInsertIfNew₀ {α β} [BEq α] [Hashable α] {m : Raw α β} {h a b} :
-      WF m → WF (Raw₀.containsThenInsertIfNew ⟨m, h⟩ a b).2.1
+      WF m  WF (Raw₀.containsThenInsertIfNew ⟨m, h⟩ a b).2.1
   /-- Internal implementation detail of the hash map -/
-  | erase₀ {α β} [BEq α] [Hashable α] {m : Raw α β} {h a} : WF m → WF (Raw₀.erase ⟨m, h⟩ a).1
+  | erase₀ {α β} [BEq α] [Hashable α] {m : Raw α β} {h a} : WF m  WF (Raw₀.erase ⟨m, h⟩ a).1
   /-- Internal implementation detail of the hash map -/
   | insertIfNew₀ {α β} [BEq α] [Hashable α] {m : Raw α β} {h a b} :
-      WF m → WF (Raw₀.insertIfNew ⟨m, h⟩ a b).1
+      WF m  WF (Raw₀.insertIfNew ⟨m, h⟩ a b).1
   /-- Internal implementation detail of the hash map -/
   | getThenInsertIfNew?₀ {α β} [BEq α] [Hashable α] [LawfulBEq α] {m : Raw α β} {h a b} :
-      WF m → WF (Raw₀.getThenInsertIfNew? ⟨m, h⟩ a b).2.1
+      WF m  WF (Raw₀.getThenInsertIfNew? ⟨m, h⟩ a b).2.1
   /-- Internal implementation detail of the hash map -/
-  | filter₀ {α β} [BEq α] [Hashable α] {m : Raw α β} {h f} : WF m → WF (Raw₀.filter f ⟨m, h⟩).1
+  | filter₀ {α β} [BEq α] [Hashable α] {m : Raw α β} {h f} : WF m  WF (Raw₀.filter f ⟨m, h⟩).1
   /-- Internal implementation detail of the hash map -/
   | constGetThenInsertIfNew?₀ {α β} [BEq α] [Hashable α] {m : Raw α (fun _ => β)} {h a b} :
-      WF m → WF (Raw₀.Const.getThenInsertIfNew? ⟨m, h⟩ a b).2.1
+      WF m  WF (Raw₀.Const.getThenInsertIfNew? ⟨m, h⟩ a b).2.1
 
 /-- Internal implementation detail of the hash map -/
-theorem WF.size_buckets_pos [BEq α] [Hashable α] (m : Raw α β) : WF m → 0 < m.buckets.size
+theorem WF.size_buckets_pos [BEq α] [Hashable α] (m : Raw α β) : WF m  0 < m.buckets.size
   | wf h₁ _ => h₁
   | empty₀ => (Raw₀.empty _).2
   | insert₀ _ => (Raw₀.insert ⟨_, _⟩ _ _).2
@@ -552,7 +552,7 @@ theorem WF.getThenInsertIfNew? [BEq α] [Hashable α] [LawfulBEq α] {m : Raw α
     (h : m.WF) : (m.getThenInsertIfNew? a b).2.WF := by
   simpa [Raw.getThenInsertIfNew?, h.size_buckets_pos] using .getThenInsertIfNew?₀ h
 
-theorem WF.filter [BEq α] [Hashable α] {m : Raw α β} {f : (a : α) → β a → Bool} (h : m.WF) :
+theorem WF.filter [BEq α] [Hashable α] {m : Raw α β} {f : (a : α)  β a  Bool} (h : m.WF) :
     (m.filter f).WF := by
   simpa [Raw.filter, h.size_buckets_pos] using .filter₀ h
 

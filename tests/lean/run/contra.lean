@@ -1,4 +1,4 @@
-def ex1 (p : Prop) (h1 : p) (h2 : p → False) : α := by
+def ex1 (p : Prop) (h1 : p) (h2 : p  False) : α := by
   contradiction
 
 def ex2 (p : Prop) (h1 : p) (h2 : ¬ p) : α := by
@@ -19,7 +19,7 @@ def ex6 (h : 0+0 ≠ 0) : α := by
 def ex7 (x : α) (h : Not (x = x)) : α := by
   contradiction
 
-def ex8 (h : 0+0 = 0 → False) : α := by
+def ex8 (h : 0+0 = 0  False) : α := by
   contradiction
 
 def ex9 (h : 10 = 20) : α := by
@@ -40,10 +40,10 @@ def ex13 (h : id False) : α := by
 def ex14 (h : 100000000 ≤ 20) : α := by
   contradiction
 
-def ex15 (x : α) (h : x = x → False) : α := by
+def ex15 (x : α) (h : x = x  False) : α := by
   contradiction
 
-theorem ex16 (xs : List α) (h : xs = [] → False) : Nonempty α := by
+theorem ex16 (xs : List α) (h : xs = []  False) : Nonempty α := by
   cases xs using List.rec with
   | nil      => contradiction
   | cons x _ => apply Nonempty.intro; assumption

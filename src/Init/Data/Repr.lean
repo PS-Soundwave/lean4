@@ -20,7 +20,7 @@ class Repr (α : Type u) where
   Turn a value of type `α` into `Format` at a given precedence. The precedence value can be used
   to avoid parentheses if they are not necessary.
   -/
-  reprPrec : α → Nat → Format
+  reprPrec : α  Nat  Format
 
 export Repr (reprPrec)
 
@@ -79,14 +79,14 @@ instance [Repr α] : Repr (ULift.{v} α) where
 instance : Repr Unit where
   reprPrec _ _ := "()"
 
-protected def Option.repr [Repr α] : Option α → Nat → Format
+protected def Option.repr [Repr α] : Option α  Nat  Format
   | none,    _   => "none"
   | some a, prec => Repr.addAppParen ("some " ++ reprArg a) prec
 
 instance [Repr α] : Repr (Option α) where
   reprPrec := Option.repr
 
-protected def Sum.repr [Repr α] [Repr β] : Sum α β → Nat → Format
+protected def Sum.repr [Repr α] [Repr β] : Sum α β  Nat  Format
   | Sum.inl a, prec => Repr.addAppParen ("Sum.inl " ++ reprArg a) prec
   | Sum.inr b, prec => Repr.addAppParen ("Sum.inr " ++ reprArg b) prec
 
@@ -94,7 +94,7 @@ instance [Repr α] [Repr β] : Repr (Sum α β) where
   reprPrec := Sum.repr
 
 class ReprTuple (α : Type u) where
-  reprTuple : α → List Format → List Format
+  reprTuple : α  List Format  List Format
 
 export ReprTuple (reprTuple)
 
@@ -104,16 +104,16 @@ instance [Repr α] : ReprTuple α where
 instance [Repr α] [ReprTuple β] : ReprTuple (α × β) where
   reprTuple | (a, b), xs => reprTuple b (repr a :: xs)
 
-protected def Prod.repr [Repr α] [ReprTuple β] : α × β → Nat → Format
+protected def Prod.repr [Repr α] [ReprTuple β] : α × β  Nat  Format
   | (a, b), _ => Format.bracket "(" (Format.joinSep (reprTuple b [repr a]).reverse ("," ++ Format.line)) ")"
 
 instance [Repr α] [ReprTuple β] : Repr (α × β) where
   reprPrec := Prod.repr
 
-instance {β : α → Type v} [Repr α] [(x : α) → Repr (β x)] : Repr (Sigma β) where
+instance {β : α  Type v} [Repr α] [(x : α)  Repr (β x)] : Repr (Sigma β) where
   reprPrec | ⟨a, b⟩, _ => Format.bracket "⟨" (repr a ++ ", " ++ repr b) "⟩"
 
-instance {p : α → Prop} [Repr α] : Repr (Subtype p) where
+instance {p : α  Prop} [Repr α] : Repr (Subtype p) where
   reprPrec s prec := reprPrec s.val prec
 
 namespace Nat
@@ -142,7 +142,7 @@ def digitChar (n : Nat) : Char :=
   if n = 0xf then 'f' else
   '*'
 
-def toDigitsCore (base : Nat) : Nat → Nat → List Char → List Char
+def toDigitsCore (base : Nat) : Nat  Nat  List Char  List Char
   | 0,      _, ds => ds
   | fuel+1, n, ds =>
     let d  := digitChar <| n % base;
@@ -183,7 +183,7 @@ def superDigitChar (n : Nat) : Char :=
   if n = 9 then '⁹' else
   '*'
 
-partial def toSuperDigitsAux : Nat → List Char → List Char
+partial def toSuperDigitsAux : Nat  List Char  List Char
   | n, ds =>
     let d  := superDigitChar <| n % 10;
     let n' := n / 10;
@@ -209,7 +209,7 @@ def subDigitChar (n : Nat) : Char :=
   if n = 9 then '₉' else
   '*'
 
-partial def toSubDigitsAux : Nat → List Char → List Char
+partial def toSubDigitsAux : Nat  List Char  List Char
   | n, ds =>
     let d  := subDigitChar <| n % 10;
     let n' := n / 10;
@@ -227,7 +227,7 @@ end Nat
 instance : Repr Nat where
   reprPrec n _ := Nat.repr n
 
-protected def Int.repr : Int → String
+protected def Int.repr : Int  String
     | ofNat m   => Nat.repr m
     | negSucc m => "-" ++ Nat.repr (succ m)
 
@@ -242,7 +242,7 @@ def Char.quoteCore (c : Char) : String :=
   else if  c = '\t' then "\\t"
   else if  c = '\\' then "\\\\"
   else if  c = '\"' then "\\\""
-  else if  c.toNat <= 31 ∨ c = '\x7f' then "\\x" ++ smallCharToHex c
+  else if  c.toNat <= 31  c = '\x7f' then "\\x" ++ smallCharToHex c
   else String.singleton c
 where
   smallCharToHex (c : Char) : String :=

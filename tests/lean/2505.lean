@@ -2,7 +2,7 @@ import Lean
 
 open Lean Elab Tactic Meta
 
-inductive A : Nat → Prop
+inductive A : Nat  Prop
 
 def Lean.MVarId.getType'' (mvarId : MVarId) : MetaM Expr := do
   instantiateMVars (← whnf (← mvarId.getType))

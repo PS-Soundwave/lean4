@@ -1,26 +1,26 @@
 /- Mutual recursion -/
 
 inductive Term where
- | const : String → Term
- | app   : String → List Term → Term
+ | const : String  Term
+ | app   : String  List Term  Term
 
 namespace Term
 mutual
- def numConsts : Term → Nat
+ def numConsts : Term  Nat
    | const _ => 1
    | app _ cs => numConstsLst cs
 
- def numConstsLst : List Term → Nat
+ def numConstsLst : List Term  Nat
    | [] => 0
    | c :: cs => numConsts c + numConstsLst cs
 end
 
 mutual
-  def replaceConst (a b : String) : Term → Term
+  def replaceConst (a b : String) : Term  Term
    | const c => if a = c then const b else const c
    | app f cs => app f (replaceConstLst a b cs)
 
-  def replaceConstLst (a b : String) : List Term → List Term
+  def replaceConstLst (a b : String) : List Term  List Term
    | [] => []
    | c :: cs => replaceConst a b c :: replaceConstLst a b cs
 end

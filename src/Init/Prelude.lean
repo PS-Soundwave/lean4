@@ -39,31 +39,31 @@ Example:
 #eval Function.comp List.reverse (List.drop 2) [3, 2, 4, 1]
 -- [1, 4]
 ```
-You can use the notation `f ∘ g` as shorthand for `Function.comp f g`.
+You can use the notation `f  g` as shorthand for `Function.comp f g`.
 ```
-#eval (List.reverse ∘ List.drop 2) [3, 2, 4, 1]
+#eval (List.reverse  List.drop 2) [3, 2, 4, 1]
 -- [1, 4]
 ```
-A simpler way of thinking about it, is that `List.reverse ∘ List.drop 2`
+A simpler way of thinking about it, is that `List.reverse  List.drop 2`
 is equivalent to `fun xs => List.reverse (List.drop 2 xs)`,
 the benefit is that the meaning of composition is obvious,
 and the representation is compact.
 -/
-@[inline] def Function.comp {α : Sort u} {β : Sort v} {δ : Sort w} (f : β → δ) (g : α → β) : α → δ :=
+@[inline] def Function.comp {α : Sort u} {β : Sort v} {δ : Sort w} (f : β  δ) (g : α  β) : α  δ :=
   fun x => f (g x)
 
 /--
-The constant function. If `a : α`, then `Function.const β a : β → α` is the
+The constant function. If `a : α`, then `Function.const β a : β  α` is the
 "constant function with value `a`", that is, `Function.const β a b = a`.
 ```
 example (b : Bool) : Function.const Bool 10 b = 10 :=
   rfl
 
 #check Function.const Bool 10
--- Bool → Nat
+-- Bool  Nat
 ```
 -/
-@[inline] def Function.const {α : Sort u} (β : Sort v) (a : α) : β → α :=
+@[inline] def Function.const {α : Sort u} (β : Sort v) (a : α) : β  α :=
   fun _ => a
 
 /--
@@ -77,7 +77,7 @@ despite the fact it is marked `irreducible`.
 For metaprogramming, the function `Lean.Expr.letFun?` can be used to recognize a `let_fun` expression
 to extract its parts as if it were a `let` expression.
 -/
-@[irreducible] def letFun {α : Sort u} {β : α → Sort v} (v : α) (f : (x : α) → β x) : β v := f v
+@[irreducible] def letFun {α : Sort u} {β : α  Sort v} (v : α) (f : (x : α)  β x) : β v := f v
 
 set_option checkBinderAnnotations false in
 /--
@@ -215,16 +215,16 @@ possible.
 inductive PEmpty : Sort u where
 
 /--
-`Not p`, or `¬p`, is the negation of `p`. It is defined to be `p → False`,
+`Not p`, or `¬p`, is the negation of `p`. It is defined to be `p  False`,
 so if your goal is `¬p` you can use `intro h` to turn the goal into
 `h : p ⊢ False`, and if you have `hn : ¬p` and `h : p` then `hn h : False`
 and `(hn h).elim` will prove anything.
 For more information: [Propositional Logic](https://lean-lang.org/theorem_proving_in_lean4/propositions_and_proofs.html#propositional-logic)
 -/
-def Not (a : Prop) : Prop := a → False
+def Not (a : Prop) : Prop := a  False
 
 /--
-`False.elim : False → C` says that from `False`, any desired proposition
+`False.elim : False  C` says that from `False`, any desired proposition
 `C` holds. Also known as ex falso quodlibet (EFQ) or the principle of explosion.
 
 The target type is actually `C : Sort u` which means it works for both
@@ -262,24 +262,24 @@ respects the equivalence, in the sense that we can substitute equal expressions 
 That is, given `h1 : a = b` and `h2 : p a`, we can construct a proof for `p b` using substitution: `Eq.subst h1 h2`.
 Example:
 ```
-example (α : Type) (a b : α) (p : α → Prop)
+example (α : Type) (a b : α) (p : α  Prop)
         (h1 : a = b) (h2 : p a) : p b :=
   Eq.subst h1 h2
 
-example (α : Type) (a b : α) (p : α → Prop)
+example (α : Type) (a b : α) (p : α  Prop)
     (h1 : a = b) (h2 : p a) : p b :=
   h1 ▸ h2
 ```
 The triangle in the second presentation is a macro built on top of `Eq.subst` and `Eq.symm`, and you can enter it by typing `\t`.
 For more information: [Equality](https://lean-lang.org/theorem_proving_in_lean4/quantifiers_and_equality.html#equality)
 -/
-inductive Eq : α → α → Prop where
+inductive Eq : α  α  Prop where
   /-- `Eq.refl a : a = a` is reflexivity, the unique constructor of the
   equality type. See also `rfl`, which is usually used instead. -/
   | refl (a : α) : Eq a a
 
 /-- Non-dependent recursor for the equality type. -/
-@[simp] abbrev Eq.ndrec.{u1, u2} {α : Sort u2} {a : α} {motive : α → Sort u1} (m : motive a) {b : α} (h : Eq a b) : motive b :=
+@[simp] abbrev Eq.ndrec.{u1, u2} {α : Sort u2} {a : α} {motive : α  Sort u1} (m : motive a) {b : α} (h : Eq a b) : motive b :=
   h.rec m
 
 /--
@@ -309,7 +309,7 @@ hypotheses.
 
 For more information: [Equality](https://lean-lang.org/theorem_proving_in_lean4/quantifiers_and_equality.html#equality)
 -/
-theorem Eq.subst {α : Sort u} {motive : α → Prop} {a b : α} (h₁ : Eq a b) (h₂ : motive a) : motive b :=
+theorem Eq.subst {α : Sort u} {motive : α  Prop} {a b : α} (h₁ : Eq a b) (h₂ : motive a) : motive b :=
   Eq.ndrec h₂ h₁
 
 /--
@@ -359,7 +359,7 @@ subterms.
 
 For more information: [Equality](https://lean-lang.org/theorem_proving_in_lean4/quantifiers_and_equality.html#equality)
 -/
-theorem congrArg {α : Sort u} {β : Sort v} {a₁ a₂ : α} (f : α → β) (h : Eq a₁ a₂) : Eq (f a₁) (f a₂) :=
+theorem congrArg {α : Sort u} {β : Sort v} {a₁ a₂ : α} (f : α  β) (h : Eq a₁ a₂) : Eq (f a₁) (f a₂) :=
   h ▸ rfl
 
 /--
@@ -369,25 +369,25 @@ statement is more complex in the dependent case.
 
 For more information: [Equality](https://lean-lang.org/theorem_proving_in_lean4/quantifiers_and_equality.html#equality)
 -/
-theorem congr {α : Sort u} {β : Sort v} {f₁ f₂ : α → β} {a₁ a₂ : α} (h₁ : Eq f₁ f₂) (h₂ : Eq a₁ a₂) : Eq (f₁ a₁) (f₂ a₂) :=
+theorem congr {α : Sort u} {β : Sort v} {f₁ f₂ : α  β} {a₁ a₂ : α} (h₁ : Eq f₁ f₂) (h₂ : Eq a₁ a₂) : Eq (f₁ a₁) (f₂ a₂) :=
   h₁ ▸ h₂ ▸ rfl
 
 /-- Congruence in the function part of an application: If `f = g` then `f a = g a`. -/
-theorem congrFun {α : Sort u} {β : α → Sort v} {f g : (x : α) → β x} (h : Eq f g) (a : α) : Eq (f a) (g a) :=
+theorem congrFun {α : Sort u} {β : α  Sort v} {f g : (x : α)  β x} (h : Eq f g) (a : α) : Eq (f a) (g a) :=
   h ▸ rfl
 
 /-!
 Initialize the Quotient Module, which effectively adds the following definitions:
 ```
-opaque Quot {α : Sort u} (r : α → α → Prop) : Sort u
+opaque Quot {α : Sort u} (r : α  α  Prop) : Sort u
 
-opaque Quot.mk {α : Sort u} (r : α → α → Prop) (a : α) : Quot r
+opaque Quot.mk {α : Sort u} (r : α  α  Prop) (a : α) : Quot r
 
-opaque Quot.lift {α : Sort u} {r : α → α → Prop} {β : Sort v} (f : α → β) :
-  (∀ a b : α, r a b → Eq (f a) (f b)) → Quot r → β
+opaque Quot.lift {α : Sort u} {r : α  α  Prop} {β : Sort v} (f : α  β) :
+  (∀ a b : α, r a b  Eq (f a) (f b))  Quot r  β
 
-opaque Quot.ind {α : Sort u} {r : α → α → Prop} {β : Quot r → Prop} :
-  (∀ a : α, β (Quot.mk r a)) → ∀ q : Quot r, β q
+opaque Quot.ind {α : Sort u} {r : α  α  Prop} {β : Quot r  Prop} :
+  (∀ a : α, β (Quot.mk r a))  ∀ q : Quot r, β q
 ```
 -/
 init_quot
@@ -396,9 +396,9 @@ init_quot
 Let `α` be any type, and let `r` be an equivalence relation on `α`.
 It is mathematically common to form the "quotient" `α / r`, that is, the type of
 elements of `α` "modulo" `r`. Set theoretically, one can view `α / r` as the set
-of equivalence classes of `α` modulo `r`. If `f : α → β` is any function that
+of equivalence classes of `α` modulo `r`. If `f : α  β` is any function that
 respects the equivalence relation in the sense that for every `x y : α`,
-`r x y` implies `f x = f y`, then f "lifts" to a function `f' : α / r → β`
+`r x y` implies `f x = f y`, then f "lifts" to a function `f' : α / r  β`
 defined on each equivalence class `⟦x⟧` by `f' ⟦x⟧ = f x`.
 Lean extends the Calculus of Constructions with additional constants that
 perform exactly these constructions, and installs this last equation as a
@@ -412,7 +412,7 @@ add_decl_doc Quot
 
 /--
 Given a type `α` and any binary relation `r` on `α`, `Quot.mk` maps `α` to `Quot r`.
-So that if `r : α → α → Prop` and `a : α`, then `Quot.mk r a` is an element of `Quot r`.
+So that if `r : α  α  Prop` and `a : α`, then `Quot.mk r a` is an element of `Quot r`.
 
 See `Quot`.
 -/
@@ -427,7 +427,7 @@ See `Quot` and `Quot.lift`.
 add_decl_doc Quot.ind
 
 /--
-Given a type `α`, any binary relation `r` on `α`, a function `f : α → β`, and a proof `h`
+Given a type `α`, any binary relation `r` on `α`, a function `f : α  β`, and a proof `h`
 that `f` respects the relation `r`, then `Quot.lift f h` is the corresponding function on `Quot r`.
 
 The idea is that for each element `a` in `α`, the function `Quot.lift f h` maps `Quot.mk r a`
@@ -439,7 +439,7 @@ add_decl_doc Quot.lift
 /--
 Unsafe auxiliary constant used by the compiler to erase `Quot.lift`.
 -/
-unsafe axiom Quot.lcInv {α : Sort u} {r : α → α → Prop} (q : Quot r) : α
+unsafe axiom Quot.lcInv {α : Sort u} {r : α  α  Prop} (q : Quot r) : α
 
 /--
 Heterogeneous equality. `HEq a b` asserts that `a` and `b` have the same
@@ -453,7 +453,7 @@ and `f x` and `g y` are well typed it does not follow that `HEq (f x) (g y)`.
 (This does follow if you have `f = g` instead.) However if `a` and `b` have
 the same type then `a = b` and `HEq a b` are equivalent.
 -/
-inductive HEq : {α : Sort u} → α → {β : Sort u} → β → Prop where
+inductive HEq : {α : Sort u}  α  {β : Sort u}  β  Prop where
   /-- Reflexivity of heterogeneous equality. -/
   | refl (a : α) : HEq a a
 
@@ -462,7 +462,7 @@ inductive HEq : {α : Sort u} → α → {β : Sort u} → β → Prop where
   HEq.refl a
 
 theorem eq_of_heq {α : Sort u} {a a' : α} (h : HEq a a') : Eq a a' :=
-  have : (α β : Sort u) → (a : α) → (b : β) → HEq a b → (h : Eq α β) → Eq (cast h a) b :=
+  have : (α β : Sort u)  (a : α)  (b : β)  HEq a b  (h : Eq α β)  Eq (cast h a) b :=
     fun _ _ _ _ h₁ =>
       h₁.rec (fun _ => rfl)
   this α α a a' h rfl
@@ -514,7 +514,7 @@ constructed and destructed like a pair: if `ha : a` and `hb : b` then
 -/
 @[pp_using_anonymous_constructor]
 structure And (a b : Prop) : Prop where
-  /-- `And.intro : a → b → a ∧ b` is the constructor for the And operation. -/
+  /-- `And.intro : a  b  a ∧ b` is the constructor for the And operation. -/
   intro ::
   /-- Extract the left conjunct from a conjunction. `h : a ∧ b` then
   `h.left`, also notated as `h.1`, is a proof of `a`. -/
@@ -524,15 +524,15 @@ structure And (a b : Prop) : Prop where
   right : b
 
 /--
-`Or a b`, or `a ∨ b`, is the disjunction of propositions. There are two
-constructors for `Or`, called `Or.inl : a → a ∨ b` and `Or.inr : b → a ∨ b`,
+`Or a b`, or `a  b`, is the disjunction of propositions. There are two
+constructors for `Or`, called `Or.inl : a  a  b` and `Or.inr : b  a  b`,
 and you can use `match` or `cases` to destruct an `Or` assumption into the
 two cases.
 -/
 inductive Or (a b : Prop) : Prop where
-  /-- `Or.inl` is "left injection" into an `Or`. If `h : a` then `Or.inl h : a ∨ b`. -/
+  /-- `Or.inl` is "left injection" into an `Or`. If `h : a` then `Or.inl h : a  b`. -/
   | inl (h : a) : Or a b
-  /-- `Or.inr` is "right injection" into an `Or`. If `h : b` then `Or.inr h : a ∨ b`. -/
+  /-- `Or.inr` is "right injection" into an `Or`. If `h : b` then `Or.inr h : a  b`. -/
   | inr (h : b) : Or a b
 
 /-- Alias for `Or.inl`. -/
@@ -544,10 +544,10 @@ theorem Or.intro_right (a : Prop) (h : b) : Or a b :=
   Or.inr h
 
 /--
-Proof by cases on an `Or`. If `a ∨ b`, and both `a` and `b` imply
+Proof by cases on an `Or`. If `a  b`, and both `a` and `b` imply
 proposition `c`, then `c` is true.
 -/
-theorem Or.elim {c : Prop} (h : Or a b) (left : a → c) (right : b → c) : c :=
+theorem Or.elim {c : Prop} (h : Or a b) (left : a  c) (right : b  c) : c :=
   match h with
   | Or.inl h => left h
   | Or.inr h => right h
@@ -580,7 +580,7 @@ a pair-like type, so if you have `x : α` and `h : p x` then
 you can also make it explicit using `s.1` or `s.val`.
 -/
 @[pp_using_anonymous_constructor]
-structure Subtype {α : Sort u} (p : α → Prop) where
+structure Subtype {α : Sort u} (p : α  Prop) where
   /-- If `s : {x // p x}` then `s.val : α` is the underlying element in the base
   type. You can also write this as `s.1`, or simply as `s` when the type is
   known from context. -/
@@ -662,19 +662,19 @@ of other errors because the desired term was not constructed.
 @[extern "lean_sorry", never_extract]
 axiom sorryAx (α : Sort u) (synthetic : Bool) : α
 
-theorem eq_false_of_ne_true : {b : Bool} → Not (Eq b true) → Eq b false
+theorem eq_false_of_ne_true : {b : Bool}  Not (Eq b true)  Eq b false
   | true, h => False.elim (h rfl)
   | false, _ => rfl
 
-theorem eq_true_of_ne_false : {b : Bool} → Not (Eq b false) → Eq b true
+theorem eq_true_of_ne_false : {b : Bool}  Not (Eq b false)  Eq b true
   | true, _ => rfl
   | false, h => False.elim (h rfl)
 
-theorem ne_false_of_eq_true : {b : Bool} → Eq b true → Not (Eq b false)
+theorem ne_false_of_eq_true : {b : Bool}  Eq b true  Not (Eq b false)
   | true, _  => fun h => Bool.noConfusion h
   | false, h => Bool.noConfusion h
 
-theorem ne_true_of_eq_false : {b : Bool} → Eq b false → Not (Eq b true)
+theorem ne_true_of_eq_false : {b : Bool}  Eq b false  Not (Eq b true)
   | true, h  => Bool.noConfusion h
   | false, _ => fun h => Bool.noConfusion h
 
@@ -715,7 +715,7 @@ but the element itself is erased. The axiom `choice` supplies a particular
 element of `α` given only this proof.
 
 The textbook axiom of choice normally makes a family of choices all at once,
-but that is implied from this formulation, because if `α : ι → Type` is a
+but that is implied from this formulation, because if `α : ι  Type` is a
 family of types and `h : ∀ i, Nonempty (α i)` is a proof that they are all
 nonempty, then `fun i => Classical.choice (h i) : ∀ i, α i` is a family of
 chosen elements. This is actually a bit stronger than the ZFC choice axiom;
@@ -731,7 +731,7 @@ to compute it, so Lean will require you to mark any definition that would
 involve executing `Classical.choice` or other axioms as `noncomputable`, and
 will not produce any executable code for such definitions.
 -/
-axiom Classical.choice {α : Sort u} : Nonempty α → α
+axiom Classical.choice {α : Sort u} : Nonempty α  α
 
 /--
 The elimination principle for `Nonempty α`. If `Nonempty α`, and we can
@@ -739,7 +739,7 @@ prove `p` given any element `x : α`, then `p` holds. Note that it is essential
 that `p` is a `Prop` here; the version with `p` being a `Sort u` is equivalent
 to `Classical.choice`.
 -/
-protected theorem Nonempty.elim {α : Sort u} {p : Prop} (h₁ : Nonempty α) (h₂ : α → p) : p :=
+protected theorem Nonempty.elim {α : Sort u} {p : Prop} (h₁ : Nonempty α) (h₂ : α  p) : p :=
   match h₁ with
   | intro a => h₂ a
 
@@ -753,21 +753,21 @@ infer the proof of `Nonempty α`.
 noncomputable def Classical.ofNonempty {α : Sort u} [Nonempty α] : α :=
   Classical.choice inferInstance
 
-instance {α : Sort u} {β : Sort v} [Nonempty β] : Nonempty (α → β) :=
+instance {α : Sort u} {β : Sort v} [Nonempty β] : Nonempty (α  β) :=
   Nonempty.intro fun _ => Classical.ofNonempty
 
-instance Pi.instNonempty {α : Sort u} {β : α → Sort v} [(a : α) → Nonempty (β a)] :
-    Nonempty ((a : α) → β a) :=
+instance Pi.instNonempty {α : Sort u} {β : α  Sort v} [(a : α)  Nonempty (β a)] :
+    Nonempty ((a : α)  β a) :=
   Nonempty.intro fun _ => Classical.ofNonempty
 
 instance : Inhabited (Sort u) where
   default := PUnit
 
-instance (α : Sort u) {β : Sort v} [Inhabited β] : Inhabited (α → β) where
+instance (α : Sort u) {β : Sort v} [Inhabited β] : Inhabited (α  β) where
   default := fun _ => default
 
-instance Pi.instInhabited {α : Sort u} {β : α → Sort v} [(a : α) → Inhabited (β a)] :
-    Inhabited ((a : α) → β a) where
+instance Pi.instInhabited {α : Sort u} {β : α  Sort v} [(a : α)  Inhabited (β a)] :
+    Inhabited ((a : α)  β a) where
   default := fun _ => default
 
 deriving instance Inhabited for Bool
@@ -855,39 +855,39 @@ which is `true` if `p` is true and `false` if `p` is false.
 export Decidable (isTrue isFalse decide)
 
 /-- A decidable predicate. See `Decidable`. -/
-abbrev DecidablePred {α : Sort u} (r : α → Prop) :=
-  (a : α) → Decidable (r a)
+abbrev DecidablePred {α : Sort u} (r : α  Prop) :=
+  (a : α)  Decidable (r a)
 
 /-- A decidable relation. See `Decidable`. -/
-abbrev DecidableRel {α : Sort u} {β : Sort v} (r : α → β → Prop) :=
-  (a : α) → (b : β) → Decidable (r a b)
+abbrev DecidableRel {α : Sort u} {β : Sort v} (r : α  β  Prop) :=
+  (a : α)  (b : β)  Decidable (r a b)
 
 /--
 Asserts that `α` has decidable equality, that is, `a = b` is decidable
 for all `a b : α`. See `Decidable`.
 -/
 abbrev DecidableEq (α : Sort u) :=
-  (a b : α) → Decidable (Eq a b)
+  (a b : α)  Decidable (Eq a b)
 
 /-- Proves that `a = b` is decidable given `DecidableEq α`. -/
 def decEq {α : Sort u} [inst : DecidableEq α] (a b : α) : Decidable (Eq a b) :=
   inst a b
 
 set_option linter.unusedVariables false in
-theorem decide_eq_true : [inst : Decidable p] → p → Eq (decide p) true
+theorem decide_eq_true : [inst : Decidable p]  p  Eq (decide p) true
   | isTrue  _, _   => rfl
   | isFalse h₁, h₂ => absurd h₂ h₁
 
-theorem decide_eq_false : [Decidable p] → Not p → Eq (decide p) false
+theorem decide_eq_false : [Decidable p]  Not p  Eq (decide p) false
   | isTrue  h₁, h₂ => absurd h₁ h₂
   | isFalse _, _   => rfl
 
-theorem of_decide_eq_true [inst : Decidable p] : Eq (decide p) true → p := fun h =>
+theorem of_decide_eq_true [inst : Decidable p] : Eq (decide p) true  p := fun h =>
   match (generalizing := false) inst with
   | isTrue  h₁ => h₁
   | isFalse h₁ => absurd h (ne_true_of_eq_false (decide_eq_false h₁))
 
-theorem of_decide_eq_false [inst : Decidable p] : Eq (decide p) false → Not p := fun h =>
+theorem of_decide_eq_false [inst : Decidable p] : Eq (decide p) false  Not p := fun h =>
   match (generalizing := false) inst with
   | isTrue  h₁ => absurd h (ne_false_of_eq_true (decide_eq_true h₁))
   | isFalse h₁ => h₁
@@ -921,7 +921,7 @@ and the "more constant" term on the right.
 -/
 class BEq (α : Type u) where
   /-- Boolean equality, notated as `a == b`. -/
-  beq : α → α → Bool
+  beq : α  α  Bool
 
 open BEq (beq)
 
@@ -943,7 +943,7 @@ to avoid the bounds check inside the if branch. (Of course in this case we have 
 lifted the check into an explicit `if`, but we could also use this proof multiple times
 or derive `i < arr.size` from some other proposition that we are checking in the `if`.)
 -/
-@[macro_inline] def dite {α : Sort u} (c : Prop) [h : Decidable c] (t : c → α) (e : Not c → α) : α :=
+@[macro_inline] def dite {α : Sort u} (c : Prop) [h : Decidable c] (t : c  α) (e : Not c  α) : α :=
   h.casesOn e t
 
 /-! # if-then-else -/
@@ -1011,7 +1011,7 @@ be eagerly evaluated (see `ite`).
 
 /--
 `or x y`, or `x || y`, is the boolean "or" operation (not to be confused
-with `Or : Prop → Prop → Prop`, which is the propositional connective).
+with `Or : Prop  Prop  Prop`, which is the propositional connective).
 It is `@[macro_inline]` because it has C-like short-circuiting behavior:
 if `x` is true then `y` is not evaluated.
 -/
@@ -1022,7 +1022,7 @@ if `x` is true then `y` is not evaluated.
 
 /--
 `and x y`, or `x && y`, is the boolean "and" operation (not to be confused
-with `And : Prop → Prop → Prop`, which is the propositional connective).
+with `And : Prop  Prop  Prop`, which is the propositional connective).
 It is `@[macro_inline]` because it has C-like short-circuiting behavior:
 if `x` is false then `y` is not evaluated.
 -/
@@ -1033,9 +1033,9 @@ if `x` is false then `y` is not evaluated.
 
 /--
 `not x`, or `!x`, is the boolean "not" operation (not to be confused
-with `Not : Prop → Prop`, which is the propositional connective).
+with `Not : Prop  Prop`, which is the propositional connective).
 -/
-@[inline] def Bool.not : Bool → Bool
+@[inline] def Bool.not : Bool  Bool
   | true  => false
   | false => true
 
@@ -1114,27 +1114,27 @@ instance instOfNatNat (n : Nat) : OfNat Nat n where
 /-- `LE α` is the typeclass which supports the notation `x ≤ y` where `x y : α`.-/
 class LE (α : Type u) where
   /-- The less-equal relation: `x ≤ y` -/
-  le : α → α → Prop
+  le : α  α  Prop
 
 /-- `LT α` is the typeclass which supports the notation `x < y` where `x y : α`.-/
 class LT (α : Type u) where
   /-- The less-than relation: `x < y` -/
-  lt : α → α → Prop
+  lt : α  α  Prop
 
 /-- `a ≥ b` is an abbreviation for `b ≤ a`. -/
 @[reducible] def GE.ge {α : Type u} [LE α] (a b : α) : Prop := LE.le b a
 /-- `a > b` is an abbreviation for `b < a`. -/
 @[reducible] def GT.gt {α : Type u} [LT α] (a b : α) : Prop := LT.lt b a
 
-/-- Abbreviation for `DecidableRel (· < · : α → α → Prop)`. -/
-abbrev DecidableLT (α : Type u) [LT α] := DecidableRel (LT.lt : α → α → Prop)
-/-- Abbreviation for `DecidableRel (· ≤ · : α → α → Prop)`. -/
-abbrev DecidableLE (α : Type u) [LE α] := DecidableRel (LE.le : α → α → Prop)
+/-- Abbreviation for `DecidableRel (· < · : α  α  Prop)`. -/
+abbrev DecidableLT (α : Type u) [LT α] := DecidableRel (LT.lt : α  α  Prop)
+/-- Abbreviation for `DecidableRel (· ≤ · : α  α  Prop)`. -/
+abbrev DecidableLE (α : Type u) [LE α] := DecidableRel (LE.le : α  α  Prop)
 
 /-- `Max α` is the typeclass which supports the operation `max x y` where `x y : α`.-/
 class Max (α : Type u) where
   /-- The maximum operation: `max x y`. -/
-  max : α → α → α
+  max : α  α  α
 
 export Max (max)
 
@@ -1147,7 +1147,7 @@ def maxOfLe [LE α] [DecidableRel (@LE.le α _)] : Max α where
 /-- `Min α` is the typeclass which supports the operation `min x y` where `x y : α`.-/
 class Min (α : Type u) where
   /-- The minimum operation: `min x y`. -/
-  min : α → α → α
+  min : α  α  α
 
 export Min (min)
 
@@ -1166,16 +1166,16 @@ The `calc` tactic uses this so that when it sees a chain with `a ≤ b` and `b <
 it knows that this should be a proof of `a < c` because there is an instance
 `Trans (·≤·) (·<·) (·<·)`.
 -/
-class Trans (r : α → β → Sort u) (s : β → γ → Sort v) (t : outParam (α → γ → Sort w)) where
+class Trans (r : α  β  Sort u) (s : β  γ  Sort v) (t : outParam (α  γ  Sort w)) where
   /-- Compose two proofs by transitivity, generalized over the relations involved. -/
-  trans : r a b → s b c → t a c
+  trans : r a b  s b c  t a c
 
 export Trans (trans)
 
-instance (r : α → γ → Sort u) : Trans Eq r r where
+instance (r : α  γ  Sort u) : Trans Eq r r where
   trans heq h' := heq ▸ h'
 
-instance (r : α → β → Sort u) : Trans r Eq r where
+instance (r : α  β  Sort u) : Trans r Eq r where
   trans h' heq := heq ▸ h'
 
 /--
@@ -1185,7 +1185,7 @@ This enables the notation `a + b : γ` where `a : α`, `b : β`.
 class HAdd (α : Type u) (β : Type v) (γ : outParam (Type w)) where
   /-- `a + b` computes the sum of `a` and `b`.
   The meaning of this notation is type-dependent. -/
-  hAdd : α → β → γ
+  hAdd : α  β  γ
 
 /--
 The notation typeclass for heterogeneous subtraction.
@@ -1195,7 +1195,7 @@ class HSub (α : Type u) (β : Type v) (γ : outParam (Type w)) where
   /-- `a - b` computes the difference of `a` and `b`.
   The meaning of this notation is type-dependent.
   * For natural numbers, this operator saturates at 0: `a - b = 0` when `a ≤ b`. -/
-  hSub : α → β → γ
+  hSub : α  β  γ
 
 /--
 The notation typeclass for heterogeneous multiplication.
@@ -1204,7 +1204,7 @@ This enables the notation `a * b : γ` where `a : α`, `b : β`.
 class HMul (α : Type u) (β : Type v) (γ : outParam (Type w)) where
   /-- `a * b` computes the product of `a` and `b`.
   The meaning of this notation is type-dependent. -/
-  hMul : α → β → γ
+  hMul : α  β  γ
 
 /--
 The notation typeclass for heterogeneous division.
@@ -1222,7 +1222,7 @@ class HDiv (α : Type u) (β : Type v) (γ : outParam (Type w)) where
     `Int.fdiv` (floor rounding) and `Int.div` (truncation rounding).
   * For `Float`, `a / 0` follows the IEEE 754 semantics for division,
     usually resulting in `inf` or `nan`. -/
-  hDiv : α → β → γ
+  hDiv : α  β  γ
 
 /--
 The notation typeclass for heterogeneous modulo / remainder.
@@ -1233,7 +1233,7 @@ class HMod (α : Type u) (β : Type v) (γ : outParam (Type w)) where
   The meaning of this notation is type-dependent.
   * For `Nat` and `Int` it satisfies `a % b + b * (a / b) = a`,
     and `a % 0` is defined to be `a`. -/
-  hMod : α → β → γ
+  hMod : α  β  γ
 
 /--
 The notation typeclass for heterogeneous exponentiation.
@@ -1242,7 +1242,7 @@ This enables the notation `a ^ b : γ` where `a : α`, `b : β`.
 class HPow (α : Type u) (β : Type v) (γ : outParam (Type w)) where
   /-- `a ^ b` computes `a` to the power of `b`.
   The meaning of this notation is type-dependent. -/
-  hPow : α → β → γ
+  hPow : α  β  γ
 
 /--
 The notation typeclass for heterogeneous append.
@@ -1251,11 +1251,11 @@ This enables the notation `a ++ b : γ` where `a : α`, `b : β`.
 class HAppend (α : Type u) (β : Type v) (γ : outParam (Type w)) where
   /-- `a ++ b` is the result of concatenation of `a` and `b`, usually read "append".
   The meaning of this notation is type-dependent. -/
-  hAppend : α → β → γ
+  hAppend : α  β  γ
 
 /--
 The typeclass behind the notation `a <|> b : γ` where `a : α`, `b : β`.
-Because `b` is "lazy" in this notation, it is passed as `Unit → β` to the
+Because `b` is "lazy" in this notation, it is passed as `Unit  β` to the
 implementation so it can decide when to evaluate it.
 -/
 class HOrElse (α : Type u) (β : Type v) (γ : outParam (Type w)) where
@@ -1263,11 +1263,11 @@ class HOrElse (α : Type u) (β : Type v) (γ : outParam (Type w)) where
   case it executes and returns `b`. Because `b` is not always executed, it
   is passed as a thunk so it can be forced only when needed.
   The meaning of this notation is type-dependent. -/
-  hOrElse : α → (Unit → β) → γ
+  hOrElse : α  (Unit  β)  γ
 
 /--
 The typeclass behind the notation `a >> b : γ` where `a : α`, `b : β`.
-Because `b` is "lazy" in this notation, it is passed as `Unit → β` to the
+Because `b` is "lazy" in this notation, it is passed as `Unit  β` to the
 implementation so it can decide when to evaluate it.
 -/
 class HAndThen (α : Type u) (β : Type v) (γ : outParam (Type w)) where
@@ -1275,25 +1275,25 @@ class HAndThen (α : Type u) (β : Type v) (γ : outParam (Type w)) where
   If `a` fails then `b` is not executed. Because `b` is not always executed, it
   is passed as a thunk so it can be forced only when needed.
   The meaning of this notation is type-dependent. -/
-  hAndThen : α → (Unit → β) → γ
+  hAndThen : α  (Unit  β)  γ
 
 /-- The typeclass behind the notation `a &&& b : γ` where `a : α`, `b : β`. -/
 class HAnd (α : Type u) (β : Type v) (γ : outParam (Type w)) where
   /-- `a &&& b` computes the bitwise AND of `a` and `b`.
   The meaning of this notation is type-dependent. -/
-  hAnd : α → β → γ
+  hAnd : α  β  γ
 
 /-- The typeclass behind the notation `a ^^^ b : γ` where `a : α`, `b : β`. -/
 class HXor (α : Type u) (β : Type v) (γ : outParam (Type w)) where
   /-- `a ^^^ b` computes the bitwise XOR of `a` and `b`.
   The meaning of this notation is type-dependent. -/
-  hXor : α → β → γ
+  hXor : α  β  γ
 
 /-- The typeclass behind the notation `a ||| b : γ` where `a : α`, `b : β`. -/
 class HOr (α : Type u) (β : Type v) (γ : outParam (Type w)) where
   /-- `a ||| b` computes the bitwise OR of `a` and `b`.
   The meaning of this notation is type-dependent. -/
-  hOr : α → β → γ
+  hOr : α  β  γ
 
 /-- The typeclass behind the notation `a <<< b : γ` where `a : α`, `b : β`. -/
 class HShiftLeft (α : Type u) (β : Type v) (γ : outParam (Type w)) where
@@ -1302,7 +1302,7 @@ class HShiftLeft (α : Type u) (β : Type v) (γ : outParam (Type w)) where
   * On `Nat`, this is equivalent to `a * 2 ^ b`.
   * On `UInt8` and other fixed width unsigned types, this is the same but
     truncated to the bit width. -/
-  hShiftLeft : α → β → γ
+  hShiftLeft : α  β  γ
 
 /-- The typeclass behind the notation `a >>> b : γ` where `a : α`, `b : β`. -/
 class HShiftRight (α : Type u) (β : Type v) (γ : outParam (Type w)) where
@@ -1310,7 +1310,7 @@ class HShiftRight (α : Type u) (β : Type v) (γ : outParam (Type w)) where
   The meaning of this notation is type-dependent.
   * On `Nat` and fixed width unsigned types like `UInt8`,
     this is equivalent to `a / 2 ^ b`. -/
-  hShiftRight : α → β → γ
+  hShiftRight : α  β  γ
 
 /-- A type with a zero element. -/
 class Zero (α : Type u) where
@@ -1320,17 +1320,17 @@ class Zero (α : Type u) where
 /-- The homogeneous version of `HAdd`: `a + b : α` where `a b : α`. -/
 class Add (α : Type u) where
   /-- `a + b` computes the sum of `a` and `b`. See `HAdd`. -/
-  add : α → α → α
+  add : α  α  α
 
 /-- The homogeneous version of `HSub`: `a - b : α` where `a b : α`. -/
 class Sub (α : Type u) where
   /-- `a - b` computes the difference of `a` and `b`. See `HSub`. -/
-  sub : α → α → α
+  sub : α  α  α
 
 /-- The homogeneous version of `HMul`: `a * b : α` where `a b : α`. -/
 class Mul (α : Type u) where
   /-- `a * b` computes the product of `a` and `b`. See `HMul`. -/
-  mul : α → α → α
+  mul : α  α  α
 
 /--
 The notation typeclass for negation.
@@ -1339,22 +1339,22 @@ This enables the notation `-a : α` where `a : α`.
 class Neg (α : Type u) where
   /-- `-a` computes the negative or opposite of `a`.
   The meaning of this notation is type-dependent. -/
-  neg : α → α
+  neg : α  α
 
 /-- The homogeneous version of `HDiv`: `a / b : α` where `a b : α`. -/
 class Div (α : Type u) where
   /-- `a / b` computes the result of dividing `a` by `b`. See `HDiv`. -/
-  div : α → α → α
+  div : α  α  α
 
 /-- The homogeneous version of `HMod`: `a % b : α` where `a b : α`. -/
 class Mod (α : Type u) where
   /-- `a % b` computes the remainder upon dividing `a` by `b`. See `HMod`. -/
-  mod : α → α → α
+  mod : α  α  α
 
 /-- Notation typeclass for the `∣` operation (typed as `\|`), which represents divisibility. -/
 class Dvd (α : Type _) where
   /-- Divisibility. `a ∣ b` (typed as `\|`) means that there is some `c` such that `b = a * c`. -/
-  dvd : α → α → Prop
+  dvd : α  α  Prop
 
 /--
 The homogeneous version of `HPow`: `a ^ b : α` where `a : α`, `b : β`.
@@ -1368,7 +1368,7 @@ an instance to either `NatPow` or `HomogeneousPow`:
 -/
 class Pow (α : Type u) (β : Type v) where
   /-- `a ^ b` computes `a` to the power of `b`. See `HPow`. -/
-  pow : α → β → α
+  pow : α  β  α
 
 /-- The homogeneous version of `Pow` where the exponent is a `Nat`.
 The purpose of this class is that it provides a default `Pow` instance,
@@ -1378,7 +1378,7 @@ For example, if `x ^ 2` should preferentially elaborate with `2 : Nat` then `x`'
 provide an instance for this class. -/
 class NatPow (α : Type u) where
   /-- `a ^ n` computes `a` to the power of `n` where `n : Nat`. See `Pow`. -/
-  protected pow : α → Nat → α
+  protected pow : α  Nat  α
 
 /-- The completely homogeneous version of `Pow` where the exponent has the same type as the base.
 The purpose of this class is that it provides a default `Pow` instance,
@@ -1390,30 +1390,30 @@ For example, the `Float` type provides an instance of this class, which causes e
 such as `(2.2 ^ 2.2 : Float)` to elaborate. -/
 class HomogeneousPow (α : Type u) where
   /-- `a ^ b` computes `a` to the power of `b` where `a` and `b` both have the same type. -/
-  protected pow : α → α → α
+  protected pow : α  α  α
 
 /-- The homogeneous version of `HAppend`: `a ++ b : α` where `a b : α`. -/
 class Append (α : Type u) where
   /-- `a ++ b` is the result of concatenation of `a` and `b`. See `HAppend`. -/
-  append : α → α → α
+  append : α  α  α
 
 /--
 The homogeneous version of `HOrElse`: `a <|> b : α` where `a b : α`.
-Because `b` is "lazy" in this notation, it is passed as `Unit → α` to the
+Because `b` is "lazy" in this notation, it is passed as `Unit  α` to the
 implementation so it can decide when to evaluate it.
 -/
 class OrElse (α : Type u) where
   /-- The implementation of `a <|> b : α`. See `HOrElse`. -/
-  orElse  : α → (Unit → α) → α
+  orElse  : α  (Unit  α)  α
 
 /--
 The homogeneous version of `HAndThen`: `a >> b : α` where `a b : α`.
-Because `b` is "lazy" in this notation, it is passed as `Unit → α` to the
+Because `b` is "lazy" in this notation, it is passed as `Unit  α` to the
 implementation so it can decide when to evaluate it.
 -/
 class AndThen (α : Type u) where
   /-- The implementation of `a >> b : α`. See `HAndThen`. -/
-  andThen : α → (Unit → α) → α
+  andThen : α  (Unit  α)  α
 
 /--
 The homogeneous version of `HAnd`: `a &&& b : α` where `a b : α`.
@@ -1421,12 +1421,12 @@ The homogeneous version of `HAnd`: `a &&& b : α` where `a b : α`.
 -/
 class AndOp (α : Type u) where
   /-- The implementation of `a &&& b : α`. See `HAnd`. -/
-  and : α → α → α
+  and : α  α  α
 
 /-- The homogeneous version of `HXor`: `a ^^^ b : α` where `a b : α`. -/
 class Xor (α : Type u) where
   /-- The implementation of `a ^^^ b : α`. See `HXor`. -/
-  xor : α → α → α
+  xor : α  α  α
 
 /--
 The homogeneous version of `HOr`: `a ||| b : α` where `a b : α`.
@@ -1434,22 +1434,22 @@ The homogeneous version of `HOr`: `a ||| b : α` where `a b : α`.
 -/
 class OrOp (α : Type u) where
   /-- The implementation of `a ||| b : α`. See `HOr`. -/
-  or : α → α → α
+  or : α  α  α
 
-/-- The typeclass behind the notation `~~~a : α` where `a : α`. -/
+/-- The typeclass behind the notation `a : α` where `a : α`. -/
 class Complement (α : Type u) where
-  /-- The implementation of `~~~a : α`. -/
-  complement : α → α
+  /-- The implementation of `a : α`. -/
+  complement : α  α
 
 /-- The homogeneous version of `HShiftLeft`: `a <<< b : α` where `a b : α`. -/
 class ShiftLeft (α : Type u) where
   /-- The implementation of `a <<< b : α`. See `HShiftLeft`. -/
-  shiftLeft : α → α → α
+  shiftLeft : α  α  α
 
 /-- The homogeneous version of `HShiftRight`: `a >>> b : α` where `a b : α`. -/
 class ShiftRight (α : Type u) where
   /-- The implementation of `a >>> b : α`. See `HShiftRight`. -/
-  shiftRight : α → α → α
+  shiftRight : α  α  α
 
 @[default_instance]
 instance instHAdd [Add α] : HAdd α α α where
@@ -1528,7 +1528,7 @@ of the elements of the container.
 -/
 class Membership (α : outParam (Type u)) (γ : Type v) where
   /-- The membership relation `a ∈ s : Prop` where `a : α`, `s : γ`. -/
-  mem : γ → α → Prop
+  mem : γ  α  Prop
 
 set_option bootstrap.genMatcherCode false in
 /--
@@ -1539,7 +1539,7 @@ evaluate using the "bignum" representation (see `Nat`). The definition provided
 here is the logical model (and it is soundness-critical that they coincide).
 -/
 @[extern "lean_nat_add"]
-protected def Nat.add : (@& Nat) → (@& Nat) → Nat
+protected def Nat.add : (@& Nat)  (@& Nat)  Nat
   | a, Nat.zero   => a
   | a, Nat.succ b => Nat.succ (Nat.add a b)
 
@@ -1559,7 +1559,7 @@ evaluate using the "bignum" representation (see `Nat`). The definition provided
 here is the logical model (and it is soundness-critical that they coincide).
 -/
 @[extern "lean_nat_mul"]
-protected def Nat.mul : (@& Nat) → (@& Nat) → Nat
+protected def Nat.mul : (@& Nat)  (@& Nat)  Nat
   | _, 0          => 0
   | a, Nat.succ b => Nat.add (Nat.mul a b) a
 
@@ -1575,7 +1575,7 @@ evaluate using the "bignum" representation (see `Nat`). The definition provided
 here is the logical model.
 -/
 @[extern "lean_nat_pow"]
-protected def Nat.pow (m : @& Nat) : (@& Nat) → Nat
+protected def Nat.pow (m : @& Nat) : (@& Nat)  Nat
   | 0      => 1
   | succ n => Nat.mul (Nat.pow m n) m
 
@@ -1590,13 +1590,13 @@ evaluate using the "bignum" representation (see `Nat`). The definition provided
 here is the logical model (and it is soundness-critical that they coincide).
 -/
 @[extern "lean_nat_dec_eq"]
-def Nat.beq : (@& Nat) → (@& Nat) → Bool
+def Nat.beq : (@& Nat)  (@& Nat)  Bool
   | zero,   zero   => true
   | zero,   succ _ => false
   | succ _, zero   => false
   | succ n, succ m => beq n m
 
-theorem Nat.eq_of_beq_eq_true : {n m : Nat} → Eq (beq n m) true → Eq n m
+theorem Nat.eq_of_beq_eq_true : {n m : Nat}  Eq (beq n m) true  Eq n m
   | zero,   zero,   _ => rfl
   | zero,   succ _, h => Bool.noConfusion h
   | succ _, zero,   h => Bool.noConfusion h
@@ -1605,7 +1605,7 @@ theorem Nat.eq_of_beq_eq_true : {n m : Nat} → Eq (beq n m) true → Eq n m
     have : Eq n m := eq_of_beq_eq_true this
     this ▸ rfl
 
-theorem Nat.ne_of_beq_eq_false : {n m : Nat} → Eq (beq n m) false → Not (Eq n m)
+theorem Nat.ne_of_beq_eq_false : {n m : Nat}  Eq (beq n m) false  Not (Eq n m)
   | zero,   zero,   h₁, _  => Bool.noConfusion h₁
   | zero,   succ _, _,  h₂ => Nat.noConfusion h₂
   | succ _, zero,   _,  h₂ => Nat.noConfusion h₂
@@ -1637,7 +1637,7 @@ evaluate using the "bignum" representation (see `Nat`). The definition provided
 here is the logical model (and it is soundness-critical that they coincide).
 -/
 @[extern "lean_nat_dec_le"]
-def Nat.ble : @& Nat → @& Nat → Bool
+def Nat.ble : @& Nat  @& Nat  Bool
   | zero,   zero   => true
   | zero,   succ _ => true
   | succ _, zero   => false
@@ -1645,13 +1645,13 @@ def Nat.ble : @& Nat → @& Nat → Bool
 
 /--
 An inductive definition of the less-equal relation on natural numbers,
-characterized as the least relation `≤` such that `n ≤ n` and `n ≤ m → n ≤ m + 1`.
+characterized as the least relation `≤` such that `n ≤ n` and `n ≤ m  n ≤ m + 1`.
 -/
-protected inductive Nat.le (n : Nat) : Nat → Prop
+protected inductive Nat.le (n : Nat) : Nat  Prop
   /-- Less-equal is reflexive: `n ≤ n` -/
   | refl     : Nat.le n n
   /-- If `n ≤ m`, then `n ≤ m + 1`. -/
-  | step {m} : Nat.le n m → Nat.le n (succ m)
+  | step {m} : Nat.le n m  Nat.le n (succ m)
 
 instance instLENat : LE Nat where
   le := Nat.le
@@ -1663,18 +1663,18 @@ protected def Nat.lt (n m : Nat) : Prop :=
 instance instLTNat : LT Nat where
   lt := Nat.lt
 
-theorem Nat.not_succ_le_zero : ∀ (n : Nat), LE.le (succ n) 0 → False
+theorem Nat.not_succ_le_zero : ∀ (n : Nat), LE.le (succ n) 0  False
   | 0      => nofun
   | succ _ => nofun
 
 theorem Nat.not_lt_zero (n : Nat) : Not (LT.lt n 0) :=
   not_succ_le_zero n
 
-theorem Nat.zero_le : (n : Nat) → LE.le 0 n
+theorem Nat.zero_le : (n : Nat)  LE.le 0 n
   | zero   => Nat.le.refl
   | succ n => Nat.le.step (zero_le n)
 
-theorem Nat.succ_le_succ : LE.le n m → LE.le (succ n) (succ m)
+theorem Nat.succ_le_succ : LE.le n m  LE.le (succ n) (succ m)
   | Nat.le.refl   => Nat.le.refl
   | Nat.le.step h => Nat.le.step (succ_le_succ h)
 
@@ -1684,11 +1684,11 @@ theorem Nat.zero_lt_succ (n : Nat) : LT.lt 0 (succ n) :=
 theorem Nat.le_step (h : LE.le n m) : LE.le n (succ m) :=
   Nat.le.step h
 
-protected theorem Nat.le_trans {n m k : Nat} : LE.le n m → LE.le m k → LE.le n k
+protected theorem Nat.le_trans {n m k : Nat} : LE.le n m  LE.le m k  LE.le n k
   | h,  Nat.le.refl    => h
   | h₁, Nat.le.step h₂ => Nat.le.step (Nat.le_trans h₁ h₂)
 
-protected theorem Nat.lt_trans {n m k : Nat} (h₁ : LT.lt n m) : LT.lt m k → LT.lt n k :=
+protected theorem Nat.lt_trans {n m k : Nat} (h₁ : LT.lt n m) : LT.lt m k  LT.lt n k :=
   Nat.le_trans (le_step h₁)
 
 theorem Nat.le_succ (n : Nat) : LE.le n (succ n) :=
@@ -1711,22 +1711,22 @@ This definition is overridden in the compiler to use `n - 1` instead.
 The definition provided here is the logical model.
 -/
 @[extern "lean_nat_pred"]
-def Nat.pred : (@& Nat) → Nat
+def Nat.pred : (@& Nat)  Nat
   | 0      => 0
   | succ a => a
 
-theorem Nat.pred_le_pred : {n m : Nat} → LE.le n m → LE.le (pred n) (pred m)
+theorem Nat.pred_le_pred : {n m : Nat}  LE.le n m  LE.le (pred n) (pred m)
   | _,           _, Nat.le.refl   => Nat.le.refl
   | 0,      succ _, Nat.le.step h => h
   | succ _, succ _, Nat.le.step h => Nat.le_trans (le_succ _) h
 
-theorem Nat.le_of_succ_le_succ {n m : Nat} : LE.le (succ n) (succ m) → LE.le n m :=
+theorem Nat.le_of_succ_le_succ {n m : Nat} : LE.le (succ n) (succ m)  LE.le n m :=
   pred_le_pred
 
-theorem Nat.le_of_lt_succ {m n : Nat} : LT.lt m (succ n) → LE.le m n :=
+theorem Nat.le_of_lt_succ {m n : Nat} : LT.lt m (succ n)  LE.le m n :=
   le_of_succ_le_succ
 
-protected theorem Nat.eq_or_lt_of_le : {n m: Nat} → LE.le n m → Or (Eq n m) (LT.lt n m)
+protected theorem Nat.eq_or_lt_of_le : {n m: Nat}  LE.le n m  Or (Eq n m) (LT.lt n m)
   | zero,   zero,   _ => Or.inl rfl
   | zero,   succ _, _ => Or.inr (Nat.succ_le_succ (Nat.zero_le _))
   | succ _, zero,   h => absurd h (not_succ_le_zero _)
@@ -1747,7 +1747,7 @@ protected theorem Nat.lt_or_ge (n m : Nat) : Or (LT.lt n m) (GE.ge n m) :=
       | Or.inl h1 => Or.inl (h1 ▸ Nat.le_refl _)
       | Or.inr h1 => Or.inr h1
 
-theorem Nat.not_succ_le_self : (n : Nat) → Not (LE.le (succ n) n)
+theorem Nat.not_succ_le_self : (n : Nat)  Not (LE.le (succ n) n)
   | 0      => not_succ_le_zero _
   | succ n => fun h => absurd (le_of_succ_le_succ h) (not_succ_le_self n)
 
@@ -1772,11 +1772,11 @@ theorem Nat.le_of_ble_eq_true (h : Eq (Nat.ble n m) true) : LE.le n m :=
   | 0,      _      => Nat.zero_le _
   | succ _, succ _ => Nat.succ_le_succ (le_of_ble_eq_true h)
 
-theorem Nat.ble_self_eq_true : (n : Nat) → Eq (Nat.ble n n) true
+theorem Nat.ble_self_eq_true : (n : Nat)  Eq (Nat.ble n n) true
   | 0      => rfl
   | succ n => ble_self_eq_true n
 
-theorem Nat.ble_succ_eq_true : {n m : Nat} → Eq (Nat.ble n m) true → Eq (Nat.ble n (succ m)) true
+theorem Nat.ble_succ_eq_true : {n m : Nat}  Eq (Nat.ble n m) true  Eq (Nat.ble n (succ m)) true
   | 0,      _,      _ => rfl
   | succ n, succ _, h => ble_succ_eq_true (n := n) h
 
@@ -1808,7 +1808,7 @@ evaluate using the "bignum" representation (see `Nat`). The definition provided
 here is the logical model (and it is soundness-critical that they coincide).
 -/
 @[extern "lean_nat_sub"]
-protected def Nat.sub : (@& Nat) → (@& Nat) → Nat
+protected def Nat.sub : (@& Nat)  (@& Nat)  Nat
   | a, 0      => a
   | a, succ b => pred (Nat.sub a b)
 
@@ -1823,7 +1823,7 @@ will have the same size as the host, and also because we would like to avoid
 typechecking being architecture-dependent. Nevertheless, Lean only works on
 64 and 32 bit systems so we can encode this as a fact available for proof purposes.
 -/
-@[extern "lean_system_platform_nbits"] opaque System.Platform.getNumBits : Unit → Subtype fun (n : Nat) => Or (Eq n 32) (Eq n 64) :=
+@[extern "lean_system_platform_nbits"] opaque System.Platform.getNumBits : Unit  Subtype fun (n : Nat) => Or (Eq n 32) (Eq n 64) :=
   fun _ => ⟨64, Or.inr rfl⟩ -- inhabitant
 
 /-- Gets the word size of the platform. That is, whether the platform is 64 or 32 bits. -/
@@ -1849,7 +1849,7 @@ structure Fin (n : Nat) where
 
 attribute [coe] Fin.val
 
-theorem Fin.eq_of_val_eq {n} : ∀ {i j : Fin n}, Eq i.val j.val → Eq i j
+theorem Fin.eq_of_val_eq {n} : ∀ {i j : Fin n}, Eq i.val j.val  Eq i j
   | ⟨_, _⟩, ⟨_, _⟩, rfl => rfl
 
 theorem Fin.val_eq_of_eq {n} {i j : Fin n} (h : Eq i j) : Eq i.val j.val :=
@@ -2210,10 +2210,10 @@ def Char.ofNat (n : Nat) : Char :=
     (fun h => Char.ofNatAux n h)
     (fun _ => { val := ⟨BitVec.ofNatLt 0 (of_decide_eq_true rfl)⟩, valid := Or.inl (of_decide_eq_true rfl) })
 
-theorem Char.eq_of_val_eq : ∀ {c d : Char}, Eq c.val d.val → Eq c d
+theorem Char.eq_of_val_eq : ∀ {c d : Char}, Eq c.val d.val  Eq c d
   | ⟨_, _⟩, ⟨_, _⟩, rfl => rfl
 
-theorem Char.val_eq_of_eq : ∀ {c d : Char}, Eq c d → Eq c.val d.val
+theorem Char.val_eq_of_eq : ∀ {c d : Char}, Eq c d  Eq c.val d.val
   | _, _, rfl => rfl
 
 theorem Char.ne_of_val_ne {c d : Char} (h : Not (Eq c.val d.val)) : Not (Eq c d) :=
@@ -2240,7 +2240,7 @@ def Char.utf8Size (c : Char) : Nat :=
 or `none`. In functional programming languages, this type is used to represent
 the possibility of failure, or sometimes nullability.
 
-For example, the function `HashMap.get? : HashMap α β → α → Option β` looks up
+For example, the function `HashMap.get? : HashMap α β  α  Option β` looks up
 a specified key `a : α` inside the map. Because we do not know in advance
 whether the key is actually in the map, the return type is `Option β`, where
 `none` means the value was not in the map, and `some b` means that the value
@@ -2253,7 +2253,7 @@ equivalent to `HashMap.get? m a`.
 
 To extract a value from an `Option α`, we use pattern matching:
 ```
-def map (f : α → β) (x : Option α) : Option β :=
+def map (f : α  β) (x : Option α) : Option β :=
   match x with
   | some a => some (f a)
   | none => none
@@ -2261,7 +2261,7 @@ def map (f : α → β) (x : Option α) : Option β :=
 We can also use `if let` to pattern match on `Option` and get the value
 in the branch:
 ```
-def map (f : α → β) (x : Option α) : Option β :=
+def map (f : α  β) (x : Option α) : Option β :=
   if let some a := x then
     some (f a)
   else
@@ -2297,7 +2297,7 @@ This function is `@[macro_inline]`, so `dflt` will not be evaluated unless
 Map a function over an `Option` by applying the function to the contained
 value if present.
 -/
-@[inline] protected def Option.map (f : α → β) : Option α → Option β
+@[inline] protected def Option.map (f : α  β) : Option α  Option β
   | some x => some (f x)
   | none   => none
 
@@ -2323,7 +2323,7 @@ instance {α} : Inhabited (List α) where
   default := List.nil
 
 /-- Implements decidable equality for `List α`, assuming `α` has decidable equality. -/
-protected def List.hasDecEq {α : Type u} [DecidableEq α] : (a b : List α) → Decidable (Eq a b)
+protected def List.hasDecEq {α : Type u} [DecidableEq α] : (a b : List α)  Decidable (Eq a b)
   | nil,       nil       => isTrue rfl
   | cons _ _, nil        => isFalse (fun h => List.noConfusion h)
   | nil,       cons _ _  => isFalse (fun h => List.noConfusion h)
@@ -2344,12 +2344,12 @@ This function is overridden in the compiler to `lengthTR`, which uses constant
 stack space, while leaving this function to use the "naive" recursion which is
 easier for reasoning.
 -/
-def List.length : List α → Nat
+def List.length : List α  Nat
   | nil       => 0
   | cons _ as => HAdd.hAdd (length as) 1
 
 /-- Auxiliary function for `List.lengthTR`. -/
-def List.lengthTRAux : List α → Nat → Nat
+def List.lengthTRAux : List α  Nat  Nat
   | nil,       n => n
   | cons _ as, n => lengthTRAux as (Nat.succ n)
 
@@ -2365,7 +2365,7 @@ def List.lengthTR (as : List α) : Nat :=
 This version of the function uses `i : Fin as.length` to ensure that it will
 not index out of bounds.
 -/
-def List.get {α : Type u} : (as : List α) → Fin as.length → α
+def List.get {α : Type u} : (as : List α)  Fin as.length  α
   | cons a _,  ⟨0, _⟩ => a
   | cons _ as, ⟨Nat.succ i, h⟩ => get as ⟨i, Nat.le_of_succ_le_succ h⟩
 
@@ -2373,7 +2373,7 @@ def List.get {α : Type u} : (as : List α) → Fin as.length → α
 `l.set n a` sets the value of list `l` at (zero-based) index `n` to `a`:
 `[a, b, c, d].set 1 b' = [a, b', c, d]`
 -/
-def List.set : List α → Nat → α → List α
+def List.set : List α  Nat  α  List α
   | cons _ as, 0,          b => cons b as
   | cons a as, Nat.succ n, b => cons a (set as n b)
   | nil,       _,          _ => nil
@@ -2383,12 +2383,12 @@ Folds a function over a list from the left:
 `foldl f z [a, b, c] = f (f (f z a) b) c`
 -/
 @[specialize]
-def List.foldl {α : Type u} {β : Type v} (f : α → β → α) : (init : α) → List β → α
+def List.foldl {α : Type u} {β : Type v} (f : α  β  α) : (init : α)  List β  α
   | a, nil      => a
   | a, cons b l => foldl f (f a b) l
 
 /-- `l.concat a` appends `a` at the *end* of `l`, that is, `l ++ [a]`. -/
-def List.concat {α : Type u} : List α → α → List α
+def List.concat {α : Type u} : List α  α  List α
   | nil,       b => cons b nil
   | cons a as, b => cons a (concat as b)
 
@@ -2461,7 +2461,7 @@ instance : Inhabited Substring where
   default := ⟨"", {}, {}⟩
 
 /-- The byte length of the substring. -/
-@[inline] def Substring.bsize : Substring → Nat
+@[inline] def Substring.bsize : Substring  Nat
   | ⟨_, b, e⟩ => e.byteIdx.sub b.byteIdx
 
 /--
@@ -2469,10 +2469,10 @@ The UTF-8 byte length of this string.
 This is overridden by the compiler to be cached and O(1).
 -/
 @[extern "lean_string_utf8_byte_size"]
-def String.utf8ByteSize : (@& String) → Nat
+def String.utf8ByteSize : (@& String)  Nat
   | ⟨s⟩ => go s
 where
-  go : List Char → Nat
+  go : List Char  Nat
    | .nil       => 0
    | .cons c cs => hAdd (go cs) c.utf8Size
 
@@ -2715,78 +2715,78 @@ def Array.extract (as : Array α) (start stop : Nat) : Array α :=
   loop sz' start (mkEmpty sz')
 
 /-- The typeclass which supplies the `>>=` "bind" function. See `Monad`. -/
-class Bind (m : Type u → Type v) where
-  /-- If `x : m α` and `f : α → m β`, then `x >>= f : m β` represents the
+class Bind (m : Type u  Type v) where
+  /-- If `x : m α` and `f : α  m β`, then `x >>= f : m β` represents the
   result of executing `x` to get a value of type `α` and then passing it to `f`. -/
-  bind : {α β : Type u} → m α → (α → m β) → m β
+  bind : {α β : Type u}  m α  (α  m β)  m β
 
 export Bind (bind)
 
 /-- The typeclass which supplies the `pure` function. See `Monad`. -/
-class Pure (f : Type u → Type v) where
+class Pure (f : Type u  Type v) where
   /-- If `a : α`, then `pure a : f α` represents a monadic action that does
   nothing and returns `a`. -/
-  pure {α : Type u} : α → f α
+  pure {α : Type u} : α  f α
 
 export Pure (pure)
 
 /--
-In functional programming, a "functor" is a function on types `F : Type u → Type v`
-equipped with an operator called `map` or `<$>` such that if `f : α → β` then
-`map f : F α → F β`, so `f <$> x : F β` if `x : F α`. This corresponds to the
+In functional programming, a "functor" is a function on types `F : Type u  Type v`
+equipped with an operator called `map` or `<$>` such that if `f : α  β` then
+`map f : F α  F β`, so `f <$> x : F β` if `x : F α`. This corresponds to the
 category-theory notion of [functor](https://en.wikipedia.org/wiki/Functor) in
 the special case where the category is the category of types and functions
 between them, except that this class supplies only the operations and not the
 laws (see `LawfulFunctor`).
 -/
-class Functor (f : Type u → Type v) : Type (max (u+1) v) where
-  /-- If `f : α → β` and `x : F α` then `f <$> x : F β`. -/
-  map : {α β : Type u} → (α → β) → f α → f β
+class Functor (f : Type u  Type v) : Type (max (u+1) v) where
+  /-- If `f : α  β` and `x : F α` then `f <$> x : F β`. -/
+  map : {α β : Type u}  (α  β)  f α  f β
   /-- The special case `const a <$> x`, which can sometimes be implemented more
   efficiently. -/
-  mapConst : {α β : Type u} → α → f β → f α := Function.comp map (Function.const _)
+  mapConst : {α β : Type u}  α  f β  f α := Function.comp map (Function.const _)
 
 /-- The typeclass which supplies the `<*>` "seq" function. See `Applicative`. -/
-class Seq (f : Type u → Type v) : Type (max (u+1) v) where
-  /-- If `mf : F (α → β)` and `mx : F α`, then `mf <*> mx : F β`.
+class Seq (f : Type u  Type v) : Type (max (u+1) v) where
+  /-- If `mf : F (α  β)` and `mx : F α`, then `mf <*> mx : F β`.
   In a monad this is the same as `do let f ← mf; x ← mx; pure (f x)`:
   it evaluates first the function, then the argument, and applies one to the other.
 
   To avoid surprising evaluation semantics, `mx` is taken "lazily", using a
-  `Unit → f α` function. -/
-  seq : {α β : Type u} → f (α → β) → (Unit → f α) → f β
+  `Unit  f α` function. -/
+  seq : {α β : Type u}  f (α  β)  (Unit  f α)  f β
 
 /-- The typeclass which supplies the `<*` "seqLeft" function. See `Applicative`. -/
-class SeqLeft (f : Type u → Type v) : Type (max (u+1) v) where
+class SeqLeft (f : Type u  Type v) : Type (max (u+1) v) where
   /-- If `x : F α` and `y : F β`, then `x <* y` evaluates `x`, then `y`,
   and returns the result of `x`.
 
   To avoid surprising evaluation semantics, `y` is taken "lazily", using a
-  `Unit → f β` function. -/
-  seqLeft : {α β : Type u} → f α → (Unit → f β) → f α
+  `Unit  f β` function. -/
+  seqLeft : {α β : Type u}  f α  (Unit  f β)  f α
 
 /-- The typeclass which supplies the `*>` "seqRight" function. See `Applicative`. -/
-class SeqRight (f : Type u → Type v) : Type (max (u+1) v) where
+class SeqRight (f : Type u  Type v) : Type (max (u+1) v) where
   /-- If `x : F α` and `y : F β`, then `x *> y` evaluates `x`, then `y`,
   and returns the result of `y`.
 
   To avoid surprising evaluation semantics, `y` is taken "lazily", using a
-  `Unit → f β` function. -/
-  seqRight : {α β : Type u} → f α → (Unit → f β) → f β
+  `Unit  f β` function. -/
+  seqRight : {α β : Type u}  f α  (Unit  f β)  f β
 
 /--
 An [applicative functor](https://en.wikipedia.org/wiki/Applicative_functor) is
 an intermediate structure between `Functor` and `Monad`. It mainly consists of
 two operations:
 
-* `pure : α → F α`
-* `seq : F (α → β) → F α → F β` (written as `<*>`)
+* `pure : α  F α`
+* `seq : F (α  β)  F α  F β` (written as `<*>`)
 
 The `seq` operator gives a notion of evaluation order to the effects, where
 the first argument is executed before the second, but unlike a monad the results
 of earlier computations cannot be used to define later actions.
 -/
-class Applicative (f : Type u → Type v) extends Functor f, Pure f, Seq f, SeqLeft f, SeqRight f where
+class Applicative (f : Type u  Type v) extends Functor f, Pure f, Seq f, SeqLeft f, SeqRight f where
   map      := fun x y => Seq.seq (pure x) fun _ => y
   seqLeft  := fun a b => Seq.seq (Functor.map (Function.const _) a) b
   seqRight := fun a b => Seq.seq (Functor.map (Function.const _ id) a) b
@@ -2796,8 +2796,8 @@ A [monad](https://en.wikipedia.org/wiki/Monad_(functional_programming)) is a
 structure which abstracts the concept of sequential control flow.
 It mainly consists of two operations:
 
-* `pure : α → F α`
-* `bind : F α → (α → F β) → F β` (written as `>>=`)
+* `pure : α  F α`
+* `bind : F α  (α  F β)  F β` (written as `>>=`)
 
 Like many functional programming languages, Lean makes extensive use of monads
 for structuring programs. In particular, the `do` notation is a very powerful
@@ -2806,19 +2806,19 @@ syntax over monad operations, and it depends on a `Monad` instance.
 See [the `do` notation](https://lean-lang.org/lean4/doc/do.html)
 chapter of the manual for details.
 -/
-class Monad (m : Type u → Type v) extends Applicative m, Bind m : Type (max (u+1) v) where
+class Monad (m : Type u  Type v) extends Applicative m, Bind m : Type (max (u+1) v) where
   map      f x := bind x (Function.comp pure f)
   seq      f x := bind f fun y => Functor.map y (x ())
   seqLeft  x y := bind x fun a => bind (y ()) (fun _ => pure a)
   seqRight x y := bind x fun _ => y ()
 
-instance {α : Type u} {m : Type u → Type v} [Monad m] : Inhabited (α → m α) where
+instance {α : Type u} {m : Type u  Type v} [Monad m] : Inhabited (α  m α) where
   default := pure
 
-instance {α : Type u} {m : Type u → Type v} [Monad m] [Inhabited α] : Inhabited (m α) where
+instance {α : Type u} {m : Type u  Type v} [Monad m] [Inhabited α] : Inhabited (m α) where
   default := pure default
 
-instance [Monad m] : [Nonempty α] → Nonempty (m α)
+instance [Monad m] : [Nonempty α]  Nonempty (m α)
   | ⟨x⟩ => ⟨pure x⟩
 
 /--
@@ -2829,9 +2829,9 @@ Alternatively, an implementation of [`MonadLayer`] without `layerInvmap` (so far
   [`MonadTrans`]: https://hackage.haskell.org/package/transformers-0.5.5.0/docs/Control-Monad-Trans-Class.html
   [`MonadLayer`]: https://hackage.haskell.org/package/layers-0.1/docs/Control-Monad-Layer.html#t:MonadLayer
 -/
-class MonadLift (m : semiOutParam (Type u → Type v)) (n : Type u → Type w) where
+class MonadLift (m : semiOutParam (Type u  Type v)) (n : Type u  Type w) where
   /-- Lifts a value from monad `m` into monad `n`. -/
-  monadLift : {α : Type u} → m α → n α
+  monadLift : {α : Type u}  m α  n α
 
 /--
 The reflexive-transitive closure of `MonadLift`. `monadLift` is used to
@@ -2840,9 +2840,9 @@ Corresponds to Haskell's [`MonadLift`].
 
   [`MonadLift`]: https://hackage.haskell.org/package/layers-0.1/docs/Control-Monad-Layer.html#t:MonadLift
 -/
-class MonadLiftT (m : Type u → Type v) (n : Type u → Type w) where
+class MonadLiftT (m : Type u  Type v) (n : Type u  Type w) where
   /-- Lifts a value from monad `m` into monad `n`. -/
-  monadLift : {α : Type u} → m α → n α
+  monadLift : {α : Type u}  m α  n α
 
 export MonadLiftT (monadLift)
 
@@ -2864,17 +2864,17 @@ Every `MonadLift` instance gives a `MonadEval` instance.
 The purpose of this class is for the `#eval` command,
 which looks for a `MonadEval m CommandElabM` or `MonadEval m IO` instance.
 -/
-class MonadEval (m : semiOutParam (Type u → Type v)) (n : Type u → Type w) where
+class MonadEval (m : semiOutParam (Type u  Type v)) (n : Type u  Type w) where
   /-- Evaluates a value from monad `m` into monad `n`. -/
-  monadEval : {α : Type u} → m α → n α
+  monadEval : {α : Type u}  m α  n α
 
 instance [MonadLift m n] : MonadEval m n where
   monadEval := MonadLift.monadLift
 
 /-- The transitive closure of `MonadEval`. -/
-class MonadEvalT (m : Type u → Type v) (n : Type u → Type w) where
+class MonadEvalT (m : Type u  Type v) (n : Type u  Type w) where
   /-- Evaluates a value from monad `m` into monad `n`. -/
-  monadEval : {α : Type u} → m α → n α
+  monadEval : {α : Type u}  m α  n α
 
 instance (m n o) [MonadEval n o] [MonadEvalT m n] : MonadEvalT m o where
   monadEval x := MonadEval.monadEval (m := n) (MonadEvalT.monadEval x)
@@ -2890,17 +2890,17 @@ monad transformers. Alternatively, an implementation of [`MonadTransFunctor`].
   [`MFunctor`]: https://hackage.haskell.org/package/pipes-2.4.0/docs/Control-MFunctor.html
   [`MonadTransFunctor`]: http://duairc.netsoc.ie/layers-docs/Control-Monad-Layer.html#t:MonadTransFunctor
 -/
-class MonadFunctor (m : semiOutParam (Type u → Type v)) (n : Type u → Type w) where
-  /-- Lifts a monad morphism `f : {β : Type u} → m β → m β` to
-  `monadMap f : {α : Type u} → n α → n α`. -/
-  monadMap {α : Type u} : ({β : Type u} → m β → m β) → n α → n α
+class MonadFunctor (m : semiOutParam (Type u  Type v)) (n : Type u  Type w) where
+  /-- Lifts a monad morphism `f : {β : Type u}  m β  m β` to
+  `monadMap f : {α : Type u}  n α  n α`. -/
+  monadMap {α : Type u} : ({β : Type u}  m β  m β)  n α  n α
 
 /-- The reflexive-transitive closure of `MonadFunctor`.
 `monadMap` is used to transitively lift `Monad` morphisms. -/
-class MonadFunctorT (m : Type u → Type v) (n : Type u → Type w) where
-  /-- Lifts a monad morphism `f : {β : Type u} → m β → m β` to
-  `monadMap f : {α : Type u} → n α → n α`. -/
-  monadMap {α : Type u} : ({β : Type u} → m β → m β) → n α → n α
+class MonadFunctorT (m : Type u  Type v) (n : Type u  Type w) where
+  /-- Lifts a monad morphism `f : {β : Type u}  m β  m β` to
+  `monadMap f : {α : Type u}  n α  n α`. -/
+  monadMap {α : Type u} : ({β : Type u}  m β  m β)  n α  n α
 
 export MonadFunctorT (monadMap)
 
@@ -2914,14 +2914,14 @@ instance monadFunctorRefl (m) : MonadFunctorT m m where
 /--
 `Except ε α` is a type which represents either an error of type `ε`, or an "ok"
 value of type `α`. The error type is listed first because
-`Except ε : Type → Type` is a `Monad`: the pure operation is `ok` and the bind
+`Except ε : Type  Type` is a `Monad`: the pure operation is `ok` and the bind
 operation returns the first encountered `error`.
 -/
 inductive Except (ε : Type u) (α : Type v) where
   /-- A failure value of type `ε` -/
-  | error : ε → Except ε α
+  | error : ε  Except ε α
   /-- A success value of type `α` -/
-  | ok    : α → Except ε α
+  | ok    : α  Except ε α
 
 attribute [unbox] Except
 
@@ -2932,9 +2932,9 @@ instance {ε : Type u} {α : Type v} [Inhabited ε] : Inhabited (Except ε α) w
 An implementation of Haskell's [`MonadError`] class. A `MonadError ε m` is a
 monad `m` with two operations:
 
-* `throw : ε → m α` "throws an error" of type `ε` to the nearest enclosing
+* `throw : ε  m α` "throws an error" of type `ε` to the nearest enclosing
   catch block
-* `tryCatch (body : m α) (handler : ε → m α) : m α` will catch any errors in
+* `tryCatch (body : m α) (handler : ε  m α) : m α` will catch any errors in
   `body` and pass the resulting error to `handler`.
   Errors in `handler` will not be caught.
 
@@ -2943,55 +2943,55 @@ The `try ... catch e => ...` syntax inside `do` blocks is sugar for the
 
   [`MonadError`]: https://hackage.haskell.org/package/mtl-2.2.2/docs/Control-Monad-Except.html#t:MonadError
 -/
-class MonadExceptOf (ε : semiOutParam (Type u)) (m : Type v → Type w) where
-  /-- `throw : ε → m α` "throws an error" of type `ε` to the nearest enclosing
+class MonadExceptOf (ε : semiOutParam (Type u)) (m : Type v  Type w) where
+  /-- `throw : ε  m α` "throws an error" of type `ε` to the nearest enclosing
   catch block. -/
-  throw {α : Type v} : ε → m α
-  /-- `tryCatch (body : m α) (handler : ε → m α) : m α` will catch any errors in
+  throw {α : Type v} : ε  m α
+  /-- `tryCatch (body : m α) (handler : ε  m α) : m α` will catch any errors in
   `body` and pass the resulting error to `handler`.
   Errors in `handler` will not be caught. -/
-  tryCatch {α : Type v} (body : m α) (handler : ε → m α) : m α
+  tryCatch {α : Type v} (body : m α) (handler : ε  m α) : m α
 
 /--
 This is the same as `throw`, but allows specifying the particular error type
 in case the monad supports throwing more than one type of error.
 -/
-abbrev throwThe (ε : Type u) {m : Type v → Type w} [MonadExceptOf ε m] {α : Type v} (e : ε) : m α :=
+abbrev throwThe (ε : Type u) {m : Type v  Type w} [MonadExceptOf ε m] {α : Type v} (e : ε) : m α :=
   MonadExceptOf.throw e
 
 /--
 This is the same as `tryCatch`, but allows specifying the particular error type
 in case the monad supports throwing more than one type of error.
 -/
-abbrev tryCatchThe (ε : Type u) {m : Type v → Type w} [MonadExceptOf ε m] {α : Type v} (x : m α) (handle : ε → m α) : m α :=
+abbrev tryCatchThe (ε : Type u) {m : Type v  Type w} [MonadExceptOf ε m] {α : Type v} (x : m α) (handle : ε  m α) : m α :=
   MonadExceptOf.tryCatch x handle
 
 /-- Similar to `MonadExceptOf`, but `ε` is an `outParam` for convenience. -/
-class MonadExcept (ε : outParam (Type u)) (m : Type v → Type w) where
-  /-- `throw : ε → m α` "throws an error" of type `ε` to the nearest enclosing
+class MonadExcept (ε : outParam (Type u)) (m : Type v  Type w) where
+  /-- `throw : ε  m α` "throws an error" of type `ε` to the nearest enclosing
   catch block. -/
-  throw {α : Type v} : ε → m α
-  /-- `tryCatch (body : m α) (handler : ε → m α) : m α` will catch any errors in
+  throw {α : Type v} : ε  m α
+  /-- `tryCatch (body : m α) (handler : ε  m α) : m α` will catch any errors in
   `body` and pass the resulting error to `handler`.
   Errors in `handler` will not be caught. -/
-  tryCatch {α : Type v} : m α → (ε → m α) → m α
+  tryCatch {α : Type v} : m α  (ε  m α)  m α
 
 /-- "Unwraps" an `Except ε α` to get the `α`, or throws the exception otherwise. -/
-def MonadExcept.ofExcept [Monad m] [MonadExcept ε m] : Except ε α → m α
+def MonadExcept.ofExcept [Monad m] [MonadExcept ε m] : Except ε α  m α
   | .ok a    => pure a
   | .error e => throw e
 
 export MonadExcept (throw tryCatch ofExcept)
 
-instance (ε : Type u) (m : Type v → Type w) [MonadExceptOf ε m] : MonadExcept ε m where
+instance (ε : Type u) (m : Type v  Type w) [MonadExceptOf ε m] : MonadExcept ε m where
   throw    := throwThe ε
   tryCatch := tryCatchThe ε
 
 namespace MonadExcept
-variable {ε : Type u} {m : Type v → Type w}
+variable {ε : Type u} {m : Type v  Type w}
 
 /-- A `MonadExcept` can implement `t₁ <|> t₂` as `try t₁ catch _ => t₂`. -/
-@[inline] protected def orElse [MonadExcept ε m] {α : Type v} (t₁ : m α) (t₂ : Unit → m α) : m α :=
+@[inline] protected def orElse [MonadExcept ε m] {α : Type v} (t₁ : m α) (t₂ : Unit  m α) : m α :=
   tryCatch t₁ fun _ => t₂ ()
 
 instance [MonadExcept ε m] {α : Type v} : OrElse (m α) where
@@ -3005,10 +3005,10 @@ equips a monad with additional read-only state, of type `ρ`.
 
   [`ReaderT`]: https://hackage.haskell.org/package/transformers-0.5.5.0/docs/Control-Monad-Trans-Reader.html#t:ReaderT
 -/
-def ReaderT (ρ : Type u) (m : Type u → Type v) (α : Type u) : Type (max u v) :=
-  ρ → m α
+def ReaderT (ρ : Type u) (m : Type u  Type v) (α : Type u) : Type (max u v) :=
+  ρ  m α
 
-instance (ρ : Type u) (m : Type u → Type v) (α : Type u) [Inhabited (m α)] : Inhabited (ReaderT ρ m α) where
+instance (ρ : Type u) (m : Type u  Type v) (α : Type u) [Inhabited (m α)] : Inhabited (ReaderT ρ m α) where
   default := fun _ => default
 
 /--
@@ -3016,13 +3016,13 @@ If `x : ReaderT ρ m α` and `r : ρ`, then `x.run r : ρ` runs the monad with t
 given reader state.
 -/
 @[always_inline, inline]
-def ReaderT.run {ρ : Type u} {m : Type u → Type v} {α : Type u} (x : ReaderT ρ m α) (r : ρ) : m α :=
+def ReaderT.run {ρ : Type u} {m : Type u  Type v} {α : Type u} (x : ReaderT ρ m α) (r : ρ) : m α :=
   x r
 
 namespace ReaderT
 
 section
-variable {ρ : Type u} {m : Type u → Type v} {α : Type u}
+variable {ρ : Type u} {m : Type u  Type v} {α : Type u}
 
 instance  : MonadLift m (ReaderT ρ m) where
   monadLift x := fun _ => x
@@ -3035,7 +3035,7 @@ instance (ε) [MonadExceptOf ε m] : MonadExceptOf ε (ReaderT ρ m) where
 end
 
 section
-variable {ρ : Type u} {m : Type u → Type v}
+variable {ρ : Type u} {m : Type u  Type v}
 
 /-- `(← read) : ρ` gets the read-only state of a `ReaderT ρ`. -/
 @[always_inline, inline]
@@ -3049,7 +3049,7 @@ protected def pure [Monad m] {α} (a : α) : ReaderT ρ m α :=
 
 /-- The `bind` operation of the `ReaderT` monad. -/
 @[always_inline, inline]
-protected def bind [Monad m] {α β} (x : ReaderT ρ m α) (f : α → ReaderT ρ m β) : ReaderT ρ m β :=
+protected def bind [Monad m] {α β} (x : ReaderT ρ m α) (f : α  ReaderT ρ m β) : ReaderT ρ m β :=
   fun r => bind (x r) fun a => f a r
 
 @[always_inline]
@@ -3071,11 +3071,11 @@ instance (ρ m) : MonadFunctor m (ReaderT ρ m) where
   monadMap f x := fun ctx => f (x ctx)
 
 /--
-`adapt (f : ρ' → ρ)` precomposes function `f` on the reader state of a
+`adapt (f : ρ'  ρ)` precomposes function `f` on the reader state of a
 `ReaderT ρ`, yielding a `ReaderT ρ'`.
 -/
 @[always_inline, inline]
-protected def adapt {ρ' α : Type u} (f : ρ' → ρ) : ReaderT ρ m α → ReaderT ρ' m α :=
+protected def adapt {ρ' α : Type u} (f : ρ'  ρ) : ReaderT ρ m α  ReaderT ρ' m α :=
   fun x r => x (f r)
 
 end
@@ -3089,13 +3089,13 @@ the `MonadWithReader` class as `withReader`.
 
 Note: This class can be seen as a simplification of the more "principled" definition
 ```
-class MonadReaderOf (ρ : Type u) (n : Type u → Type u) where
-  lift {α : Type u} : ({m : Type u → Type u} → [Monad m] → ReaderT ρ m α) → n α
+class MonadReaderOf (ρ : Type u) (n : Type u  Type u) where
+  lift {α : Type u} : ({m : Type u  Type u}  [Monad m]  ReaderT ρ m α)  n α
 ```
 
   [`MonadReader`]: https://hackage.haskell.org/package/mtl-2.2.2/docs/Control-Monad-Reader-Class.html#t:MonadReader
 -/
-class MonadReaderOf (ρ : semiOutParam (Type u)) (m : Type u → Type v) where
+class MonadReaderOf (ρ : semiOutParam (Type u)) (m : Type u  Type v) where
   /-- `(← read) : ρ` reads the state out of monad `m`. -/
   read : m ρ
 
@@ -3104,60 +3104,60 @@ Like `read`, but with `ρ` explicit. This is useful if a monad supports
 `MonadReaderOf` for multiple different types `ρ`.
 -/
 @[always_inline, inline]
-def readThe (ρ : Type u) {m : Type u → Type v} [MonadReaderOf ρ m] : m ρ :=
+def readThe (ρ : Type u) {m : Type u  Type v} [MonadReaderOf ρ m] : m ρ :=
   MonadReaderOf.read
 
 /-- Similar to `MonadReaderOf`, but `ρ` is an `outParam` for convenience. -/
-class MonadReader (ρ : outParam (Type u)) (m : Type u → Type v) where
+class MonadReader (ρ : outParam (Type u)) (m : Type u  Type v) where
   /-- `(← read) : ρ` reads the state out of monad `m`. -/
   read : m ρ
 
 export MonadReader (read)
 
-instance (ρ : Type u) (m : Type u → Type v) [MonadReaderOf ρ m] : MonadReader ρ m where
+instance (ρ : Type u) (m : Type u  Type v) [MonadReaderOf ρ m] : MonadReader ρ m where
   read := readThe ρ
 
-instance {ρ : Type u} {m : Type u → Type v} {n : Type u → Type w} [MonadLift m n] [MonadReaderOf ρ m] : MonadReaderOf ρ n where
+instance {ρ : Type u} {m : Type u  Type v} {n : Type u  Type w} [MonadLift m n] [MonadReaderOf ρ m] : MonadReaderOf ρ n where
   read := liftM (m := m) read
 
-instance {ρ : Type u} {m : Type u → Type v} [Monad m] : MonadReaderOf ρ (ReaderT ρ m) where
+instance {ρ : Type u} {m : Type u  Type v} [Monad m] : MonadReaderOf ρ (ReaderT ρ m) where
   read := ReaderT.read
 
 /--
-`MonadWithReaderOf ρ` adds the operation `withReader : (ρ → ρ) → m α → m α`.
+`MonadWithReaderOf ρ` adds the operation `withReader : (ρ  ρ)  m α  m α`.
 This runs the inner `x : m α` inside a modified context after applying the
-function `f : ρ → ρ`. In addition to `ReaderT` itself, this operation lifts
+function `f : ρ  ρ`. In addition to `ReaderT` itself, this operation lifts
 over most monad transformers, so it allows us to apply `withReader` to monads
 deeper in the stack.
 -/
-class MonadWithReaderOf (ρ : semiOutParam (Type u)) (m : Type u → Type v) where
-  /-- `withReader (f : ρ → ρ) (x : m α) : m α`  runs the inner `x : m α` inside
-  a modified context after applying the function `f : ρ → ρ`.-/
-  withReader {α : Type u} : (ρ → ρ) → m α → m α
+class MonadWithReaderOf (ρ : semiOutParam (Type u)) (m : Type u  Type v) where
+  /-- `withReader (f : ρ  ρ) (x : m α) : m α`  runs the inner `x : m α` inside
+  a modified context after applying the function `f : ρ  ρ`.-/
+  withReader {α : Type u} : (ρ  ρ)  m α  m α
 
 /--
 Like `withReader`, but with `ρ` explicit. This is useful if a monad supports
 `MonadWithReaderOf` for multiple different types `ρ`.
 -/
 @[always_inline, inline]
-def withTheReader (ρ : Type u) {m : Type u → Type v} [MonadWithReaderOf ρ m] {α : Type u} (f : ρ → ρ) (x : m α) : m α :=
+def withTheReader (ρ : Type u) {m : Type u  Type v} [MonadWithReaderOf ρ m] {α : Type u} (f : ρ  ρ) (x : m α) : m α :=
   MonadWithReaderOf.withReader f x
 
 /-- Similar to `MonadWithReaderOf`, but `ρ` is an `outParam` for convenience. -/
-class MonadWithReader (ρ : outParam (Type u)) (m : Type u → Type v) where
-  /-- `withReader (f : ρ → ρ) (x : m α) : m α`  runs the inner `x : m α` inside
-  a modified context after applying the function `f : ρ → ρ`.-/
-  withReader {α : Type u} : (ρ → ρ) → m α → m α
+class MonadWithReader (ρ : outParam (Type u)) (m : Type u  Type v) where
+  /-- `withReader (f : ρ  ρ) (x : m α) : m α`  runs the inner `x : m α` inside
+  a modified context after applying the function `f : ρ  ρ`.-/
+  withReader {α : Type u} : (ρ  ρ)  m α  m α
 
 export MonadWithReader (withReader)
 
-instance (ρ : Type u) (m : Type u → Type v) [MonadWithReaderOf ρ m] : MonadWithReader ρ m where
+instance (ρ : Type u) (m : Type u  Type v) [MonadWithReaderOf ρ m] : MonadWithReader ρ m where
   withReader := withTheReader ρ
 
-instance {ρ : Type u} {m : Type u → Type v} {n : Type u → Type v} [MonadFunctor m n] [MonadWithReaderOf ρ m] : MonadWithReaderOf ρ n where
+instance {ρ : Type u} {m : Type u  Type v} {n : Type u  Type v} [MonadFunctor m n] [MonadWithReaderOf ρ m] : MonadWithReaderOf ρ n where
   withReader f := monadMap (m := m) (withTheReader ρ f)
 
-instance {ρ : Type u} {m : Type u → Type v} : MonadWithReaderOf ρ (ReaderT ρ m) where
+instance {ρ : Type u} {m : Type u  Type v} : MonadWithReaderOf ρ (ReaderT ρ m) where
   withReader f x := fun ctx => x (f ctx)
 
 /--
@@ -3166,18 +3166,18 @@ we use overlapping instances to derive instances automatically from `monadLift`.
 
   [`MonadState`]: https://hackage.haskell.org/package/mtl-2.2.2/docs/Control-Monad-State-Class.html
 -/
-class MonadStateOf (σ : semiOutParam (Type u)) (m : Type u → Type v) where
+class MonadStateOf (σ : semiOutParam (Type u)) (m : Type u  Type v) where
   /-- `(← get) : σ` gets the state out of a monad `m`. -/
   get : m σ
   /-- `set (s : σ)` replaces the state with value `s`. -/
-  set : σ → m PUnit
-  /-- `modifyGet (f : σ → α × σ)` applies `f` to the current state, replaces
+  set : σ  m PUnit
+  /-- `modifyGet (f : σ  α × σ)` applies `f` to the current state, replaces
   the state with the return value, and returns a computed value.
 
   It is equivalent to `do let (a, s) := f (← get); put s; pure a`, but
   `modifyGet f` may be preferable because the former does not use the state
   linearly (without sufficient inlining). -/
-  modifyGet {α : Type u} : (σ → Prod α σ) → m α
+  modifyGet {α : Type u} : (σ  Prod α σ)  m α
 
 export MonadStateOf (set)
 
@@ -3185,7 +3185,7 @@ export MonadStateOf (set)
 Like `get`, but with `σ` explicit. This is useful if a monad supports
 `MonadStateOf` for multiple different types `σ`.
 -/
-abbrev getThe (σ : Type u) {m : Type u → Type v} [MonadStateOf σ m] : m σ :=
+abbrev getThe (σ : Type u) {m : Type u  Type v} [MonadStateOf σ m] : m σ :=
   MonadStateOf.get
 
 /--
@@ -3193,7 +3193,7 @@ Like `modify`, but with `σ` explicit. This is useful if a monad supports
 `MonadStateOf` for multiple different types `σ`.
 -/
 @[always_inline, inline]
-abbrev modifyThe (σ : Type u) {m : Type u → Type v} [MonadStateOf σ m] (f : σ → σ) : m PUnit :=
+abbrev modifyThe (σ : Type u) {m : Type u  Type v} [MonadStateOf σ m] (f : σ  σ) : m PUnit :=
   MonadStateOf.modifyGet fun s => (PUnit.unit, f s)
 
 /--
@@ -3201,38 +3201,38 @@ Like `modifyGet`, but with `σ` explicit. This is useful if a monad supports
 `MonadStateOf` for multiple different types `σ`.
 -/
 @[always_inline, inline]
-abbrev modifyGetThe {α : Type u} (σ : Type u) {m : Type u → Type v} [MonadStateOf σ m] (f : σ → Prod α σ) : m α :=
+abbrev modifyGetThe {α : Type u} (σ : Type u) {m : Type u  Type v} [MonadStateOf σ m] (f : σ  Prod α σ) : m α :=
   MonadStateOf.modifyGet f
 
 /-- Similar to `MonadStateOf`, but `σ` is an `outParam` for convenience. -/
-class MonadState (σ : outParam (Type u)) (m : Type u → Type v) where
+class MonadState (σ : outParam (Type u)) (m : Type u  Type v) where
   /-- `(← get) : σ` gets the state out of a monad `m`. -/
   get : m σ
   /-- `set (s : σ)` replaces the state with value `s`. -/
-  set : σ → m PUnit
-  /-- `modifyGet (f : σ → α × σ)` applies `f` to the current state, replaces
+  set : σ  m PUnit
+  /-- `modifyGet (f : σ  α × σ)` applies `f` to the current state, replaces
   the state with the return value, and returns a computed value.
 
   It is equivalent to `do let (a, s) := f (← get); put s; pure a`, but
   `modifyGet f` may be preferable because the former does not use the state
   linearly (without sufficient inlining). -/
-  modifyGet {α : Type u} : (σ → Prod α σ) → m α
+  modifyGet {α : Type u} : (σ  Prod α σ)  m α
 
 export MonadState (get modifyGet)
 
-instance (σ : Type u) (m : Type u → Type v) [MonadStateOf σ m] : MonadState σ m where
+instance (σ : Type u) (m : Type u  Type v) [MonadStateOf σ m] : MonadState σ m where
   set         := MonadStateOf.set
   get         := getThe σ
   modifyGet f := MonadStateOf.modifyGet f
 
 /--
-`modify (f : σ → σ)` applies the function `f` to the state.
+`modify (f : σ  σ)` applies the function `f` to the state.
 
 It is equivalent to `do set (f (← get))`, but `modify f` may be preferable
 because the former does not use the state linearly (without sufficient inlining).
 -/
 @[always_inline, inline]
-def modify {σ : Type u} {m : Type u → Type v} [MonadState σ m] (f : σ → σ) : m PUnit :=
+def modify {σ : Type u} {m : Type u  Type v} [MonadState σ m] (f : σ  σ) : m PUnit :=
   modifyGet fun s => (PUnit.unit, f s)
 
 /--
@@ -3240,13 +3240,13 @@ def modify {σ : Type u} {m : Type u → Type v} [MonadState σ m] (f : σ → �
 of the state. It is equivalent to `get <* modify f` but may be more efficient.
 -/
 @[always_inline, inline]
-def getModify {σ : Type u} {m : Type u → Type v} [MonadState σ m] (f : σ → σ) : m σ :=
+def getModify {σ : Type u} {m : Type u  Type v} [MonadState σ m] (f : σ  σ) : m σ :=
   modifyGet fun s => (s, f s)
 
 -- NOTE: The Ordering of the following two instances determines that the top-most `StateT` Monad layer
 -- will be picked first
 @[always_inline]
-instance {σ : Type u} {m : Type u → Type v} {n : Type u → Type w} [MonadLift m n] [MonadStateOf σ m] : MonadStateOf σ n where
+instance {σ : Type u} {m : Type u  Type v} {n : Type u  Type w} [MonadLift m n] [MonadStateOf σ m] : MonadStateOf σ n where
   get         := liftM (m := m) MonadStateOf.get
   set       s := liftM (m := m) (MonadStateOf.set s)
   modifyGet f := monadLift (m := m) (MonadState.modifyGet f)
@@ -3259,9 +3259,9 @@ combined inductive yields a more efficient data representation.
 -/
 inductive Result (ε σ α : Type u) where
   /-- A success value of type `α`, and a new state `σ`. -/
-  | ok    : α → σ → Result ε σ α
+  | ok    : α  σ  Result ε σ α
   /-- A failure value of type `ε`, and a new state `σ`. -/
-  | error : ε → σ → Result ε σ α
+  | error : ε  σ  Result ε σ α
 
 variable {ε σ α : Type u}
 
@@ -3275,7 +3275,7 @@ open EStateM (Result) in
 `EStateM ε σ` is a combined error and state monad, equivalent to
 `ExceptT ε (StateM σ)` but more efficient.
 -/
-def EStateM (ε σ α : Type u) := σ → Result ε σ α
+def EStateM (ε σ α : Type u) := σ  Result ε σ α
 
 namespace EStateM
 
@@ -3301,7 +3301,7 @@ protected def get : EStateM ε σ σ := fun s =>
 
 /-- The `modifyGet` operation of the `EStateM` monad. -/
 @[always_inline, inline]
-protected def modifyGet (f : σ → Prod α σ) : EStateM ε σ α := fun s =>
+protected def modifyGet (f : σ  Prod α σ) : EStateM ε σ α := fun s =>
   match f s with
   | (a, s) => Result.ok a s
 
@@ -3317,14 +3317,14 @@ getter and setter for it (a "lens" in the Haskell terminology).
 -/
 class Backtrackable (δ : outParam (Type u)) (σ : Type u) where
   /-- `save s : δ` retrieves a copy of the backtracking state out of the state. -/
-  save    : σ → δ
+  save    : σ  δ
   /-- `restore (s : σ) (x : δ) : σ` applies the old backtracking state `x` to
   the state `s` to get a backtracked state `s'`. -/
-  restore : σ → δ → σ
+  restore : σ  δ  σ
 
 /-- Implementation of `tryCatch` for `EStateM` where the state is `Backtrackable`. -/
 @[always_inline, inline]
-protected def tryCatch {δ} [Backtrackable δ σ] {α} (x : EStateM ε σ α) (handle : ε → EStateM ε σ α) : EStateM ε σ α := fun s =>
+protected def tryCatch {δ} [Backtrackable δ σ] {α} (x : EStateM ε σ α) (handle : ε  EStateM ε σ α) : EStateM ε σ α := fun s =>
   let d := Backtrackable.save s
   match x s with
   | Result.error e s => handle e (Backtrackable.restore s d)
@@ -3332,36 +3332,36 @@ protected def tryCatch {δ} [Backtrackable δ σ] {α} (x : EStateM ε σ α) (h
 
 /-- Implementation of `orElse` for `EStateM` where the state is `Backtrackable`. -/
 @[always_inline, inline]
-protected def orElse {δ} [Backtrackable δ σ] (x₁ : EStateM ε σ α) (x₂ : Unit → EStateM ε σ α) : EStateM ε σ α := fun s =>
+protected def orElse {δ} [Backtrackable δ σ] (x₁ : EStateM ε σ α) (x₂ : Unit  EStateM ε σ α) : EStateM ε σ α := fun s =>
   let d := Backtrackable.save s;
   match x₁ s with
   | Result.error _ s => x₂ () (Backtrackable.restore s d)
   | ok               => ok
 
-/-- Map the exception type of a `EStateM ε σ α` by a function `f : ε → ε'`. -/
+/-- Map the exception type of a `EStateM ε σ α` by a function `f : ε  ε'`. -/
 @[always_inline, inline]
-def adaptExcept {ε' : Type u} (f : ε → ε') (x : EStateM ε σ α) : EStateM ε' σ α := fun s =>
+def adaptExcept {ε' : Type u} (f : ε  ε') (x : EStateM ε σ α) : EStateM ε' σ α := fun s =>
   match x s with
   | Result.error e s => Result.error (f e) s
   | Result.ok a s    => Result.ok a s
 
 /-- The `bind` operation of the `EStateM` monad. -/
 @[always_inline, inline]
-protected def bind (x : EStateM ε σ α) (f : α → EStateM ε σ β) : EStateM ε σ β := fun s =>
+protected def bind (x : EStateM ε σ α) (f : α  EStateM ε σ β) : EStateM ε σ β := fun s =>
   match x s with
   | Result.ok a s    => f a s
   | Result.error e s => Result.error e s
 
 /-- The `map` operation of the `EStateM` monad. -/
 @[always_inline, inline]
-protected def map (f : α → β) (x : EStateM ε σ α) : EStateM ε σ β := fun s =>
+protected def map (f : α  β) (x : EStateM ε σ α) : EStateM ε σ β := fun s =>
   match x s with
   | Result.ok a s    => Result.ok (f a) s
   | Result.error e s => Result.error e s
 
 /-- The `seqRight` operation of the `EStateM` monad. -/
 @[always_inline, inline]
-protected def seqRight (x : EStateM ε σ α) (y : Unit → EStateM ε σ β) : EStateM ε σ β := fun s =>
+protected def seqRight (x : EStateM ε σ α) (y : Unit  EStateM ε σ β) : EStateM ε σ β := fun s =>
   match x s with
   | Result.ok _ s    => y () s
   | Result.error e s => Result.error e s
@@ -3400,10 +3400,10 @@ def run' (x : EStateM ε σ α) (s : σ) : Option α :=
   | Result.error .. => none
 
 /-- The `save` implementation for `Backtrackable PUnit σ`. -/
-@[inline] def dummySave : σ → PUnit := fun _ => ⟨⟩
+@[inline] def dummySave : σ  PUnit := fun _ => ⟨⟩
 
 /-- The `restore` implementation for `Backtrackable PUnit σ`. -/
-@[inline] def dummyRestore : σ → PUnit → σ := fun s _ => s
+@[inline] def dummyRestore : σ  PUnit  σ := fun s _ => s
 
 /--
 Dummy default instance. This makes every `σ` trivially "backtrackable"
@@ -3420,7 +3420,7 @@ end EStateM
 /-- A class for types that can be hashed into a `UInt64`. -/
 class Hashable (α : Sort u) where
   /-- Hashes the value `a : α` into a `UInt64`. -/
-  hash : α → UInt64
+  hash : α  UInt64
 
 export Hashable (hash)
 
@@ -3428,7 +3428,7 @@ export Hashable (hash)
 @[extern "lean_uint64_mix_hash"]
 opaque mixHash (u₁ u₂ : UInt64) : UInt64
 
-instance [Hashable α] {p : α → Prop} : Hashable (Subtype p) where
+instance [Hashable α] {p : α  Prop} : Hashable (Subtype p) where
   hash a := hash a.val
 
 /-- An opaque string hash function. -/
@@ -3488,7 +3488,7 @@ inductive Name where
 with
   /-- A hash function for names, which is stored inside the name itself as a
   computed field. -/
-  @[computed_field] hash : Name → UInt64
+  @[computed_field] hash : Name  UInt64
     | .anonymous => .ofNatCore 1723 (of_decide_eq_true rfl)
     | .str p s => mixHash p.hash s.hash
     | .num p v => mixHash p.hash (dite (LT.lt v UInt64.size) (fun h => UInt64.ofNatCore v h) (fun _ => UInt64.ofNatCore 17 (of_decide_eq_true rfl)))
@@ -3557,7 +3557,7 @@ abbrev mkSimple (s : String) : Name :=
 
 /-- (Boolean) equality comparator for names. -/
 @[extern "lean_name_eq"]
-protected def beq : (@& Name) → (@& Name) → Bool
+protected def beq : (@& Name)  (@& Name)  Bool
   | anonymous, anonymous => true
   | str p₁ s₁, str p₂ s₂ => and (BEq.beq s₁ s₂) (Name.beq p₁ p₂)
   | num p₁ n₁, num p₂ n₂ => and (BEq.beq n₁ n₂) (Name.beq p₁ p₂)
@@ -3570,7 +3570,7 @@ instance : BEq Name where
 This function does not have special support for macro scopes.
 See `Name.append`.
 -/
-def appendCore : Name → Name → Name
+def appendCore : Name  Name  Name
   | n, .anonymous => n
   | n, .str p s => .str (appendCore n p) s
   | n, .num p d => .num (appendCore n p) d
@@ -3918,7 +3918,7 @@ def getOptional? (stx : Syntax) : Option Syntax :=
   | _                    => none
 
 /-- Is this syntax `.missing`? -/
-def isMissing : Syntax → Bool
+def isMissing : Syntax  Bool
   | Syntax.missing => true
   | _ => false
 
@@ -3927,24 +3927,24 @@ def isNodeOf (stx : Syntax) (k : SyntaxNodeKind) (n : Nat) : Bool :=
   and (stx.isOfKind k) (beq stx.getNumArgs n)
 
 /-- `stx.isIdent` is `true` iff `stx` is an identifier. -/
-def isIdent : Syntax → Bool
+def isIdent : Syntax  Bool
   | ident .. => true
   | _        => false
 
 /-- If this is an `ident`, return the parsed value, else `.anonymous`. -/
-def getId : Syntax → Name
+def getId : Syntax  Name
   | ident _ _ val _ => val
   | _               => Name.anonymous
 
 /-- Retrieve the immediate info from the Syntax node. -/
-def getInfo? : Syntax → Option SourceInfo
+def getInfo? : Syntax  Option SourceInfo
   | atom info ..  => some info
   | ident info .. => some info
   | node info ..  => some info
   | missing       => none
 
 /-- Retrieve the left-most node or leaf's info in the Syntax tree. -/
-partial def getHeadInfo? : Syntax → Option SourceInfo
+partial def getHeadInfo? : Syntax  Option SourceInfo
   | atom info _   => some info
   | ident info .. => some info
   | node SourceInfo.none _ args   =>
@@ -4019,14 +4019,14 @@ end Syntax
 abbrev TSyntaxArray (ks : SyntaxNodeKinds) := Array (TSyntax ks)
 
 /-- Implementation of `TSyntaxArray.raw`. -/
-unsafe def TSyntaxArray.rawImpl : TSyntaxArray ks → Array Syntax := unsafeCast
+unsafe def TSyntaxArray.rawImpl : TSyntaxArray ks  Array Syntax := unsafeCast
 
 /-- Converts a `TSyntaxArray` to an `Array Syntax`, without reallocation. -/
 @[implemented_by TSyntaxArray.rawImpl]
 opaque TSyntaxArray.raw (as : TSyntaxArray ks) : Array Syntax := Array.empty
 
 /-- Implementation of `TSyntaxArray.mk`. -/
-unsafe def TSyntaxArray.mkImpl : Array Syntax → TSyntaxArray ks := unsafeCast
+unsafe def TSyntaxArray.mkImpl : Array Syntax  TSyntaxArray ks := unsafeCast
 
 /-- Converts an `Array Syntax` to a `TSyntaxArray`, without reallocation. -/
 @[implemented_by TSyntaxArray.mkImpl]
@@ -4138,15 +4138,15 @@ This is used to keep track of the location where we are working; if an exception
 is thrown, the `ref` gives the location where the error will be reported,
 assuming no more specific location is provided.
 -/
-class MonadRef (m : Type → Type) where
+class MonadRef (m : Type  Type) where
   /-- Get the current value of the `ref` -/
   getRef      : m Syntax
   /-- Run `x : m α` with a modified value for the `ref` -/
-  withRef {α} : Syntax → m α → m α
+  withRef {α} : Syntax  m α  m α
 
 export MonadRef (getRef)
 
-instance (m n : Type → Type) [MonadLift m n] [MonadFunctor m n] [MonadRef m] : MonadRef n where
+instance (m n : Type  Type) [MonadLift m n] [MonadFunctor m n] [MonadRef m] : MonadRef n where
   getRef        := liftM (getRef : m _)
   withRef ref x := monadMap (m := m) (MonadRef.withRef ref) x
 
@@ -4178,7 +4178,7 @@ def withRef [Monad m] [MonadRef m] {α} (ref : Syntax) (x : m α) : m α :=
     elaboration). We also apply the position of the result of `getRef` to each
     introduced symbol, which results in better error positions than not applying
     any position. -/
-class MonadQuotation (m : Type → Type) extends MonadRef m where
+class MonadQuotation (m : Type  Type) extends MonadRef m where
   /-- Get the fresh scope of the current macro invocation -/
   getCurrMacroScope : m MacroScope
   /-- Get the module name of the current file. This is used to ensure that
@@ -4197,7 +4197,7 @@ class MonadQuotation (m : Type → Type) extends MonadRef m where
   transformer and not just a monadic action ensures that the current macro
   scope before the recursive call is restored after it, as expected.
   -/
-  withFreshMacroScope {α : Type} : m α → m α
+  withFreshMacroScope {α : Type} : m α  m α
 
 export MonadQuotation (getCurrMacroScope getMainModule withFreshMacroScope)
 
@@ -4233,12 +4233,12 @@ The delimiter `_hyg` is used just to improve the `hasMacroScopes` performance.
 -/
 
 /-- Does this name have hygienic macro scopes? -/
-def Name.hasMacroScopes : Name → Bool
+def Name.hasMacroScopes : Name  Bool
   | str _ s => beq s "_hyg"
   | num p _ => hasMacroScopes p
   | _       => false
 
-private def eraseMacroScopesAux : Name → Name
+private def eraseMacroScopesAux : Name  Name
   | .str p s   => match beq s "_@" with
     | true  => p
     | false => eraseMacroScopesAux p
@@ -4252,7 +4252,7 @@ def Name.eraseMacroScopes (n : Name) : Name :=
   | true  => eraseMacroScopesAux n
   | false => n
 
-private def simpMacroScopesAux : Name → Name
+private def simpMacroScopesAux : Name  Name
   | .num p i => Name.mkNum (simpMacroScopesAux p) i
   | n        => eraseMacroScopesAux n
 
@@ -4293,13 +4293,13 @@ def MacroScopesView.review (view : MacroScopesView) : Name :=
     let base := (Name.mkStr (Name.appendCore (Name.appendCore (Name.mkStr view.name "_@") view.imported) view.mainModule) "_hyg")
     view.scopes.foldl Name.mkNum base
 
-private def assembleParts : List Name → Name → Name
+private def assembleParts : List Name  Name  Name
   | .nil,                acc => acc
   | .cons (.str _ s) ps, acc => assembleParts ps (Name.mkStr acc s)
   | .cons (.num _ n) ps, acc => assembleParts ps (Name.mkNum acc n)
   | _,                   _   => panic "Error: unreachable @ assembleParts"
 
-private def extractImported (scps : List MacroScope) (mainModule : Name) : Name → List Name → MacroScopesView
+private def extractImported (scps : List MacroScope) (mainModule : Name) : Name  List Name  MacroScopesView
   | n@(Name.str p str), parts =>
     match beq str "_@" with
     | true  => { name := p, mainModule := mainModule, imported := assembleParts parts Name.anonymous, scopes := scps }
@@ -4307,7 +4307,7 @@ private def extractImported (scps : List MacroScope) (mainModule : Name) : Name 
   | n@(Name.num p _), parts => extractImported scps mainModule p (List.cons n parts)
   | _,                    _     => panic "Error: unreachable @ extractImported"
 
-private def extractMainModule (scps : List MacroScope) : Name → List Name → MacroScopesView
+private def extractMainModule (scps : List MacroScope) : Name  List Name  MacroScopesView
   | n@(Name.str p str), parts =>
     match beq str "_@" with
     | true  => { name := p, mainModule := assembleParts parts Name.anonymous, imported := Name.anonymous, scopes := scps }
@@ -4315,13 +4315,13 @@ private def extractMainModule (scps : List MacroScope) : Name → List Name → 
   | n@(Name.num _ _), acc => extractImported scps (assembleParts acc Name.anonymous) n List.nil
   | _,                    _   => panic "Error: unreachable @ extractMainModule"
 
-private def extractMacroScopesAux : Name → List MacroScope → MacroScopesView
+private def extractMacroScopesAux : Name  List MacroScope  MacroScopesView
   | Name.num p scp, acc => extractMacroScopesAux p (List.cons scp acc)
   | Name.str p _  , acc => extractMainModule acc p List.nil -- str must be "_hyg"
   | _,                _   => panic "Error: unreachable @ extractMacroScopesAux"
 
 /--
-  Revert all `addMacroScope` calls. `v = extractMacroScopes n → n = v.review`.
+  Revert all `addMacroScope` calls. `v = extractMacroScopes n  n = v.review`.
   This operation is useful for analyzing/transforming the original identifiers, then adding back
   the scopes (via `MacroScopesView.review`). -/
 def extractMacroScopes (n : Name) : MacroScopesView :=
@@ -4373,7 +4373,7 @@ instance : Append Name where
 Add a new macro scope onto the name `n`, using the monad state to supply the
 main module and current macro scope.
 -/
-@[inline] def MonadQuotation.addMacroScope {m : Type → Type} [MonadQuotation m] [Monad m] (n : Name) : m Name :=
+@[inline] def MonadQuotation.addMacroScope {m : Type  Type} [MonadQuotation m] [Monad m] (n : Name) : m Name :=
   bind getMainModule     fun mainModule =>
   bind getCurrMacroScope fun scp =>
   pure (Lean.addMacroScope mainModule n scp)
@@ -4433,7 +4433,7 @@ structure Context where
 /-- An exception in the `MacroM` monad. -/
 inductive Exception where
   /-- A general error, given a message and a span (expressed as a `Syntax`). -/
-  | error             : Syntax → String → Exception
+  | error             : Syntax  String  Exception
   /-- An unsupported syntax exception. We keep this separate because it is
   used for control flow: if one macro does not support a syntax then we try
   the next one. -/
@@ -4463,11 +4463,11 @@ For more capabilities, macros can instead be written as `elab` using `adaptExpan
 abbrev MacroM := ReaderT Macro.Context (EStateM Macro.Exception Macro.State)
 
 /--
-A `macro` has type `Macro`, which is a `Syntax → MacroM Syntax`: it
+A `macro` has type `Macro`, which is a `Syntax  MacroM Syntax`: it
 receives an input syntax and is supposed to "expand" it into another piece of
 syntax.
 -/
-abbrev Macro := Syntax → MacroM Syntax
+abbrev Macro := Syntax  MacroM Syntax
 
 namespace Macro
 
@@ -4520,17 +4520,17 @@ instance : MonadQuotation MacroM where
 structure Methods where
   /-- Expands macros in the given syntax. A return value of `none` means there
   was nothing to expand. -/
-  expandMacro?      : Syntax → MacroM (Option Syntax)
+  expandMacro?      : Syntax  MacroM (Option Syntax)
   /-- Get the current namespace in the file. -/
   getCurrNamespace  : MacroM Name
   /-- Check if a given name refers to a declaration. -/
-  hasDecl           : Name → MacroM Bool
+  hasDecl           : Name  MacroM Bool
   /-- Resolves the given name to an overload list of namespaces. -/
-  resolveNamespace  : Name → MacroM (List Name)
+  resolveNamespace  : Name  MacroM (List Name)
   /-- Resolves the given name to an overload list of global definitions.
   The `List String` in each alternative is the deduced list of projections
   (which are ambiguous with name components). -/
-  resolveGlobalName : Name → MacroM (List (Prod Name (List String)))
+  resolveGlobalName : Name  MacroM (List (Prod Name (List String)))
   deriving Inhabited
 
 /-- Implementation of `mkMethods`. -/
@@ -4595,7 +4595,7 @@ export Macro (expandMacro?)
 namespace PrettyPrinter
 
 /--
-The unexpander monad, essentially `Syntax → Option α`. The `Syntax` is the `ref`,
+The unexpander monad, essentially `Syntax  Option α`. The `Syntax` is the `ref`,
 and it has the possibility of failure without an error message.
 -/
 abbrev UnexpandM := ReaderT Syntax (EStateM Unit Unit)
@@ -4606,7 +4606,7 @@ While less general than an arbitrary delaborator, it can be declared without imp
 Used by the `[app_unexpander]` attribute.
 -/
 -- a `kindUnexpander` could reasonably be added later
-abbrev Unexpander := Syntax → UnexpandM Syntax
+abbrev Unexpander := Syntax  UnexpandM Syntax
 
 instance : MonadQuotation UnexpandM where
   getRef              := read

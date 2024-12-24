@@ -19,7 +19,7 @@ namespace Sign
 @[simp] theorem neg_eq : neg  = -1 := rfl
 @[simp] theorem pos_eq : pos = 1 := rfl
 
-def mul : Sign → Sign → Sign
+def mul : Sign  Sign  Sign
   | neg,  neg  => pos
   | neg,  pos  => neg
   | neg,  zero => zero
@@ -29,7 +29,7 @@ def mul : Sign → Sign → Sign
 instance : Mul Sign where
   mul a b := Sign.mul a b
 
-def le : Sign → Sign → Bool
+def le : Sign  Sign  Bool
   | neg,  _    => true
   | zero, zero => true
   | _,    pos  => true
@@ -38,13 +38,13 @@ def le : Sign → Sign → Bool
 instance : LE Sign where
   le a b := Sign.le a b
 
-instance : DecidableRel (· ≤ · : Sign → Sign → Prop) :=
+instance : DecidableRel (· ≤ · : Sign  Sign  Prop) :=
   fun a b => inferInstanceAs (Decidable (le a b = true))
 
-theorem neg_bot {s : Sign} : s ≤ -1 → s = -1 := by
+theorem neg_bot {s : Sign} : s ≤ -1  s = -1 := by
   cases s <;> decide
 
-theorem pos_top {s : Sign} : 1 ≤ s → s = 1 := by
+theorem pos_top {s : Sign} : 1 ≤ s  s = 1 := by
   cases s <;> decide
 
 end Sign

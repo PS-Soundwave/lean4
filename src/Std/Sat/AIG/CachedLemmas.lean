@@ -24,7 +24,7 @@ If we find a cached atom declaration in the AIG, denoting it is equivalent to de
 -/
 theorem denote_mkAtom_cached {aig : AIG α} {hit} :
     aig.cache.get? (.atom v) = some hit
-      →
+      
     ⟦aig, ⟨hit.idx, hit.hbound⟩, assign⟧ = ⟦aig.mkAtom v, assign⟧ := by
   have := hit.hvalid
   simp only [denote_mkAtom]
@@ -97,7 +97,7 @@ If we find a cached const declaration in the AIG, denoting it is equivalent to d
 -/
 theorem denote_mkConst_cached {aig : AIG α} {hit} :
     aig.cache.get? (.const b) = some hit
-      →
+      
     ⟦aig, ⟨hit.idx, hit.hbound⟩, assign⟧ = ⟦aig.mkConst b, assign⟧ := by
   have := hit.hvalid
   simp only [denote_mkConst]
@@ -172,7 +172,7 @@ If we find a cached gate declaration in the AIG, denoting it is equivalent to de
 -/
 theorem denote_mkGate_cached {aig : AIG α} {input} {hit} :
     aig.cache.get? (.gate input.lhs.ref.gate input.rhs.ref.gate input.lhs.inv input.rhs.inv) = some hit
-      →
+      
     ⟦⟨aig, hit.idx, hit.hbound⟩, assign⟧
       =
     ⟦aig.mkGate input, assign⟧ := by

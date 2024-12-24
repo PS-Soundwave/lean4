@@ -7,7 +7,7 @@ def σ := Nat
 @[reducible]
 def β := String
 
-opaque foo : ∀ {α}, IO α → IO α
+opaque foo : ∀ {α}, IO α  IO α
 opaque bar : StateT σ IO β
 
 def mapped_foo : StateT σ IO β := do
@@ -29,7 +29,7 @@ def mapped_foo' : StateT σ IO β := do
   restoreM <| foo <| mapInBase bar
 
 def control {α : Type}
-  (f : ({β : Type} → StateT σ IO β → IO (stM β)) → IO (stM α))
+  (f : ({β : Type}  StateT σ IO β  IO (stM β))  IO (stM α))
   : StateT σ IO α := do
   let s ← get
   let mapInBase := fun {β} (z : StateT σ IO β) => StateT.run z s

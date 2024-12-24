@@ -1,10 +1,10 @@
 mutual
-  @[simp] def isEven : Nat → Bool
+  @[simp] def isEven : Nat  Bool
     | 0 => true
     | n+1 => isOdd n
   decreasing_by apply Nat.lt_succ_self
 
-  @[simp] def isOdd : Nat → Bool
+  @[simp] def isOdd : Nat  Bool
     | 0 => false
     | n+1 => isEven n
   decreasing_by apply Nat.lt_succ_self

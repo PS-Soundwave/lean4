@@ -31,9 +31,9 @@ v4.14.0
     ```lean
     structure Tree where
       n : Nat
-      children : Fin n → Tree
+      children : Fin n  Tree
 
-    def Tree.size : Tree → Nat
+    def Tree.size : Tree  Nat
       | {n, children} => Id.run do
         let mut s := 0
         for h : i in [0 : n] do
@@ -48,7 +48,7 @@ v4.14.0
 * **Application elaboration improvements**
   * [#5671](https://github.com/leanprover/lean4/pull/5671) makes `@[elab_as_elim]` require at least one discriminant, since otherwise there is no advantage to this alternative elaborator.
   * [#5528](https://github.com/leanprover/lean4/pull/5528) enables field notation in explicit mode. The syntax `@x.f` elaborates as `@S.f` with `x` supplied to the appropriate parameter.
-  * [#5692](https://github.com/leanprover/lean4/pull/5692) modifies the dot notation resolution algorithm so that it can apply `CoeFun` instances. For example, Mathlib has `Multiset.card : Multiset α →+ Nat`, and now with `m : Multiset α`, the notation `m.card` resolves to `⇑Multiset.card m`.
+  * [#5692](https://github.com/leanprover/lean4/pull/5692) modifies the dot notation resolution algorithm so that it can apply `CoeFun` instances. For example, Mathlib has `Multiset.card : Multiset α + Nat`, and now with `m : Multiset α`, the notation `m.card` resolves to `⇑Multiset.card m`.
   * [#5658](https://github.com/leanprover/lean4/pull/5658) fixes a bug where 'don't know how to synthesize implicit argument' errors might have the incorrect local context when the eta arguments feature is activated.
   * [#5933](https://github.com/leanprover/lean4/pull/5933) fixes a bug where `..` ellipses in patterns made use of optparams and autoparams.
   * [#5770](https://github.com/leanprover/lean4/pull/5770) makes dot notation for structures resolve using *all* ancestors. Adds a *resolution order* for generalized field notation. This is the order of namespaces visited during resolution when trying to resolve names. The algorithm to compute a resolution order is the commonly used C3 linearization (used for example by Python), which when successful ensures that immediate parents' namespaces are considered before more distant ancestors' namespaces. By default we use a relaxed version of the algorithm that tolerates inconsistencies, but using `set_option structure.strictResolutionOrder true` makes inconsistent parent orderings into warnings.
@@ -110,7 +110,7 @@ v4.14.0
   * [#5652](https://github.com/leanprover/lean4/pull/5652) adds umod support.
   * [#5653](https://github.com/leanprover/lean4/pull/5653) adds performance benchmark for modulo.
   * [#5655](https://github.com/leanprover/lean4/pull/5655) reduces error on `bv_check` to warning.
-  * [#5670](https://github.com/leanprover/lean4/pull/5670) adds `~~~(-x)` support.
+  * [#5670](https://github.com/leanprover/lean4/pull/5670) adds `(-x)` support.
   * [#5673](https://github.com/leanprover/lean4/pull/5673) disables `ac_nf` by default.
   * [#5675](https://github.com/leanprover/lean4/pull/5675) fixes context tracking in `bv_decide` counter example.
   * [#5676](https://github.com/leanprover/lean4/pull/5676) adds an error when the LRAT proof is invalid.
@@ -625,7 +625,7 @@ v4.12.0
   For example, we can use `bv_decide` to verify that a bit twiddling formula leaves at most one bit set:
   ```lean
   def popcount (x : BitVec 64) : BitVec 64 :=
-    let rec go (x pop : BitVec 64) : Nat → BitVec 64
+    let rec go (x pop : BitVec 64) : Nat  BitVec 64
       | 0 => pop
       | n + 1 => go (x >>> 2) (pop + (x &&& 1)) n
     go x 0 64
@@ -955,41 +955,41 @@ v4.11.0
 
     ```lean
     mutual
-    def Even : Nat → Prop
+    def Even : Nat  Prop
       | 0 => True
       | n+1 => Odd n
 
-    def Odd : Nat → Prop
+    def Odd : Nat  Prop
       | 0 => False
       | n+1 => Even n
     end
 
     mutual
     inductive A
-    | other : B → A
+    | other : B  A
     | empty
     inductive B
-    | other : A → B
+    | other : A  B
     | empty
     end
 
     mutual
-    def A.size : A → Nat
+    def A.size : A  Nat
     | .other b => b.size + 1
     | .empty => 0
 
-    def B.size : B → Nat
+    def B.size : B  Nat
     | .other a => a.size + 1
     | .empty => 0
     end
 
-    inductive Tree where | node : List Tree → Tree
+    inductive Tree where | node : List Tree  Tree
 
     mutual
-    def Tree.size : Tree → Nat
+    def Tree.size : Tree  Nat
     | node ts => Tree.list_size ts
 
-    def Tree.list_size : List Tree → Nat
+    def Tree.list_size : List Tree  Nat
     | [] => 0
     | t::ts => Tree.size t + Tree.list_size ts
     end
@@ -1323,7 +1323,7 @@ v4.10.0
     | leaf
     | branch (left : Tree α) (val : α) (right : Tree α)
 
-  def depth : Tree α → Nat
+  def depth : Tree α  Nat
     | leaf => 0
   ```
 
@@ -1585,17 +1585,17 @@ v4.9.0
     ```lean4
     inductive Many (α : Type u) where
       | none : Many α
-      | more : α → (Unit → Many α) → Many α
+      | more : α  (Unit  Many α)  Many α
 
-    def Many.map {α β : Type u} (f : α → β) : Many α → Many β
+    def Many.map {α β : Type u} (f : α  β) : Many α  Many β
       | .none => .none
       | .more x xs => .more (f x) (fun _ => (xs ()).map f)
 
     #check Many.map.induct
     /-
-    Many.map.induct {α β : Type u} (f : α → β) (motive : Many α → Prop)
+    Many.map.induct {α β : Type u} (f : α  β) (motive : Many α  Prop)
       (case1 : motive Many.none)
-      (case2 : ∀ (x : α) (xs : Unit → Many α), motive (xs ()) → motive (Many.more x xs)) :
+      (case2 : ∀ (x : α) (xs : Unit  Many α), motive (xs ())  motive (Many.more x xs)) :
       ∀ (a : Many α), motive a
     -/
     ```
@@ -1626,7 +1626,7 @@ v4.9.0
 
     In the following example, it will report that `foo` is a problematic theorem.
     ```lean
-    opaque f : Nat → Nat → Nat
+    opaque f : Nat  Nat  Nat
 
     @[simp] theorem foo : f x (x, y).2 = y := by sorry
 
@@ -1640,7 +1640,7 @@ v4.9.0
     ```
     With the information above, users can annotate theorems such as `foo` using `no_index` for problematic subterms. Example:
     ```lean
-    opaque f : Nat → Nat → Nat
+    opaque f : Nat  Nat  Nat
 
     @[simp] theorem foo : f x (no_index (x, y).2) = y := by sorry
 
@@ -1890,16 +1890,16 @@ v4.8.0
 
   For example from:
   ```
-  def ackermann : Nat → Nat → Nat
+  def ackermann : Nat  Nat  Nat
     | 0, m => m + 1
     | n+1, 0 => ackermann n 1
     | n+1, m+1 => ackermann n (ackermann (n + 1) m)
   ```
   we get
   ```
-  ackermann.induct (motive : Nat → Nat → Prop) (case1 : ∀ (m : Nat), motive 0 m)
-    (case2 : ∀ (n : Nat), motive n 1 → motive (Nat.succ n) 0)
-    (case3 : ∀ (n m : Nat), motive (n + 1) m → motive n (ackermann (n + 1) m) → motive (Nat.succ n) (Nat.succ m))
+  ackermann.induct (motive : Nat  Nat  Prop) (case1 : ∀ (m : Nat), motive 0 m)
+    (case2 : ∀ (n : Nat), motive n 1  motive (Nat.succ n) 0)
+    (case3 : ∀ (n m : Nat), motive (n + 1) m  motive n (ackermann (n + 1) m)  motive (Nat.succ n) (Nat.succ m))
     (x x : Nat) : motive x x
   ```
 
@@ -2315,7 +2315,7 @@ v4.8.0
   Running the executable via `lake exe` will ensure these libraries are part of `PATH`.
 
   In a related change, the signature of the `nativeFacets` Lake configuration options has changed
-  from a static `Array` to a function `(shouldExport : Bool) → Array`.
+  from a static `Array` to a function `(shouldExport : Bool)  Array`.
   See its docstring or Lake's [README](src/lake/README.md) for further details on the changed option.
 * [#3690](https://github.com/leanprover/lean4/pull/3690) marks "Build matrix complete" as canceled if the build is canceled.
 * [#3700](https://github.com/leanprover/lean4/pull/3700), [#3702](https://github.com/leanprover/lean4/pull/3702),
@@ -2338,7 +2338,7 @@ v4.8.0
 
 * Automatically generated equational theorems are now named using suffix `.eq_<idx>` instead of `._eq_<idx>`, and `.eq_def` instead of `._unfold`. Example:
 ```
-def fact : Nat → Nat
+def fact : Nat  Nat
   | 0 => 1
   | n+1 => (n+1) * fact n
 
@@ -2441,11 +2441,11 @@ v4.7.0
   have been annotated with `no_index`. This modification, which addresses [issue #2670](https://github.com/leanprover/lean4/issues/2670),
   restores the Lean 3 behavior that users expect. With this modification, the following examples are now operational:
   ```
-  example {α β : Type} {f : α × β → β → β} (h : ∀ p : α × β, f p p.2 = p.2)
+  example {α β : Type} {f : α × β  β  β} (h : ∀ p : α × β, f p p.2 = p.2)
     (a : α) (b : β) : f (a, b) b = b := by
     simp [h]
 
-  example {α β : Type} {f : α × β → β → β}
+  example {α β : Type} {f : α × β  β  β}
     (a : α) (b : β) (h : f (a,b) (a,b).2 = (a,b).2) : f (a, b) b = b := by
     simp [h]
   ```
@@ -2575,7 +2575,7 @@ v4.6.0
   The `simproc` `reduceFoo` is invoked on terms that match the pattern `foo _`.
   -/
   simproc reduceFoo (foo _) :=
-    /- A term of type `Expr → SimpM Step -/
+    /- A term of type `Expr  SimpM Step -/
     fun e => do
       /-
       The `Step` type has three constructors: `.done`, `.visit`, `.continue`.
@@ -2644,13 +2644,13 @@ v4.6.0
   Migration guide: In simple cases just remove the function name, and any
   variables already bound at the header.
   ```diff
-   def foo : Nat → Nat → Nat := …
+   def foo : Nat  Nat  Nat := …
   -termination_by foo a b => a - b
   +termination_by a b => a - b
   ```
   or
   ```diff
-   def foo : Nat → Nat → Nat := …
+   def foo : Nat  Nat  Nat := …
   -termination_by _ a b => a - b
   +termination_by a b => a - b
   ```
@@ -2666,7 +2666,7 @@ v4.6.0
   ones; the bound variables are interpreted from left to right, no longer from
   right to left:
   ```diff
-   def foo : Nat → Nat → Nat → Nat
+   def foo : Nat  Nat  Nat  Nat
      | a, b, c => …
   -termination_by foo b c => b
   +termination_by a b => b
@@ -2676,16 +2676,16 @@ v4.6.0
   function name) next to the function definition:
   ```diff
   -mutual
-  -def foo : Nat → Nat → Nat := …
-  -def bar : Nat → Nat := …
+  -def foo : Nat  Nat  Nat := …
+  -def bar : Nat  Nat := …
   -end
   -termination_by
   -  foo a b => a - b
   -  bar a => a
   +mutual
-  +def foo : Nat → Nat → Nat := …
+  +def foo : Nat  Nat  Nat := …
   +termination_by a b => a - b
-  +def bar : Nat → Nat := …
+  +def bar : Nat  Nat := …
   +termination_by a => a
   +end
   ```
@@ -3199,7 +3199,7 @@ v4.0.0-m5 (07 August 2022)
   inductive MyExpr
     | let : ...
 
-  def f : MyExpr → MyExpr
+  def f : MyExpr  MyExpr
     | .let ... => .let ...
   ```
 
@@ -3260,7 +3260,7 @@ v4.0.0-m5 (07 August 2022)
     | var (i : Nat)
     | app (a b : Exp)
   with
-    @[computedField] hash : Exp → Nat
+    @[computedField] hash : Exp  Nat
       | .var i => i
       | .app a b => a.hash * b.hash + 1
   ```
@@ -3269,7 +3269,7 @@ v4.0.0-m5 (07 August 2022)
 
 * Update `a[i]` notation. It is now based on the typeclass
   ```lean
-  class GetElem (cont : Type u) (idx : Type v) (elem : outParam (Type w)) (dom : outParam (cont → idx → Prop)) where
+  class GetElem (cont : Type u) (idx : Type v) (elem : outParam (Type w)) (dom : outParam (cont  idx  Prop)) where
     getElem (xs : cont) (i : idx) (h : dom xs i) : Elem
   ```
   The notation `a[i]` is now defined as follows
@@ -3363,7 +3363,7 @@ v4.0.0-m5 (07 August 2022)
 * Better support for qualified names in recursive declarations. The following is now supported:
   ```lean
   namespace Nat
-    def fact : Nat → Nat
+    def fact : Nat  Nat
     | 0 => 1
     | n+1 => (n+1) * Nat.fact n
   end Nat
@@ -3418,9 +3418,9 @@ v4.0.0-m5 (07 August 2022)
 * Improve dot notation and aliases interaction. See discussion on [Zulip](https://leanprover.zulipchat.com/#narrow/stream/270676-lean4/topic/Namespace-based.20overloading.20does.20not.20find.20exports/near/282946185) for additional details.
   Example:
   ```lean
-  def Set (α : Type) := α → Prop
-  def Set.union (s₁ s₂ : Set α) : Set α := fun a => s₁ a ∨ s₂ a
-  def FinSet (n : Nat) := Fin n → Prop
+  def Set (α : Type) := α  Prop
+  def Set.union (s₁ s₂ : Set α) : Set α := fun a => s₁ a  s₂ a
+  def FinSet (n : Nat) := Fin n  Prop
 
   namespace FinSet
     export Set (union) -- FinSet.union is now an alias for `Set.union`
@@ -3432,10 +3432,10 @@ v4.0.0-m5 (07 August 2022)
 
 * `ext` and `enter` conv tactics can now go inside let-declarations. Example:
   ```lean
-  example (g : Nat → Nat) (y : Nat) (h : let x := y + 1; g (0+x) = x) : g (y + 1) = y + 1 := by
+  example (g : Nat  Nat) (y : Nat) (h : let x := y + 1; g (0+x) = x) : g (y + 1) = y + 1 := by
     conv at h => enter [x, 1, 1]; rw [Nat.zero_add]
     /-
-      g : Nat → Nat
+      g : Nat  Nat
       y : Nat
       h : let x := y + 1;
           g x = x
@@ -3493,7 +3493,7 @@ v4.0.0-m5 (07 August 2022)
   ```lean
   /-
   The following declaration now produces an error because `PUnit` is universe polymorphic,
-  but the universe parameter does not occur in the function type `Nat → Nat`
+  but the universe parameter does not occur in the function type `Nat  Nat`
   -/
   def f (n : Nat) : Nat :=
     let aux (_ : PUnit) : Nat := n + 1
@@ -3515,13 +3515,13 @@ v4.0.0-m5 (07 August 2022)
 * Add `[eliminator]` attribute. It allows users to specify default recursor/eliminators for the `induction` and `cases` tactics.
   It is an alternative for the `using` notation. Example:
   ```lean
-  @[eliminator] protected def recDiag {motive : Nat → Nat → Sort u}
+  @[eliminator] protected def recDiag {motive : Nat  Nat  Sort u}
       (zero_zero : motive 0 0)
-      (succ_zero : (x : Nat) → motive x 0 → motive (x + 1) 0)
-      (zero_succ : (y : Nat) → motive 0 y → motive 0 (y + 1))
-      (succ_succ : (x y : Nat) → motive x y → motive (x + 1) (y + 1))
+      (succ_zero : (x : Nat)  motive x 0  motive (x + 1) 0)
+      (zero_succ : (y : Nat)  motive 0 y  motive 0 (y + 1))
+      (succ_succ : (x y : Nat)  motive x y  motive (x + 1) (y + 1))
       (x y : Nat) :  motive x y :=
-    let rec go : (x y : Nat) → motive x y
+    let rec go : (x y : Nat)  motive x y
       | 0,     0 => zero_zero
       | x+1, 0   => succ_zero x (go x 0)
       | 0,   y+1 => zero_succ y (go 0 y)
@@ -3546,7 +3546,7 @@ v4.0.0-m5 (07 August 2022)
   ```lean
   inductive Foo where
     | a | b | c
-    | pair: Foo × Foo → Foo
+    | pair: Foo × Foo  Foo
 
   def Foo.deq (a b : Foo) : Decidable (a = b) := by
     cases a <;> cases b
@@ -3572,7 +3572,7 @@ v4.0.0-m5 (07 August 2022)
   ```lean
   #print Nat.decEq
   /-
-  protected def Nat.decEq : (n m : Nat) → Decidable (n = m) :=
+  protected def Nat.decEq : (n m : Nat)  Decidable (n = m) :=
   fun n m =>
     match h : Nat.beq n m with
     | true => isTrue (_ : n = m)
@@ -3610,16 +3610,16 @@ v4.0.0-m5 (07 August 2022)
 * Refine auto bound implicit feature. It does not consider anymore unbound variables that have the same
   name of a declaration being defined. Example:
   ```lean
-  def f : f → Bool := -- Error at second `f`
+  def f : f  Bool := -- Error at second `f`
     fun _ => true
 
-  inductive Foo : List Foo → Type -- Error at second `Foo`
+  inductive Foo : List Foo  Type -- Error at second `Foo`
     | x : Foo []
   ```
   Before this refinement, the declarations above would be accepted and the
   second `f` and `Foo` would be treated as auto implicit variables. That is,
-  `f : {f : Sort u} → f → Bool`, and
-  `Foo : {Foo : Type u} → List Foo → Type`.
+  `f : {f : Sort u}  f  Bool`, and
+  `Foo : {Foo : Type u}  List Foo  Type`.
 
 
 * Fix syntax highlighting for recursive declarations. Example
@@ -3628,7 +3628,7 @@ v4.0.0-m5 (07 August 2022)
     | nil : List α  -- `List` is not highlighted as a variable anymore
     | cons (head : α) (tail : List α) : List α
 
-  def List.map (f : α → β) : List α → List β
+  def List.map (f : α  β) : List α  List β
     | []    => []
     | a::as => f a :: map f as -- `map` is not highlighted as a variable anymore
   ```
@@ -3677,15 +3677,15 @@ v4.0.0-m5 (07 August 2022)
 
 * Remove support for `{}` annotation from inductive datatype constructors. This annotation was barely used, and we can control the binder information for parameter bindings using the new inductive family indices to parameter promotion. Example: the following declaration using `{}`
   ```lean
-  inductive LE' (n : Nat) : Nat → Prop where
+  inductive LE' (n : Nat) : Nat  Prop where
     | refl {} : LE' n n -- Want `n` to be explicit
-    | succ  : LE' n m → LE' n (m+1)
+    | succ  : LE' n m  LE' n (m+1)
   ```
   can now be written as
   ```lean
-  inductive LE' : Nat → Nat → Prop where
+  inductive LE' : Nat  Nat  Prop where
     | refl (n : Nat) : LE' n n
-    | succ : LE' n m → LE' n (m+1)
+    | succ : LE' n m  LE' n (m+1)
   ```
   In both cases, the inductive family has one parameter and one index.
   Recall that the actual number of parameters can be retrieved using the command `#print`.
@@ -3700,19 +3700,19 @@ v4.0.0-m5 (07 August 2022)
 
 * Improve binder names for constructor auto implicit parameters. Example, given the inductive datatype
   ```lean
-  inductive Member : α → List α → Type u
+  inductive Member : α  List α  Type u
     | head : Member a (a::as)
-    | tail : Member a bs → Member a (b::bs)
+    | tail : Member a bs  Member a (b::bs)
   ```
   before:
   ```lean
   #check @Member.head
-  -- @Member.head : {x : Type u_1} → {a : x} → {as : List x} → Member a (a :: as)
+  -- @Member.head : {x : Type u_1}  {a : x}  {as : List x}  Member a (a :: as)
   ```
   now:
   ```lean
   #check @Member.head
-  -- @Member.head : {α : Type u_1} → {a : α} → {as : List α} → Member a (a :: as)
+  -- @Member.head : {α : Type u_1}  {a : α}  {as : List α}  Member a (a :: as)
   ```
 
 * Improve error message when constructor parameter universe level is too big.
@@ -3756,8 +3756,8 @@ For example, the goal
   key : Nat
   value : β
   right : Tree β
-  ihl : BST left → Tree.find? (Tree.insert left k v) k = some v
-  ihr : BST right → Tree.find? (Tree.insert right k v) k = some v
+  ihl : BST left  Tree.find? (Tree.insert left k v) k = some v
+  ihr : BST right  Tree.find? (Tree.insert right k v) k = some v
   h✝ : k < key
   a✝³ : BST left
   a✝² : ForallTree (fun k v => k < key) left
@@ -3776,8 +3776,8 @@ For example, the goal
   key : Nat
   value : β
   right : Tree β
-  ihl : BST left → Tree.find? (Tree.insert left k v) k = some v
-  ihr : BST right → Tree.find? (Tree.insert right k v) k = some v
+  ihl : BST left  Tree.find? (Tree.insert left k v) k = some v
+  ihr : BST right  Tree.find? (Tree.insert right k v) k = some v
    : k < key
    : BST left
    : ForallTree (fun k v => k < key) left
@@ -3863,7 +3863,7 @@ v4.0.0-m4 (23 March 2022)
 
 * Extend `match` syntax: multiple left-hand-sides in a single alternative. Example:
   ```lean
-  def fib : Nat → Nat
+  def fib : Nat  Nat
   | 0 | 1 => 1
   | n+2 => fib n + fib (n+1)
   ```
@@ -3902,7 +3902,7 @@ v4.0.0-m4 (23 March 2022)
 * [Fuzzy matching for auto completion](https://github.com/leanprover/lean4/pull/1023)
 
 * Extend dot-notation `x.field` for arrow types. If type of `x` is an arrow, we look up for `Function.field`.
-For example, given `f : Nat → Nat` and `g : Nat → Nat`, `f.comp g` is now notation for `Function.comp f g`.
+For example, given `f : Nat  Nat` and `g : Nat  Nat`, `f.comp g` is now notation for `Function.comp f g`.
 
 * The new `.<identifier>` notation is now also accepted where a function type is expected.
   ```lean
@@ -3919,7 +3919,7 @@ For example, given `f : Nat → Nat` and `g : Nat → Nat`, `f.comp g` is now no
 * Remove restriction in `congr` theorems that all function arguments on the left-hand-side must be free variables. For example, the following theorem is now a valid `congr` theorem.
   ```lean
   @[congr]
-  theorem dep_congr [DecidableEq ι] {p : ι → Set α} [∀ i, Inhabited (p i)] :
+  theorem dep_congr [DecidableEq ι] {p : ι  Set α} [∀ i, Inhabited (p i)] :
                     ∀ {i j} (h : i = j) (x : p i) (y : α) (hx : x = y), Pi.single (f := (p ·)) i x = Pi.single (f := (p ·)) j ⟨y, hx ▸ h ▸ x.2⟩ :=
   ```
 
@@ -3943,7 +3943,7 @@ For example, given `f : Nat → Nat` and `g : Nat → Nat`, `f.comp g` is now no
 
 * Local instances occurring in patterns are now considered by the type class resolution procedure. Example:
   ```lean
-  def concat : List ((α : Type) × ToString α × α) → String
+  def concat : List ((α : Type) × ToString α × α)  String
     | [] => ""
     | ⟨_, _, a⟩ :: as => toString a ++ concat as
   ```
@@ -3951,13 +3951,13 @@ For example, given `f : Nat → Nat` and `g : Nat → Nat`, `f.comp g` is now no
 * Notation for providing the motive for `match` expressions has changed.
   before:
   ```lean
-  match x, rfl : (y : Nat) → x = y → Nat with
+  match x, rfl : (y : Nat)  x = y  Nat with
   | 0,   h => ...
   | x+1, h => ...
   ```
   now:
   ```lean
-  match (motive := (y : Nat) → x = y → Nat) x, rfl with
+  match (motive := (y : Nat)  x = y  Nat) x, rfl with
   | 0,   h => ...
   | x+1, h => ...
   ```
@@ -3970,9 +3970,9 @@ For example, given `f : Nat → Nat` and `g : Nat → Nat`, `f.comp g` is now no
 
 * `(generalizing := true)` is the default behavior for `match` expressions even if the expected type is not a proposition. In the following example, we used to have to include `(generalizing := true)` manually.
   ```lean
-  inductive Fam : Type → Type 1 where
+  inductive Fam : Type  Type 1 where
     | any : Fam α
-    | nat : Nat → Fam Nat
+    | nat : Nat  Fam Nat
 
   example (a : α) (x : Fam α) : α :=
     match x with
@@ -4006,7 +4006,7 @@ For example, given `f : Nat → Nat` and `g : Nat → Nat`, `f.comp g` is now no
 
 * Add `trace <string>` tactic for debugging purposes.
 
-* Add nontrivial `SizeOf` instance for types `Unit → α`, and add support for them in the auto-generated `SizeOf` instances for user-defined inductive types. For example, given the inductive datatype
+* Add nontrivial `SizeOf` instance for types `Unit  α`, and add support for them in the auto-generated `SizeOf` instances for user-defined inductive types. For example, given the inductive datatype
   ```lean
   inductive LazyList (α : Type u) where
     | nil                               : LazyList α
@@ -4029,38 +4029,38 @@ For example, given `f : Nat → Nat` and `g : Nat → Nat`, `f.comp g` is now no
 
 * Auto implicit behavior changed for inductive families. An auto implicit argument occurring in inductive family index is also treated as an index (IF it is not fixed, see next item). For example
   ```lean
-  inductive HasType : Index n → Vector Ty n → Ty → Type where
+  inductive HasType : Index n  Vector Ty n  Ty  Type where
   ```
   is now interpreted as
   ```lean
-  inductive HasType : {n : Nat} → Index n → Vector Ty n → Ty → Type where
+  inductive HasType : {n : Nat}  Index n  Vector Ty n  Ty  Type where
   ```
 
 * To make the previous feature more convenient to use, we promote a fixed prefix of inductive family indices to parameters. For example, the following declaration is now accepted by Lean
   ```lean
-  inductive Lst : Type u → Type u
+  inductive Lst : Type u  Type u
     | nil  : Lst α
-    | cons : α → Lst α → Lst α
+    | cons : α  Lst α  Lst α
   ```
   and `α` in `Lst α` is a parameter. The actual number of parameters can be inspected using the command `#print Lst`. This feature also makes sure we still accept the declaration
   ```lean
-  inductive Sublist : List α → List α → Prop
+  inductive Sublist : List α  List α  Prop
     | slnil : Sublist [] []
-    | cons l₁ l₂ a : Sublist l₁ l₂ → Sublist l₁ (a :: l₂)
-    | cons2 l₁ l₂ a : Sublist l₁ l₂ → Sublist (a :: l₁) (a :: l₂)
+    | cons l₁ l₂ a : Sublist l₁ l₂  Sublist l₁ (a :: l₂)
+    | cons2 l₁ l₂ a : Sublist l₁ l₂  Sublist (a :: l₁) (a :: l₂)
   ```
 
 * Added auto implicit "chaining". Unassigned metavariables occurring in the auto implicit types now become new auto implicit locals. Consider the following example:
   ```lean
-  inductive HasType : Fin n → Vector Ty n → Ty → Type where
+  inductive HasType : Fin n  Vector Ty n  Ty  Type where
     | stop : HasType 0 (ty :: ctx) ty
-    | pop  : HasType k ctx ty → HasType k.succ (u :: ctx) ty
+    | pop  : HasType k ctx ty  HasType k.succ (u :: ctx) ty
   ```
   `ctx` is an auto implicit local in the two constructors, and it has type `ctx : Vector Ty ?m`. Without auto implicit "chaining", the metavariable `?m` will remain unassigned. The new feature creates yet another implicit local `n : Nat` and assigns `n` to `?m`. So, the declaration above is shorthand for
   ```lean
-  inductive HasType : {n : Nat} → Fin n → Vector Ty n → Ty → Type where
-    | stop : {ty : Ty} → {n : Nat} → {ctx : Vector Ty n} → HasType 0 (ty :: ctx) ty
-    | pop  : {n : Nat} → {k : Fin n} → {ctx : Vector Ty n} → {ty : Ty} → HasType k ctx ty → HasType k.succ (u :: ctx) ty
+  inductive HasType : {n : Nat}  Fin n  Vector Ty n  Ty  Type where
+    | stop : {ty : Ty}  {n : Nat}  {ctx : Vector Ty n}  HasType 0 (ty :: ctx) ty
+    | pop  : {n : Nat}  {k : Fin n}  {ctx : Vector Ty n}  {ty : Ty}  HasType k ctx ty  HasType k.succ (u :: ctx) ty
   ```
 
 * Eliminate auxiliary type annotations (e.g, `autoParam` and `optParam`) from recursor minor premises and projection declarations. Consider the following example
@@ -4083,9 +4083,9 @@ For example, given `f : Nat → Nat` and `g : Nat → Nat`, `f.comp g` is now no
 
 * We now accept overloaded notation in patterns, but we require the set of pattern variables in each alternative to be the same. Example:
   ```lean
-  inductive Vector (α : Type u) : Nat → Type u
+  inductive Vector (α : Type u) : Nat  Type u
     | nil : Vector α 0
-    | cons : α → Vector α n → Vector α (n+1)
+    | cons : α  Vector α n  Vector α (n+1)
 
   infix:67 " :: " => Vector.cons -- Overloading the `::` notation
 
@@ -4109,7 +4109,7 @@ For example, given `f : Nat → Nat` and `g : Nat → Nat`, `f.comp g` is now no
   namespace Lean.Elab
   open Lsp
 
-  def identOf : Info → Option (RefIdent × Bool)
+  def identOf : Info  Option (RefIdent × Bool)
     | .ofTermInfo ti => match ti.expr with
       | .const n .. => some (.const n, ti.isBinder)
       | .fvar id .. => some (.fvar id, ti.isBinder)

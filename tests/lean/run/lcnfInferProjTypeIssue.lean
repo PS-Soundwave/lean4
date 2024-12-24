@@ -25,7 +25,7 @@ instance {n} : HMul Float (NFloatArray n) (NFloatArray n) :=
      x := x.set i (s*x[i]'sorry) sorry
    ⟨x,sorry⟩⟩
 
-def FloatVector : Nat → Type
+def FloatVector : Nat  Type
   | 0 => Unit
   | 1 => Float
   | 2 => Vec2

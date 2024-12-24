@@ -57,7 +57,7 @@ theorem toArray_cons (a : α) (l : List α) : (a :: l).toArray = #[a] ++ l.toArr
 @[simp] theorem set_toArray (l : List α) (i : Nat) (a : α) (h : i < l.length) :
     (l.toArray.set i a) = (l.set i a).toArray := rfl
 
-@[simp] theorem forIn'_loop_toArray [Monad m] (l : List α) (f : (a : α) → a ∈ l.toArray → β → m (ForInStep β)) (i : Nat)
+@[simp] theorem forIn'_loop_toArray [Monad m] (l : List α) (f : (a : α)  a ∈ l.toArray  β  m (ForInStep β)) (i : Nat)
     (h : i ≤ l.length) (b : β) :
     Array.forIn'.loop l.toArray f i h b =
       forIn' (l.drop (l.length - i)) b (fun a m b => f a (by simpa using mem_of_mem_drop m) b) := by
@@ -75,35 +75,35 @@ theorem toArray_cons (a : α) (l : List α) : (a :: l).toArray = #[a] ++ l.toArr
     simp only [t]
     congr
 
-@[simp] theorem forIn'_toArray [Monad m] (l : List α) (b : β) (f : (a : α) → a ∈ l.toArray → β → m (ForInStep β)) :
+@[simp] theorem forIn'_toArray [Monad m] (l : List α) (b : β) (f : (a : α)  a ∈ l.toArray  β  m (ForInStep β)) :
     forIn' l.toArray b f = forIn' l b (fun a m b => f a (mem_toArray.mpr m) b) := by
   change Array.forIn' _ _ _ = List.forIn' _ _ _
   rw [Array.forIn', forIn'_loop_toArray]
   simp
 
-@[simp] theorem forIn_toArray [Monad m] (l : List α) (b : β) (f : α → β → m (ForInStep β)) :
+@[simp] theorem forIn_toArray [Monad m] (l : List α) (b : β) (f : α  β  m (ForInStep β)) :
     forIn l.toArray b f = forIn l b f := by
   simpa using forIn'_toArray l b fun a m b => f a b
 
-theorem foldrM_toArray [Monad m] (f : α → β → m β) (init : β) (l : List α) :
+theorem foldrM_toArray [Monad m] (f : α  β  m β) (init : β) (l : List α) :
     l.toArray.foldrM f init = l.foldrM f init := by
   rw [foldrM_eq_reverse_foldlM_toList]
   simp
 
-theorem foldlM_toArray [Monad m] (f : β → α → m β) (init : β) (l : List α) :
+theorem foldlM_toArray [Monad m] (f : β  α  m β) (init : β) (l : List α) :
     l.toArray.foldlM f init = l.foldlM f init := by
   rw [foldlM_toList]
 
-theorem foldr_toArray (f : α → β → β) (init : β) (l : List α) :
+theorem foldr_toArray (f : α  β  β) (init : β) (l : List α) :
     l.toArray.foldr f init = l.foldr f init := by
   rw [foldr_toList]
 
-theorem foldl_toArray (f : β → α → β) (init : β) (l : List α) :
+theorem foldl_toArray (f : β  α  β) (init : β) (l : List α) :
     l.toArray.foldl f init = l.foldl f init := by
   rw [foldl_toList]
 
 /-- Variant of `foldrM_toArray` with a side condition for the `start` argument. -/
-@[simp] theorem foldrM_toArray' [Monad m] (f : α → β → m β) (init : β) (l : List α)
+@[simp] theorem foldrM_toArray' [Monad m] (f : α  β  m β) (init : β) (l : List α)
     (h : start = l.toArray.size) :
     l.toArray.foldrM f init start 0 = l.foldrM f init := by
   subst h
@@ -111,33 +111,33 @@ theorem foldl_toArray (f : β → α → β) (init : β) (l : List α) :
   simp
 
 /-- Variant of `foldlM_toArray` with a side condition for the `stop` argument. -/
-@[simp] theorem foldlM_toArray' [Monad m] (f : β → α → m β) (init : β) (l : List α)
+@[simp] theorem foldlM_toArray' [Monad m] (f : β  α  m β) (init : β) (l : List α)
     (h : stop = l.toArray.size) :
     l.toArray.foldlM f init 0 stop = l.foldlM f init := by
   subst h
   rw [foldlM_toList]
 
 /-- Variant of `forM_toArray` with a side condition for the `stop` argument. -/
-@[simp] theorem forM_toArray' [Monad m] (l : List α) (f : α → m PUnit) (h : stop = l.toArray.size) :
+@[simp] theorem forM_toArray' [Monad m] (l : List α) (f : α  m PUnit) (h : stop = l.toArray.size) :
     (l.toArray.forM f 0 stop) = l.forM f := by
   subst h
   rw [Array.forM]
   simp only [size_toArray, foldlM_toArray']
   induction l <;> simp_all
 
-theorem forM_toArray [Monad m] (l : List α) (f : α → m PUnit) :
+theorem forM_toArray [Monad m] (l : List α) (f : α  m PUnit) :
     (l.toArray.forM f) = l.forM f := by
   simp
 
 /-- Variant of `foldr_toArray` with a side condition for the `start` argument. -/
-@[simp] theorem foldr_toArray' (f : α → β → β) (init : β) (l : List α)
+@[simp] theorem foldr_toArray' (f : α  β  β) (init : β) (l : List α)
     (h : start = l.toArray.size) :
     l.toArray.foldr f init start 0 = l.foldr f init := by
   subst h
   rw [foldr_toList]
 
 /-- Variant of `foldl_toArray` with a side condition for the `stop` argument. -/
-@[simp] theorem foldl_toArray' (f : β → α → β) (init : β) (l : List α)
+@[simp] theorem foldl_toArray' (f : β  α  β) (init : β) (l : List α)
     (h : stop = l.toArray.size) :
     l.toArray.foldl f init 0 stop = l.foldl f init := by
   subst h
@@ -158,7 +158,7 @@ theorem forM_toArray [Monad m] (l : List α) (f : α → m PUnit) :
 @[simp] theorem foldr_push {l : List α} {as : Array α} : l.foldr (fun a b => push b a) as = as ++ l.reverse.toArray := by
   rw [foldr_eq_foldl_reverse, foldl_push]
 
-@[simp] theorem findSomeM?_toArray [Monad m] [LawfulMonad m] (f : α → m (Option β)) (l : List α) :
+@[simp] theorem findSomeM?_toArray [Monad m] [LawfulMonad m] (f : α  m (Option β)) (l : List α) :
     l.toArray.findSomeM? f = l.findSomeM? f := by
   rw [Array.findSomeM?]
   simp only [bind_pure_comp, map_pure, forIn_toArray]
@@ -169,7 +169,7 @@ theorem forM_toArray [Monad m] (l : List α) (f : α → m PUnit) :
     congr
     ext1 (_|_) <;> simp [ih]
 
-theorem findSomeRevM?_find_toArray [Monad m] [LawfulMonad m] (f : α → m (Option β)) (l : List α)
+theorem findSomeRevM?_find_toArray [Monad m] [LawfulMonad m] (f : α  m (Option β)) (l : List α)
     (i : Nat) (h) :
     findSomeRevM?.find f l.toArray i h = (l.take i).reverse.findSomeM? f := by
   induction i generalizing l with
@@ -182,16 +182,16 @@ theorem findSomeRevM?_find_toArray [Monad m] [LawfulMonad m] (f : α → m (Opti
     ext1 (_|_) <;> simp
 
 -- This is not marked as `@[simp]` as later we simplify all occurrences of `findSomeRevM?`.
-theorem findSomeRevM?_toArray [Monad m] [LawfulMonad m] (f : α → m (Option β)) (l : List α) :
+theorem findSomeRevM?_toArray [Monad m] [LawfulMonad m] (f : α  m (Option β)) (l : List α) :
     l.toArray.findSomeRevM? f = l.reverse.findSomeM? f := by
   simp [Array.findSomeRevM?, findSomeRevM?_find_toArray]
 
 -- This is not marked as `@[simp]` as later we simplify all occurrences of `findRevM?`.
-theorem findRevM?_toArray [Monad m] [LawfulMonad m] (f : α → m Bool) (l : List α) :
+theorem findRevM?_toArray [Monad m] [LawfulMonad m] (f : α  m Bool) (l : List α) :
     l.toArray.findRevM? f = l.reverse.findM? f := by
   rw [Array.findRevM?, findSomeRevM?_toArray, findM?_eq_findSomeM?]
 
-@[simp] theorem findM?_toArray [Monad m] [LawfulMonad m] (f : α → m Bool) (l : List α) :
+@[simp] theorem findM?_toArray [Monad m] [LawfulMonad m] (f : α  m Bool) (l : List α) :
     l.toArray.findM? f = l.findM? f := by
   rw [Array.findM?]
   simp only [bind_pure_comp, map_pure, forIn_toArray]
@@ -202,11 +202,11 @@ theorem findRevM?_toArray [Monad m] [LawfulMonad m] (f : α → m Bool) (l : Lis
     congr
     ext1 (_|_) <;> simp [ih]
 
-@[simp] theorem findSome?_toArray (f : α → Option β) (l : List α) :
+@[simp] theorem findSome?_toArray (f : α  Option β) (l : List α) :
     l.toArray.findSome? f = l.findSome? f := by
   rw [Array.findSome?, ← findSomeM?_id, findSomeM?_toArray, Id.run]
 
-@[simp] theorem find?_toArray (f : α → Bool) (l : List α) :
+@[simp] theorem find?_toArray (f : α  Bool) (l : List α) :
     l.toArray.find? f = l.find? f := by
   rw [Array.find?]
   simp only [Id.run, Id, Id.pure_eq, Id.bind_eq, forIn_toArray]
@@ -264,7 +264,7 @@ theorem isPrefixOfAux_toArray_zero [BEq α] (l₁ l₂ : List α) (hle : l₁.le
         rw [ih]
         simp_all
 
-theorem zipWithAux_toArray_succ (as : List α) (bs : List β) (f : α → β → γ) (i : Nat) (cs : Array γ) :
+theorem zipWithAux_toArray_succ (as : List α) (bs : List β) (f : α  β  γ) (i : Nat) (cs : Array γ) :
     zipWithAux as.toArray bs.toArray f (i + 1) cs = zipWithAux as.tail.toArray bs.tail.toArray f i cs := by
   rw [zipWithAux]
   conv => rhs; rw [zipWithAux]
@@ -276,7 +276,7 @@ theorem zipWithAux_toArray_succ (as : List α) (bs : List β) (f : α → β →
       rw [dif_neg (by omega)]
   · rw [dif_neg (by omega)]
 
-theorem zipWithAux_toArray_succ' (as : List α) (bs : List β) (f : α → β → γ) (i : Nat) (cs : Array γ) :
+theorem zipWithAux_toArray_succ' (as : List α) (bs : List β) (f : α  β  γ) (i : Nat) (cs : Array γ) :
     zipWithAux as.toArray bs.toArray f (i + 1) cs = zipWithAux (as.drop (i+1)).toArray (bs.drop (i+1)).toArray f 0 cs := by
   induction i generalizing as bs cs with
   | zero => simp [zipWithAux_toArray_succ]
@@ -284,7 +284,7 @@ theorem zipWithAux_toArray_succ' (as : List α) (bs : List β) (f : α → β �
     rw [zipWithAux_toArray_succ, ih]
     simp
 
-theorem zipWithAux_toArray_zero (f : α → β → γ) (as : List α) (bs : List β) (cs : Array γ) :
+theorem zipWithAux_toArray_zero (f : α  β  γ) (as : List α) (bs : List β) (cs : Array γ) :
     zipWithAux as.toArray bs.toArray f 0 cs = cs ++ (List.zipWith f as bs).toArray := by
   rw [Array.zipWithAux]
   match as, bs with
@@ -293,7 +293,7 @@ theorem zipWithAux_toArray_zero (f : α → β → γ) (as : List α) (bs : List
   | a :: as, b :: bs =>
     simp [zipWith_cons_cons, zipWithAux_toArray_succ', zipWithAux_toArray_zero, push_append_toArray]
 
-@[simp] theorem zipWith_toArray (as : List α) (bs : List β) (f : α → β → γ) :
+@[simp] theorem zipWith_toArray (as : List α) (bs : List β) (f : α  β  γ) :
     Array.zipWith as.toArray bs.toArray f = (List.zipWith f as bs).toArray := by
   rw [Array.zipWith]
   simp [zipWithAux_toArray_zero]
@@ -302,7 +302,7 @@ theorem zipWithAux_toArray_zero (f : α → β → γ) (as : List α) (bs : List
     Array.zip as.toArray bs.toArray = (List.zip as bs).toArray := by
   simp [Array.zip, zipWith_toArray, zip]
 
-theorem zipWithAll_go_toArray (as : List α) (bs : List β) (f : Option α → Option β → γ) (i : Nat) (cs : Array γ) :
+theorem zipWithAll_go_toArray (as : List α) (bs : List β) (f : Option α  Option β  γ) (i : Nat) (cs : Array γ) :
     zipWithAll.go f as.toArray bs.toArray i cs = cs ++ (List.zipWithAll f (as.drop i) (bs.drop i)).toArray := by
   unfold zipWithAll.go
   split <;> rename_i h
@@ -336,7 +336,7 @@ theorem zipWithAll_go_toArray (as : List α) (bs : List β) (f : Option α → O
   termination_by max as.length bs.length - i
   decreasing_by simp_wf; decreasing_trivial_pre_omega
 
-@[simp] theorem zipWithAll_toArray (f : Option α → Option β → γ) (as : List α) (bs : List β) :
+@[simp] theorem zipWithAll_toArray (f : Option α  Option β  γ) (as : List α) (bs : List β) :
     Array.zipWithAll as.toArray bs.toArray f = (List.zipWithAll f as bs).toArray := by
   simp [Array.zipWithAll, zipWithAll_go_toArray]
 
@@ -349,7 +349,7 @@ theorem zipWithAll_go_toArray (as : List α) (bs : List β) (f : Option α → O
   apply ext'
   simp
 
-theorem takeWhile_go_succ (p : α → Bool) (a : α) (l : List α) (i : Nat) :
+theorem takeWhile_go_succ (p : α  Bool) (a : α) (l : List α) (i : Nat) :
     takeWhile.go p (a :: l).toArray (i+1) r = takeWhile.go p l.toArray i r := by
   rw [takeWhile.go, takeWhile.go]
   simp only [size_toArray, length_cons, Nat.add_lt_add_iff_right, Array.get_eq_getElem,
@@ -358,7 +358,7 @@ theorem takeWhile_go_succ (p : α → Bool) (a : α) (l : List α) (i : Nat) :
   rw [takeWhile_go_succ]
   rfl
 
-theorem takeWhile_go_toArray (p : α → Bool) (l : List α) (i : Nat) :
+theorem takeWhile_go_toArray (p : α  Bool) (l : List α) (i : Nat) :
     Array.takeWhile.go p l.toArray i r = r ++ (takeWhile p (l.drop i)).toArray := by
   induction l generalizing i r with
   | nil => simp [takeWhile.go]
@@ -377,7 +377,7 @@ theorem takeWhile_go_toArray (p : α → Bool) (l : List α) (i : Nat) :
         split <;> simp_all
       · simp_all [drop_eq_nil_of_le]
 
-@[simp] theorem takeWhile_toArray (p : α → Bool) (l : List α) :
+@[simp] theorem takeWhile_toArray (p : α  Bool) (l : List α) :
     l.toArray.takeWhile p = (l.takeWhile p).toArray := by
   simp [Array.takeWhile, takeWhile_go_toArray]
 

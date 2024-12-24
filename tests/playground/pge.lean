@@ -2,7 +2,7 @@
 namespace Nat
 
 -- `forallRange i n f` is true if f holds for all indices j from i to n-1.
-def forallRange (i:Nat) (n:Nat) (f: ∀ (j:Nat), j < n → Bool) : Bool :=
+def forallRange (i:Nat) (n:Nat) (f: ∀ (j:Nat), j < n  Bool) : Bool :=
   if h:i < n then
     f i h && forallRange (i+1) n f
   else
@@ -12,7 +12,7 @@ def forallRange (i:Nat) (n:Nat) (f: ∀ (j:Nat), j < n → Bool) : Bool :=
 -- `forallRange` correctness theorem.
 theorem forallRangeImplies'
   (n i j : Nat)
-  (f  : ∀(k:Nat), k < n → Bool)
+  (f  : ∀(k:Nat), k < n  Bool)
   (eq : i+j = n)
   (p  : forallRange i n f = true)
   (k  : Nat)
@@ -43,15 +43,15 @@ theorem forallRangeImplies (p:forallRange i n f = true) {j:Nat} (lb:i ≤ j) (ub
     have h : i+(n-i)=n := Nat.add_sub_of_le (Nat.le_trans lb (Nat.le_of_lt ub))
     forallRangeImplies' n i (n-i) f h p j lb ub
 
-theorem lt_or_eq_of_succ {i j:Nat} (lt : i < Nat.succ j) : i < j ∨ i = j :=
+theorem lt_or_eq_of_succ {i j:Nat} (lt : i < Nat.succ j) : i < j  i = j :=
   match lt with
   | Nat.le.step m => Or.inl m
   | Nat.le.refl => Or.inr rfl
 
 -- Introduce strong induction principal for natural numbers.
-theorem strong_induction_on {p : Nat → Prop} (n:Nat)
-  (h:∀n, (∀ m, m < n → p m) → p n) : p n := by
-    suffices ∀n m, m < n → p m from this (succ n) n (Nat.lt_succ_self _)
+theorem strong_induction_on {p : Nat  Prop} (n:Nat)
+  (h:∀n, (∀ m, m < n  p m)  p n) : p n := by
+    suffices ∀n m, m < n  p m from this (succ n) n (Nat.lt_succ_self _)
     intros n
     induction n with
     | zero =>
@@ -70,8 +70,8 @@ theorem strong_induction_on {p : Nat → Prop} (n:Nat)
 end Nat
 
 -- Introduce strong induction principal for Fin.
-theorem Fin.strong_induction_on {P : Fin w → Prop} (i:Fin w)
-  (ind : ∀(i:Fin w), (∀(j:Fin w), j < i → P j) → P i)
+theorem Fin.strong_induction_on {P : Fin w  Prop} (i:Fin w)
+  (ind : ∀(i:Fin w), (∀(j:Fin w), j < i  P j)  P i)
  : P i := by
    cases i with
    | mk i i_lt =>
@@ -88,13 +88,13 @@ inductive Expression (t : Type) (nt : Type) where
   | epsilon : Expression t nt
   | fail : Expression t nt
   | any : Expression t nt
-  | terminal : t → Expression t nt
-  | seq : (a b : nt) → Expression t nt
-  | choice : (a b : nt) → Expression t nt
-  | look : (a : nt) → Expression t nt
-  | notP : (e : nt) → Expression t nt
+  | terminal : t  Expression t nt
+  | seq : (a b : nt)  Expression t nt
+  | choice : (a b : nt)  Expression t nt
+  | look : (a : nt)  Expression t nt
+  | notP : (e : nt)  Expression t nt
 
-def Grammar (t nt : Type _) := nt → Expression t nt
+def Grammar (t nt : Type _) := nt  Expression t nt
 
 structure ProofRecord  (nt : Type) where
   leftnonterminal : nt
@@ -110,7 +110,7 @@ def endposition {nt:Type} (r:ProofRecord nt) : Nat := r.position + r.lengthofspa
 
 inductive Result where
   | fail : Result
-  | success : Nat → Result
+  | success : Nat  Result
 
 def record_result (r:ProofRecord nt) : Result :=
   if r.success then
@@ -213,9 +213,9 @@ variable [DecidableEq nt]
 
 def size (p:Proof g s) := p.val.size
 
-def get (p:Proof g s) : Fin p.size → ProofRecord nt := p.val.get
+def get (p:Proof g s) : Fin p.size  ProofRecord nt := p.val.get
 
-instance : CoeFun (Proof g s) (fun p => Fin p.size → ProofRecord nt) :=
+instance : CoeFun (Proof g s) (fun p => Fin p.size  ProofRecord nt) :=
   ⟨fun p => p.get⟩
 
 theorem has_well_formed_record (p:Proof g s) (i:Fin p.size) :
@@ -245,8 +245,8 @@ set_option tactic.dbg_cache true
 theorem is_deterministic
   : forall (p q : Proof g s) (i: Fin p.size) (j: Fin q.size),
       (p i).leftnonterminal = (q j).leftnonterminal
-      → (p i).position      = (q j).position
-      → (p i).record_result = (q j).record_result := by
+       (p i).position      = (q j).position
+       (p i).record_result = (q j).record_result := by
   intros p q i0
   induction i0 using Fin.strong_induction_on with
   | ind i ind =>

@@ -46,21 +46,21 @@ xs.map <| by {
 theorem ex2 : g [1, 0, 2] = [false, true, false] :=
 rfl
 
-theorem ex3 {p q r : Prop} : p ∨ q → r → (q ∧ r) ∨ (p ∧ r) :=
+theorem ex3 {p q r : Prop} : p  q  r  (q ∧ r)  (p ∧ r) :=
 by intro
  | Or.inl hp, h => { apply Or.inr; apply And.intro; assumption; assumption }
  | Or.inr hq, h => { apply Or.inl; exact ⟨hq, h⟩ }
 
 inductive C
-| mk₁ : Nat → C
-| mk₂ : Nat → Nat → C
+| mk₁ : Nat  C
+| mk₂ : Nat  Nat  C
 
-def C.x : C → Nat
+def C.x : C  Nat
 | C.mk₁ x   => x
 | C.mk₂ x _ => x
 #eval checkWithMkMatcherInput ``C.x.match_1
 
-def head : {α : Type} → List α → Option α
+def head : {α : Type}  List α  Option α
 | _, a::as => some a
 | _, _     => none
 #eval checkWithMkMatcherInput ``head.match_1
@@ -68,7 +68,7 @@ def head : {α : Type} → List α → Option α
 theorem ex4 : head [1, 2] = some 1 :=
 rfl
 
-def head2 : {α : Type} → List α → Option α :=
+def head2 : {α : Type}  List α  Option α :=
 @fun
   | _, a::as => some a
   | _, _     => none
@@ -77,7 +77,7 @@ theorem ex5 : head2 [1, 2] = some 1 :=
 rfl
 
 def head3 {α : Type} (xs : List α) : Option α :=
-let rec aux {α : Type} : List α → Option α
+let rec aux {α : Type} : List α  Option α
   | a::_ => some a
   | _    => none;
 aux xs
@@ -85,22 +85,22 @@ aux xs
 theorem ex6 : head3 [1, 2] = some 1 :=
 rfl
 
-inductive Vec.{u} (α : Type u) : Nat → Type u
+inductive Vec.{u} (α : Type u) : Nat  Type u
 | nil : Vec α 0
 | cons {n} (head : α) (tail : Vec α n) : Vec α (n+1)
 
-def Vec.mapHead1 {α β δ} : {n : Nat} → Vec α n → Vec β n → (α → β → δ) → Option δ
+def Vec.mapHead1 {α β δ} : {n : Nat}  Vec α n  Vec β n  (α  β  δ)  Option δ
 | _,   nil,       nil,       f => none
 | _, cons a as, cons b bs,   f => some (f a b)
 
 
-def Vec.mapHead2 {α β δ} : {n : Nat} → Vec α n → Vec β n → (α → β → δ) → Option δ
+def Vec.mapHead2 {α β δ} : {n : Nat}  Vec α n  Vec β n  (α  β  δ)  Option δ
 | _, nil,            nil,         f => none
 | _, @cons _ n a as, cons b bs,   f => some (f a b)
 set_option pp.match false in
 #print Vec.mapHead2 -- reused Vec.mapHead1.match_1
 
-def Vec.mapHead3 {α β δ} : {n : Nat} → Vec α n → Vec β n → (α → β → δ) → Option δ
+def Vec.mapHead3 {α β δ} : {n : Nat}  Vec α n  Vec β n  (α  β  δ)  Option δ
 | _, nil,            nil,         f => none
 | _, cons (tail := as) (head := a), cons b bs,   f => some (f a b)
 
@@ -108,7 +108,7 @@ inductive Foo
 | mk₁ (x y z w : Nat)
 | mk₂ (x y z w : Nat)
 
-def Foo.z : Foo → Nat
+def Foo.z : Foo  Nat
 | mk₁ (z := z) .. => z
 | mk₂ (z := z) .. => z
 
@@ -119,7 +119,7 @@ def Foo.z : Foo → Nat
 theorem ex7 : (Foo.mk₁ 10 20 30 40).z = 30 :=
 rfl
 
-def Foo.addY? : Foo × Foo → Option Nat
+def Foo.addY? : Foo × Foo  Option Nat
 | (mk₁ (y := y₁) .., mk₁ (y := y₂) ..) => some (y₁ + y₂)
 | _ => none
 
@@ -133,7 +133,7 @@ rfl
 instance {α} : Inhabited (Sigma fun m => Vec α m) :=
 ⟨⟨0, Vec.nil⟩⟩
 
-partial def filter {α} (p : α → Bool) : {n : Nat} → Vec α n → Sigma fun m => Vec α m
+partial def filter {α} (p : α  Bool) : {n : Nat}  Vec α n  Sigma fun m => Vec α m
 | _, Vec.nil        => ⟨0, Vec.nil⟩
 | _, Vec.cons x xs  => match p x, filter p xs with
   | true,  ⟨_, ys⟩ => ⟨_, Vec.cons x ys⟩
@@ -144,7 +144,7 @@ inductive Bla
 | ofNat  (x : Nat)
 | ofBool (x : Bool)
 
-def Bla.optional? : Bla → Option Nat
+def Bla.optional? : Bla  Option Nat
 | ofNat x  => some x
 | ofBool _ => none
 #eval checkWithMkMatcherInput ``Bla.optional?.match_1
@@ -166,7 +166,7 @@ match h : foo b with
 #eval checkWithMkMatcherInput ``Bla.isNat2?.match_1
 
 def foo2 (x : Nat) : Nat :=
-match (motive := (y : Nat) → x = y → Nat) x, rfl with
+match (motive := (y : Nat)  x = y  Nat) x, rfl with
 | 0,   h => 0
 | x+1, h => 1
 #eval checkWithMkMatcherInput ``foo2.match_1

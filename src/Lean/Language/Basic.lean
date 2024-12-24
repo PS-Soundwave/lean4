@@ -100,21 +100,21 @@ def SnapshotTask.cancel (t : SnapshotTask α) : BaseIO Unit :=
   IO.cancel t.task
 
 /-- Transforms a task's output without changing the reporting range. -/
-def SnapshotTask.map (t : SnapshotTask α) (f : α → β) (range? : Option String.Range := t.range?)
+def SnapshotTask.map (t : SnapshotTask α) (f : α  β) (range? : Option String.Range := t.range?)
     (sync := false) : SnapshotTask β :=
   { range?, task := t.task.map (sync := sync) f }
 
 /--
   Chains two snapshot tasks. The range is taken from the first task if not specified; the range of
   the second task is discarded. -/
-def SnapshotTask.bind (t : SnapshotTask α) (act : α → SnapshotTask β)
+def SnapshotTask.bind (t : SnapshotTask α) (act : α  SnapshotTask β)
     (range? : Option String.Range := t.range?) (sync := false) : SnapshotTask β :=
   { range?, task := t.task.bind (sync := sync) (act · |>.task) }
 
 /--
   Chains two snapshot tasks. The range is taken from the first task if not specified; the range of
   the second task is discarded. -/
-def SnapshotTask.bindIO (t : SnapshotTask α) (act : α → BaseIO (SnapshotTask β))
+def SnapshotTask.bindIO (t : SnapshotTask α) (act : α  BaseIO (SnapshotTask β))
     (range? : Option String.Range := t.range?) (sync := false) : BaseIO (SnapshotTask β) :=
   return {
     range?
@@ -169,7 +169,7 @@ Always resolving promises involved in the snapshot tree is important to avoid de
 language server.
 -/
 def withAlwaysResolvedPromise [Monad m] [MonadLiftT BaseIO m] [MonadFinally m] [Inhabited α]
-    (act : IO.Promise α → m β) : m β := do
+    (act : IO.Promise α  m β) : m β := do
   let p ← IO.Promise.new
   try
     act p
@@ -184,7 +184,7 @@ Always resolving promises involved in the snapshot tree is important to avoid de
 language server.
 -/
 def withAlwaysResolvedPromises [Monad m] [MonadLiftT BaseIO m] [MonadFinally m] [Inhabited α]
-    (count : Nat) (act : Array (IO.Promise α) → m Unit) : m Unit := do
+    (count : Nat) (act : Array (IO.Promise α)  m Unit) : m Unit := do
   let ps ← List.iota count |>.toArray.mapM fun _ => IO.Promise.new
   try
     act ps
@@ -209,7 +209,7 @@ deriving Inhabited
   representation. -/
 class ToSnapshotTree (α : Type) where
   /-- Transforms a language-specific snapshot to a homogeneous snapshot tree. -/
-  toSnapshotTree : α → SnapshotTree
+  toSnapshotTree : α  SnapshotTree
 export ToSnapshotTree (toSnapshotTree)
 
 instance [ToSnapshotTree α] : ToSnapshotTree (Option α) where
@@ -256,7 +256,7 @@ instance : Inhabited DynamicSnapshot where
   Runs a tree of snapshots to conclusion, incrementally performing `f` on each snapshot in tree
   preorder. -/
 @[specialize] partial def SnapshotTree.forM [Monad m] (s : SnapshotTree)
-    (f : Snapshot → m PUnit) : m PUnit := do
+    (f : Snapshot  m PUnit) : m PUnit := do
   match s with
   | mk element children =>
     f element
@@ -266,7 +266,7 @@ instance : Inhabited DynamicSnapshot where
   Runs a tree of snapshots to conclusion,
   folding the function `f` over each snapshot in tree preorder. -/
 @[specialize] partial def SnapshotTree.foldM [Monad m] (s : SnapshotTree)
-    (f : α → Snapshot → m α) (init : α) : m α := do
+    (f : α  Snapshot  m α) (init : α) : m α := do
   match s with
   | mk element children =>
     let a ← f init element
@@ -318,10 +318,10 @@ def SnapshotTree.getAll (s : SnapshotTree) : Array Snapshot :=
   Id.run <| s.foldM (·.push ·) #[]
 
 /-- Returns a task that waits on all snapshots in the tree. -/
-def SnapshotTree.waitAll : SnapshotTree → BaseIO (Task Unit)
+def SnapshotTree.waitAll : SnapshotTree  BaseIO (Task Unit)
   | mk _ children => go children.toList
 where
-  go : List (SnapshotTask SnapshotTree) → BaseIO (Task Unit)
+  go : List (SnapshotTask SnapshotTree)  BaseIO (Task Unit)
     | [] => return .pure ()
     | t::ts => BaseIO.bindTask t.task fun _ => go ts
 
@@ -357,7 +357,7 @@ def diagnosticsOfHeaderError (msg : String) : ProcessingM Snapshot.Diagnostics :
 /--
   Adds unexpected exceptions from header processing to the message log as a last resort; standard
   errors should already have been caught earlier. -/
-def withHeaderExceptions (ex : Snapshot → α) (act : ProcessingT IO α) : ProcessingM α := do
+def withHeaderExceptions (ex : Snapshot  α) (act : ProcessingT IO α) : ProcessingM α := do
   match (← (act (← read)).toBaseIO) with
   | .error e => return ex { diagnostics := (← diagnosticsOfHeaderError e.toString) }
   | .ok a => return a
@@ -367,8 +367,8 @@ end Language
 /--
   Builds a function for processing a language using incremental snapshots by passing the previous
   snapshot to `Language.process` on subsequent invocations. -/
-def Language.mkIncrementalProcessor (process : Option InitSnap → ProcessingM InitSnap) :
-    BaseIO (Parser.InputContext → BaseIO InitSnap) := do
+def Language.mkIncrementalProcessor (process : Option InitSnap  ProcessingM InitSnap) :
+    BaseIO (Parser.InputContext  BaseIO InitSnap) := do
   let oldRef ← IO.mkRef none
   return fun ictx => do
     let snap ← process (← oldRef.get) { ictx with }

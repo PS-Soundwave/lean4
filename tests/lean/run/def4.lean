@@ -1,11 +1,11 @@
-inductive Foo : Bool → Type where
+inductive Foo : Bool  Type where
   | Z  : Foo false
-  | O  : Foo false → Foo true
-  | E  : Foo true → Foo false
+  | O  : Foo false  Foo true
+  | E  : Foo true  Foo false
 
 open Foo
 
-def toNat : {b : Bool} → Foo b → Nat
+def toNat : {b : Bool}  Foo b  Nat
   | _, Z   => 0
   | _, O n => toNat n + 1
   | _, E n => toNat n + 1

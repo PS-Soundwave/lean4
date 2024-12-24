@@ -2,10 +2,10 @@ mutual
 
 inductive ConE : Type where
 | nilE : ConE
-| extE : ConE → TyE → ConE
+| extE : ConE  TyE  ConE
 
 inductive TyE : Type where
-| UE : ConE → TyE
+| UE : ConE  TyE
 
 end
 

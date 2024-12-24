@@ -13,7 +13,7 @@ import Lean.Meta.PProdN
 namespace Lean
 open Meta
 
-/-- Transforms `e : xᵢ → (t₁ ×' t₂)` into `(xᵢ → t₁) ×' (xᵢ → t₂) -/
+/-- Transforms `e : xᵢ  (t₁ ×' t₂)` into `(xᵢ  t₁) ×' (xᵢ  t₂) -/
 private def etaPProd (xs : Array Expr) (e : Expr) : MetaM Expr := do
   if xs.isEmpty then return e
   let r := mkAppN e xs
@@ -24,7 +24,7 @@ private def etaPProd (xs : Array Expr) (e : Expr) : MetaM Expr := do
 /--
 If `minorType` is the type of a minor premies of a recursor, such as
 ```
-  (cons : (head : α) → (tail : List α) → (tail_hs : motive tail) → motive (head :: tail))
+  (cons : (head : α)  (tail : List α)  (tail_hs : motive tail)  motive (head :: tail))
 ```
 of `List.rec`, constructs the corresponding argument to `List.rec` in the construction
 of `.below` definition; in this case
@@ -34,14 +34,14 @@ fun head tail tail_ih =>
 ```
 of type
 ```
-α → List α → Sort (max 1 u_1) → Sort (max 1 u_1)
+α  List α  Sort (max 1 u_1)  Sort (max 1 u_1)
 ```
 -/
 private def buildBelowMinorPremise (rlvl : Level) (motives : Array Expr) (minorType : Expr) : MetaM Expr :=
   forallTelescope minorType fun minor_args _ => do go #[] minor_args.toList
 where
   ibelow := rlvl matches .zero
-  go (prods : Array Expr) : List Expr → MetaM Expr
+  go (prods : Array Expr) : List Expr  MetaM Expr
   | [] => PProdN.pack rlvl prods
   | arg::args => do
     let argType ← inferType arg
@@ -61,15 +61,15 @@ Constructs the `.below` or `.ibelow` definition for a inductive predicate.
 
 For example for the `List` type, it constructs,
 ```
-@[reducible] protected def List.below.{u_1, u} : {α : Type u} →
-  {motive : List α → Sort u_1} → List α → Sort (max 1 u_1) :=
+@[reducible] protected def List.below.{u_1, u} : {α : Type u} 
+  {motive : List α  Sort u_1}  List α  Sort (max 1 u_1) :=
 fun {α} {motive} t =>
   List.rec PUnit (fun head tail tail_ih => PProd (PProd (motive tail) tail_ih) PUnit) t
 ```
 and
 ```
-@[reducible] protected def List.ibelow.{u} : {α : Type u} →
-  {motive : List α → Prop} → List α → Prop :=
+@[reducible] protected def List.ibelow.{u} : {α : Type u} 
+  {motive : List α  Prop}  List α  Prop :=
 fun {α} {motive} t =>
   List.rec True (fun head tail tail_ih => (motive tail ∧ tail_ih) ∧ True) t
 ```
@@ -174,7 +174,7 @@ def mkIBelow (declName : Name) : MetaM Unit := mkBelowOrIBelow declName false
 /--
 If `minorType` is the type of a minor premies of a recursor, such as
 ```
-  (cons : (head : α) → (tail : List α) → (tail_hs : motive tail) → motive (head :: tail))
+  (cons : (head : α)  (tail : List α)  (tail_hs : motive tail)  motive (head :: tail))
 ```
 of `List.rec`, constructs the corresponding argument to `List.rec` in the construction
 of `.brecOn` definition; in this case
@@ -184,15 +184,15 @@ fun head tail tail_ih =>
 ```
 of type
 ```
-(head : α) → (tail : List α) →
-  PProd (motive tail) (List.below tail) →
+(head : α)  (tail : List α) 
+  PProd (motive tail) (List.below tail) 
   PProd (motive (head :: tail)) (PProd (PProd (motive tail) (List.below tail)) PUnit)
 ```
 -/
 private def buildBRecOnMinorPremise (rlvl : Level) (motives : Array Expr)
     (belows : Array Expr) (fs : Array Expr) (minorType : Expr) : MetaM Expr :=
   forallTelescope minorType fun minor_args minor_type => do
-    let rec go (prods : Array Expr) : List Expr → MetaM Expr
+    let rec go (prods : Array Expr) : List Expr  MetaM Expr
       | [] => minor_type.withApp fun minor_type_fn minor_type_args => do
           let b ← PProdN.mk rlvl prods
           let .some ⟨idx, _⟩ := motives.indexOf? minor_type_fn
@@ -218,9 +218,9 @@ Constructs the `.brecon` or `.binductionon` definition for a inductive predicate
 
 For example for the `List` type, it constructs,
 ```
-@[reducible] protected def List.brecOn.{u_1, u} : {α : Type u} → {motive : List α → Sort u_1} →
-  (t : List α) → ((t : List α) → List.below t → motive t) → motive t :=
-fun {α} {motive} t (F_1 : (t : List α) → List.below t → motive t) => (
+@[reducible] protected def List.brecOn.{u_1, u} : {α : Type u}  {motive : List α  Sort u_1} 
+  (t : List α)  ((t : List α)  List.below t  motive t)  motive t :=
+fun {α} {motive} t (F_1 : (t : List α)  List.below t  motive t) => (
   @List.rec α (fun t => PProd (motive t) (@List.below α motive t))
     ⟨F_1 [] PUnit.unit, PUnit.unit⟩
     (fun head tail tail_ih => ⟨F_1 (head :: tail) ⟨tail_ih, PUnit.unit⟩, ⟨tail_ih, PUnit.unit⟩⟩)
@@ -229,8 +229,8 @@ fun {α} {motive} t (F_1 : (t : List α) → List.below t → motive t) => (
 ```
 and
 ```
-@[reducible] protected def List.binductionOn.{u} : ∀ {α : Type u} {motive : List α → Prop}
-  (t : List α), (∀ (t : List α), List.ibelow t → motive t) → motive t :=
+@[reducible] protected def List.binductionOn.{u} : ∀ {α : Type u} {motive : List α  Prop}
+  (t : List α), (∀ (t : List α), List.ibelow t  motive t)  motive t :=
 fun {α} {motive} t F_1 => (
   @List.rec α (fun t => And (motive t) (@List.ibelow α motive t))
     ⟨F_1 [] True.intro, True.intro⟩
@@ -298,7 +298,7 @@ private def mkBRecOnFromRec (recName : Name) (ind reflexive : Bool) (nParams : N
       mkAppN (.const belowName blvls) (params ++ motives)
 
     -- create types of functionals (one for each motive)
-    --   (F_1 : (t : List α) → (f : List.below t) → motive t)
+    --   (F_1 : (t : List α)  (f : List.below t)  motive t)
     -- and bring parameters of that type into scope
     let mut fDecls : Array (Name × (Array Expr -> MetaM Expr)) := #[]
     for motive in motives, below in belows, i in [:motives.size] do

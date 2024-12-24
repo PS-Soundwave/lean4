@@ -1,12 +1,12 @@
 axiom Std.HashMap : Type
-axiom Std.HashMap.insert : Std.HashMap → Std.HashMap
-axiom Std.HashMap.get? : Std.HashMap → Int → Option Unit
+axiom Std.HashMap.insert : Std.HashMap  Std.HashMap
+axiom Std.HashMap.get? : Std.HashMap  Int  Option Unit
 
 structure St where
   m : Unit
   map : Std.HashMap
 
-opaque P : St → Prop
+opaque P : St  Prop
 
 noncomputable
 def go1 (ss : Int) (st0 : St) : Bool :=
@@ -21,15 +21,15 @@ def go1 (ss : Int) (st0 : St) : Bool :=
       decreasing_by sorry
 
 /--
-info: go1.induct (ss : Int) (motive : St → Prop)
+info: go1.induct (ss : Int) (motive : St  Prop)
   (case1 :
     ∀ (x : St),
       let st1 := { m := x.m, map := x.map.insert };
-      ∀ (val : Unit), st1.map.get? ss = some val → P st1 → P st1 → motive st1 → motive x)
+      ∀ (val : Unit), st1.map.get? ss = some val  P st1  P st1  motive st1  motive x)
   (case2 :
     ∀ (x : St),
       let st1 := { m := x.m, map := x.map.insert };
-      st1.map.get? ss = none → motive x)
+      st1.map.get? ss = none  motive x)
   (st0 : St) : motive st0
 -/
 #guard_msgs in
@@ -53,10 +53,10 @@ def go2 (ss : Int) (st0 : St) : Bool :=
       decreasing_by sorry
 
 /--
-info: go2.induct : ∀ (motive : St → Prop),
+info: go2.induct : ∀ (motive : St  Prop),
   (∀ (x : St),
       let st1 := { m := x.m, map := x.map.insert };
-      motive st1 → motive x) →
+      motive st1  motive x) 
     ∀ (st0 : St), motive st0
 -/
 #guard_msgs in

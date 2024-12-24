@@ -18,16 +18,16 @@ namespace Lean.Meta
     modify fun s => { s with cache := { s.cache with funInfo := s.cache.funInfo.insert key finfo } }
     return finfo
 
-@[inline] private def whenHasVar {α} (e : Expr) (deps : α) (k : α → α) : α :=
+@[inline] private def whenHasVar {α} (e : Expr) (deps : α) (k : α  α) : α :=
   if e.hasFVar then k deps else deps
 
 private def collectDeps (fvars : Array Expr) (e : Expr) : Array Nat :=
   let rec visit (e : Expr) (deps : Array Nat) : Array Nat :=
     match e with
-    | .app f a         => whenHasVar e deps (visit a ∘ visit f)
-    | .forallE _ d b _ => whenHasVar e deps (visit b ∘ visit d)
-    | .lam _ d b _     => whenHasVar e deps (visit b ∘ visit d)
-    | .letE _ t v b _  => whenHasVar e deps (visit b ∘ visit v ∘ visit t)
+    | .app f a         => whenHasVar e deps (visit a  visit f)
+    | .forallE _ d b _ => whenHasVar e deps (visit b  visit d)
+    | .lam _ d b _     => whenHasVar e deps (visit b  visit d)
+    | .letE _ t v b _  => whenHasVar e deps (visit b  visit v  visit t)
     | .proj _ _ e      => visit e deps
     | .mdata _ e       => visit e deps
     | .fvar ..         =>

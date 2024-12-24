@@ -22,7 +22,7 @@ Preprocesses the expressions to improve the effectiveness of `wfRecursion`.
 * Floats out the RecApp markers.
   Example:
   ```
-  def f : Nat → Nat
+  def f : Nat  Nat
     | 0 => 1
     | i+1 => (f x) i
   ```

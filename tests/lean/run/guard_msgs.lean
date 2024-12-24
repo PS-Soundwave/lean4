@@ -106,19 +106,19 @@ Lax whitespace
 
 /--
 error: failed to synthesize
-  DecidableEq (Nat → Nat)
+  DecidableEq (Nat  Nat)
 Additional diagnostic information may be available using the `set_option diagnostics true` command.
 -/
 #guard_msgs (whitespace := lax) in
-#synth DecidableEq (Nat → Nat)
+#synth DecidableEq (Nat  Nat)
 
 /--
 error: failed to synthesize
-  DecidableEq (Nat → Nat)
+  DecidableEq (Nat  Nat)
 Additional diagnostic information may be available using the `set_option diagnostics true` command.
 -/
 #guard_msgs (whitespace := lax) in
-#synth DecidableEq (Nat → Nat)
+#synth DecidableEq (Nat  Nat)
 
 /-!
 Sorting

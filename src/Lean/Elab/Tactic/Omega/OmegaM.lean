@@ -30,11 +30,11 @@ The main functions are:
   * for each new atom `a` of the form `x / k`, for `k` a positive numeral, the facts that
     `k * a ≤ x < k * a + k`
   * for each new atom of the form `((a - b : Nat) : Int)`, the fact:
-    `b ≤ a ∧ ((a - b : Nat) : Int) = a - b ∨ a < b ∧ ((a - b : Nat) : Int) = 0`
+    `b ≤ a ∧ ((a - b : Nat) : Int) = a - b  a < b ∧ ((a - b : Nat) : Int) = 0`
   * for each new atom of the form `min a b`, the facts `min a b ≤ a` and `min a b ≤ b`
     (and similarly for `max`)
   * for each new atom of the form `if P then a else b`, the disjunction:
-    `(P ∧ (if P then a else b) = a) ∨ (¬ P ∧ (if P then a else b) = b)`
+    `(P ∧ (if P then a else b) = a)  (¬ P ∧ (if P then a else b) = b)`
 The `OmegaM` monad also keeps an internal cache of visited expressions
 (not necessarily atoms, but arbitrary subexpressions of one side of a linear relation)
 to reduce duplication.
@@ -131,7 +131,7 @@ partial def groundNat? (e : Expr) : Option Nat :=
   | (``HDiv.hDiv, #[_, _, _, _, x, y]) => op (· / ·) x y
   | (``HPow.hPow, #[_, _, _, _, x, y]) => op (· ^ ·) x y
   | _ => e.nat?
-where op (f : Nat → Nat → Nat) (x y : Expr) : Option Nat :=
+where op (f : Nat  Nat  Nat) (x y : Expr) : Option Nat :=
   match groundNat? x, groundNat? y with
     | some x', some y' => some (f x' y')
     | _, _ => none
@@ -151,7 +151,7 @@ partial def groundInt? (e : Expr) : Option Int :=
     | some x', some y' => some (x' ^ y')
     | _, _ => none
   | _ => e.int?
-where op (f : Int → Int → Int) (x y : Expr) : Option Int :=
+where op (f : Int  Int  Int) (x y : Expr) : Option Int :=
   match groundInt? x, groundInt? y with
     | some x', some y' => some (f x' y')
     | _, _ => none
@@ -248,7 +248,7 @@ Return its index, and, if it is new, a collection of interesting facts about the
 * for each new atom `a` of the form `x / k`, for `k` a positive numeral, the facts that
   `k * a ≤ x < k * a + k`
 * for each new atom of the form `((a - b : Nat) : Int)`, the fact:
-  `b ≤ a ∧ ((a - b : Nat) : Int) = a - b ∨ a < b ∧ ((a - b : Nat) : Int) = 0`
+  `b ≤ a ∧ ((a - b : Nat) : Int) = a - b  a < b ∧ ((a - b : Nat) : Int) = 0`
 -/
 def lookup (e : Expr) : OmegaM (Nat × Option (Std.HashSet Expr)) := do
   let c ← getThe State

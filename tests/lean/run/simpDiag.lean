@@ -1,4 +1,4 @@
-opaque q : Nat → Nat
+opaque q : Nat  Nat
 def f (x : Nat) : Nat :=
   match x with
   | 0 => 1
@@ -23,7 +23,7 @@ example : f (x + 50) = f x := by
   set_option diagnostics true in
   simp [f_eq, q_eq]
 
-def ack : Nat → Nat → Nat
+def ack : Nat  Nat  Nat
   | 0,   y   => y+1
   | x+1, 0   => ack x 1
   | x+1, y+1 => ack x (ack (x+1) y)
@@ -88,7 +88,7 @@ example : ack 4 4 = x := by
   | 0 => 10
   | x + 1 => h x
 
-opaque q1 : Nat → Nat → Prop
+opaque q1 : Nat  Nat  Prop
 @[simp] axiom q1_ax (x : Nat) : q1 x 10
 
 /--

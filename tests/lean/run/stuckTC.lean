@@ -5,12 +5,12 @@ inductive Ty where
   | bool
   | fn (a ty : Ty)
 
-@[reducible] def Ty.interp : Ty → Type
+@[reducible] def Ty.interp : Ty  Type
   | int    => Int
   | bool   => Bool
-  | fn a b => a.interp → b.interp
+  | fn a b => a.interp  b.interp
 
-def test {a b c : Ty} (f : a.interp → b.interp → c.interp) (x : a.interp) (y : b.interp) : c.interp :=
+def test {a b c : Ty} (f : a.interp  b.interp  c.interp) (x : a.interp) (y : b.interp) : c.interp :=
   f x y
 
 def f (a b : Ty.bool.interp) : Ty.bool.interp :=
@@ -24,11 +24,11 @@ inductive Ty where
   | int
   | bool
 
-@[reducible] def Ty.interp : Ty → Type
+@[reducible] def Ty.interp : Ty  Type
   | int    => Int
   | bool   => Bool
 
-def test {a b c : Ty} (f : a.interp → b.interp → c.interp) (x : a.interp) (y : b.interp) : c.interp :=
+def test {a b c : Ty} (f : a.interp  b.interp  c.interp) (x : a.interp) (y : b.interp) : c.interp :=
   f x y
 
 def f (a b : Ty.bool.interp) : Ty.bool.interp :=
@@ -51,7 +51,7 @@ not reduce the definition above, and we cannot synthesize `BEq Ty.bool.interp`.
 We can workaround using `match` as in the ex
 -/
 
-def test {a b c : Ty} (f : a.interp → b.interp → c.interp) (x : a.interp) (y : b.interp) : c.interp :=
+def test {a b c : Ty} (f : a.interp  b.interp  c.interp) (x : a.interp) (y : b.interp) : c.interp :=
   f x y
 
 def f (a b : Ty.bool.interp) : Ty.bool.interp :=

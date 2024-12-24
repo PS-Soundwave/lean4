@@ -6,13 +6,13 @@ All functions take more than one changing argument, because the guesslex
 code skips non-mutuals unary functions with only one plausible measure.
 -/
 
-def nonTerminating : Nat → Nat → Nat
+def nonTerminating : Nat  Nat  Nat
   | 0, _ => 0
   | n, m => nonTerminating (.succ n) (.succ m)
 
 -- Saying decreasing_by forces Lean to use structural recursion, which gives a different
 -- error message
-def nonTerminating2 : Nat → Nat → Nat
+def nonTerminating2 : Nat  Nat  Nat
   | 0, _ => 0
   | n, m => nonTerminating2 (.succ n) (.succ m)
 decreasing_by decreasing_tactic
@@ -24,7 +24,7 @@ def noNonFixedArguments (n : Nat) : Nat := noNonFixedArguments n
 def Array.sum (xs : Array Nat) : Nat := xs.foldl (init := 0) Nat.add
 
 namespace InterestingMatrix
-def f : (n m l : Nat) → Nat
+def f : (n m l : Nat)  Nat
   | n+1, m+1, l+1 => #[
       f (n+1) (m+1) (l+1),
       f (n+1) (m-1) (l),
@@ -34,7 +34,7 @@ decreasing_by decreasing_tactic
 end InterestingMatrix
 
 namespace InterestingMatrixWithForbiddenArguments
-def f : (n m : Nat) → (h : True) → Nat → Nat
+def f : (n m : Nat)  (h : True)  Nat  Nat
   | n+1, m+1, h, l+1 => #[
       f (n+1) (m+1) h (l+1),
       f (n+1) (m-1) h (l),
@@ -84,7 +84,7 @@ namespace DuplicatedCall
 
 def dup (a : Nat) (b : Nat := a) := a + b
 
-def f : (n m : Nat) → Nat
+def f : (n m : Nat)  Nat
   | 0, m => m
   | n+1, m => dup (f (n+2) (m+1))
 
@@ -115,7 +115,7 @@ decreasing_by decreasing_tactic
 -- The GuessLex code at does not like `casesOn` alternative with insufficient lambdas
 -- TODO: Fix by using eta-expanding variant of lambdaTelescope, e.g.
 -- https://leanprover.zulipchat.com/#narrow/stream/217875-Is-there-code-for-X.3F/topic/Going.20under.20exactly.20one.20lambda/near/404278529
-def Fin_succ_comp (f : (n : Nat) → Fin (n + 1)) : (n : Nat) → Fin (n + 2) := fun n => Fin.succ (f n)
+def Fin_succ_comp (f : (n : Nat)  Fin (n + 1)) : (n : Nat)  Fin (n + 2) := fun n => Fin.succ (f n)
 def badCasesOn3 (n m : Nat) : Fin (n + 1) :=
    Nat.casesOn (motive := fun n => Fin (n + 1)) n (⟨0,Nat.zero_lt_succ _⟩)
       (Fin_succ_comp (fun n => badCasesOn3 n (.succ m)))

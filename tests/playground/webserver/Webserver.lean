@@ -101,7 +101,7 @@ def text : Parser := -- {{{
   withAntiquot (mkAntiquot "text" `LX.text) {
     fn := fun c s =>
       let startPos := s.pos
-      let s := takeWhile1Fn (not ∘ "{<>}$".contains) "HTML text" c s
+      let s := takeWhile1Fn (not  "{<>}$".contains) "HTML text" c s
       mkNodeToken `LX.text startPos c s } -- }}}
 
 @[combinator_formatter text] def text.formatter : Formatter := pure ()

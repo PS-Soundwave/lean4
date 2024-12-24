@@ -1,7 +1,7 @@
-def Set (α : Type) := α → Prop
+def Set (α : Type) := α  Prop
 
 def Set.union (s₁ s₂ : Set α) : Set α :=
-  fun a => s₁ a ∨ s₂ a
+  fun a => s₁ a  s₂ a
 
 def FinSet (n : Nat) := Set (Fin n)
 

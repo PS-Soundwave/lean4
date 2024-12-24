@@ -12,7 +12,7 @@ partial def make' (n d : UInt32) : Tree :=
 -- build a tree
 def make (d : UInt32) := make' d d
 
-def check : Tree → UInt32
+def check : Tree  UInt32
   | .nil => 0
   | .node l r => 1 + check l + check r
 
@@ -35,7 +35,7 @@ partial def depth (d m : Nat) : List (Nat × Nat × Task UInt32) :=
     (n, d, Task.spawn (fun _ => sumT (.ofNat d) (.ofNat n) 0)) :: depth (d+2) m
   else []
 
-def main : List String → IO UInt32
+def main : List String  IO UInt32
   | [s] => do
     let n := s.toNat!
     let maxN := Nat.max (minN + 2) n

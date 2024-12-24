@@ -1,7 +1,7 @@
-def f : Nat × Nat → Nat
+def f : Nat × Nat  Nat
   | (a, b) => a + b
 
-def f' : Nat × Nat → Nat
+def f' : Nat × Nat  Nat
   | (a, b) => by done
 
 example (x : Nat × Nat) (h : x.1 > 0) : f x > 0 := by
@@ -15,12 +15,12 @@ example (x : Nat) : Nat :=
   match g x with
   | (a, b) => by done
 
-inductive Vector' (α : Type u) : Nat → Type u where
+inductive Vector' (α : Type u) : Nat  Type u where
   | nil  : Vector' α 0
-  | cons : α → Vector' α n → Vector' α (n+1)
+  | cons : α  Vector' α n  Vector' α (n+1)
 
 namespace Vector'
-  def insert (a: α): Fin (n+1) → Vector' α n → Vector' α (n+1)
+  def insert (a: α): Fin (n+1)  Vector' α n  Vector' α (n+1)
     | ⟨0  , _⟩,        xs => cons a xs
     | ⟨i+1, h⟩, cons x xs => by done
 

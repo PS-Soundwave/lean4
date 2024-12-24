@@ -163,12 +163,12 @@ unsafe def elabEvalCoreUnsafe (bang : Bool) (tk term : Syntax) (expectedType? : 
   let declName := `_eval
   -- `t` is either `MessageData` or `Format`, and `mkT` is for synthesizing an expression that yields a `t`.
   -- The `toMessageData` function adapts `t` to `MessageData`.
-  let mkAct {t : Type} [Inhabited t] (toMessageData : t → MessageData) (mkT : Expr → MetaM Expr) (e : Expr) : TermElabM EvalAction := do
+  let mkAct {t : Type} [Inhabited t] (toMessageData : t  MessageData) (mkT : Expr  MetaM Expr) (e : Expr) : TermElabM EvalAction := do
     -- Create a monadic action given the name of the monad `mc`, the monad `m` itself,
     -- and an expression `e` to evaluate in this monad.
     -- A trick here is that `mkMAct?` makes use of `MonadEval` instances are currently available in this stage,
     -- and we do not need them to be available in the target environment.
-    let mkMAct? (mc : Name) (m : Type → Type) [Monad m] [MonadEvalT m CommandElabM] (e : Expr) : TermElabM (Option EvalAction) := do
+    let mkMAct? (mc : Name) (m : Type  Type) [Monad m] [MonadEvalT m CommandElabM] (e : Expr) : TermElabM (Option EvalAction) := do
       let some e ← observing? (mkAppOptM ``MonadEvalT.monadEval #[none, mkConst mc, none, none, e])
         | return none
       let eType := e.appFn!.appArg!

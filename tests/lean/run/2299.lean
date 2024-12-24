@@ -1,5 +1,5 @@
 class Abs (α : Type _) where
-  abs : α → α
+  abs : α  α
 
 macro:max atomic("|" noWs) a:term noWs "|" : term => `(Abs.abs $a)
 

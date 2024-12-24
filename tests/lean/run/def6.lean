@@ -2,15 +2,15 @@
 
 open Nat
 
-inductive BV : Nat → Type
+inductive BV : Nat  Type
 | nil  : BV 0
 | cons : ∀ (n) (hd : Bool) (tl : BV n), BV (succ n)
 
 open BV
 
-variable (f : Bool → Bool → Bool)
+variable (f : Bool  Bool  Bool)
 
-def map2 : {n : Nat} →  BV n → BV n → BV n
+def map2 : {n : Nat}   BV n  BV n  BV n
 | .(0), nil, nil             => nil
 | .(n+1), cons n b1 v1, cons .(n) b2 v2 => cons n (f b1 b2) (map2 v1 v2)
 
@@ -22,7 +22,7 @@ rfl
 
 #print map2
 
-def map2' : {n : Nat} →  BV n → BV n → BV n
+def map2' : {n : Nat}   BV n  BV n  BV n
 | _, nil,          nil          => nil
 | _, cons _ b1 v1, cons _ b2 v2 => cons _ (f b1 b2) (map2' v1 v2)
 

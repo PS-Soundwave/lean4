@@ -91,7 +91,7 @@ theorem ofNat_sub_eq_zero {b a : Nat} (h : ¬ b ≤ a) : ((a - b : Nat) : Int) =
   Int.ofNat_eq_zero.mpr (Nat.sub_eq_zero_of_le (Nat.le_of_lt (Nat.not_le.mp h)))
 
 theorem ofNat_sub_dichotomy {a b : Nat} :
-    b ≤ a ∧ ((a - b : Nat) : Int) = a - b ∨ a < b ∧ ((a - b : Nat) : Int) = 0 := by
+    b ≤ a ∧ ((a - b : Nat) : Int) = a - b  a < b ∧ ((a - b : Nat) : Int) = 0 := by
   by_cases h : b ≤ a
   · left
     have t := Int.ofNat_sub h
@@ -122,7 +122,7 @@ theorem ofNat_natAbs (a : Int) : (a.natAbs : Int) = if 0 ≤ a then a else -a :=
     rw [if_pos (Int.ofNat_nonneg n)]
   · simp; rfl
 
-theorem natAbs_dichotomy {a : Int} : 0 ≤ a ∧ a.natAbs = a ∨ a < 0 ∧ a.natAbs = -a := by
+theorem natAbs_dichotomy {a : Int} : 0 ≤ a ∧ a.natAbs = a  a < 0 ∧ a.natAbs = -a := by
   by_cases h : 0 ≤ a
   · left
     simp_all [Int.natAbs_of_nonneg]
@@ -173,10 +173,10 @@ end Nat
 
 namespace Fin
 
-theorem ne_iff_lt_or_gt {i j : Fin n} : i ≠ j ↔ i < j ∨ i > j := by
+theorem ne_iff_lt_or_gt {i j : Fin n} : i ≠ j ↔ i < j  i > j := by
   cases i; cases j; simp only [ne_eq, Fin.mk.injEq, Nat.ne_iff_lt_or_gt, gt_iff_lt]; rfl
 
-protected theorem lt_or_gt_of_ne {i j : Fin n} (h : i ≠ j) : i < j ∨ i > j := Fin.ne_iff_lt_or_gt.mp h
+protected theorem lt_or_gt_of_ne {i j : Fin n} (h : i ≠ j) : i < j  i > j := Fin.ne_iff_lt_or_gt.mp h
 
 theorem not_le {i j : Fin n} : ¬ i ≤ j ↔ j < i := by
   cases i; cases j; exact Nat.not_le
@@ -205,12 +205,12 @@ end Fin
 
 namespace Prod
 
-theorem of_lex (w : Prod.Lex r s p q) : r p.fst q.fst ∨ p.fst = q.fst ∧ s p.snd q.snd :=
+theorem of_lex (w : Prod.Lex r s p q) : r p.fst q.fst  p.fst = q.fst ∧ s p.snd q.snd :=
   Prod.lex_def.mp w
 
-theorem of_not_lex {α} {r : α → α → Prop} [DecidableEq α] {β} {s : β → β → Prop}
+theorem of_not_lex {α} {r : α  α  Prop} [DecidableEq α] {β} {s : β  β  Prop}
     {p q : α × β} (w : ¬ Prod.Lex r s p q) :
-    ¬ r p.fst q.fst ∧ (p.fst ≠ q.fst ∨ ¬ s p.snd q.snd) := by
+    ¬ r p.fst q.fst ∧ (p.fst ≠ q.fst  ¬ s p.snd q.snd) := by
   rw [Prod.lex_def, not_or, Decidable.not_and_iff_or_not_not] at w
   exact w
 

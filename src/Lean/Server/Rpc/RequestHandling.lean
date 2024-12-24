@@ -13,7 +13,7 @@ import Lean.Server.Rpc.Basic
 namespace Lean.Server
 
 private structure RpcProcedure where
-  wrapper : (sessionId : UInt64) → Json → RequestM (RequestTask Json)
+  wrapper : (sessionId : UInt64)  Json  RequestM (RequestTask Json)
   deriving Inhabited
 
 /- We store the builtin RPC handlers in a Ref and users' handlers in an extension. This ensures
@@ -65,7 +65,7 @@ builtin_initialize
 
 def wrapRpcProcedure (method : Name) paramType respType
     [RpcEncodable paramType] [RpcEncodable respType]
-    (handler : paramType → RequestM (RequestTask respType)) : RpcProcedure :=
+    (handler : paramType  RequestM (RequestTask respType)) : RpcProcedure :=
   ⟨fun seshId j => do
     let rc ← read
 
@@ -92,7 +92,7 @@ def wrapRpcProcedure (method : Name) paramType respType
 
 def registerBuiltinRpcProcedure (method : Name) paramType respType
     [RpcEncodable paramType] [RpcEncodable respType]
-    (handler : paramType → RequestM (RequestTask respType)) : IO Unit := do
+    (handler : paramType  RequestM (RequestTask respType)) : IO Unit := do
   let errMsg := s!"Failed to register builtin RPC call handler for '{method}'"
   unless (← initializing) do
     throw <| IO.userError s!"{errMsg}: only possible during initialization"
@@ -130,7 +130,7 @@ builtin_initialize registerBuiltinAttribute {
   name := `server_rpc_method
   descr := "Marks a function as a Lean server RPC method.
     Shorthand for `registerRpcProcedure`.
-    The function must have type `α → RequestM (RequestTask β)` with
+    The function must have type `α  RequestM (RequestTask β)` with
     `[RpcEncodable α]` and `[RpcEncodable β]`."
   applicationTime := AttributeApplicationTime.afterCompilation
   add := fun decl _ _ =>

@@ -81,7 +81,7 @@ def getExt (phase : Phase) : DeclExt :=
   | .mono => monoExt
   | _ => unreachable!
 
-def forEachDecl (f : Decl → CoreM Unit) (phase := Phase.base) : CoreM Unit := do
+def forEachDecl (f : Decl  CoreM Unit) (phase := Phase.base) : CoreM Unit := do
   let ext := getExt phase
   let env ← getEnv
   for modIdx in [:env.allImportedModuleNames.size] do
@@ -89,14 +89,14 @@ def forEachDecl (f : Decl → CoreM Unit) (phase := Phase.base) : CoreM Unit := 
       f decl
   ext.getState env |>.forM fun _ decl => f decl
 
-def forEachModuleDecl (moduleName : Name) (f : Decl → CoreM Unit) (phase := Phase.base) : CoreM Unit := do
+def forEachModuleDecl (moduleName : Name) (f : Decl  CoreM Unit) (phase := Phase.base) : CoreM Unit := do
   let ext := getExt phase
   let env ← getEnv
   let some modIdx := env.getModuleIdx? moduleName | throwError "module `{moduleName}` not found"
   for decl in ext.getModuleEntries env modIdx do
     f decl
 
-def forEachMainModuleDecl (f : Decl → CoreM Unit) (phase := Phase.base) : CoreM Unit := do
+def forEachMainModuleDecl (f : Decl  CoreM Unit) (phase := Phase.base) : CoreM Unit := do
   (getExt phase).getState (← getEnv) |>.forM fun _ decl => f decl
 
 end Lean.Compiler.LCNF

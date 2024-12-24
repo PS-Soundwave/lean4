@@ -42,7 +42,7 @@ match e with
   | _              => pure none
 
 /- Convert expression using auxiliary hints `inaccessible` and `val` into a pattern -/
-partial def mkPattern : Expr → MetaM Pattern
+partial def mkPattern : Expr  MetaM Pattern
 | e => do
   if e.isAppOfArity `val 2 then
     return Pattern.val e.appArg!
@@ -78,7 +78,7 @@ partial def mkPattern : Expr → MetaM Pattern
         let pats ← fields.toList.mapM mkPattern
         return Pattern.ctor cval.name fn.constLevels! params.toList pats
 
-partial def decodePats : Expr → MetaM (List Pattern)
+partial def decodePats : Expr  MetaM (List Pattern)
 | e => do
   match e.app2? `Pat with
   | some (_, pat) => let pat ← mkPattern pat; return [pat]
@@ -96,7 +96,7 @@ forallTelescopeReducing e fun args body => do
   let pats  ← decodePats body
   return { ref := Syntax.missing, fvarDecls := decls, patterns := pats }
 
-partial def decodeAltLHSs : Expr → MetaM (List AltLHS)
+partial def decodeAltLHSs : Expr  MetaM (List AltLHS)
 | e => do
   match e.app2? `LHS with
   | some (_, lhs) => let lhs ← decodeAltLHS lhs; return [lhs]
@@ -108,7 +108,7 @@ partial def decodeAltLHSs : Expr → MetaM (List AltLHS)
       let lhss ← decodeAltLHSs lhss
       return lhs ++ lhss
 
-def withDepElimFrom {α} (declName : Name) (numPats : Nat) (k : List FVarId → List AltLHS → MetaM α) : MetaM α := do
+def withDepElimFrom {α} (declName : Name) (numPats : Nat) (k : List FVarId  List AltLHS  MetaM α) : MetaM α := do
 let cinfo ← getConstInfo declName
 forallTelescopeReducing cinfo.type fun args body =>
   if args.size < numPats then
@@ -192,9 +192,9 @@ def ex1 (α : Type u) (β : Type v) (n : Nat) (x : List α) (y : List β) :
 
 #print elimTest1
 
-inductive Vec (α : Type u) : Nat → Type u
+inductive Vec (α : Type u) : Nat  Type u
 | nil            : Vec α 0
-| cons {n : Nat} : α → Vec α n → Vec α (n+1)
+| cons {n : Nat} : α  Vec α n  Vec α (n+1)
 
 def ex2 (α : Type u) (n : Nat) (xs : Vec α n) (ys : Vec α n) :
   LHS (Pat (inaccessible 0) × Pat (Vec.nil : Vec α 0) × Pat (Vec.nil : Vec α 0))

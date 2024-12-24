@@ -13,7 +13,7 @@ end Ex1
 
 namespace Ex2
 inductive Foo where
-  | mk : List Foo → Foo
+  | mk : List Foo  Foo
 
 mutual
 def g (x : Foo) : Nat := by
@@ -34,7 +34,7 @@ namespace Ex3
 
 inductive Foo where
   | a | b | c
-  | pair: Foo × Foo → Foo
+  | pair: Foo × Foo  Foo
 
 def Foo.deq (a b : Foo) : Decidable (a = b) := by
   cases a <;> cases b

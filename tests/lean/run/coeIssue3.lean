@@ -7,8 +7,8 @@ structure B : Type := (u : Unit)
 def a : A := A.mk ()
 def b : B := B.mk ()
 
-def Foo.chalk : A → List Var → Unit := fun _ _ => ()
-def Bar.chalk : B → Unit := fun _ => ()
+def Foo.chalk : A  List Var  Unit := fun _ _ => ()
+def Bar.chalk : B  Unit := fun _ => ()
 
 instance listCoe {α β} [Coe α β] : Coe (List α) (List β) :=
 ⟨fun as => as.map fun (a : α) => ↑a⟩

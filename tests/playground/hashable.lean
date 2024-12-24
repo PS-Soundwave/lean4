@@ -10,13 +10,13 @@ match x with
 | SimpleInd.A => 0
 | SimpleInd.B => 1 := λ x => rfl
 mutual
-inductive Foo : Type → Type
-| A : Int → (3 = 3) → String → Foo Int
-| B : Bar → Foo String
+inductive Foo : Type  Type
+| A : Int  (3 = 3)  String  Foo Int
+| B : Bar  Foo String
 deriving Hashable
 inductive Bar
 | C
-| D : Foo String → Bar
+| D : Foo String  Bar
 deriving Hashable
 end
 

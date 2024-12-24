@@ -15,5 +15,5 @@ variable (skip : Com)
 set_option hygiene false in
 notation:60 cs " ⇓ " σ' " : " steps:60 => Bigstep cs σ' steps
 
-inductive Bigstep : Com × State → State → Nat → Prop where
+inductive Bigstep : Com × State  State  Nat  Prop where
   | skip {σ} : ⟨skip, σ⟩ ⇓ σ : 1

@@ -21,7 +21,7 @@ def check (a : Name) : CoreM Unit := do
   let r ← ofExceptKernelException (Kernel.check env {} a)
   IO.println (toString a ++ " ==> " ++ toString r)
 
-partial def fact : Nat → Nat
+partial def fact : Nat  Nat
 | 0     => 1
 | (n+1) => (n+1)*fact n
 

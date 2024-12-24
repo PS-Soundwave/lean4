@@ -574,7 +574,7 @@ environment register_stage2_decl(environment const & env, name const & n, expr c
 }
 
 /* @[export lean.get_num_lit_core]
-   def get_num_lit : expr → option nat */
+   def get_num_lit : expr  option nat */
 extern "C" object * lean_get_num_lit(obj_arg o);
 
 optional<nat> get_num_lit_ext(expr const & e) {

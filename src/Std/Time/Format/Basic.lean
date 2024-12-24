@@ -65,7 +65,7 @@ structure Number where
 /--
 `classifyNumberText` classifies the number of pattern letters into either a `Number` or `Text`.
 -/
-def classifyNumberText : Nat → Option (Number ⊕ Text)
+def classifyNumberText : Nat  Option (Number ⊕ Text)
   | n => if n < 3 then some (.inl ⟨n⟩) else .inr <$> (Text.classify n)
 
 /--
@@ -116,7 +116,7 @@ def classify (num : Nat) : Option Year :=
     some (.twoDigit)
   else if num = 4 then
     some (.fourDigit)
-  else if num > 4 ∨ num = 3 then
+  else if num > 4  num = 3 then
     some (.extended num)
   else
     none
@@ -435,40 +435,40 @@ inductive Modifier
 `abstractParse` abstracts the parsing logic for any type that has a classify function.
 It takes a constructor function to build the `Modifier` and a classify function that maps the pattern length to a specific type.
 -/
-private def parseMod (constructor : α → Modifier) (classify : Nat → Option α) (p : String) : Parser Modifier :=
+private def parseMod (constructor : α  Modifier) (classify : Nat  Option α) (p : String) : Parser Modifier :=
   let len := p.length
   match classify len with
   | some res => pure (constructor res)
   | none => fail s!"invalid quantity of characters for '{p.get 0}'"
 
-private def parseText (constructor : Text → Modifier) (p : String) : Parser Modifier :=
+private def parseText (constructor : Text  Modifier) (p : String) : Parser Modifier :=
   parseMod constructor Text.classify p
 
-private def parseFraction (constructor : Fraction → Modifier) (p : String) : Parser Modifier :=
+private def parseFraction (constructor : Fraction  Modifier) (p : String) : Parser Modifier :=
   parseMod constructor Fraction.classify p
 
-private def parseNumber (constructor : Number → Modifier) (p : String) : Parser Modifier :=
+private def parseNumber (constructor : Number  Modifier) (p : String) : Parser Modifier :=
   pure (constructor ⟨p.length⟩)
 
-private def parseYear (constructor : Year → Modifier) (p : String) : Parser Modifier :=
+private def parseYear (constructor : Year  Modifier) (p : String) : Parser Modifier :=
   parseMod constructor Year.classify p
 
-private def parseOffsetX (constructor : OffsetX → Modifier) (p : String) : Parser Modifier :=
+private def parseOffsetX (constructor : OffsetX  Modifier) (p : String) : Parser Modifier :=
   parseMod constructor OffsetX.classify p
 
-private def parseOffsetZ (constructor : OffsetZ → Modifier) (p : String) : Parser Modifier :=
+private def parseOffsetZ (constructor : OffsetZ  Modifier) (p : String) : Parser Modifier :=
   parseMod constructor OffsetZ.classify p
 
-private def parseOffsetO (constructor : OffsetO → Modifier) (p : String) : Parser Modifier :=
+private def parseOffsetO (constructor : OffsetO  Modifier) (p : String) : Parser Modifier :=
   parseMod constructor OffsetO.classify p
 
 private def parseZoneId (p : String) : Parser Modifier :=
   if p.length = 2 then pure .V else fail s!"invalid quantity of characters for '{p.get 0}'"
 
-private def parseNumberText (constructor : (Number ⊕ Text) → Modifier) (p : String) : Parser Modifier :=
+private def parseNumberText (constructor : (Number ⊕ Text)  Modifier) (p : String) : Parser Modifier :=
   parseMod constructor classifyNumberText p
 
-private def parseZoneName (constructor : ZoneName → Modifier) (p : String) : Parser Modifier :=
+private def parseZoneName (constructor : ZoneName  Modifier) (p : String) : Parser Modifier :=
   let len := p.length
   match ZoneName.classify (p.get 0) len with
   | some res => pure (constructor res)
@@ -540,7 +540,7 @@ If the format is aware of some timezone data it parses or if it parses any timez
 -/
 inductive Awareness
   /-- The format only parses a single timezone. -/
-  | only : TimeZone → Awareness
+  | only : TimeZone  Awareness
   /-- The format parses any timezone. -/
   | any
 
@@ -580,7 +580,7 @@ structure GenericFormat (awareness : Awareness) where
 
 private def parseFormatPart : Parser FormatPart
   := (.modifier <$> parseModifier)
-  <|> (pchar '\\') *> any <&> (.string ∘ toString)
+  <|> (pchar '\\') *> any <&> (.string  toString)
   <|> (pchar '\"' *>  many1Chars (satisfy (· ≠ '\"')) <* pchar '\"') <&> .string
   <|> (pchar '\'' *>  many1Chars (satisfy (· ≠ '\'')) <* pchar '\'') <&> .string
   <|> many1Chars (satisfy (fun x => ¬Char.isAlpha x ∧ x ≠ '\'' ∧ x ≠ '\"')) <&> .string
@@ -617,7 +617,7 @@ private def rightTruncate (size : Nat)  (n : Int) (cut : Bool := false) : String
   else
     sign ++ rightPad size '0' numStr
 
-private def formatMonthLong : Month.Ordinal → String
+private def formatMonthLong : Month.Ordinal  String
   | ⟨1, _⟩ => "January"
   | ⟨2, _⟩ => "February"
   | ⟨3, _⟩ => "March"
@@ -631,7 +631,7 @@ private def formatMonthLong : Month.Ordinal → String
   | ⟨11, _⟩ => "November"
   | ⟨12, _⟩ => "December"
 
-private def formatMonthShort : Month.Ordinal → String
+private def formatMonthShort : Month.Ordinal  String
   | ⟨1, _⟩ => "Jan"
   | ⟨2, _⟩ => "Feb"
   | ⟨3, _⟩ => "Mar"
@@ -645,7 +645,7 @@ private def formatMonthShort : Month.Ordinal → String
   | ⟨11, _⟩ => "Nov"
   | ⟨12, _⟩ => "Dec"
 
-private def formatMonthNarrow : Month.Ordinal → String
+private def formatMonthNarrow : Month.Ordinal  String
   | ⟨1, _⟩  => "J"
   | ⟨2, _⟩  => "F"
   | ⟨3, _⟩  => "M"
@@ -659,7 +659,7 @@ private def formatMonthNarrow : Month.Ordinal → String
   | ⟨11, _⟩ => "N"
   | ⟨12, _⟩ => "D"
 
-private def formatWeekdayLong : Weekday → String
+private def formatWeekdayLong : Weekday  String
   | .sunday => "Sunday"
   | .monday => "Monday"
   | .tuesday => "Tuesday"
@@ -668,7 +668,7 @@ private def formatWeekdayLong : Weekday → String
   | .friday => "Friday"
   | .saturday => "Saturday"
 
-private def formatWeekdayShort : Weekday → String
+private def formatWeekdayShort : Weekday  String
   | .sunday => "Sun"
   | .monday => "Mon"
   | .tuesday => "Tue"
@@ -677,7 +677,7 @@ private def formatWeekdayShort : Weekday → String
   | .friday => "Fri"
   | .saturday => "Sat"
 
-private def formatWeekdayNarrow : Weekday → String
+private def formatWeekdayNarrow : Weekday  String
   | .sunday => "S"
   | .monday => "M"
   | .tuesday => "T"
@@ -686,31 +686,31 @@ private def formatWeekdayNarrow : Weekday → String
   | .friday => "F"
   | .saturday => "S"
 
-private def formatEraShort : Year.Era → String
+private def formatEraShort : Year.Era  String
   | .bce => "BCE"
   | .ce  => "CE"
 
-private def formatEraLong : Year.Era → String
+private def formatEraLong : Year.Era  String
   | .bce => "Before Common Era"
   | .ce  => "Common Era"
 
-private def formatEraNarrow : Year.Era → String
+private def formatEraNarrow : Year.Era  String
   | .bce => "B"
   | .ce  => "C"
 
-private def formatQuarterNumber : Month.Quarter → String
+private def formatQuarterNumber : Month.Quarter  String
   |⟨1, _⟩ => "1"
   |⟨2, _⟩ => "2"
   |⟨3, _⟩ => "3"
   |⟨4, _⟩ => "4"
 
-private def formatQuarterShort : Month.Quarter → String
+private def formatQuarterShort : Month.Quarter  String
   | ⟨1, _⟩ => "Q1"
   | ⟨2, _⟩ => "Q2"
   | ⟨3, _⟩ => "Q3"
   | ⟨4, _⟩ => "Q4"
 
-private def formatQuarterLong : Month.Quarter → String
+private def formatQuarterLong : Month.Quarter  String
   | ⟨1, _⟩ => "1st quarter"
   | ⟨2, _⟩ => "2nd quarter"
   | ⟨3, _⟩ => "3rd quarter"
@@ -737,7 +737,7 @@ private def toSigned (data : Int) : String :=
 private def toIsoString (offset : Offset) (withMinutes : Bool) (withSeconds : Bool) (colon : Bool) : String :=
   let (sign, time) := if offset.second.val ≥ 0 then ("+", offset.second) else ("-", -offset.second)
   let time := PlainTime.ofSeconds time
-  let pad := leftPad 2 '0' ∘ toString
+  let pad := leftPad 2 '0'  toString
 
   let data := s!"{sign}{pad time.hour.val}"
   let data := if withMinutes then s!"{data}{if colon then ":" else ""}{pad time.minute.val}" else data
@@ -745,7 +745,7 @@ private def toIsoString (offset : Offset) (withMinutes : Bool) (withSeconds : Bo
 
   data
 
-private def TypeFormat : Modifier → Type
+private def TypeFormat : Modifier  Type
   | .G _ => Year.Era
   | .y _ => Year.Offset
   | .u _ => Year.Offset
@@ -1080,7 +1080,7 @@ private def parseFractionNum (size : Nat) (pad : Nat) : Parser Nat :=
   String.toNat! <$> rightPad pad '0' <$> exactlyChars (satisfy Char.isDigit) size
 
 private def parseIdentifier : Parser String :=
-  many1Chars (satisfy (fun x => x.isAlpha ∨ x.isDigit ∨ x = '_' ∨ x = '-' ∨ x = '/'))
+  many1Chars (satisfy (fun x => x.isAlpha  x.isDigit  x = '_'  x = '-'  x = '/'))
 
 private def parseNatToBounded { n m : Nat } (parser : Parser Nat) : Parser (Bounded.LE n m) := do
   let res ← parser
@@ -1113,7 +1113,7 @@ private def parseOffset (withMinutes : Reason) (withSeconds : Reason) (withColon
 
   return Offset.ofSeconds ⟨hours.val * sign⟩
 
-private def parseWith : (mod : Modifier) → Parser (TypeFormat mod)
+private def parseWith : (mod : Modifier)  Parser (TypeFormat mod)
   | .G format =>
     match format with
     | .short => parseEraShort
@@ -1223,8 +1223,8 @@ private def formatPartWithDate (date : DateTime tz) (part : FormatPart) : String
   | .string s => s
 
 @[simp]
-private def FormatType (result : Type) : FormatString → Type
-  | .modifier entry :: xs => (TypeFormat entry) → (FormatType result xs)
+private def FormatType (result : Type) : FormatString  Type
+  | .modifier entry :: xs => (TypeFormat entry)  (FormatType result xs)
   | .string _ :: xs => (FormatType result xs)
   | [] => result
 
@@ -1297,7 +1297,7 @@ private def insert (date : DateBuilder) (modifier : Modifier) (data : TypeFormat
   | .x _ => { date with x := some data }
   | .Z _ => { date with Z := some data }
 
-private def convertYearAndEra (year : Year.Offset) : Year.Era → Year.Offset
+private def convertYearAndEra (year : Year.Offset) : Year.Era  Year.Offset
   | .ce => year
   | .bce => -(year + 1)
 
@@ -1448,8 +1448,8 @@ def parseBuilder! [Inhabited α] (format : GenericFormat aw)  (builder : FormatT
 /--
 Formats the date using the format into a String, using a `getInfo` function to get the information needed to build the `String`.
 -/
-def formatGeneric (format : GenericFormat aw) (getInfo : (typ : Modifier) → Option (TypeFormat typ)) : Option String :=
-  let rec go (data : String) : (format : FormatString) → Option String
+def formatGeneric (format : GenericFormat aw) (getInfo : (typ : Modifier)  Option (TypeFormat typ)) : Option String :=
+  let rec go (data : String) : (format : FormatString)  Option String
     | .modifier x :: xs => do go (data ++ formatWith x (← getInfo x)) xs
     | .string x :: xs => go (data ++ x) xs
     | [] => data
@@ -1459,7 +1459,7 @@ def formatGeneric (format : GenericFormat aw) (getInfo : (typ : Modifier) → Op
 Constructs a `FormatType` function to format a date into a string using a `GenericFormat`.
 -/
 def formatBuilder (format : GenericFormat aw) : FormatType String format.string :=
-  let rec go (data : String) : (format : FormatString) → FormatType String format
+  let rec go (data : String) : (format : FormatString)  FormatType String format
     | .modifier x :: xs => fun res => go (data ++ formatWith x res) xs
     | .string x :: xs => go (data ++ x) xs
     | [] => data
@@ -1470,16 +1470,16 @@ end GenericFormat
 /--
 Typeclass for formatting and parsing values with the given format type.
 -/
-class Format (f : Type) (typ : Type → f → Type) where
+class Format (f : Type) (typ : Type  f  Type) where
   /--
   Converts a format `f` into a string.
   -/
-  format : (fmt : f) → typ String fmt
+  format : (fmt : f)  typ String fmt
 
   /--
   Parses a string into a format using the provided format type `f`.
   -/
-  parse : (fmt : f) → typ (Option α) fmt → String → Except String α
+  parse : (fmt : f)  typ (Option α) fmt  String  Except String α
 
 instance : Format (GenericFormat aw) (FormatType · ·.string) where
   format := GenericFormat.formatBuilder

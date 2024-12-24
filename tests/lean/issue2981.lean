@@ -9,7 +9,7 @@ def dup (a : Nat) (b : Nat := a) := a + b
 
 namespace TestingFix
 
-def rec : Nat → Nat
+def rec : Nat  Nat
  | 0 => 1
  | n+1 => dup (dup (dup (rec n)))
 decreasing_by trace "Tactic is run (ideally only once)"; decreasing_tactic
@@ -19,7 +19,7 @@ end TestingFix
 namespace TestingGuessLex
 
 -- GuessLex should run the tactic an extra time, that is expected
-def rec : Nat → Nat → Nat
+def rec : Nat  Nat  Nat
  | 0, _m => 1
  | n+1, m => dup (dup (dup (rec n (m + 1))))
 decreasing_by trace "Tactic is run (ideally only twice)"; decreasing_tactic
@@ -34,10 +34,10 @@ set_option linter.unusedVariables false
 -- Now with a duplication into another context
 -- We thread through `x` so that we can make the context mention something
 -- that appears in the goal, else `mvarId.cleanup` will remove it
-def dup2 (x : Nat) (a : Nat) (b : x ≠ x → Nat := fun h => a) := a
+def dup2 (x : Nat) (a : Nat) (b : x ≠ x  Nat := fun h => a) := a
 
 namespace TestingFix
-def rec : Nat → Nat
+def rec : Nat  Nat
  | 0 => 1
  | n+1 => dup2 n (rec n)
 decreasing_by
@@ -50,7 +50,7 @@ end TestingFix
 namespace TestingGuessLex
 
 -- GuessLex should run the tactic an extra time, that is expected
-def rec : Nat → Nat → Nat
+def rec : Nat  Nat  Nat
  | 0, _m => 1
  | n+1, m => dup2 n (rec n (m + 1))
 decreasing_by

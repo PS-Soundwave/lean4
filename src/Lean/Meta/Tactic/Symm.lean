@@ -33,7 +33,7 @@ builtin_initialize registerBuiltinAttribute {
     let declTy := (← getConstInfo decl).type
     let (xs, _, targetTy) ← withReducible <| forallMetaTelescopeReducing declTy
     let fail := throwError
-      "@[symm] attribute only applies to lemmas proving x ∼ y → y ∼ x, got {declTy}"
+      "@[symm] attribute only applies to lemmas proving x ∼ y  y ∼ x, got {declTy}"
     let some _ := xs.back? | fail
     let targetTy ← reduce targetTy
     let .app (.app rel _) _ := targetTy | fail

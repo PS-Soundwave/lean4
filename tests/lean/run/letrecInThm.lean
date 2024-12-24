@@ -16,7 +16,7 @@ theorem foo2 : 10 = 10 :=
   rfl
 
 /--
-info: def foo2.aux : Nat → Nat :=
+info: def foo2.aux : Nat  Nat :=
 fun x => x + 1
 -/
 #guard_msgs in

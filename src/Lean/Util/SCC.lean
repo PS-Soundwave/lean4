@@ -50,7 +50,7 @@ private def push (a : α) : M α Unit :=
     }
   }
 
-private def modifyDataOf (a : α) (f : Data → Data) : M α Unit :=
+private def modifyDataOf (a : α) (f : Data  Data) : M α Unit :=
   modify fun s => { s with
     data := match s.data[a]? with
       | none   => s.data
@@ -80,7 +80,7 @@ private def addSCC (a : α) : M α Unit := do
         modify fun s => { s with stack := bs, sccs := newSCC :: s.sccs }
   add (← get).stack []
 
-private partial def sccAux (successorsOf : α → List α) (a : α) : M α Unit := do
+private partial def sccAux (successorsOf : α  List α) (a : α) : M α Unit := do
   push a
   (successorsOf a).forM fun b => do
     let bData ← getDataOf b;
@@ -99,7 +99,7 @@ private partial def sccAux (successorsOf : α → List α) (a : α) : M α Unit 
   if aData.lowlink? == aData.index? then
     addSCC a
 
-def scc (vertices : List α) (successorsOf : α → List α) : List (List α) :=
+def scc (vertices : List α) (successorsOf : α  List α) : List (List α) :=
   let main : M α Unit := vertices.forM fun a => do
     let aData ← getDataOf a
     if aData.index?.isNone then sccAux successorsOf a

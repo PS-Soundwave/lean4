@@ -309,7 +309,7 @@ class specialize_fn {
           fun (ys : List Nat) (w : IO.RealWorld) =>
           let x_1 : Monad (EIO IO.Error) := ...;
           let x_2 : Monad (StateT Nat IO) := ... x_1 ..;
-          let x_3 : Nat → StateT Nat IO Unit := fun (y a : Nat) (w : IO.RealWorld) =>
+          let x_3 : Nat  StateT Nat IO Unit := fun (y a : Nat) (w : IO.RealWorld) =>
             let x_4 : MonadLift IO (StateT Nat IO)  := ... x_1 ...;
             let x_5 : MonadIO (StateT Nat IO) := ... x_4 ...;
             IO.println _ x_2 x_5 Nat Nat.HasToString y a w;
@@ -321,7 +321,7 @@ class specialize_fn {
           have been eliminated. So, by eagerly removing the dead let-declarations, we eliminate `x_4` and `x_5`,
           and `x_3` becomes
           ```
-          let x_3 : Nat → StateT Nat IO Unit := fun (y a : Nat) (w : IO.RealWorld) =>
+          let x_3 : Nat  StateT Nat IO Unit := fun (y a : Nat) (w : IO.RealWorld) =>
             IO.println.spec y a w;
           ```
           Now, suppose we haven't eliminated the dependencies. Then, when we try to specialize

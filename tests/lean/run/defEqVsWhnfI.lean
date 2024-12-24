@@ -3,7 +3,7 @@ import Lean
 class CountParts_ (S : Type u) where
   μ : Type v
   α : Type w
-  φ : S → μ → α
+  φ : S  μ  α
 
 instance : CountParts_ String where
   μ := Char
@@ -11,7 +11,7 @@ instance : CountParts_ String where
   φ haystack needle := haystack.foldl (fun acc x => acc + if x == needle then 1 else 0) 0
 
 class CountParts (S : Type u) (μ : Type v) (α : Type w) where
-  φ : S → μ → α
+  φ : S  μ  α
 
 open Lean Elab Meta Term in
 def test : TermElabM Unit := do

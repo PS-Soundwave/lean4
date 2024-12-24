@@ -17,7 +17,7 @@ structure Precheck.Context where
   quotLCtx : NameSet
 
 abbrev PrecheckM := ReaderT Precheck.Context TermElabM
-abbrev Precheck  := Syntax → PrecheckM Unit
+abbrev Precheck  := Syntax  PrecheckM Unit
 
 protected def withNewLocal (l : Name) (x : PrecheckM α) : PrecheckM α :=
   withReader (fun ctx => { ctx with quotLCtx := ctx.quotLCtx.insert l }) x
@@ -129,7 +129,7 @@ private def isSectionVariable (e : Expr) : TermElabM Bool := do
   | _ => throwUnsupportedSyntax
 
 @[builtin_quot_precheck choice] def precheckChoice : Precheck := fun stx => do
-  let checks ← stx.getArgs.mapM (_root_.observing ∘ precheck)
+  let checks ← stx.getArgs.mapM (_root_.observing  precheck)
   let fails := checks.zip stx.getArgs |>.filterMap fun
     | (.error e, stx) => some m!"{stx}\n{e.toMessageData}"
     | _               => none

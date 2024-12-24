@@ -8,8 +8,8 @@ import Init.System.IO
 
 namespace Lake
 
-class MonadError (m : Type u → Type v) where
-  error {α : Type u} : String → m α
+class MonadError (m : Type u  Type v) where
+  error {α : Type u} : String  m α
 
 export MonadError (error)
 

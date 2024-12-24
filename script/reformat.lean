@@ -13,7 +13,7 @@ partial def getCommands (cmds : Syntax) : StateT (Array Syntax) Id Unit := do
   else
     modify (·.push cmds)
 
-partial def reprintCore : Syntax → Option Format
+partial def reprintCore : Syntax  Option Format
   | Syntax.missing => none
   | Syntax.atom _ val => val.trim
   | Syntax.ident _ rawVal _ _ => rawVal.toString

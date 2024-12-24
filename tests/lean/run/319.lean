@@ -8,7 +8,7 @@ def alsoWork [Class.{u}] := Class.dummy.{u}
 
 
 class Category.{v, u} (Ob : Type u) where
-  Hom : Ob → Ob → Type v
+  Hom : Ob  Ob  Type v
 
 variable (C : Type u) [Category.{v} C] (X : C)
 

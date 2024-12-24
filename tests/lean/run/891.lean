@@ -1,5 +1,5 @@
 @[reducible]
-def isLeapYear (y : Nat) : Prop :=  (y % 400 = 0) ∨ (y % 4 = 0 ∧ y % 100 ≠ 0)
+def isLeapYear (y : Nat) : Prop :=  (y % 400 = 0)  (y % 4 = 0 ∧ y % 100 ≠ 0)
 
 def daysInMonth (year : Nat) (month : Nat) : Nat :=
   match month with
@@ -32,7 +32,7 @@ example (year : Nat) : daysInMonth year 12 = 31 := by
 example (year : Nat) : daysInMonth year 2 = (if isLeapYear year then 29 else 28) := by
   simp [daysInMonth]
 
-def f : Char → Nat → Nat
+def f : Char  Nat  Nat
  | 'a', _ => 1
  | 'b', _ => 2
  | _, _   => 3
@@ -46,7 +46,7 @@ example : f 'b' n = 2 := by
 example : f 'c' n = 3 := by
   simp (config := { decide := true }) [f]
 
-def g : String → Nat → Nat
+def g : String  Nat  Nat
  | "hello", _ => 1
  | "world", _ => 2
  | _, _       => 3
@@ -60,7 +60,7 @@ example : g "world" n = 2 := by
 example : g "abc" n = 3 := by
   simp (config := { decide := true }) [g]
 
-def fn : Fin 8 → Nat → Nat
+def fn : Fin 8  Nat  Nat
  | 2, _ => 1
  | 3, _ => 2
  | _, _ => 3
@@ -71,7 +71,7 @@ example : fn 2 n = 1 := by
 example : fn 4 n = 3 := by
   simp [fn]
 
-def f8 : UInt8 → Nat → Nat
+def f8 : UInt8  Nat  Nat
  | 10, _ => 1
  | 20, _ => 2
  | _, _  => 3
@@ -82,7 +82,7 @@ example : f8 10 n = 1 := by
 example : f8 30 n = 3 := by
   simp [f8]
 
-def f16 : UInt16 → Nat → Nat
+def f16 : UInt16  Nat  Nat
  | 10, _ => 1
  | 20, _ => 2
  | _, _  => 3
@@ -93,7 +93,7 @@ example : f16 10 n = 1 := by
 example : f16 30 n = 3 := by
   simp [f16]
 
-def f32 : UInt32 → Nat → Nat
+def f32 : UInt32  Nat  Nat
  | 10, _ => 1
  | 20, _ => 2
  | _, _  => 3
@@ -104,7 +104,7 @@ example : f32 10 n = 1 := by
 example : f32 30 n = 3 := by
   simp [f32]
 
-def f64 : UInt64 → Nat → Nat
+def f64 : UInt64  Nat  Nat
  | 10, _ => 1
  | 20, _ => 2
  | _, _  => 3

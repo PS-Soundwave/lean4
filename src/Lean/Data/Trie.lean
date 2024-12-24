@@ -28,8 +28,8 @@ def Trie α := Option α × ByteAssoc α
 
 inductive ByteAssoc α where
   | leaf : Trie α
-  | node1 : UInt8 → Trie α → Trie α
-  | node : ByteArray → Array (Trie α) → Trie α
+  | node1 : UInt8  Trie α  Trie α
+  | node : ByteArray  Array (Trie α)  Trie α
 end
 ```
 but that would come at the cost of extra indirections.
@@ -38,9 +38,9 @@ but that would come at the cost of extra indirections.
 /-- A Trie is a key-value store where the keys are of type `String`,
 and the internal structure is a tree that branches on the bytes of the string.  -/
 inductive Trie (α : Type) where
-  | leaf : Option α → Trie α
-  | node1 : Option α → UInt8 → Trie α → Trie α
-  | node : Option α → ByteArray → Array (Trie α) → Trie α
+  | leaf : Option α  Trie α
+  | node1 : Option α  UInt8  Trie α  Trie α
+  | node : Option α  ByteArray  Array (Trie α)  Trie α
 
 namespace Trie
 variable {α : Type}
@@ -55,7 +55,7 @@ instance : Inhabited (Trie α) where
   default := empty
 
 /-- Insert or update the value at a the given key `s`.  -/
-partial def upsert (t : Trie α) (s : String) (f : Option α → α) : Trie α :=
+partial def upsert (t : Trie α) (s : String) (f : Option α  α) : Trie α :=
   let rec insertEmpty (i : Nat) : Trie α :=
     if h : i < s.utf8ByteSize then
       let c := s.getUtf8Byte i h
@@ -127,7 +127,7 @@ partial def find? (t : Trie α) (s : String) : Option α :=
 /-- Returns an `Array` of all values in the trie, in no particular order. -/
 partial def values (t : Trie α) : Array α := go t |>.run #[] |>.2
   where
-    go : Trie α → StateM (Array α) Unit
+    go : Trie α  StateM (Array α) Unit
       | leaf a? => do
         if let some a := a? then
           modify (·.push a)
@@ -185,7 +185,7 @@ partial def matchPrefix (s : String) (t : Trie α) (i : String.Pos) : Option α 
         res
   loop t i.byteIdx none
 
-private partial def toStringAux {α : Type} : Trie α → List Format
+private partial def toStringAux {α : Type} : Trie α  List Format
   | leaf _ => []
   | node1 _ c t =>
     [ format (repr c), Format.group $ Format.nest 4 $ flip Format.joinSep Format.line $ toStringAux t ]

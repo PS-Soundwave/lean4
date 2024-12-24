@@ -107,7 +107,7 @@ def idEndEscape   := '»'
 @[inline] def isIdEndEscape (c : Char) : Bool := c = idEndEscape
 namespace Name
 
-def getRoot : Name → Name
+def getRoot : Name  Name
   | anonymous             => anonymous
   | n@(str anonymous _) => n
   | n@(num anonymous _) => n
@@ -115,7 +115,7 @@ def getRoot : Name → Name
   | num n _             => getRoot n
 
 @[export lean_is_inaccessible_user_name]
-def isInaccessibleUserName : Name → Bool
+def isInaccessibleUserName : Name  Bool
   | Name.str _ s   => s.contains '✝' || s == "_inaccessible"
   | Name.num p _   => isInaccessibleUserName p
   | _              => false
@@ -135,7 +135,7 @@ variable (sep : String) (escape : Bool) in
 Uses the separator `sep` (usually `"."`) to combine the components of the `Name` into a string.
 See the documentation for `Name.toString` for an explanation of `escape` and `isToken`.
 -/
-def toStringWithSep (n : Name) (isToken : String → Bool := fun _ => false) : String :=
+def toStringWithSep (n : Name) (isToken : String  Bool := fun _ => false) : String :=
   match n with
   | anonymous       => "[anonymous]"
   | str anonymous s => maybeEscape s (isToken s)
@@ -160,7 +160,7 @@ Converts a name to a string.
   escaping is necessary to avoid parser tokens.
   The insertion algorithm works so long as parser tokens do not themselves contain `«` or `»`.
 -/
-protected def toString (n : Name) (escape := true) (isToken : String → Bool := fun _ => false) : String :=
+protected def toString (n : Name) (escape := true) (isToken : String  Bool := fun _ => false) : String :=
   -- never escape "prettified" inaccessible names or macro scopes or pseudo-syntax introduced by the delaborator
   toStringWithSep "." (escape && !n.isInaccessibleUserName && !n.hasMacroScopes && !maybePseudoSyntax) n isToken
 where
@@ -177,7 +177,7 @@ where
 instance : ToString Name where
   toString n := n.toString
 
-private def hasNum : Name → Bool
+private def hasNum : Name  Bool
   | anonymous => false
   | num ..    => true
   | str p ..  => hasNum p
@@ -195,11 +195,11 @@ protected def reprPrec (n : Name) (prec : Nat) : Std.Format :=
 instance : Repr Name where
   reprPrec := Name.reprPrec
 
-def capitalize : Name → Name
+def capitalize : Name  Name
   | .str p s => .str p s.capitalize
   | n        => n
 
-def replacePrefix : Name → Name → Name → Name
+def replacePrefix : Name  Name  Name  Name
   | anonymous,   anonymous, newP => newP
   | anonymous,   _,         _    => anonymous
   | n@(str p s), queryP,    newP => if n == queryP then newP else Name.mkStr (p.replacePrefix queryP newP) s
@@ -208,14 +208,14 @@ def replacePrefix : Name → Name → Name → Name
 /--
   `eraseSuffix? n s` return `n'` if `n` is of the form `n == n' ++ s`.
 -/
-def eraseSuffix? : Name → Name → Option Name
+def eraseSuffix? : Name  Name  Option Name
   | n,       anonymous => some n
   | str p s, str p' s' => if s == s' then eraseSuffix? p p' else none
   | num p s, num p' s' => if s == s' then eraseSuffix? p p' else none
   | _,       _         => none
 
 /-- Remove macros scopes, apply `f`, and put them back -/
-@[inline] def modifyBase (n : Name) (f : Name → Name) : Name :=
+@[inline] def modifyBase (n : Name) (f : Name  Name) : Name :=
   if n.hasMacroScopes then
     let view := extractMacroScopes n
     { view with name := f view.name }.review
@@ -268,19 +268,19 @@ namespace NameGenerator
 
 end NameGenerator
 
-class MonadNameGenerator (m : Type → Type) where
+class MonadNameGenerator (m : Type  Type) where
   getNGen : m NameGenerator
-  setNGen : NameGenerator → m Unit
+  setNGen : NameGenerator  m Unit
 
 export MonadNameGenerator (getNGen setNGen)
 
-def mkFreshId {m : Type → Type} [Monad m] [MonadNameGenerator m] : m Name := do
+def mkFreshId {m : Type  Type} [Monad m] [MonadNameGenerator m] : m Name := do
   let ngen ← getNGen
   let r := ngen.curr
   setNGen ngen.next
   pure r
 
-instance monadNameGeneratorLift (m n : Type → Type) [MonadLift m n] [MonadNameGenerator m] : MonadNameGenerator n := {
+instance monadNameGeneratorLift (m n : Type  Type) [MonadLift m n] [MonadNameGenerator m] : MonadNameGenerator n := {
   getNGen := liftM (getNGen : m _),
   setNGen := fun ngen => liftM (setNGen ngen : m _)
 }
@@ -364,7 +364,7 @@ namespace Syntax
 deriving instance BEq for Syntax.Preresolved
 
 /-- Compare syntax structures modulo source info. -/
-partial def structEq : Syntax → Syntax → Bool
+partial def structEq : Syntax  Syntax  Bool
   | Syntax.missing, Syntax.missing => true
   | Syntax.node _ k args, Syntax.node _ k' args' => k == k' && args.isEqv args' structEq
   | Syntax.atom _ val, Syntax.atom _ val' => val == val'
@@ -377,7 +377,7 @@ instance : BEq (Lean.TSyntax k) := ⟨(·.raw == ·.raw)⟩
 /--
 Finds the first `SourceInfo` from the back of `stx` or `none` if no `SourceInfo` can be found.
 -/
-partial def getTailInfo? : Syntax → Option SourceInfo
+partial def getTailInfo? : Syntax  Option SourceInfo
   | atom info _   => info
   | ident info .. => info
   | node SourceInfo.none _ args =>
@@ -431,7 +431,7 @@ def getSubstring? (stx : Syntax) (withLeading := true) (withTrailing := true) : 
     }
   | _, _ => none
 
-@[specialize] private partial def updateLast {α} (a : Array α) (f : α → Option α) (i : Fin (a.size + 1)) : Option (Array α) :=
+@[specialize] private partial def updateLast {α} (a : Array α) (f : α  Option α) (i : Fin (a.size + 1)) : Option (Array α) :=
   match i with
   | 0 => none
   | ⟨i + 1, h⟩ =>
@@ -440,7 +440,7 @@ def getSubstring? (stx : Syntax) (withLeading := true) (withTrailing := true) : 
     | some v => some <| a.set i v (Nat.succ_lt_succ_iff.mp h)
     | none   => updateLast a f ⟨i, Nat.lt_of_succ_lt h⟩
 
-partial def setTailInfoAux (info : SourceInfo) : Syntax → Option Syntax
+partial def setTailInfoAux (info : SourceInfo) : Syntax  Option Syntax
   | atom _ val             => some <| atom info val
   | ident _ rawVal val pre => some <| ident info rawVal val pre
   | node info' k args      =>
@@ -466,7 +466,7 @@ def unsetTrailing (stx : Syntax) : Syntax :=
     stx.setTailInfo (SourceInfo.original lead pos { trail with stopPos := trail.startPos } endPos)
   | _                                     => stx
 
-@[specialize] private partial def updateFirst {α} [Inhabited α] (a : Array α) (f : α → Option α) (i : Nat) : Option (Array α) :=
+@[specialize] private partial def updateFirst {α} [Inhabited α] (a : Array α) (f : α  Option α) (i : Nat) : Option (Array α) :=
   if h : i < a.size then
     let v := a[i]
     match f v with
@@ -475,7 +475,7 @@ def unsetTrailing (stx : Syntax) : Syntax :=
   else
     none
 
-partial def setHeadInfoAux (info : SourceInfo) : Syntax → Option Syntax
+partial def setHeadInfoAux (info : SourceInfo) : Syntax  Option Syntax
   | atom _ val             => some <| atom info val
   | ident _ rawVal val pre => some <| ident info rawVal val pre
   | node i k args          =>
@@ -489,14 +489,14 @@ def setHeadInfo (stx : Syntax) (info : SourceInfo) : Syntax :=
   | some stx => stx
   | none     => stx
 
-def setInfo (info : SourceInfo) : Syntax → Syntax
+def setInfo (info : SourceInfo) : Syntax  Syntax
   | atom _ val             => atom info val
   | ident _ rawVal val pre => ident info rawVal val pre
   | node _ kind args       => node info kind args
   | missing                => missing
 
 /-- Return the first atom/identifier that has position information -/
-partial def getHead? : Syntax → Option Syntax
+partial def getHead? : Syntax  Option Syntax
   | stx@(atom info ..)  => info.getPos?.map fun _ => stx
   | stx@(ident info ..) => info.getPos?.map fun _ => stx
   | node SourceInfo.none _ args => args.findSome? getHead?
@@ -513,7 +513,7 @@ def mkSynthetic (stx : Syntax) : Syntax :=
 end Syntax
 
 /-- Use the head atom/identifier of the current `ref` as the `ref` -/
-@[inline] def withHeadRefOnly {m : Type → Type} [Monad m] [MonadRef m] {α} (x : m α) : m α := do
+@[inline] def withHeadRefOnly {m : Type  Type} [Monad m] [MonadRef m] {α} (x : m α) : m α := do
   match (← getRef).getHead? with
   | none => x
   | some ref => withRef ref x
@@ -543,7 +543,7 @@ end Syntax
   2- Typed macros that know the syntax categories they're working in. Then, we would be able to select which
      syntactic categories are expanded by `expandMacros`.
 -/
-partial def expandMacros (stx : Syntax) (p : SyntaxNodeKind → Bool := fun k => k != `Lean.Parser.Term.byTactic) : MacroM Syntax :=
+partial def expandMacros (stx : Syntax) (p : SyntaxNodeKind  Bool := fun k => k != `Lean.Parser.Term.byTactic) : MacroM Syntax :=
   withRef stx do
     match stx with
     | .node info k args => do
@@ -637,7 +637,7 @@ instance : Coe (TSyntaxArray k) (TSepArray k sep) where
   coe := TSepArray.ofElems
 
 /-- Create syntax representing a Lean term application, but avoid degenerate empty applications. -/
-def mkApp (fn : Term) : (args : TSyntaxArray `term) → Term
+def mkApp (fn : Term) : (args : TSyntaxArray `term)  Term
   | #[]  => fn
   | args => ⟨mkNode `Lean.Parser.Term.app #[fn, mkNullNode args.raw]⟩
 
@@ -828,7 +828,7 @@ def isScientificLit? (stx : Syntax) : Option (Nat × Bool × Nat) :=
   | some val => decodeScientificLitVal? val
   | _        => none
 
-def isIdOrAtom? : Syntax → Option String
+def isIdOrAtom? : Syntax  Option String
   | Syntax.atom _ val           => some val
   | Syntax.ident _ rawVal _ _   => some rawVal.toString
   | _ => none
@@ -1006,15 +1006,15 @@ def isNameLit? (stx : Syntax) : Option Name :=
   | some val => decodeNameLit val
   | _        => none
 
-def hasArgs : Syntax → Bool
+def hasArgs : Syntax  Bool
   | Syntax.node _ _ args => args.size > 0
   | _                    => false
 
-def isAtom : Syntax → Bool
+def isAtom : Syntax  Bool
   | atom _ _ => true
   | _        => false
 
-def isToken (token : String) : Syntax → Bool
+def isToken (token : String) : Syntax  Bool
   | atom _ val => val.trim == token.trim
   | _          => false
 
@@ -1030,11 +1030,11 @@ def getOptionalIdent? (stx : Syntax) : Option Name :=
   | some stx => some stx.getId
   | none     => none
 
-partial def findAux (p : Syntax → Bool) : Syntax → Option Syntax
+partial def findAux (p : Syntax  Bool) : Syntax  Option Syntax
   | stx@(Syntax.node _ _ args) => if p stx then some stx else args.findSome? (findAux p)
   | stx                        => if p stx then some stx else none
 
-def find? (stx : Syntax) (p : Syntax → Bool) : Option Syntax :=
+def find? (stx : Syntax) (p : Syntax  Bool) : Option Syntax :=
   findAux p stx
 
 end Syntax
@@ -1078,7 +1078,7 @@ def HygieneInfo.mkIdent (s : HygieneInfo) (val : Name) (canonical := false) : Id
 
 /-- Reflect a runtime datum back to surface syntax (best-effort). -/
 class Quote (α : Type) (k : SyntaxNodeKind := `term) where
-  quote : α → TSyntax k
+  quote : α  TSyntax k
 
 export Quote (quote)
 
@@ -1093,14 +1093,14 @@ instance : Quote Nat numLitKind := ⟨fun n => Syntax.mkNumLit <| toString n⟩
 instance : Quote Substring := ⟨fun s => Syntax.mkCApp ``String.toSubstring' #[quote s.toString]⟩
 
 -- in contrast to `Name.toString`, we can, and want to be, precise here
-private def getEscapedNameParts? (acc : List String) : Name → Option (List String)
+private def getEscapedNameParts? (acc : List String) : Name  Option (List String)
   | Name.anonymous => if acc.isEmpty then none else some acc
   | Name.str n s => do
     let s ← Name.escapePart s
     getEscapedNameParts? (s::acc) n
   | Name.num _ _ => none
 
-def quoteNameMk : Name → Term
+def quoteNameMk : Name  Term
   | .anonymous => mkCIdent ``Name.anonymous
   | .str n s => Syntax.mkCApp ``Name.mkStr #[quoteNameMk n, quote s]
   | .num n i => Syntax.mkCApp ``Name.mkNum #[quoteNameMk n, quote i]
@@ -1114,7 +1114,7 @@ instance [Quote α `term] [Quote β `term] : Quote (α × β) `term where
   quote
     | ⟨a, b⟩ => Syntax.mkCApp ``Prod.mk #[quote a, quote b]
 
-private def quoteList [Quote α `term] : List α → Term
+private def quoteList [Quote α `term] : List α  Term
   | []      => mkCIdent ``List.nil
   | (x::xs) => Syntax.mkCApp ``List.cons #[quote x, quoteList xs]
 
@@ -1176,7 +1176,7 @@ macro_rules
 
 macro "eval_prio " p:prio:max : term => return quote (k := `term) (← evalPrio p)
 
-def evalOptPrio : Option (TSyntax `prio) → MacroM Nat
+def evalOptPrio : Option (TSyntax `prio)  MacroM Nat
   | some prio => evalPrio prio
   | none      => return 1000 -- TODO: FIX back eval_prio default
 
@@ -1188,7 +1188,7 @@ abbrev getSepElems := @getEvenElems
 
 open Lean
 
-private partial def filterSepElemsMAux {m : Type → Type} [Monad m] (a : Array Syntax) (p : Syntax → m Bool) (i : Nat) (acc : Array Syntax) : m (Array Syntax) := do
+private partial def filterSepElemsMAux {m : Type  Type} [Monad m] (a : Array Syntax) (p : Syntax  m Bool) (i : Nat) (acc : Array Syntax) : m (Array Syntax) := do
   if h : i < a.size then
     let stx := a[i]
     if (← p stx) then
@@ -1206,13 +1206,13 @@ private partial def filterSepElemsMAux {m : Type → Type} [Monad m] (a : Array 
   else
     pure acc
 
-def filterSepElemsM {m : Type → Type} [Monad m] (a : Array Syntax) (p : Syntax → m Bool) : m (Array Syntax) :=
+def filterSepElemsM {m : Type  Type} [Monad m] (a : Array Syntax) (p : Syntax  m Bool) : m (Array Syntax) :=
   filterSepElemsMAux a p 0 #[]
 
-def filterSepElems (a : Array Syntax) (p : Syntax → Bool) : Array Syntax :=
+def filterSepElems (a : Array Syntax) (p : Syntax  Bool) : Array Syntax :=
   Id.run <| a.filterSepElemsM p
 
-private partial def mapSepElemsMAux {m : Type → Type} [Monad m] (a : Array Syntax) (f : Syntax → m Syntax) (i : Nat) (acc : Array Syntax) : m (Array Syntax) := do
+private partial def mapSepElemsMAux {m : Type  Type} [Monad m] (a : Array Syntax) (f : Syntax  m Syntax) (i : Nat) (acc : Array Syntax) : m (Array Syntax) := do
   if h : i < a.size then
     let stx := a[i]
     if i % 2 == 0 then do
@@ -1223,10 +1223,10 @@ private partial def mapSepElemsMAux {m : Type → Type} [Monad m] (a : Array Syn
   else
     pure acc
 
-def mapSepElemsM {m : Type → Type} [Monad m] (a : Array Syntax) (f : Syntax → m Syntax) : m (Array Syntax) :=
+def mapSepElemsM {m : Type  Type} [Monad m] (a : Array Syntax) (f : Syntax  m Syntax) : m (Array Syntax) :=
   mapSepElemsMAux a f 0 #[]
 
-def mapSepElems (a : Array Syntax) (f : Syntax → Syntax) : Array Syntax :=
+def mapSepElems (a : Array Syntax) (f : Syntax  Syntax) : Array Syntax :=
   Id.run <| a.mapSepElemsM f
 
 end Array
@@ -1315,7 +1315,7 @@ end Syntax
 
 namespace TSyntax
 
-def expandInterpolatedStrChunks (chunks : Array Syntax) (mkAppend : Syntax → Syntax → MacroM Syntax) (mkElem : Syntax → MacroM Syntax) : MacroM Syntax := do
+def expandInterpolatedStrChunks (chunks : Array Syntax) (mkAppend : Syntax  Syntax  MacroM Syntax) (mkElem : Syntax  MacroM Syntax) : MacroM Syntax := do
   let mut i := 0
   let mut result := Syntax.missing
   for elem in chunks do
@@ -1345,12 +1345,12 @@ namespace Meta
 
 deriving instance Repr for TransparencyMode, EtaStructMode, DSimp.Config, Simp.Config
 
-def Occurrences.contains : Occurrences → Nat → Bool
+def Occurrences.contains : Occurrences  Nat  Bool
   | all,      _   => true
   | pos idxs, idx => idxs.contains idx
   | neg idxs, idx => !idxs.contains idx
 
-def Occurrences.isAll : Occurrences → Bool
+def Occurrences.isAll : Occurrences  Bool
   | all => true
   | _   => false
 
@@ -1406,7 +1406,7 @@ structure OmegaConfig where
 
   Note that with `splitDisjunctions := false` omega will not be able to solve `x = y` goals
   as these are usually handled by introducing `¬ x = y` as a hypothesis, then replacing this with
-  `x < y ∨ x > y`.
+  `x < y  x > y`.
 
   On the other hand, `omega` does not currently detect disjunctions which, when split,
   introduce no new useful information, so the presence of irrelevant disjunctions in the context
@@ -1415,13 +1415,13 @@ structure OmegaConfig where
   splitDisjunctions : Bool := true
   /--
   Whenever `((a - b : Nat) : Int)` is found, register the disjunction
-  `b ≤ a ∧ ((a - b : Nat) : Int) = a - b ∨ a < b ∧ ((a - b : Nat) : Int) = 0`
+  `b ≤ a ∧ ((a - b : Nat) : Int) = a - b  a < b ∧ ((a - b : Nat) : Int) = 0`
   for later splitting.
   -/
   splitNatSub : Bool := true
   /--
   Whenever `Int.natAbs a` is found, register the disjunction
-  `0 ≤ a ∧ Int.natAbs a = a ∨ a < 0 ∧ Int.natAbs a = - a` for later splitting.
+  `0 ≤ a ∧ Int.natAbs a = a  a < 0 ∧ Int.natAbs a = - a` for later splitting.
   -/
   splitNatAbs : Bool := true
   /--
@@ -1440,8 +1440,8 @@ appear in a proof goal.
 
 It is used by the #check_tactic command.
 -/
-inductive CheckGoalType {α : Sort u} : (val : α) → Prop where
-| intro : (val : α) → CheckGoalType val
+inductive CheckGoalType {α : Sort u} : (val : α)  Prop where
+| intro : (val : α)  CheckGoalType val
 
 end CheckTactic
 

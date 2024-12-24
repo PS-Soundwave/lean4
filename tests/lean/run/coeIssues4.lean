@@ -1,20 +1,20 @@
 --
 
-def f : List Int → Bool := fun _ => true
+def f : List Int  Bool := fun _ => true
 
 def ex3 : IO Bool := do
 let xs ← pure [1, 2, 3];
 pure $ f xs -- Works
 
 inductive Expr
-| val : Nat → Expr
-| app : Expr → Expr → Expr
+| val : Nat  Expr
+| app : Expr  Expr  Expr
 
 instance : Coe Nat Expr := ⟨Expr.val⟩
 instance : OfNat Expr n where
   ofNat := Expr.val n
 
-def foo : Expr → Expr := fun e => e
+def foo : Expr  Expr := fun e => e
 
 def ex1 : Bool :=
 f [1, 2, 3]  -- Works

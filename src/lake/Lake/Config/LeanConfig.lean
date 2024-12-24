@@ -88,12 +88,12 @@ This is used to implement preferential choice of backends,
 where the library config can refine the package config.
 Formally, a left absorbing monoid on {`C`, `LLVM`} with `Default` as the unit.
 -/
-def Backend.orPreferLeft : Backend → Backend → Backend
+def Backend.orPreferLeft : Backend  Backend  Backend
 | .default, b => b
 | b, _ => b
 
 /-- The arguments to pass to `leanc` based on the build type. -/
-def BuildType.leancArgs : BuildType → Array String
+def BuildType.leancArgs : BuildType  Array String
 | debug => #["-Og", "-g"]
 | relWithDebInfo => #["-O3", "-g", "-DNDEBUG"]
 | minSizeRel => #["-Os", "-DNDEBUG"]

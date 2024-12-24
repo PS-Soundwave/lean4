@@ -65,7 +65,7 @@ LibrarySearch has an extension mechanism for replacing the function used
 to find candidate lemmas.
 -/
 @[reducible]
-def CandidateFinder := Expr → MetaM (Array (Name × DeclMod))
+def CandidateFinder := Expr  MetaM (Array (Name × DeclMod))
 
 open LazyDiscrTree (InitEntry findMatches)
 
@@ -110,7 +110,7 @@ initialization performance.
 private def constantsPerImportTask : Nat := 6500
 
 /-- Create function for finding relevant declarations. -/
-def libSearchFindDecls : Expr → MetaM (Array (Name × DeclMod)) :=
+def libSearchFindDecls : Expr  MetaM (Array (Name × DeclMod)) :=
   findMatches ext addImport
       (droppedKeys := droppedKeys)
       (constantsPerTask := constantsPerImportTask)
@@ -129,7 +129,7 @@ def mkHeartbeatCheck (leavePercent : Nat) : MetaM (MetaM Bool) := do
     else do
       return (← getRemainingHeartbeats) < hbThreshold
 
-private def librarySearchEmoji : Except ε (Option α) → String
+private def librarySearchEmoji : Except ε (Option α)  String
 | .error _ => bombEmoji
 | .ok (some _) => crossEmoji
 | .ok none => checkEmoji
@@ -138,7 +138,7 @@ private def librarySearchEmoji : Except ε (Option α) → String
 Interleave x y interleaves the elements of x and y until one is empty and then returns
 final elements in other list.
 -/
-def interleaveWith {α β γ} (f : α → γ) (x : Array α) (g : β → γ) (y : Array β) : Array γ :=
+def interleaveWith {α β γ} (f : α  γ) (x : Array α) (g : β  γ) (y : Array β) : Array γ :=
     Id.run do
   let mut res := Array.mkEmpty (x.size + y.size)
   let n := min x.size y.size
@@ -169,7 +169,7 @@ def abortSpeculation [MonadExcept Exception m] : m α :=
   throw (Exception.internal abortSpeculationId {})
 
 /-- Returns true if this is an abort speculation exception. -/
-def isAbortSpeculation : Exception → Bool
+def isAbortSpeculation : Exception  Bool
 | .internal id _ => id == abortSpeculationId
 | _ => false
 
@@ -223,8 +223,8 @@ then tries to close subsequent goals using `solveByElim`.
 If `solveByElim` succeeds, `[]` is returned as the list of new subgoals,
 otherwise the full list of subgoals is returned.
 -/
-private def librarySearchLemma (cfg : ApplyConfig) (act : List MVarId → MetaM (List MVarId))
-    (allowFailure : MVarId → MetaM Bool) (cand : Candidate)  : MetaM (List MVarId) := do
+private def librarySearchLemma (cfg : ApplyConfig) (act : List MVarId  MetaM (List MVarId))
+    (allowFailure : MVarId  MetaM Bool) (cand : Candidate)  : MetaM (List MVarId) := do
   let ((goal, mctx), (name, mod)) := cand
   let ppMod (mod : DeclMod) : MessageData :=
         match mod with | .none => "" | .mp => " with mp" | .mpr => " with mpr"
@@ -252,13 +252,13 @@ further computation is stopped and intermediate results returned. If any other
 exception is thrown, then it is silently discarded.
 -/
 def tryOnEach
-    (act : Candidate → MetaM (List MVarId))
+    (act : Candidate  MetaM (List MVarId))
     (candidates : Array Candidate) :
     MetaM (Option (Array (List MVarId × MetavarContext))) := do
   let mut a := #[]
   let s ← saveState
   for c in candidates do
-    match ← (tryCatch (Except.ok <$> act c) (pure ∘ Except.error)) with
+    match ← (tryCatch (Except.ok <$> act c) (pure  Except.error)) with
     | .error e =>
       restoreState s
       if isAbortSpeculation e then
@@ -272,8 +272,8 @@ def tryOnEach
   return (.some a)
 
 private def librarySearch' (goal : MVarId)
-    (tactic : List MVarId → MetaM (List MVarId))
-    (allowFailure : MVarId → MetaM Bool)
+    (tactic : List MVarId  MetaM (List MVarId))
+    (allowFailure : MVarId  MetaM Bool)
     (leavePercentHeartbeats : Nat) :
     MetaM (Option (Array (List MVarId × MetavarContext))) := do
   withTraceNode `Tactic.librarySearch (return m!"{librarySearchEmoji ·} {← goal.getType}") do
@@ -308,9 +308,9 @@ unless the goal was completely solved.)
 this is not currently tracked.)
 -/
 def librarySearch (goal : MVarId)
-    (tactic : Bool → List MVarId → MetaM (List MVarId) :=
+    (tactic : Bool  List MVarId  MetaM (List MVarId) :=
       fun initial g => solveByElim [] (maxDepth := 6) (exfalso := initial) g)
-    (allowFailure : MVarId → MetaM Bool := fun _ => pure true)
+    (allowFailure : MVarId  MetaM Bool := fun _ => pure true)
     (leavePercentHeartbeats : Nat := 10) :
     MetaM (Option (Array (List MVarId × MetavarContext))) := do
   (tactic true [goal] *> pure none) <|>

@@ -22,10 +22,10 @@ def treeToList (t : TreeNode) : List String :=
   | cons c cs ih => simp [ih, List.append_assoc]
 
 mutual
-  def numNames : TreeNode → Nat
+  def numNames : TreeNode  Nat
     | .mkLeaf _  => 1
     | .mkNode _ cs => 1 + numNamesLst cs
-  def numNamesLst : List TreeNode → Nat
+  def numNamesLst : List TreeNode  Nat
     | [] => 0
     | a :: as => numNames a + numNamesLst as
 end

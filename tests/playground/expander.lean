@@ -14,7 +14,7 @@ def leaf : SyntaxNodeKind := ⟨`leaf⟩
 
 def node.arity := 4
 
-def mkStx : ℕ → Syntax
+def mkStx : ℕ  Syntax
 | 0 := Syntax.mkNode leaf []
 | (n+1) := Syntax.mkNode node $ (List.replicate node.arity Syntax.missing).map (λ _, mkStx n)
 
@@ -32,7 +32,7 @@ def testSimple := test [(`node, λ stx, match stx.asNode with
   | none   := pure Syntax.missing)]
 
 -- direct transformation, no hygiene system
-partial def toNode2 : Syntax → Syntax
+partial def toNode2 : Syntax  Syntax
 | (Syntax.rawNode ⟨kind, as, scopes⟩) := Syntax.rawNode ⟨⟨`node2⟩, as.map toNode2, scopes⟩
 | other                               := other
 

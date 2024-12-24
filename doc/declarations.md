@@ -48,7 +48,7 @@ constants ``aⱼ`` for ``j < i``.
 Intuitively, a local context is a list of variables that are held constant while an expression is being elaborated. Consider the following
 
 ```lean
-def f (a b : Nat) : Nat → Nat := fun c => a + (b + c)
+def f (a b : Nat) : Nat  Nat := fun c => a + (b + c)
 ```
 
 Here the expression ``fun c => a + (b + c)`` is elaborated in the context ``(a : Nat) (b : Nat)`` and the expression ``a + (b + c)`` is elaborated in the context ``(a : Nat) (b : Nat) (c : Nat)``. If you replace the expression ``a + (b + c)`` with an underscore, the error message from Lean will include the current *goal*:
@@ -86,7 +86,7 @@ It is sometimes useful to be able to simulate a definition or theorem without na
 In ``def``, the type (``α`` or ``p``, respectively) can be omitted when it can be inferred by Lean. Constants declared with ``theorem`` are marked as ``irreducible``.
 
 Any of ``def``, ``theorem``, ``axiom``, or ``example`` can take a list of arguments (that is, a context) before the colon. If ``(a : α)`` is a context, the definition ``def foo (a : α) : β := t``
-is interpreted as ``def foo : (a : α) → β := fun a : α => t``. Similarly, a theorem ``theorem foo (a : α) : p := t`` is interpreted as ``theorem foo : ∀ a : α, p := fun a : α => t``.
+is interpreted as ``def foo : (a : α)  β := fun a : α => t``. Similarly, a theorem ``theorem foo (a : α) : p := t`` is interpreted as ``theorem foo : ∀ a : α, p := fun a : α => t``.
 
 ```lean
 opaque c : Nat
@@ -115,10 +115,10 @@ following form:
 
 ```
 inductive Foo (a : α) where
-  | constructor₁ : (b : β₁) → Foo a
-  | constructor₂ : (b : β₂) → Foo a
+  | constructor₁ : (b : β₁)  Foo a
+  | constructor₂ : (b : β₂)  Foo a
   ...
-  | constructorₙ : (b : βₙ) → Foo a
+  | constructorₙ : (b : βₙ)  Foo a
 ```
 
 Here ``(a : α)`` is a context and each ``(b : βᵢ)`` is a telescope in the context ``(a : α)`` together with ``Foo``, subject to the following constraints.
@@ -138,7 +138,7 @@ The declaration of the type ``foo`` as above results in the addition of the foll
 - the *eliminator* ``foo.rec``, which takes arguments
 
   + ``(a : α)`` (the parameters)
-  + ``{C : foo a → Type u}`` (the *motive* of the elimination)
+  + ``{C : foo a  Type u}`` (the *motive* of the elimination)
   + for each ``i``, the *minor premise* corresponding to ``constructorᵢ``
   + ``(x : foo)`` (the *major premise*)
 
@@ -178,14 +178,14 @@ inductive Bool : Type
 | true : Bool
 
 inductive Prod (α : Type u) (β : Type v) : Type (max u v)
-| mk : α → β → Prod α β
+| mk : α  β  Prod α β
 
 inductive Sum (α : Type u) (β : Type v)
-| inl : α → Sum α β
-| inr : β → Sum α β
+| inl : α  Sum α β
+| inr : β  Sum α β
 
-inductive Sigma (α : Type u) (β : α → Type v)
-| mk : (a : α) → β a → Sigma α β
+inductive Sigma (α : Type u) (β : α  Type v)
+| mk : (a : α)  β a  Sigma α β
 
 inductive false : Prop
 
@@ -193,35 +193,35 @@ inductive True : Prop
 | trivial : True
 
 inductive And (p q : Prop) : Prop
-| intro : p → q → And p q
+| intro : p  q  And p q
 
 inductive Or (p q : Prop) : Prop
-| inl : p → Or p q
-| inr : q → Or p q
+| inl : p  Or p q
+| inr : q  Or p q
 
-inductive Exists (α : Type u) (p : α → Prop) : Prop
-| intro : ∀ x : α, p x → Exists α p
+inductive Exists (α : Type u) (p : α  Prop) : Prop
+| intro : ∀ x : α, p x  Exists α p
 
-inductive Subtype (α : Type u) (p : α → Prop) : Type u
-| intro : ∀ x : α, p x → Subtype α p
+inductive Subtype (α : Type u) (p : α  Prop) : Type u
+| intro : ∀ x : α, p x  Subtype α p
 
 inductive Nat : Type
 | zero : Nat
-| succ : Nat → Nat
+| succ : Nat  Nat
 
 inductive List (α : Type u)
 | nil : List α
-| cons : α → List α → List α
+| cons : α  List α  List α
 
 -- full binary tree with nodes and leaves labeled from α
 inductive BinTree (α : Type u)
-| leaf : α → BinTree α
-| node : BinTree α → α → BinTree α → BinTree α
+| leaf : α  BinTree α
+| node : BinTree α  α  BinTree α  BinTree α
 
 -- every internal node has subtrees indexed by Nat
 inductive CBT (α : Type u)
-| leaf : α → CBT α
-| node : (Nat → CBT α) → CBT α
+| leaf : α  CBT α
+| node : (Nat  CBT α)  CBT α
 -- END
 end Hide
 ```
@@ -254,7 +254,7 @@ inductive List (α : Type u)
 @[match_pattern]
 def List.nil' (α : Type u) : List α := List.nil
 
-def length {α : Type u} : List α → Nat
+def length {α : Type u} : List α  Nat
 | (List.nil' _) => 0
 | (List.cons a l) => 1 + length l
 -- END
@@ -330,7 +330,7 @@ The declaration of the type ``Foo`` as above results in the addition of the foll
 - the *eliminator* ``Foo.rec``, which takes arguments
 
   + ``(a : α)`` (the parameters)
-  + ``{C : Π (c : γ), Foo a c → Type u}`` (the motive of the elimination)
+  + ``{C : Π (c : γ), Foo a c  Type u}`` (the motive of the elimination)
   + for each ``i``, the minor premise corresponding to ``constructorᵢ``
   + ``(x : Foo a)`` (the major premise)
 
@@ -356,16 +356,16 @@ namespace Hide
 universe u
 
 -- BEGIN
-inductive Vector (α : Type u) : Nat → Type u
+inductive Vector (α : Type u) : Nat  Type u
 | nil  : Vector 0
-| succ : Π n, Vector n → Vector (n + 1)
+| succ : Π n, Vector n  Vector (n + 1)
 
 -- 'IsProd s n' means n is a product of elements of s
-inductive IsProd (s : Set Nat) : Nat → Prop
+inductive IsProd (s : Set Nat) : Nat  Prop
 | base : ∀ n ∈ s, IsProd n
-| step : ∀ m n, IsProd m → IsProd n → IsProd (m * n)
+| step : ∀ m n, IsProd m  IsProd n  IsProd (m * n)
 
-inductive Eq {α : Sort u} (a : α) : α → Prop
+inductive Eq {α : Sort u} (a : α) : α  Prop
 | refl : Eq a
 -- END
 
@@ -415,18 +415,18 @@ A nested inductive definition is compiled down to an ordinary inductive definiti
 universe u
 -- BEGIN
 mutual
-inductive Even : Nat → Prop
+inductive Even : Nat  Prop
 | even_zero : Even 0
-| even_succ : ∀ n, Odd n → Even (n + 1)
-inductive Odd : Nat → Prop
-| odd_succ : ∀ n, Even n → Odd (n + 1)
+| even_succ : ∀ n, Odd n  Even (n + 1)
+inductive Odd : Nat  Prop
+| odd_succ : ∀ n, Even n  Odd (n + 1)
 end
 
 inductive Tree (α : Type u)
-| mk : α → List (Tree α) → Tree α
+| mk : α  List (Tree α)  Tree α
 
 inductive DoubleTree (α : Type u)
-| mk : α → List (DoubleTree α) × List (DoubleTree α) → DoubleTree α
+| mk : α  List (DoubleTree α) × List (DoubleTree α)  DoubleTree α
 -- END
 ```
 
@@ -464,12 +464,12 @@ For a nonrecursive definition involving case splits, the defining equations will
 ```lean
 open Nat
 
-def sub2 : Nat → Nat
+def sub2 : Nat  Nat
 | zero          => 0
 | succ zero     => 0
 | succ (succ a) => a
 
-def bar : Nat → List Nat → Bool → Nat
+def bar : Nat  List Nat  Bool  Nat
 | 0,   _,      false => 0
 | 0,   b :: _, _     => b
 | 0,   [],     true  => 7
@@ -477,7 +477,7 @@ def bar : Nat → List Nat → Bool → Nat
 | a+1, [],     true  => a + 1
 | a+1, b :: _, _     => a + b
 
-def baz : Char → Nat
+def baz : Char  Nat
 | 'A' => 1
 | 'B' => 2
 | _   => 3
@@ -488,19 +488,19 @@ The case where patterns are matched against an argument whose type is an inducti
 ```lean
 universe u
 
-inductive Vector (α : Type u) : Nat → Type u
+inductive Vector (α : Type u) : Nat  Type u
   | nil  : Vector α 0
-  | cons : α → Vector α n → Vector α (n+1)
+  | cons : α  Vector α n  Vector α (n+1)
 
 namespace Vector
 
-def head : Vector α (n+1) → α
+def head : Vector α (n+1)  α
   | cons h t => h
 
-def tail : Vector α (n+1) → Vector α n
+def tail : Vector α (n+1)  Vector α n
   | cons h t => t
 
-def map (f : α → β → γ) : Vector α n → Vector β n → Vector γ n
+def map (f : α  β  γ) : Vector α n  Vector β n  Vector γ n
   | nil, nil => nil
   | cons a va, cons b vb => cons (f a b) (map f va vb)
 
@@ -525,12 +525,12 @@ The function is then defined using a *course of values* recursion, using automat
 namespace Hide
 
 -- BEGIN
-def fib : Nat → Nat
+def fib : Nat  Nat
 | 0     => 1
 | 1     => 1
 | (n+2) => fib (n+1) + fib n
 
-def append {α : Type} : List α → List α → List α
+def append {α : Type} : List α  List α  List α
 | [],   l => l
 | h::t, l => h :: append t l
 
@@ -552,7 +552,7 @@ namespace Hide
 open Nat
 
 -- BEGIN
-def div : Nat → Nat → Nat
+def div : Nat  Nat  Nat
 | x, y =>
   if h : 0 < y ∧ y ≤ x then
     have : x - y < x :=
@@ -619,10 +619,10 @@ The equation compiler also allows mutual recursive definitions, with a syntax si
 
 ```lean
 mutual
-def even : Nat → Bool
+def even : Nat  Bool
 | 0   => true
 | a+1 => odd a
-def odd : Nat → Bool
+def odd : Nat  Bool
 | 0   => false
 | a+1 => even a
 end
@@ -638,11 +638,11 @@ Well-founded recursion is especially useful with [Mutual and Nested Inductive De
 
 ```lean
 mutual
-inductive Even : Nat → Prop
+inductive Even : Nat  Prop
 | even_zero : Even 0
-| even_succ : ∀ n, Odd n → Even (n + 1)
-inductive Odd : Nat → Prop
-| odd_succ : ∀ n, Even n → Odd (n + 1)
+| even_succ : ∀ n, Odd n  Even (n + 1)
+inductive Odd : Nat  Prop
+| odd_succ : ∀ n, Even n  Odd (n + 1)
 end
 
 open Even Odd
@@ -650,23 +650,23 @@ open Even Odd
 theorem not_odd_zero : ¬ Odd 0 := fun x => nomatch x
 
 mutual
-theorem even_of_odd_succ : ∀ n, Odd (n + 1) → Even n
+theorem even_of_odd_succ : ∀ n, Odd (n + 1)  Even n
 | _, odd_succ n h => h
-theorem odd_of_even_succ : ∀ n, Even (n + 1) → Odd n
+theorem odd_of_even_succ : ∀ n, Even (n + 1)  Odd n
 | _, even_succ n h => h
 end
 
 inductive Term
-| const : String → Term
-| app   : String → List Term → Term
+| const : String  Term
+| app   : String  List Term  Term
 
 open Term
 
 mutual
-def num_consts : Term → Nat
+def num_consts : Term  Nat
 | .const n  => 1
 | .app n ts => num_consts_lst ts
-def num_consts_lst : List Term → Nat
+def num_consts_lst : List Term  Nat
 | []    => 0
 | t::ts => num_consts t + num_consts_lst ts
 end
@@ -676,12 +676,12 @@ In a set of mutually recursive function, either all or no functions must have an
 
 ```
 mutual
-theorem even_of_odd_succ : ∀ n, Odd (n + 1) → Even n
+theorem even_of_odd_succ : ∀ n, Odd (n + 1)  Even n
 | _, odd_succ n h => h
 termination_by n h => h
 decreasing_by decreasing_tactic
 
-theorem odd_of_even_succ : ∀ n, Even (n + 1) → Odd n
+theorem odd_of_even_succ : ∀ n, Even (n + 1)  Odd n
 | _, even_succ n h => h
 termination_by n h => h
 end
@@ -690,11 +690,11 @@ end
 Another way to express mutual recursion is using local function definitions in ``where`` or ``let rec`` clauses: these can be mutually recursive with each other and their containing function:
 
 ```
-theorem even_of_odd_succ : ∀ n, Odd (n + 1) → Even n
+theorem even_of_odd_succ : ∀ n, Odd (n + 1)  Even n
   | _, odd_succ n h => h
 termination_by n h => h
   where
-    theorem odd_of_even_succ : ∀ n, Even (n + 1) → Odd n
+    theorem odd_of_even_succ : ∀ n, Even (n + 1)  Odd n
       | _, even_succ n h => h
     termination_by n h => h
 ```
@@ -729,13 +729,13 @@ def foo (n : Nat) (b c : Bool) :=
 When a ``match`` has only one line, Lean provides alternative syntax with a destructuring ``let``, as well as a destructuring lambda abstraction. Thus the following definitions all have the same net effect.
 
 ```lean
-def bar₁ : Nat × Nat → Nat
+def bar₁ : Nat × Nat  Nat
 | (m, n) => m + n
 
 def bar₂ (p : Nat × Nat) : Nat :=
 match p with | (m, n) => m + n
 
-def bar₃ : Nat × Nat → Nat :=
+def bar₃ : Nat × Nat  Nat :=
 fun ⟨m, n⟩ => m + n
 
 def bar₄ (p : Nat × Nat) : Nat :=
@@ -821,7 +821,7 @@ universe u v
 structure Vec (α : Type u) (n : Nat) :=
 (l : List α) (h : l.length = n)
 
-structure Foo (α : Type u) (β : Nat → Type v) : Type (max u v) :=
+structure Foo (α : Type u) (β : Nat  Type v) : Type (max u v) :=
 (a : α) (n : Nat) (b : β n)
 
 structure Bar :=

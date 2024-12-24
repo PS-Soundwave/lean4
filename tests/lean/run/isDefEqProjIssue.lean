@@ -66,7 +66,7 @@ where
     have : val.x = (bar c1 key).x := rfl
     val.x
 
-def ack : Nat → Nat → Nat
+def ack : Nat  Nat  Nat
   | 0,   y   => y+1
   | x+1, 0   => ack x 1
   | x+1, y+1 => ack x (ack (x+1) y)

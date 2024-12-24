@@ -1,6 +1,6 @@
 inductive States | s0 | s1 | s2 | s3 | s4 | s5 | s6 | s7
 open States
-def f : States → States → States
+def f : States  States  States
 | s0, s0 => s0
 | s0, s1 => s0
 | s0, s2 => s0

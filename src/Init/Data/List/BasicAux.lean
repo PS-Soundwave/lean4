@@ -22,7 +22,7 @@ Returns the `i`-th element in the list (zero-based).
 If the index is out of bounds (`i ≥ as.length`), this function panics when executed, and returns
 `default`. See `get?` and `getD` for safer alternatives.
 -/
-def get! [Inhabited α] : (as : List α) → (i : Nat) → α
+def get! [Inhabited α] : (as : List α)  (i : Nat)  α
   | a::_,  0   => a
   | _::as, n+1 => get! as n
   | _,     _   => panic! "invalid index"
@@ -40,7 +40,7 @@ Returns the last element in the list.
 If the list is empty, this function panics when executed, and returns `default`.
 See `getLast` and `getLastD` for safer alternatives.
 -/
-def getLast! [Inhabited α] : List α → α
+def getLast! [Inhabited α] : List α  α
   | []    => panic! "empty list"
   | a::as => getLast (a::as) (fun h => List.noConfusion h)
 
@@ -54,7 +54,7 @@ Returns the first element in the list.
 If the list is empty, this function panics when executed, and returns `default`.
 See `head` and `headD` for safer alternatives.
 -/
-def head! [Inhabited α] : List α → α
+def head! [Inhabited α] : List α  α
   | []   => panic! "empty list"
   | a::_ => a
 
@@ -66,7 +66,7 @@ Drops the first element of the list.
 If the list is empty, this function panics when executed, and returns the empty list.
 See `tail` and `tailD` for safer alternatives.
 -/
-def tail! : List α → List α
+def tail! : List α  List α
   | []    => panic! "empty list"
   | _::as => as
 
@@ -88,13 +88,13 @@ partitionM posOrNeg [-1, 2, 3] = Except.ok ([2, 3], [-1])
 partitionM posOrNeg [0, 2, 3] = Except.error "Zero is not positive or negative"
 ```
 -/
-@[inline] def partitionM [Monad m] (p : α → m Bool) (l : List α) : m (List α × List α) :=
+@[inline] def partitionM [Monad m] (p : α  m Bool) (l : List α) : m (List α × List α) :=
   go l #[] #[]
 where
   /-- Auxiliary for `partitionM`:
   `partitionM.go p l acc₁ acc₂` returns `(acc₁.toList ++ left, acc₂.toList ++ right)`
   if `partitionM p l` returns `(left, right)`. -/
-  @[specialize] go : List α → Array α → Array α → m (List α × List α)
+  @[specialize] go : List α  Array α  Array α  m (List α × List α)
   | [], acc₁, acc₂ => pure (acc₁.toList, acc₂.toList)
   | x :: xs, acc₁, acc₂ => do
     if ← p x then
@@ -105,18 +105,18 @@ where
 /-! ### partitionMap -/
 
 /--
-Given a function `f : α → β ⊕ γ`, `partitionMap f l` maps the list by `f`
+Given a function `f : α  β ⊕ γ`, `partitionMap f l` maps the list by `f`
 whilst partitioning the result into a pair of lists, `List β × List γ`,
 partitioning the `.inl _` into the left list, and the `.inr _` into the right List.
 ```
-partitionMap (id : Nat ⊕ Nat → Nat ⊕ Nat) [inl 0, inr 1, inl 2] = ([0, 2], [1])
+partitionMap (id : Nat ⊕ Nat  Nat ⊕ Nat) [inl 0, inr 1, inl 2] = ([0, 2], [1])
 ```
 -/
-@[inline] def partitionMap (f : α → β ⊕ γ) (l : List α) : List β × List γ := go l #[] #[] where
+@[inline] def partitionMap (f : α  β ⊕ γ) (l : List α) : List β × List γ := go l #[] #[] where
   /-- Auxiliary for `partitionMap`:
   `partitionMap.go f l acc₁ acc₂ = (acc₁.toList ++ left, acc₂.toList ++ right)`
   if `partitionMap f l = (left, right)`. -/
-  @[specialize] go : List α → Array β → Array γ → List β × List γ
+  @[specialize] go : List α  Array β  Array γ  List β × List γ
   | [], acc₁, acc₂ => (acc₁.toList, acc₂.toList)
   | x :: xs, acc₁, acc₂ =>
     match f x with
@@ -130,7 +130,7 @@ This is a performance optimization for `List.mapM` that avoids allocating a new 
 For verification purposes, `List.mapMono = List.map`.
 -/
 
-@[specialize] private unsafe def mapMonoMImp [Monad m] (as : List α) (f : α → m α) : m (List α) := do
+@[specialize] private unsafe def mapMonoMImp [Monad m] (as : List α) (f : α  m α) : m (List α) := do
   match as with
   | [] => return as
   | b :: bs =>
@@ -145,12 +145,12 @@ For verification purposes, `List.mapMono = List.map`.
 Monomorphic `List.mapM`. The internal implementation uses pointer equality, and does not allocate a new list
 if the result of each `f a` is a pointer equal value `a`.
 -/
-@[implemented_by mapMonoMImp] def mapMonoM [Monad m] (as : List α) (f : α → m α) : m (List α) :=
+@[implemented_by mapMonoMImp] def mapMonoM [Monad m] (as : List α) (f : α  m α) : m (List α) :=
   match as with
   | [] => return []
   | a :: as => return (← f a) :: (← mapMonoM as f)
 
-def mapMono (as : List α) (f : α → α) : List α :=
+def mapMono (as : List α) (f : α  α) : List α :=
   Id.run <| as.mapMonoM f
 
 /-! ## Additional lemmas required for bootstrapping `Array`. -/
@@ -190,7 +190,7 @@ theorem sizeOf_lt_of_mem [SizeOf α] {as : List α} (h : a ∈ as) : sizeOf a < 
 
 /-- This tactic, added to the `decreasing_trivial` toolbox, proves that
 `sizeOf a < sizeOf as` when `a ∈ as`, which is useful for well founded recursions
-over a nested inductive like `inductive T | mk : List T → T`. -/
+over a nested inductive like `inductive T | mk : List T  T`. -/
 macro "sizeOf_list_dec" : tactic =>
   `(tactic| first
     | with_reducible apply sizeOf_lt_of_mem; assumption; done
@@ -233,8 +233,8 @@ theorem sizeOf_get [SizeOf α] (as : List α) (i : Fin as.length) : sizeOf (as.g
     apply Nat.lt_trans ih
     simp_arith
 
-theorem not_lex_antisymm [DecidableEq α] {r : α → α → Prop} [DecidableRel r]
-    (antisymm : ∀ x y : α, ¬ r x y → ¬ r y x → x = y)
+theorem not_lex_antisymm [DecidableEq α] {r : α  α  Prop} [DecidableRel r]
+    (antisymm : ∀ x y : α, ¬ r x y  ¬ r y x  x = y)
     {as bs : List α} (h₁ : ¬ Lex r bs as) (h₂ : ¬ Lex r as bs) : as = bs :=
   match as, bs with
   | [],    []    => rfl
@@ -254,13 +254,13 @@ theorem not_lex_antisymm [DecidableEq α] {r : α → α → Prop} [DecidableRel
         · exact eq (antisymm _ _ hab hba)
 
 protected theorem le_antisymm [DecidableEq α] [LT α] [DecidableLT α]
-    [i : Std.Antisymm (¬ · < · : α → α → Prop)]
+    [i : Std.Antisymm (¬ · < · : α  α  Prop)]
     {as bs : List α} (h₁ : as ≤ bs) (h₂ : bs ≤ as) : as = bs :=
   not_lex_antisymm i.antisymm h₁ h₂
 
 instance [DecidableEq α] [LT α] [DecidableLT α]
-    [s : Std.Antisymm (¬ · < · : α → α → Prop)] :
-    Std.Antisymm (· ≤ · : List α → List α → Prop) where
+    [s : Std.Antisymm (¬ · < · : α  α  Prop)] :
+    Std.Antisymm (· ≤ · : List α  List α  Prop) where
   antisymm _ _ h₁ h₂ := List.le_antisymm h₁ h₂
 
 end List

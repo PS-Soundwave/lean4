@@ -21,23 +21,23 @@ fun a b => a
 fun a b => a
 fun {a b} => a
 typeAs
-  ({α : Type} →
-    α → α)
+  ({α : Type} 
+    α  α)
   fun {α} a => a
 fun {α}
     [inst :
       ToString α]
     a =>
   @toString α inst a
-(α : Type) → α
-(α : Type) →
-  Type → α
-Type → Type → Type
-(α : Type) → α → α
-{α : Type} → α
-{α : Type} →
+(α : Type)  α
+(α : Type) 
+  Type  α
+Type  Type  Type
+(α : Type)  α  α
+{α : Type}  α
+{α : Type} 
   [inst :
-      ToString α] →
+      ToString α] 
     α
 ∀ (x : Nat), x = x
 ∀ {x : Nat}

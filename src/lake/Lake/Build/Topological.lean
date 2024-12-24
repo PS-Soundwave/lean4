@@ -34,12 +34,12 @@ describing what to fetch and produces some output `b : β a` (dependently
 typed) or `b : B` (not) describing what was fetched. All build functions are
 fetch functions, but not all fetch functions need build something.
 -/
-abbrev DFetchFn (α : Type u) (β : α → Type v) (m : Type v → Type w) :=
-  (a : α) → m (β a)
+abbrev DFetchFn (α : Type u) (β : α  Type v) (m : Type v  Type w) :=
+  (a : α)  m (β a)
 
 /-- A `DFetchFn` that is not dependently typed. -/
-abbrev FetchFn (α : Type u) (β : Type v) (m : Type v → Type w) :=
-  α → m β
+abbrev FetchFn (α : Type u) (β : Type v) (m : Type v  Type w) :=
+  α  m β
 
 /-!
 In order to nest builds / fetches within one another,
@@ -47,11 +47,11 @@ we equip the monad `m` with a fetch function of its own.
 -/
 
 /-- A transformer that equips a monad with a `DFetchFn`. -/
-abbrev DFetchT (α : Type u) (β : α → Type v) (m : Type v → Type w) :=
+abbrev DFetchT (α : Type u) (β : α  Type v) (m : Type v  Type w) :=
   EquipT (DFetchFn α β m) m
 
 /-- A `DFetchT` that is not dependently typed. -/
-abbrev FetchT (α : Type u) (β : Type v) (m : Type v → Type w) :=
+abbrev FetchT (α : Type u) (β : Type v) (m : Type v  Type w) :=
   DFetchT α (fun _ => β) m
 
 /-!
@@ -63,16 +63,16 @@ A `DFetchFn` that utilizes another `DFetchFn` equipped to the monad to
 fetch values. It is thus usually implemented recursively via some variation
 of the `recFetch` function below, hence the "rec" in both names.
 -/
-abbrev DRecFetchFn (α : Type u) (β : α → Type v) (m : Type v → Type w) :=
+abbrev DRecFetchFn (α : Type u) (β : α  Type v) (m : Type v  Type w) :=
   DFetchFn α β (DFetchT α β m)
 
 /-- A `DRecFetchFn` that is not dependently typed. -/
-abbrev RecFetchFn (α : Type u) (β : Type v) (m : Type v → Type w) :=
-  α → FetchT α β m β
+abbrev RecFetchFn (α : Type u) (β : Type v) (m : Type v  Type w) :=
+  α  FetchT α β m β
 
 /-- A `DFetchFn` that provides its base `DRecFetchFn` with itself. -/
 @[specialize] partial def recFetch
-[(α : Type u) → Nonempty (m α)] (fetch : DRecFetchFn α β m) : DFetchFn α β m :=
+[(α : Type u)  Nonempty (m α)] (fetch : DRecFetchFn α β m) : DFetchFn α β m :=
   fun a => fetch a (recFetch fetch)
 
 /-!
@@ -91,7 +91,7 @@ more information than necessary to determine uniqueness.
 -/
 @[specialize] def recFetchAcyclic
   [BEq κ] [Monad m] [MonadCycle κ m]
-  (keyOf : α → κ) (fetch : DRecFetchFn α β m)
+  (keyOf : α  κ) (fetch : DRecFetchFn α β m)
 : DFetchFn α β m :=
   recFetch fun a recurse => guardCycle (keyOf a) do
     /-
@@ -115,7 +115,7 @@ memoize fetch results and thus avoid computing the same result twice.
 -/
 @[specialize] def recFetchMemoize
   [BEq κ] [Monad m] [MonadCycle κ m] [MonadDStore κ β m]
-  (keyOf : α → κ) (fetch : DRecFetchFn α (fun a => β (keyOf a)) m)
+  (keyOf : α  κ) (fetch : DRecFetchFn α (fun a => β (keyOf a)) m)
 : DFetchFn α (fun a => β (keyOf a)) m :=
   inline <| recFetchAcyclic keyOf fun a recurse =>
     fetchOrCreate (keyOf a) do fetch a recurse

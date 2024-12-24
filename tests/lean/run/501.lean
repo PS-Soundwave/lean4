@@ -5,20 +5,20 @@ structure S where
 def S.Z (s : S) : Type :=
   if s.x then Nat else Int
 
-def S.z : (s : S) → s.Z
+def S.z : (s : S)  s.Z
   | s@{ x := true, .. } => s.y
   | s@{ x := false, .. } => Int.ofNat s.y
 
-def S.a : (s : S) → s.Z
+def S.a : (s : S)  s.Z
   | s => s.z
 
-def S.b : (s : S) → s.Z
+def S.b : (s : S)  s.Z
   | s@h:{ x := true, .. } => h ▸ s.z
   | s => s.z
 
 #check @S.b.match_1
 
-theorem zeropow : ∀ {m : Nat}, m > 0 → 0 ^ m = 0
+theorem zeropow : ∀ {m : Nat}, m > 0  0 ^ m = 0
   | 0,   h => by cases h
   | _+1, _ => rfl
 

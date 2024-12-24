@@ -70,7 +70,7 @@ def Positions.numIndices (positions : Positions) : Nat :=
 Groups the `xs` by their `f` value, and puts these groups into the order given by `ys`.
 -/
 def Positions.groupAndSort {α β} [Inhabited α] [DecidableEq β]
-    (f : α → β) (xs : Array α) (ys : Array β) : Positions :=
+    (f : α  β) (xs : Array α) (ys : Array β) : Positions :=
   let positions := ys.map fun y => (Array.range xs.size).filter fun i => f xs[i]! = y
   -- Sanity check: is this really a grouped permutation of all the indices?
   assert! Array.range xs.size == positions.flatten.qsort Nat.blt
@@ -81,7 +81,7 @@ Let `positions.size = ys.size` and `positions.numIndices = xs.size`. Maps `f` ov
 also passing in those elements `xs` that belong to that are those elements of `xs` that belong to
 `y` according to `positions`.
 -/
-def Positions.mapMwith {α β m} [Monad m] [Inhabited β] (f : α → Array β → m γ)
+def Positions.mapMwith {α β m} [Monad m] [Inhabited β] (f : α  Array β  m γ)
     (positions : Positions) (ys : Array α) (xs : Array β) : m (Array γ) := do
   assert! positions.size = ys.size
   assert! positions.numIndices = xs.size

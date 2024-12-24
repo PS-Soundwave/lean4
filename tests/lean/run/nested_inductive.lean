@@ -8,11 +8,11 @@ This test file exercises the `attach`/`unattach` API.
 
 namespace List
 
-inductive Tree where | node : List Tree → Tree
+inductive Tree where | node : List Tree  Tree
 
 namespace Tree
 
-def rev : Tree → Tree
+def rev : Tree  Tree
   | node ts => .node (ts.attach.reverse.map (fun ⟨t, _⟩ => t.rev))
 
 -- Note that `simp` now automatically removes the `attach`.
@@ -21,7 +21,7 @@ def rev : Tree → Tree
   simp [Tree.rev]
 
 -- Variant with an explicit `have`, rather than using a pattern match.
-def rev' : Tree → Tree
+def rev' : Tree  Tree
   | node ts => .node (ts.attach.reverse.map (fun t => have := t.2; t.1.rev'))
 
 @[simp] theorem rev'_def (ts : List Tree) :
@@ -29,7 +29,7 @@ def rev' : Tree → Tree
   simp [Tree.rev']
 
 /-- Define `size` using a `foldl` over `attach`. -/
-def size : Tree → Nat
+def size : Tree  Nat
   | node ts => 1 + ts.attach.foldl (fun acc ⟨t, _⟩ => acc + t.size) 0
 
 @[simp] theorem size_def (ts : List Tree) :
@@ -37,7 +37,7 @@ def size : Tree → Nat
   simp [size]
 
 /-- Define `depth` using a `foldr` over `attach`. -/
-def depth : Tree → Nat
+def depth : Tree  Nat
   | node ts => 1 + ts.attach.foldr (fun ⟨t, _⟩ acc => acc + t.depth) 0
 
 @[simp] theorem depth_def (ts : List Tree) :
@@ -50,11 +50,11 @@ end List
 
 namespace Array
 
-inductive Tree where | node : Array Tree → Tree
+inductive Tree where | node : Array Tree  Tree
 
 namespace Tree
 
-def rev : Tree → Tree
+def rev : Tree  Tree
   | node ts => .node (ts.attach.reverse.map (fun ⟨t, _⟩ => t.rev))
 
 -- Note that `simp` now automatically removes the `attach`.
@@ -63,7 +63,7 @@ def rev : Tree → Tree
   simp [Tree.rev]
 
 /-- Define `size` using a `foldl` over `attach`. -/
-def size : Tree → Nat
+def size : Tree  Nat
   | node ts => 1 + ts.attach.foldl (fun acc ⟨t, _⟩ => acc + t.size) 0
 
 @[simp] theorem size_def (ts : Array Tree) :
@@ -71,7 +71,7 @@ def size : Tree → Nat
   simp [size]
 
 /-- Define `depth` using a `foldr` over `attach`. -/
-def depth : Tree → Nat
+def depth : Tree  Nat
   | node ts => 1 + ts.attach.foldr (fun ⟨t, _⟩ acc => acc + t.depth) 0
 
 @[simp] theorem depth_def (ts : Array Tree) :
@@ -85,11 +85,11 @@ end Array
 
 namespace Option
 
-inductive Tree where | node : Option Tree → Option Tree → Tree
+inductive Tree where | node : Option Tree  Option Tree  Tree
 
 namespace Tree
 
-def rev : Tree → Tree
+def rev : Tree  Tree
   | node l r => .node (r.attach.map fun ⟨r, _⟩ => r.rev) (l.attach.map fun ⟨l, _⟩ => l.rev)
 
 @[simp] theorem rev_def (l r : Option Tree) :

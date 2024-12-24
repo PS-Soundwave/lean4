@@ -1,4 +1,4 @@
-example : α → α := by
+example : α  α := by
                   --^ $/lean/plainGoal
                    --^ $/lean/plainGoal
   intro a
@@ -8,7 +8,7 @@ example : α → α := by
   focus
     apply a
 
-example : α → α := by
+example : α  α := by
                   --^ $/lean/plainGoal
 
 example : 0 + n = n := by
@@ -18,7 +18,7 @@ example : 0 + n = n := by
   | succ
    --^ $/lean/plainGoal
 
-example : α → α := by
+example : α  α := by
   intro a; apply a
        --^ $/lean/plainGoal
         --^ $/lean/plainGoal
@@ -49,10 +49,10 @@ example : ∀ a b : Nat, a = b := by
   intro a b
  --^ $/lean/plainGoal
 
-example : α → α := (by
+example : α  α := (by
                   --^ $/lean/plainGoal
 
-example (p : α → Prop) (a b : α) [DecidablePred p] (h : ∀ {p} [DecidablePred p], p a → p b) : p b := by
+example (p : α  Prop) (a b : α) [DecidablePred p] (h : ∀ {p} [DecidablePred p], p a  p b) : p b := by
   apply h _
  --^ $/lean/plainGoal
  -- should not display solved goal `⊢ DecidablePred p`

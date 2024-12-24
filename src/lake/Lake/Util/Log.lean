@@ -40,7 +40,7 @@ based on whether the stream written to is a terminal.
 | noAnsi
 
 /-- Returns whether to ANSI escape codes with the stream `out`. -/
-def AnsiMode.isEnabled (out : IO.FS.Stream) : AnsiMode → BaseIO Bool
+def AnsiMode.isEnabled (out : IO.FS.Stream) : AnsiMode  BaseIO Bool
 | .auto => out.isTty
 | .ansi => pure true
 | .noAnsi => pure false
@@ -59,7 +59,7 @@ inductive OutStream
 | stream (s : IO.FS.Stream)
 
 /-- Returns the real output stream associated with `OutStream`. -/
-def OutStream.get : OutStream → BaseIO IO.FS.Stream
+def OutStream.get : OutStream  BaseIO IO.FS.Stream
 | .stdout => IO.getStdout
 | .stderr => IO.getStderr
 | .stream s => pure s
@@ -80,13 +80,13 @@ instance : Min LogLevel := minOfLe
 instance : Max LogLevel := maxOfLe
 
 /-- Unicode icon for representing the log level. -/
-def LogLevel.icon : LogLevel → Char
+def LogLevel.icon : LogLevel  Char
 | .trace | .info => 'ℹ'
 | .warning => '⚠'
 | .error => '✖'
 
 /-- ANSI escape code for coloring text of at the log level. -/
-def LogLevel.ansiColor : LogLevel → String
+def LogLevel.ansiColor : LogLevel  String
 | .trace | .info => "34"
 | .warning => "33"
 | .error => "31"
@@ -99,7 +99,7 @@ protected def LogLevel.ofString? (s : String) : Option LogLevel :=
   | "error" => some .error
   | _ => none
 
-protected def LogLevel.toString : LogLevel → String
+protected def LogLevel.toString : LogLevel  String
 | .trace => "trace"
 | .info => "info"
 | .warning => "warning"
@@ -107,17 +107,17 @@ protected def LogLevel.toString : LogLevel → String
 
 instance : ToString LogLevel := ⟨LogLevel.toString⟩
 
-protected def LogLevel.ofMessageSeverity : MessageSeverity → LogLevel
+protected def LogLevel.ofMessageSeverity : MessageSeverity  LogLevel
 | .information => .info
 | .warning => .warning
 | .error => .error
 
-protected def LogLevel.toMessageSeverity : LogLevel → MessageSeverity
+protected def LogLevel.toMessageSeverity : LogLevel  MessageSeverity
 | .info | .trace => .information
 | .warning => .warning
 | .error => .error
 
-def Verbosity.minLogLv : Verbosity → LogLevel
+def Verbosity.minLogLv : Verbosity  LogLevel
 | .quiet => .warning
 | .normal =>  .info
 | .verbose => .trace
@@ -137,7 +137,7 @@ protected def LogEntry.toString (self : LogEntry) (useAnsi := false) : String :=
 
 instance : ToString LogEntry := ⟨LogEntry.toString⟩
 
-class MonadLog (m : Type u → Type v) where
+class MonadLog (m : Type u  Type v) where
   logEntry (e : LogEntry) : m PUnit
 
 export MonadLog (logEntry)
@@ -232,7 +232,7 @@ abbrev MonadLog.stderr
   return .stream out minLv useAnsi
 
 /-- A monad equipped with a `MonadLog` instance -/
-abbrev MonadLogT (m : Type u → Type v) (n : Type v → Type w) :=
+abbrev MonadLogT (m : Type u  Type v) (n : Type v  Type w) :=
   ReaderT (MonadLog m) n
 
 namespace MonadLogT
@@ -244,7 +244,7 @@ instance [Monad n] [MonadLiftT m n] : MonadLog (MonadLogT m n) where
   logEntry e := do (← read).logEntry e
 
 @[inline] def adaptMethods [Monad n]
-(f : MonadLog m → MonadLog m') (self : MonadLogT m' n α) : MonadLogT m n α :=
+(f : MonadLog m  MonadLog m') (self : MonadLogT m' n α) : MonadLogT m n α :=
   ReaderT.adapt f self
 
 @[inline] def ignoreLog [Pure m] (self : MonadLogT m n α) : n α :=
@@ -330,10 +330,10 @@ instance : ToString Log := ⟨Log.toString⟩
 @[inline] def replay [Monad m] [logger : MonadLog m] (log : Log) : m PUnit :=
   log.entries.forM fun e => logger.logEntry e
 
-@[inline] def filter (f : LogEntry → Bool) (log : Log) : Log :=
+@[inline] def filter (f : LogEntry  Bool) (log : Log) : Log :=
   .mk <| log.entries.filter f
 
-@[inline] def any (f : LogEntry → Bool) (log : Log) : Bool :=
+@[inline] def any (f : LogEntry  Bool) (log : Log) : Bool :=
   log.entries.any f
 
 /-- The max log level of entries in this log. If empty, returns `trace`. -/
@@ -433,7 +433,7 @@ abbrev ELog.monadError
 /-- Performs `x`. If it fails, drop its log and perform `y`. -/
 @[inline] protected def ELog.orElse
   [Monad m] [MonadStateOf Log m] [MonadExceptOf Log.Pos m]
-  (x : m α) (y : Unit → m α)
+  (x : m α) (y : Unit  m α)
 : m α := try x catch errPos => dropLogFrom errPos; y ()
 
 /-- `Alternative` instance for monads with `Log` state and `Log.Pos` errors. -/
@@ -444,7 +444,7 @@ abbrev ELog.alternative
   orElse  := ELog.orElse
 
 /-- A monad equipped with a log. -/
-abbrev LogT (m : Type → Type) :=
+abbrev LogT (m : Type  Type) :=
   StateT Log m
 
 instance [Monad m] : MonadLog (LogT m) := .ofMonadState
@@ -483,7 +483,7 @@ using the new monad's `logger`.
 end LogT
 
 /-- A monad equipped with a log and the ability to error at some log position. -/
-abbrev ELogT (m : Type → Type) :=
+abbrev ELogT (m : Type  Type) :=
   EStateT Log.Pos Log m
 
 abbrev ELogResult (α) := EResult Log.Pos Log α
@@ -512,7 +512,7 @@ abbrev run? [Functor m] (self : ELogT m α) (log : Log := {}) : m (Option α × 
 abbrev run?' [Functor m] (self : ELogT m α) (log : Log := {}) : m (Option α) :=
   EStateT.run?' log self
 
-@[inline] def catchLog [Monad m] (f : Log → LogT m α) (self : ELogT m α) : LogT m α := do
+@[inline] def catchLog [Monad m] (f : Log  LogT m α) (self : ELogT m α) : LogT m α := do
   self.catchExceptions fun errPos => do f (← takeLogFrom errPos)
 
 @[deprecated run? (since := "2024-05-18")] abbrev captureLog := @run?
@@ -615,7 +615,7 @@ abbrev run? := @captureLog
 
 -- For parity with `LogIO.run?'`
 @[inline] def run?'
-  (self : LoggerIO α) (logger : LogEntry → BaseIO PUnit := fun _ => pure ())
+  (self : LoggerIO α) (logger : LogEntry  BaseIO PUnit := fun _ => pure ())
 : BaseIO (Option α) := do
   (·.toOption) <$> (self.run ⟨logger⟩).toBaseIO
 

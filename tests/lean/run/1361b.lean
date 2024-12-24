@@ -1,10 +1,10 @@
 def Multiset (α: Type) : Type := sorry
-def Multiset.ndinsert [DecidableEq α](a : α): Multiset α → Multiset α := sorry
+def Multiset.ndinsert [DecidableEq α](a : α): Multiset α  Multiset α := sorry
 def Finset (α : Type _) : Type := @Subtype (Multiset α) sorry
-def Finset.insert [DecidableEq α](a : α): Finset α → Finset α
+def Finset.insert [DecidableEq α](a : α): Finset α  Finset α
 | ⟨ms, prop⟩ => ⟨ms.ndinsert a, sorry⟩
 
-inductive Bar : Finset Nat → Type
+inductive Bar : Finset Nat  Type
 | insert : Bar (Finset.insert n Γ)
 | empty  : Bar Γ
 

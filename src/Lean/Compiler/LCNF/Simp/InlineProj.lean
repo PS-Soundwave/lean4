@@ -22,7 +22,7 @@ _x_4 : Functor (ReaderT Bool (ExceptT String Id)) := _x_3.1
 Then, we will expand `_x_4.1` since it corresponds to the `Functor` `map` element,
 and its type is not a type class, but is of the form
 ```
-{α β : Type u} → (α → β) → ...
+{α β : Type u}  (α  β)  ...
 ```
 In the example above, the compiler should not expand `_x_3.1` or `_x_2.1` because they are
 type class applications: `Functor` and `Applicative` respectively.

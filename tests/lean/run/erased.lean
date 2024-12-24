@@ -5,7 +5,7 @@ import Lean
   and proofs. This can be used to track data without storing it
   literally. -/
 def Erased (α : Sort u) : Sort max 1 u :=
-  Σ's : α → Prop, ∃ a, (fun b => a = b) = s
+  Σ's : α  Prop, ∃ a, (fun b => a = b) = s
 
 namespace Erased
 

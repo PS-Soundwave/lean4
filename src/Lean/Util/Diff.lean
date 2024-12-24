@@ -34,7 +34,7 @@ Determines a prefix to show on a given line when printing diff results.
 
 For `delete`, the prefix is `"-"`, for `insert`, it is `"+"`, and for `skip` it is `" "`.
 -/
-def Action.linePrefix : (action : Action) → String
+def Action.linePrefix : (action : Action)  String
   | .delete => "-"
   | .insert => "+"
   | .skip => " "

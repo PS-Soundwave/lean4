@@ -1,15 +1,15 @@
 inductive Foo where
-  | text : String → Foo
-  | element : List Foo → Foo
+  | text : String  Foo
+  | element : List Foo  Foo
 
 namespace Foo
 
 mutual
-  @[simp] def textLengthList : List Foo → Nat
+  @[simp] def textLengthList : List Foo  Nat
     | [] => 0
     | f::fs => textLength f + textLengthList fs
 
-  @[simp] def textLength : Foo → Nat
+  @[simp] def textLength : Foo  Nat
     | text s => s.length
     | element children => textLengthList children
 end
@@ -21,11 +21,11 @@ theorem textLength_concat (f₁ f₂ : Foo) : textLength (concat f₁ f₂) = te
   simp [concat]
 
 mutual
-  @[simp] def flatList : List Foo → List String
+  @[simp] def flatList : List Foo  List String
     | [] => []
     | f :: fs => flat f ++ flatList fs
 
-  @[simp] def flat : Foo → List String
+  @[simp] def flat : Foo  List String
     | text s => [s]
     | element children => flatList children
 end

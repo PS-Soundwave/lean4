@@ -15,7 +15,7 @@ structure OrderedTagAttribute where
   deriving Inhabited
 
 def registerOrderedTagAttribute (name : Name) (descr : String)
-    (validate : Name → AttrM Unit := fun _ => pure ()) (ref : Name := by exact decl_name%) : IO OrderedTagAttribute := do
+    (validate : Name  AttrM Unit := fun _ => pure ()) (ref : Name := by exact decl_name%) : IO OrderedTagAttribute := do
   let ext ← registerPersistentEnvExtension {
     name            := ref
     mkInitial       := pure {}

@@ -1,4 +1,4 @@
-def Nat.hasDecEq: (a: Nat) → (b: Nat) → Decidable (Eq a b)
+def Nat.hasDecEq: (a: Nat)  (b: Nat)  Decidable (Eq a b)
 |   0,   0 => isTrue rfl
 | n+1,   0
 |   0, n+1 => isFalse Nat.noConfusion
@@ -11,7 +11,7 @@ termination_by a b => (a, b)
 set_option pp.proofs true
 
 /--
-info: @[irreducible] def Nat.hasDecEq : (a b : Nat) → Decidable (a = b) :=
+info: @[irreducible] def Nat.hasDecEq : (a b : Nat)  Decidable (a = b) :=
 fun a b => Nat.hasDecEq._unary ⟨a, b⟩
 -/
 #guard_msgs in

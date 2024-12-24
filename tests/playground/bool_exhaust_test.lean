@@ -12,20 +12,20 @@ open Lean.Meta.CheckTactic
 structure Op (tp : Type) (val : Type) where
   args : Array tp
   result : tp
-  apply : Array val → val
+  apply : Array val  val
  deriving Inhabited
 
-def mkOp (args : List tp) (result : tp) (apply : Array val → val) : Op tp val :=
+def mkOp (args : List tp) (result : tp) (apply : Array val  val) : Op tp val :=
   { apply := apply, args := args.toArray, result }
 
-def Op.map (op : Op x val) (f : x → y) : Op y val :=
+def Op.map (op : Op x val) (f : x  y) : Op y val :=
   { apply := op.apply, args := op.args.map f, result := f op.result }
 
 class HasType (val : Type) (type : outParam Type) where
-  typeOf : val → type
+  typeOf : val  type
 
 class Value (val : Type) where
-  render : val → TermElabM Term
+  render : val  TermElabM Term
 
 /--
 Contextual information needed to generate terms.
@@ -276,7 +276,7 @@ def mkCtx [BEq tp] [Hashable tp]
     (types : Array tp)
     (ops : List (Op tp val))
     (varGen : List (tp × CoreM Command))
-    (mkVar : VarDecl tp → val)
+    (mkVar : VarDecl tp  val)
     (stats : GenStats)
     (topOps : List (Op tp val) := ops) : CommandElabM (GenCtx val) := do
   let typeMap : HashMap tp Nat := Nat.fold (n := types.size) (init := {}) fun i s =>
@@ -318,7 +318,7 @@ def mkCtx [BEq tp] [Hashable tp]
   let maxVarCount : Nat := stats.maxVarCount
   pure { ops, topOps, maxTermSize, maxDepth, maxVarCount, lctx, linst, vars }
 
-def runTests [BEq tp] [HasType val tp] [Value val] (stx : Syntax) (simp : val → val)(tac : Syntax.Tactic) (terms : Array val)
+def runTests [BEq tp] [HasType val tp] [Value val] (stx : Syntax) (simp : val  val)(tac : Syntax.Tactic) (terms : Array val)
       : TermElabM Unit := do
   for tm in terms do
     if ← IO.checkCanceled then
@@ -372,9 +372,9 @@ def runTermElabM (cctx : Core.Context) (cstate : Core.State) (mctx : Meta.Contex
 partial
 def runGen [BEq tp] [Hashable tp] [HasType term tp] [Value term]
 
-      (stx : Syntax) (simp : term → term)
+      (stx : Syntax) (simp : term  term)
       (varGen : List (tp × CoreM Command))
-      (mkVar : VarDecl tp → term)
+      (mkVar : VarDecl tp  term)
       (stats : GenStats)
       (types : Array tp)
       (ops : List (Op tp term))
@@ -567,8 +567,8 @@ def render [Monad M] [MonadQuotation M] (v : BoolVal) : M Term :=
   | .and x y .bool => do `(term| $(←x.render) && $(←y.render))
   | .and x y .prop => do `(term| $(←x.render) ∧  $(←y.render))
   | .or  x y .bool => do `(term| $(←x.render) || $(←y.render))
-  | .or  x y .prop => do `(term| $(←x.render) ∨  $(←y.render))
-  | .implies x y => do `(term| $(←x.render) → $(←y.render))
+  | .or  x y .prop => do `(term| $(←x.render)   $(←y.render))
+  | .implies x y => do `(term| $(←x.render)  $(←y.render))
   | .eq x y .eqProp | .eq x y .eqBool => do `(term| $(←x.render) = $(←y.render))
   | .eq x y .iffProp => do `(term| $(←x.render) ↔ $(←y.render))
   | .eq x y .beqBool => do `(term| $(←x.render) == $(←y.render))
@@ -656,7 +656,7 @@ def isComplement (x y : BoolVal) : Bool :=
   | _, _ => false
 
 
-def resolveEq (thunks : List (term → term → Option term)) (x y : term) : Option term :=
+def resolveEq (thunks : List (term  term  Option term)) (x y : term) : Option term :=
   match thunks with
   | [] => none
   | fn :: thunks =>
@@ -872,7 +872,7 @@ partial def simp (v : BoolVal) : BoolVal :=
           return y2
     match op with
     | .eqProp | .iffProp | .eqBool =>
-      let checks : List (BoolVal → BoolVal → Option BoolVal) := [
+      let checks : List (BoolVal  BoolVal  Option BoolVal) := [
         fun x y =>
           if let .and x1 x2 _ := x then
             if x1 == y then

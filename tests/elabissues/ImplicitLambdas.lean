@@ -22,9 +22,9 @@ example {m σ} [Alternative m] [Monad m] : Alternative (StateT σ m) :=
 
 -- works
 universes u v
-example {m m' σ σ'} {n n' : Type u → Type v} [MonadFunctor m m' n n'] [MonadStateAdapter σ σ' m m'] : MonadStateAdapter σ σ' n n' :=
-⟨fun σ'' α split join => monadMap (fun α => (adaptState split join : m α → m' α))⟩
+example {m m' σ σ'} {n n' : Type u  Type v} [MonadFunctor m m' n n'] [MonadStateAdapter σ σ' m m'] : MonadStateAdapter σ σ' n n' :=
+⟨fun σ'' α split join => monadMap (fun α => (adaptState split join : m α  m' α))⟩
 
 -- fails
-example {m m' σ σ'} {n n' : Type u → Type v} [MonadFunctor m m' n n'] [MonadStateAdapter σ σ' m m'] : MonadStateAdapter σ σ' n n' :=
+example {m m' σ σ'} {n n' : Type u  Type v} [MonadFunctor m m' n n'] [MonadStateAdapter σ σ' m m'] : MonadStateAdapter σ σ' n n' :=
 ⟨fun split join => monadMap (adaptState split join)⟩

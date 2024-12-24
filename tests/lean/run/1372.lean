@@ -5,7 +5,7 @@ example (x₁ x₂ y₁ y₂ : Nat) : (x₁ + x₂) + (y₁ + y₂) = (x₁ + y�
     _ = (x₁ + y₁) + (x₂ + y₂) := by rw [Nat.add_assoc]
 
 
-example (n x₁ x₂ y₁ y₂ : Nat) : n = 0 → (x₁ + x₂) + (y₁ + y₂) = (x₁ + y₁) + (x₂ + y₂) := by
+example (n x₁ x₂ y₁ y₂ : Nat) : n = 0  (x₁ + x₂) + (y₁ + y₂) = (x₁ + y₁) + (x₂ + y₂) := by
   intro h
   induction n with
   | zero =>

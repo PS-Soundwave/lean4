@@ -14,7 +14,7 @@ namespace Lean.Omega
 A type synonym for `List Int`, used by `omega` for dense representation of coefficients.
 
 We define algebraic operations,
-interpreting `List Int` as a finitely supported function `Nat → Int`.
+interpreting `List Int` as a finitely supported function `Nat  Int`.
 -/
 abbrev IntList := List Int
 
@@ -252,7 +252,7 @@ theorem dot_distrib_left (xs ys zs : IntList) : (xs + ys).dot zs = xs.dot zs + y
 @[simp] theorem dot_smul_left (xs ys : IntList) (i : Int) : (i * xs).dot ys = i * xs.dot ys := by
   simp [dot]
 
-theorem dot_of_left_zero (w : ∀ x, x ∈ xs → x = 0) : dot xs ys = 0 := by
+theorem dot_of_left_zero (w : ∀ x, x ∈ xs  x = 0) : dot xs ys = 0 := by
   induction xs generalizing ys with
   | nil => simp
   | cons x xs ih =>
@@ -299,7 +299,7 @@ theorem gcd_dvd (xs : IntList) {a : Int} (m : a ∈ xs) : (xs.gcd : Int) ∣ a :
     simp only [gcd_cons]
     exact Nat.dvd_trans (Nat.gcd_dvd_right _ _) ih
 
-theorem dvd_gcd (xs : IntList) (c : Nat) (w : ∀ {a : Int}, a ∈ xs → (c : Int) ∣ a) :
+theorem dvd_gcd (xs : IntList) (c : Nat) (w : ∀ {a : Int}, a ∈ xs  (c : Int) ∣ a) :
     c ∣ xs.gcd := by
   simp only [Int.ofNat_dvd_left] at w
   induction xs with
@@ -316,8 +316,8 @@ theorem dvd_gcd (xs : IntList) (c : Nat) (w : ∀ {a : Int}, a ∈ xs → (c : I
 
 theorem gcd_eq_iff {xs : IntList} {g : Nat} :
     xs.gcd = g ↔
-      (∀ {a : Int}, a ∈ xs → (g : Int) ∣ a) ∧
-        (∀ (c : Nat), (∀ {a : Int}, a ∈ xs → (c : Int) ∣ a) → c ∣ g) := by
+      (∀ {a : Int}, a ∈ xs  (g : Int) ∣ a) ∧
+        (∀ (c : Nat), (∀ {a : Int}, a ∈ xs  (c : Int) ∣ a)  c ∣ g) := by
   constructor
   · rintro rfl
     exact ⟨gcd_dvd _, dvd_gcd _⟩
@@ -330,7 +330,7 @@ theorem gcd_eq_iff {xs : IntList} {g : Nat} :
 
 attribute [simp] Int.zero_dvd
 
-@[simp] theorem gcd_eq_zero {xs : IntList} : xs.gcd = 0 ↔ ∀ x, x ∈ xs → x = 0 := by
+@[simp] theorem gcd_eq_zero {xs : IntList} : xs.gcd = 0 ↔ ∀ x, x ∈ xs  x = 0 := by
   simp [gcd_eq_iff, Nat.dvd_zero]
 
 @[simp] theorem dot_mod_gcd_left (xs ys : IntList) : dot xs ys % xs.gcd = 0 := by
@@ -348,7 +348,7 @@ attribute [simp] Int.zero_dvd
 theorem gcd_dvd_dot_left (xs ys : IntList) : (xs.gcd : Int) ∣ dot xs ys :=
   Int.dvd_of_emod_eq_zero (dot_mod_gcd_left xs ys)
 
-theorem dot_eq_zero_of_left_eq_zero {xs ys : IntList} (h : ∀ x, x ∈ xs → x = 0) : dot xs ys = 0 := by
+theorem dot_eq_zero_of_left_eq_zero {xs ys : IntList} (h : ∀ x, x ∈ xs  x = 0) : dot xs ys = 0 := by
   induction xs generalizing ys with
   | nil => rfl
   | cons x xs ih =>

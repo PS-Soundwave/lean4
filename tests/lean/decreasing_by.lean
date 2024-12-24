@@ -4,9 +4,9 @@ Various tests about `decreasing_by`.
 
 -- For concise recursive definition that need well-founded recursion
 -- and `decreasing_by` tactics that would fail if run on the subgoal
-opaque dec1 : Nat → Nat
+opaque dec1 : Nat  Nat
 axiom dec1_lt (n : Nat) : dec1 n < n
-opaque dec2 : Nat → Nat
+opaque dec2 : Nat  Nat
 axiom dec2_lt (n : Nat) : dec2 n < n
 
 

@@ -27,7 +27,7 @@ inductive Ty where
 @[reducible] def Ty.interp (ty : Ty) : Type :=
   Ty.casesOn (motive := fun _ => Type) ty Int Bool
 
-def test {a b c : Ty} (f : a.interp → b.interp → c.interp) (x : a.interp) (y : b.interp) : c.interp :=
+def test {a b c : Ty} (f : a.interp  b.interp  c.interp) (x : a.interp) (y : b.interp) : c.interp :=
   f x y
 
 def f (a b : Ty.bool.interp) : Ty.bool.interp :=

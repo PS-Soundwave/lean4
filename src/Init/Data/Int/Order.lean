@@ -20,9 +20,9 @@ namespace Int
 theorem nonneg_def {a : Int} : NonNeg a ↔ ∃ n : Nat, a = n :=
   ⟨fun ⟨n⟩ => ⟨n, rfl⟩, fun h => match a, h with | _, ⟨n, rfl⟩ => ⟨n⟩⟩
 
-theorem NonNeg.elim {a : Int} : NonNeg a → ∃ n : Nat, a = n := nonneg_def.1
+theorem NonNeg.elim {a : Int} : NonNeg a  ∃ n : Nat, a = n := nonneg_def.1
 
-theorem nonneg_or_nonneg_neg : ∀ (a : Int), NonNeg a ∨ NonNeg (-a)
+theorem nonneg_or_nonneg_neg : ∀ (a : Int), NonNeg a  NonNeg (-a)
   | (_:Nat) => .inl ⟨_⟩
   | -[_+1]  => .inr ⟨_⟩
 
@@ -44,7 +44,7 @@ theorem le.dest {a b : Int} (h : a ≤ b) : ∃ n : Nat, a + n = b :=
   let ⟨n, h₁⟩ := le.dest_sub h
   ⟨n, by rw [← h₁, Int.add_comm]; simp [Int.sub_eq_add_neg, Int.add_assoc]⟩
 
-protected theorem le_total (a b : Int) : a ≤ b ∨ b ≤ a :=
+protected theorem le_total (a b : Int) : a ≤ b  b ≤ a :=
   (nonneg_or_nonneg_neg (b - a)).imp_right fun H => by
     rwa [show -(b - a) = a - b by simp [Int.add_comm, Int.sub_eq_add_neg]] at H
 
@@ -139,12 +139,12 @@ protected theorem not_le {a b : Int} : ¬a ≤ b ↔ b < a :=
 protected theorem not_lt {a b : Int} : ¬a < b ↔ b ≤ a :=
   by rw [← Int.not_le, Decidable.not_not]
 
-protected theorem lt_trichotomy (a b : Int) : a < b ∨ a = b ∨ b < a :=
+protected theorem lt_trichotomy (a b : Int) : a < b  a = b  b < a :=
   if eq : a = b then .inr <| .inl eq else
   if le : a ≤ b then .inl <| Int.lt_iff_le_and_ne.2 ⟨le, eq⟩ else
   .inr <| .inr <| Int.not_le.1 le
 
-protected theorem ne_iff_lt_or_gt {a b : Int} : a ≠ b ↔ a < b ∨ b < a := by
+protected theorem ne_iff_lt_or_gt {a b : Int} : a ≠ b ↔ a < b  b < a := by
   constructor
   · intro h
     cases Int.lt_trichotomy a b
@@ -158,7 +158,7 @@ protected theorem ne_iff_lt_or_gt {a b : Int} : a ≠ b ↔ a < b ∨ b < a := b
     case inl lt => exact Int.ne_of_lt lt
     case inr gt => exact Int.ne_of_gt gt
 
-protected theorem lt_or_gt_of_ne {a b : Int} : a ≠ b →  a < b ∨ b < a:= Int.ne_iff_lt_or_gt.mp
+protected theorem lt_or_gt_of_ne {a b : Int} : a ≠ b   a < b  b < a:= Int.ne_iff_lt_or_gt.mp
 
 protected theorem eq_iff_le_and_ge {x y : Int} : x = y ↔ x ≤ y ∧ y ≤ x := by
   constructor
@@ -443,7 +443,7 @@ theorem natAbs_pos : 0 < natAbs a ↔ a ≠ 0 := by rw [Nat.pos_iff_ne_zero, Ne,
   | succ _ => rfl
   | -[_+1] => rfl
 
-theorem natAbs_eq : ∀ (a : Int), a = natAbs a ∨ a = -↑(natAbs a)
+theorem natAbs_eq : ∀ (a : Int), a = natAbs a  a = -↑(natAbs a)
   | ofNat _ => Or.inl rfl
   | -[_+1]  => Or.inr rfl
 
@@ -454,7 +454,7 @@ theorem natAbs_mul (a b : Int) : natAbs (a * b) = natAbs a * natAbs b := by
   cases a <;> cases b <;>
     simp only [← Int.mul_def, Int.mul, natAbs_negOfNat] <;> simp only [natAbs]
 
-theorem natAbs_eq_natAbs_iff {a b : Int} : a.natAbs = b.natAbs ↔ a = b ∨ a = -b := by
+theorem natAbs_eq_natAbs_iff {a b : Int} : a.natAbs = b.natAbs ↔ a = b  a = -b := by
   constructor <;> intro h
   · cases Int.natAbs_eq a with
     | inl h₁ | inr h₁ =>
@@ -537,12 +537,12 @@ theorem mem_toNat' : ∀ {a : Int} {n : Nat}, toNat' a = some n ↔ a = n
 
 /-! ## Order properties of the integers -/
 
-protected theorem le_of_not_le {a b : Int} : ¬ a ≤ b → b ≤ a := (Int.le_total a b).resolve_left
+protected theorem le_of_not_le {a b : Int} : ¬ a ≤ b  b ≤ a := (Int.le_total a b).resolve_left
 
 @[simp] theorem negSucc_not_pos (n : Nat) : 0 < -[n+1] ↔ False := by
   simp only [Int.not_lt, iff_false]; constructor
 
-theorem eq_negSucc_of_lt_zero : ∀ {a : Int}, a < 0 → ∃ n : Nat, a = -[n+1]
+theorem eq_negSucc_of_lt_zero : ∀ {a : Int}, a < 0  ∃ n : Nat, a = -[n+1]
   | ofNat _, h => absurd h (Int.not_lt.2 (ofNat_zero_le _))
   | -[n+1],  _ => ⟨n, rfl⟩
 
@@ -977,13 +977,13 @@ theorem sign_eq_neg_one_of_neg {a : Int} (h : a < 0) : sign a = -1 :=
   match a, eq_negSucc_of_lt_zero h with
   | _, ⟨_, rfl⟩ => rfl
 
-theorem eq_zero_of_sign_eq_zero : ∀ {a : Int}, sign a = 0 → a = 0
+theorem eq_zero_of_sign_eq_zero : ∀ {a : Int}, sign a = 0  a = 0
   | 0, _ => rfl
 
-theorem pos_of_sign_eq_one : ∀ {a : Int}, sign a = 1 → 0 < a
+theorem pos_of_sign_eq_one : ∀ {a : Int}, sign a = 1  0 < a
   | (_ + 1 : Nat), _ => ofNat_lt.2 (Nat.succ_pos _)
 
-theorem neg_of_sign_eq_neg_one : ∀ {a : Int}, sign a = -1 → a < 0
+theorem neg_of_sign_eq_neg_one : ∀ {a : Int}, sign a = -1  a < 0
   | (_ + 1 : Nat), h => nomatch h
   | 0, h => nomatch h
   | -[_+1], _ => negSucc_lt_zero _
@@ -1024,7 +1024,7 @@ theorem natAbs_mul_self : ∀ {a : Int}, ↑(natAbs a * natAbs a) = a * a
   | ofNat _ => rfl
   | -[_+1]  => rfl
 
-theorem eq_nat_or_neg (a : Int) : ∃ n : Nat, a = n ∨ a = -↑n := ⟨_, natAbs_eq a⟩
+theorem eq_nat_or_neg (a : Int) : ∃ n : Nat, a = n  a = -↑n := ⟨_, natAbs_eq a⟩
 
 theorem natAbs_mul_natAbs_eq {a b : Int} {c : Nat}
     (h : a * b = (c : Int)) : a.natAbs * b.natAbs = c := by rw [← natAbs_mul, h, natAbs.eq_def]
@@ -1032,7 +1032,7 @@ theorem natAbs_mul_natAbs_eq {a b : Int} {c : Nat}
 @[simp] theorem natAbs_mul_self' (a : Int) : (natAbs a * natAbs a : Int) = a * a := by
   rw [← Int.ofNat_mul, natAbs_mul_self]
 
-theorem natAbs_eq_iff {a : Int} {n : Nat} : a.natAbs = n ↔ a = n ∨ a = -↑n := by
+theorem natAbs_eq_iff {a : Int} {n : Nat} : a.natAbs = n ↔ a = n  a = -↑n := by
   rw [← Int.natAbs_eq_natAbs_iff, Int.natAbs_ofNat]
 
 theorem natAbs_add_le (a b : Int) : natAbs (a + b) ≤ natAbs a + natAbs b := by
@@ -1044,7 +1044,7 @@ theorem natAbs_add_le (a b : Int) : natAbs (a + b) ≤ natAbs a + natAbs b := by
       rw [natAbs_negSucc, natAbs_ofNat, Nat.succ_add, Nat.add_comm a b]; apply this
     | -[a+1],  -[b+1]  => rw [natAbs_negSucc, succ_add]; apply Nat.le_refl
   refine fun a b => subNatNat_elim a b.succ
-    (fun m n i => n = b.succ → natAbs i ≤ (m + b).succ) ?_
+    (fun m n i => n = b.succ  natAbs i ≤ (m + b).succ) ?_
     (fun i n (e : (n + i).succ = _) => ?_) rfl
   · intro i n h
     subst h

@@ -167,11 +167,11 @@ section Unverified
 /-! We currently do not provide lemmas for the functions below. -/
 
 /-- Removes all elements from the hash set for which the given function returns `false`. -/
-@[inline] def filter (f : α → Bool) (m : HashSet α) : HashSet α :=
+@[inline] def filter (f : α  Bool) (m : HashSet α) : HashSet α :=
   ⟨m.inner.filter fun a _ => f a⟩
 
 /-- Partition a hashset into two hashsets based on a predicate. -/
-@[inline] def partition (f : α → Bool) (m : HashSet α) : HashSet α × HashSet α :=
+@[inline] def partition (f : α  Bool) (m : HashSet α) : HashSet α × HashSet α :=
   let ⟨l, r⟩ := m.inner.partition fun a _ => f a
   ⟨⟨l⟩, ⟨r⟩⟩
 
@@ -179,39 +179,39 @@ section Unverified
 Monadically computes a value by folding the given function over the elements in the hash set in some
 order.
 -/
-@[inline] def foldM {m : Type v → Type v} [Monad m] {β : Type v}
-    (f : β → α → m β) (init : β) (b : HashSet α) : m β :=
+@[inline] def foldM {m : Type v  Type v} [Monad m] {β : Type v}
+    (f : β  α  m β) (init : β) (b : HashSet α) : m β :=
   b.inner.foldM (fun b a _ => f b a) init
 
 /-- Folds the given function over the elements of the hash set in some order. -/
-@[inline] def fold {β : Type v} (f : β → α → β) (init : β) (m : HashSet α) :
+@[inline] def fold {β : Type v} (f : β  α  β) (init : β) (m : HashSet α) :
     β :=
   m.inner.fold (fun b a _ => f b a) init
 
 /-- Carries out a monadic action on each element in the hash set in some order. -/
-@[inline] def forM {m : Type v → Type v} [Monad m] (f : α → m PUnit)
+@[inline] def forM {m : Type v  Type v} [Monad m] (f : α  m PUnit)
     (b : HashSet α) : m PUnit :=
   b.inner.forM (fun a _ => f a)
 
 /-- Support for the `for` loop construct in `do` blocks. -/
-@[inline] def forIn {m : Type v → Type v} [Monad m] {β : Type v}
-    (f : α → β → m (ForInStep β)) (init : β) (b : HashSet α) : m β :=
+@[inline] def forIn {m : Type v  Type v} [Monad m] {β : Type v}
+    (f : α  β  m (ForInStep β)) (init : β) (b : HashSet α) : m β :=
   b.inner.forIn (fun a _ acc => f a acc) init
 
-instance [BEq α] [Hashable α] {m : Type v → Type v} : ForM m (HashSet α) α where
+instance [BEq α] [Hashable α] {m : Type v  Type v} : ForM m (HashSet α) α where
   forM m f := m.forM f
 
-instance [BEq α] [Hashable α] {m : Type v → Type v} : ForIn m (HashSet α) α where
+instance [BEq α] [Hashable α] {m : Type v  Type v} : ForIn m (HashSet α) α where
   forIn m init f := m.forIn f init
 
 /-- Check if all elements satisfy the predicate, short-circuiting if a predicate fails. -/
-@[inline] def all (m : HashSet α) (p : α → Bool) : Bool := Id.run do
+@[inline] def all (m : HashSet α) (p : α  Bool) : Bool := Id.run do
   for a in m do
     if ¬ p a then return false
   return true
 
 /-- Check if any element satisfies the predicate, short-circuiting if a predicate succeeds. -/
-@[inline] def any (m : HashSet α) (p : α → Bool) : Bool := Id.run do
+@[inline] def any (m : HashSet α) (p : α  Bool) : Bool := Id.run do
   for a in m do
     if p a then return true
   return false

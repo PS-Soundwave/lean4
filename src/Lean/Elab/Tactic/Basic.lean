@@ -36,7 +36,7 @@ structure Context where
   recover    : Bool := true
 
 abbrev TacticM := ReaderT Context $ StateRefT State TermElabM
-abbrev Tactic  := Syntax → TacticM Unit
+abbrev Tactic  := Syntax  TacticM Unit
 
 /-
 Make the compiler generate specialized `pure`/`bind` so we do not have to optimize through the
@@ -183,7 +183,7 @@ where
      else
        throwErrorAt stx "unexpected syntax {indentD stx}"
 
-    @[inline] handleEx (s : SavedState) (failures : Array EvalTacticFailure) (ex : Exception) (k : Array EvalTacticFailure → TacticM Unit) := do
+    @[inline] handleEx (s : SavedState) (failures : Array EvalTacticFailure) (ex : Exception) (k : Array EvalTacticFailure  TacticM Unit) := do
       match ex with
       | .error .. =>
         trace[Elab.tactic.backtrack] ex.toMessageData
@@ -305,13 +305,13 @@ instance : MonadBacktrack SavedState TacticM where
 /--
 Non-backtracking `try`/`catch`.
 -/
-@[inline] protected def tryCatch {α} (x : TacticM α) (h : Exception → TacticM α) : TacticM α := do
+@[inline] protected def tryCatch {α} (x : TacticM α) (h : Exception  TacticM α) : TacticM α := do
   try x catch ex => h ex
 
 /--
 Backtracking `try`/`catch`. This is used for the `MonadExcept` instance for `TacticM`.
 -/
-@[inline] protected def tryCatchRestore {α} (x : TacticM α) (h : Exception → TacticM α) : TacticM α := do
+@[inline] protected def tryCatchRestore {α} (x : TacticM α) (h : Exception  TacticM α) : TacticM α := do
   let b ← saveState
   try x catch ex => b.restore; h ex
 
@@ -323,7 +323,7 @@ instance : MonadExcept Exception TacticM where
 def withoutRecover (x : TacticM α) : TacticM α :=
   withReader (fun ctx => { ctx with recover := false }) x
 
-@[inline] protected def orElse (x : TacticM α) (y : Unit → TacticM α) : TacticM α := do
+@[inline] protected def orElse (x : TacticM α) (y : Unit  TacticM α) : TacticM α := do
   try withoutRecover x catch _ => y ()
 
 instance : OrElse (TacticM α) where
@@ -349,7 +349,7 @@ def withMacroExpansion (beforeStx afterStx : Syntax) (x : TacticM α) : TacticM 
     withTheReader Term.Context (fun ctx => { ctx with macroStack := { before := beforeStx, after := afterStx } :: ctx.macroStack }) x
 
 /-- Adapt a syntax transformation to a regular tactic evaluator. -/
-def adaptExpander (exp : Syntax → TacticM Syntax) : Tactic := fun stx => do
+def adaptExpander (exp : Syntax  TacticM Syntax) : Tactic := fun stx => do
   let stx' ← exp stx
   withMacroExpansion stx stx' $ evalTactic stx'
 
@@ -381,7 +381,7 @@ def replaceMainGoal (mvarIds : List MVarId) : TacticM Unit := do
 def getMainGoal : TacticM MVarId := do
   loop (← getGoals)
 where
-  loop : List MVarId → TacticM MVarId
+  loop : List MVarId  TacticM MVarId
     | [] => throwNoGoalsToBeSolved
     | mvarId :: mvarIds => do
       if (← mvarId.isAssigned) then
@@ -457,10 +457,10 @@ def closeMainGoal (tacName : Name) (val : Expr) (checkUnassigned := true): Tacti
   else
     throwTacticEx tacName mvarId m!"attempting to close the goal using{indentExpr val}\nthis is often due occurs-check failure"
 
-@[inline] def liftMetaMAtMain (x : MVarId → MetaM α) : TacticM α := do
+@[inline] def liftMetaMAtMain (x : MVarId  MetaM α) : TacticM α := do
   withMainContext do x (← getMainGoal)
 
-@[inline] def liftMetaTacticAux (tac : MVarId → MetaM (α × List MVarId)) : TacticM α := do
+@[inline] def liftMetaTacticAux (tac : MVarId  MetaM (α × List MVarId)) : TacticM α := do
   withMainContext do
     let (a, mvarIds) ← tac (← getMainGoal)
     replaceMainGoal mvarIds
@@ -468,12 +468,12 @@ def closeMainGoal (tacName : Name) (val : Expr) (checkUnassigned := true): Tacti
 
 /-- Get the mvarid of the main goal, run the given `tactic`,
 then set the new goals to be the resulting goal list.-/
-@[inline] def liftMetaTactic (tactic : MVarId → MetaM (List MVarId)) : TacticM Unit :=
+@[inline] def liftMetaTactic (tactic : MVarId  MetaM (List MVarId)) : TacticM Unit :=
   liftMetaTacticAux fun mvarId => do
     let gs ← tactic mvarId
     pure ((), gs)
 
-@[inline] def liftMetaTactic1 (tactic : MVarId → MetaM (Option MVarId)) : TacticM Unit :=
+@[inline] def liftMetaTactic1 (tactic : MVarId  MetaM (Option MVarId)) : TacticM Unit :=
   withMainContext do
     if let some mvarId ← tactic (← getMainGoal) then
       replaceMainGoal [mvarId]
@@ -481,7 +481,7 @@ then set the new goals to be the resulting goal list.-/
       replaceMainGoal []
 
 /-- Analogue of `liftMetaTactic` for tactics that do not return any goals. -/
-@[inline] def liftMetaFinishingTactic (tac : MVarId → MetaM Unit) : TacticM Unit :=
+@[inline] def liftMetaFinishingTactic (tac : MVarId  MetaM Unit) : TacticM Unit :=
   liftMetaTactic fun g => do tac g; pure []
 
 def tryTactic? (tactic : TacticM α) : TacticM (Option α) := do

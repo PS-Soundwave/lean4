@@ -41,7 +41,7 @@ private def toOffset? (e : Expr) : MetaM (Option (Expr × Nat)) := do
        Remark: It is a parameter because `simp` uses `unifyEq?`, and `acyclic` depends on `simp`.
 -/
 def unifyEq? (mvarId : MVarId) (eqFVarId : FVarId) (subst : FVarSubst := {})
-             (acyclic : MVarId → Expr → MetaM Bool := fun _ _ => return false)
+             (acyclic : MVarId  Expr  MetaM Bool := fun _ _ => return false)
              (caseName? : Option Name := none)
              : MetaM (Option UnifyEqResult) := do
    mvarId.withContext do

@@ -23,7 +23,7 @@ namespace Nat
 @[deprecated and_forall_add_one (since := "2024-07-30")] abbrev and_forall_succ := @and_forall_add_one
 @[deprecated or_exists_add_one (since := "2024-07-30")] abbrev or_exists_succ := @or_exists_add_one
 
-@[simp] theorem exists_ne_zero {P : Nat → Prop} : (∃ n, ¬ n = 0 ∧ P n) ↔ ∃ n, P (n + 1) :=
+@[simp] theorem exists_ne_zero {P : Nat  Prop} : (∃ n, ¬ n = 0 ∧ P n) ↔ ∃ n, P (n + 1) :=
   ⟨fun ⟨n, h, w⟩ => by cases n with | zero => simp at h | succ n => exact ⟨n, w⟩,
     fun ⟨n, w⟩ => ⟨n + 1, by simp, w⟩⟩
 
@@ -33,7 +33,7 @@ namespace Nat
   ⟨fun ⟨n, h⟩ => by omega, fun h => ⟨a - 1, by omega⟩⟩
 
 /-- Dependent variant of `forall_lt_succ_right`. -/
-theorem forall_lt_succ_right' {p : (m : Nat) → (m < n + 1) → Prop} :
+theorem forall_lt_succ_right' {p : (m : Nat)  (m < n + 1)  Prop} :
     (∀ m (h : m < n + 1), p m h) ↔ (∀ m (h : m < n), p m (by omega)) ∧ p n (by omega) := by
   simp only [Nat.lt_succ_iff, Nat.le_iff_lt_or_eq]
   constructor
@@ -47,12 +47,12 @@ theorem forall_lt_succ_right' {p : (m : Nat) → (m < n + 1) → Prop} :
     · exact w.2
 
 /-- See `forall_lt_succ_right'` for a variant where `p` takes the bound as an argument. -/
-theorem forall_lt_succ_right {p : Nat → Prop} :
-    (∀ m, m < n + 1 → p m) ↔ (∀ m, m < n → p m) ∧ p n := by
+theorem forall_lt_succ_right {p : Nat  Prop} :
+    (∀ m, m < n + 1  p m) ↔ (∀ m, m < n  p m) ∧ p n := by
   simpa using forall_lt_succ_right' (p := fun m _ => p m)
 
 /-- Dependent variant of `forall_lt_succ_left`. -/
-theorem forall_lt_succ_left' {p : (m : Nat) → (m < n + 1) → Prop} :
+theorem forall_lt_succ_left' {p : (m : Nat)  (m < n + 1)  Prop} :
     (∀ m (h : m < n + 1), p m h) ↔ p 0 (by omega) ∧ (∀ m (h : m < n), p (m + 1) (by omega)) := by
   constructor
   · intro w
@@ -66,13 +66,13 @@ theorem forall_lt_succ_left' {p : (m : Nat) → (m < n + 1) → Prop} :
     | succ m => exact h₁ m (by omega)
 
 /-- See `forall_lt_succ_left'` for a variant where `p` takes the bound as an argument. -/
-theorem forall_lt_succ_left {p : Nat → Prop} :
-    (∀ m, m < n + 1 → p m) ↔ p 0 ∧ (∀ m, m < n → p (m + 1)) := by
+theorem forall_lt_succ_left {p : Nat  Prop} :
+    (∀ m, m < n + 1  p m) ↔ p 0 ∧ (∀ m, m < n  p (m + 1)) := by
   simpa using forall_lt_succ_left' (p := fun m _ => p m)
 
 /-- Dependent variant of `exists_lt_succ_right`. -/
-theorem exists_lt_succ_right' {p : (m : Nat) → (m < n + 1) → Prop} :
-    (∃ m, ∃ (h : m < n + 1), p m h) ↔ (∃ m, ∃ (h : m < n), p m (by omega)) ∨ p n (by omega) := by
+theorem exists_lt_succ_right' {p : (m : Nat)  (m < n + 1)  Prop} :
+    (∃ m, ∃ (h : m < n + 1), p m h) ↔ (∃ m, ∃ (h : m < n), p m (by omega))  p n (by omega) := by
   simp only [Nat.lt_succ_iff, Nat.le_iff_lt_or_eq]
   constructor
   · rintro ⟨m, (h|rfl), w⟩
@@ -83,13 +83,13 @@ theorem exists_lt_succ_right' {p : (m : Nat) → (m < n + 1) → Prop} :
     · exact ⟨n, by omega, w⟩
 
 /-- See `exists_lt_succ_right'` for a variant where `p` takes the bound as an argument. -/
-theorem exists_lt_succ_right {p : Nat → Prop} :
-    (∃ m, m < n + 1 ∧ p m) ↔ (∃ m, m < n ∧ p m) ∨ p n := by
+theorem exists_lt_succ_right {p : Nat  Prop} :
+    (∃ m, m < n + 1 ∧ p m) ↔ (∃ m, m < n ∧ p m)  p n := by
   simpa using exists_lt_succ_right' (p := fun m _ => p m)
 
 /-- Dependent variant of `exists_lt_succ_left`. -/
-theorem exists_lt_succ_left' {p : (m : Nat) → (m < n + 1) → Prop} :
-    (∃ m, ∃ (h : m < n + 1), p m h) ↔ p 0 (by omega) ∨ (∃ m, ∃ (h : m < n), p (m + 1) (by omega)) := by
+theorem exists_lt_succ_left' {p : (m : Nat)  (m < n + 1)  Prop} :
+    (∃ m, ∃ (h : m < n + 1), p m h) ↔ p 0 (by omega)  (∃ m, ∃ (h : m < n), p (m + 1) (by omega)) := by
   constructor
   · rintro ⟨_|m, h, w⟩
     · exact .inl w
@@ -99,8 +99,8 @@ theorem exists_lt_succ_left' {p : (m : Nat) → (m < n + 1) → Prop} :
     · exact ⟨m + 1, by omega, w⟩
 
 /-- See `exists_lt_succ_left'` for a variant where `p` takes the bound as an argument. -/
-theorem exists_lt_succ_left {p : Nat → Prop} :
-    (∃ m, m < n + 1 ∧ p m) ↔ p 0 ∨ (∃ m, m < n ∧ p (m + 1)) := by
+theorem exists_lt_succ_left {p : Nat  Prop} :
+    (∃ m, m < n + 1 ∧ p m) ↔ p 0  (∃ m, m < n ∧ p (m + 1)) := by
   simpa using exists_lt_succ_left' (p := fun m _ => p m)
 
 /-! ## add -/
@@ -134,11 +134,11 @@ protected theorem eq_zero_of_add_eq_zero_right (h : n + m = 0) : n = 0 :=
 @[simp] protected theorem add_le_add_iff_left {n : Nat} : n + m ≤ n + k ↔ m ≤ k :=
   ⟨Nat.le_of_add_le_add_left, fun h => Nat.add_le_add_left h _⟩
 
-protected theorem lt_of_add_lt_add_right : ∀ {n : Nat}, k + n < m + n → k < m
+protected theorem lt_of_add_lt_add_right : ∀ {n : Nat}, k + n < m + n  k < m
   | 0, h => h
   | _+1, h => Nat.lt_of_add_lt_add_right (Nat.lt_of_succ_lt_succ h)
 
-protected theorem lt_of_add_lt_add_left {n : Nat} : n + k < n + m → k < m := by
+protected theorem lt_of_add_lt_add_left {n : Nat} : n + k < n + m  k < m := by
   rw [Nat.add_comm n, Nat.add_comm n]; exact Nat.lt_of_add_lt_add_right
 
 @[simp] protected theorem add_lt_add_iff_left {k n m : Nat} : k + n < k + m ↔ n < m :=
@@ -158,7 +158,7 @@ protected theorem add_lt_add_of_lt_of_le {a b c d : Nat} (hlt : a < b) (hle : c 
 protected theorem pos_of_lt_add_right (h : n < n + k) : 0 < k :=
   Nat.lt_of_add_lt_add_left h
 
-protected theorem pos_of_lt_add_left : n < k + n → 0 < k := by
+protected theorem pos_of_lt_add_left : n < k + n  0 < k := by
   rw [Nat.add_comm]; exact Nat.pos_of_lt_add_right
 
 @[simp] protected theorem lt_add_right_iff_pos : n < n + k ↔ 0 < k :=
@@ -231,16 +231,16 @@ protected theorem le_sub_iff_add_le {n : Nat} (h : k ≤ m) : n ≤ m - k ↔ n 
 theorem add_lt_iff_lt_sub_right {a b c : Nat} : a + b < c ↔ a < c - b := by
   omega
 
-protected theorem add_le_of_le_sub' {n k m : Nat} (h : m ≤ k) : n ≤ k - m → m + n ≤ k :=
+protected theorem add_le_of_le_sub' {n k m : Nat} (h : m ≤ k) : n ≤ k - m  m + n ≤ k :=
   Nat.add_comm .. ▸ Nat.add_le_of_le_sub h
 
-protected theorem le_sub_of_add_le' {n k m : Nat} : m + n ≤ k → n ≤ k - m :=
+protected theorem le_sub_of_add_le' {n k m : Nat} : m + n ≤ k  n ≤ k - m :=
   Nat.add_comm .. ▸ Nat.le_sub_of_add_le
 
 protected theorem le_sub_iff_add_le' {n : Nat} (h : k ≤ m) : n ≤ m - k ↔ k + n ≤ m :=
   ⟨Nat.add_le_of_le_sub' h, Nat.le_sub_of_add_le'⟩
 
-protected theorem le_of_sub_le_sub_left : ∀ {n k m : Nat}, n ≤ k → k - m ≤ k - n → n ≤ m
+protected theorem le_of_sub_le_sub_left : ∀ {n k m : Nat}, n ≤ k  k - m ≤ k - n  n ≤ m
   | 0, _, _, _, _ => Nat.zero_le ..
   | _+1, _, 0, h₀, h₁ =>
     absurd (Nat.sub_lt (Nat.zero_lt_of_lt h₀) (Nat.zero_lt_succ _)) (Nat.not_lt.2 h₁)
@@ -255,7 +255,7 @@ protected theorem sub_lt_of_pos_le (h₀ : 0 < a) (h₁ : a ≤ b) : b - a < b :
   Nat.sub_lt (Nat.lt_of_lt_of_le h₀ h₁) h₀
 protected abbrev sub_lt_self := @Nat.sub_lt_of_pos_le
 
-theorem add_lt_of_lt_sub' {a b c : Nat} : b < c - a → a + b < c := by
+theorem add_lt_of_lt_sub' {a b c : Nat} : b < c - a  a + b < c := by
   rw [Nat.add_comm]; exact Nat.add_lt_of_lt_sub
 
 protected theorem sub_add_lt_sub (h₁ : m + k ≤ n) (h₂ : 0 < k) : n - (m + k) < n - m := by
@@ -343,7 +343,7 @@ protected theorem succ_max_succ (x y) : max (succ x) (succ y) = succ (max x y) :
   | inl h => rw [Nat.max_eq_right h, Nat.max_eq_right (Nat.succ_le_succ h)]
   | inr h => rw [Nat.max_eq_left h, Nat.max_eq_left (Nat.succ_le_succ h)]
 
-protected theorem max_le_of_le_of_le {a b c : Nat} : a ≤ c → b ≤ c → max a b ≤ c := by
+protected theorem max_le_of_le_of_le {a b c : Nat} : a ≤ c  b ≤ c  max a b ≤ c := by
   intros; cases Nat.le_total a b with
   | inl h => rw [Nat.max_eq_right h]; assumption
   | inr h => rw [Nat.max_eq_left h]; assumption
@@ -523,14 +523,14 @@ protected theorem mul_right_comm (n m k : Nat) : n * m * k = n * k * m := by
 protected theorem mul_mul_mul_comm (a b c d : Nat) : (a * b) * (c * d) = (a * c) * (b * d) := by
   rw [Nat.mul_assoc, Nat.mul_assoc, Nat.mul_left_comm b]
 
-theorem mul_eq_zero : ∀ {m n}, n * m = 0 ↔ n = 0 ∨ m = 0
+theorem mul_eq_zero : ∀ {m n}, n * m = 0 ↔ n = 0  m = 0
   | 0, _ => ⟨fun _ => .inr rfl, fun _ => rfl⟩
   | _, 0 => ⟨fun _ => .inl rfl, fun _ => Nat.zero_mul ..⟩
   | _+1, _+1 => ⟨nofun, nofun⟩
 
 protected theorem mul_ne_zero_iff : n * m ≠ 0 ↔ n ≠ 0 ∧ m ≠ 0 := by rw [ne_eq, mul_eq_zero, not_or]
 
-protected theorem mul_ne_zero : n ≠ 0 → m ≠ 0 → n * m ≠ 0 := (Nat.mul_ne_zero_iff.2 ⟨·,·⟩)
+protected theorem mul_ne_zero : n ≠ 0  m ≠ 0  n * m ≠ 0 := (Nat.mul_ne_zero_iff.2 ⟨·,·⟩)
 
 protected theorem ne_zero_of_mul_ne_zero_left (h : n * m ≠ 0) : n ≠ 0 :=
   (Nat.mul_ne_zero_iff.1 h).1
@@ -624,7 +624,7 @@ protected theorem pos_of_mul_pos_right {a b : Nat} (h : 0 < a * b) : 0 < a := by
 
 /-! ### div/mod -/
 
-theorem mod_two_eq_zero_or_one (n : Nat) : n % 2 = 0 ∨ n % 2 = 1 :=
+theorem mod_two_eq_zero_or_one (n : Nat) : n % 2 = 0  n % 2 = 1 :=
   match n % 2, @Nat.mod_lt n 2 (by decide) with
   | 0, _ => .inl rfl
   | 1, _ => .inr rfl
@@ -921,7 +921,7 @@ protected theorem div_eq_iff_eq_mul_left {a b c : Nat} (H : 0 < b) (H' : b ∣ a
   rw [Nat.mul_comm]; exact Nat.div_eq_iff_eq_mul_right H H'
 
 theorem pow_dvd_pow_iff_pow_le_pow {k l : Nat} :
-    ∀ {x : Nat}, 0 < x → (x ^ k ∣ x ^ l ↔ x ^ k ≤ x ^ l)
+    ∀ {x : Nat}, 0 < x  (x ^ k ∣ x ^ l ↔ x ^ k ≤ x ^ l)
   | x + 1, w => by
     constructor
     · intro a
@@ -1024,7 +1024,7 @@ theorem mul_add_mod (m x y : Nat) : (m * x + y) % m = y % m := by
 /-! ### Decidability of predicates -/
 
 instance decidableBallLT :
-  ∀ (n : Nat) (P : ∀ k, k < n → Prop) [∀ n h, Decidable (P n h)], Decidable (∀ n h, P n h)
+  ∀ (n : Nat) (P : ∀ k, k < n  Prop) [∀ n h, Decidable (P n h)], Decidable (∀ n h, P n h)
 | 0, _, _ => isTrue fun _ => (by cases ·)
 | n + 1, P, H =>
   match decidableBallLT n (P · <| lt_succ_of_lt ·) with
@@ -1034,10 +1034,10 @@ instance decidableBallLT :
     | isFalse p => isFalse (p <| · _ _)
     | isTrue p => isTrue fun _ h' => (Nat.lt_succ_iff_lt_or_eq.1 h').elim (h _) fun hn => hn ▸ p
 
-instance decidableForallFin (P : Fin n → Prop) [DecidablePred P] : Decidable (∀ i, P i) :=
+instance decidableForallFin (P : Fin n  Prop) [DecidablePred P] : Decidable (∀ i, P i) :=
   decidable_of_iff (∀ k h, P ⟨k, h⟩) ⟨fun m ⟨k, h⟩ => m k h, fun m k h => m ⟨k, h⟩⟩
 
-instance decidableBallLE (n : Nat) (P : ∀ k, k ≤ n → Prop) [∀ n h, Decidable (P n h)] :
+instance decidableBallLE (n : Nat) (P : ∀ k, k ≤ n  Prop) [∀ n h, Decidable (P n h)] :
     Decidable (∀ n h, P n h) :=
   decidable_of_iff (∀ (k) (h : k < succ n), P k (le_of_lt_succ h))
     ⟨fun m k h => m k (lt_succ_of_le h), fun m k _ => m k _⟩
@@ -1053,11 +1053,11 @@ instance decidableExistsLE [DecidablePred p] : DecidablePred fun n => ∃ m : Na
     (exists_congr fun _ => and_congr_left' Nat.lt_succ_iff)
 
 /-- Dependent version of `decidableExistsLT`. -/
-instance decidableExistsLT' {p : (m : Nat) → m < k → Prop} [I : ∀ m h, Decidable (p m h)] :
+instance decidableExistsLT' {p : (m : Nat)  m < k  Prop} [I : ∀ m h, Decidable (p m h)] :
     Decidable (∃ m : Nat, ∃ h : m < k, p m h) :=
   match k, p, I with
   | 0, _, _ => isFalse (by simp)
-  | (k + 1), p, I => @decidable_of_iff _ ((∃ m, ∃ h : m < k, p m (by omega)) ∨ p k (by omega))
+  | (k + 1), p, I => @decidable_of_iff _ ((∃ m, ∃ h : m < k, p m (by omega))  p k (by omega))
       ⟨by rintro (⟨m, h, w⟩ | w); exact ⟨m, by omega, w⟩; exact ⟨k, by omega, w⟩,
         fun ⟨m, h, w⟩ => if h' : m < k then .inl ⟨m, h', w⟩ else
           by obtain rfl := (by omega : m = k); exact .inr w⟩
@@ -1066,7 +1066,7 @@ instance decidableExistsLT' {p : (m : Nat) → m < k → Prop} [I : ∀ m h, Dec
         inferInstance)
 
 /-- Dependent version of `decidableExistsLE`. -/
-instance decidableExistsLE' {p : (m : Nat) → m ≤ k → Prop} [I : ∀ m h, Decidable (p m h)] :
+instance decidableExistsLE' {p : (m : Nat)  m ≤ k  Prop} [I : ∀ m h, Decidable (p m h)] :
     Decidable (∃ m : Nat, ∃ h : m ≤ k, p m h) :=
   decidable_of_iff (∃ m, ∃ h : m < k + 1, p m (by omega)) (exists_congr fun _ =>
     ⟨fun ⟨h, w⟩ => ⟨le_of_lt_succ h, w⟩, fun ⟨h, w⟩ => ⟨lt_add_one_of_le h, w⟩⟩)

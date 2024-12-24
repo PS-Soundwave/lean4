@@ -1,4 +1,4 @@
-def filter (p : α → Prop) [inst : DecidablePred p] (xs : List α) : List α :=
+def filter (p : α  Prop) [inst : DecidablePred p] (xs : List α) : List α :=
   match xs with
   | [] => []
   | x :: xs' =>
@@ -9,7 +9,7 @@ def filter (p : α → Prop) [inst : DecidablePred p] (xs : List α) : List α :
     else
       @filter α p inst xs'
 
-def filter_length (p : α → Prop) [DecidablePred p] : (filter p xs).length ≤ xs.length := by
+def filter_length (p : α  Prop) [DecidablePred p] : (filter p xs).length ≤ xs.length := by
   induction xs with
   | nil => simp [filter]
   | cons x xs ih =>
@@ -20,7 +20,7 @@ inductive Op where
   | bla
   | foo (a : Nat)
 
-def Op.ctorIdx : Op → Nat
+def Op.ctorIdx : Op  Nat
   | .bla => 0
   | .foo .. => 1
 

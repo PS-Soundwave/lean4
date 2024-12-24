@@ -29,19 +29,19 @@ namespace Lean.Meta.LazyDiscrTree
 Discrimination tree key.
 -/
 inductive Key where
-  | const : Name → Nat → Key
-  | fvar  : FVarId → Nat → Key
-  | lit   : Literal → Key
+  | const : Name  Nat  Key
+  | fvar  : FVarId  Nat  Key
+  | lit   : Literal  Key
   | star  : Key
   | other : Key
   | arrow : Key
-  | proj  : Name → Nat → Nat → Key
+  | proj  : Name  Nat  Nat  Key
   deriving Inhabited, BEq, Repr
 
 namespace Key
 
 /-- Hash function -/
-protected def hash : Key → UInt64
+protected def hash : Key  UInt64
   | .const n a   => mixHash 5237 $ mixHash n.hash (hash a)
   | .fvar n a    => mixHash 3541 $ mixHash (hash n) (hash a)
   | .lit v       => mixHash 1879 $ hash v
@@ -83,7 +83,7 @@ private def ignoreArg (a : Expr) (i : Nat) (infos : Array ParamInfo) : MetaM Boo
   else
     isProof a
 
-private partial def pushArgsAux (infos : Array ParamInfo) : Nat → Expr → Array Expr → MetaM (Array Expr)
+private partial def pushArgsAux (infos : Array ParamInfo) : Nat  Expr  Array Expr  MetaM (Array Expr)
   | i, .app f a, todo => do
     if (← ignoreArg a i infos) then
       pushArgsAux infos (i-1) f (todo.push tmpStar)
@@ -167,7 +167,7 @@ private def shouldAddAsStar (fName : Name) (e : Expr) : MetaM Bool := do
 Eliminate loose bound variables via beta-reduction.
 
 This is primarily used to reduce pi-terms `∀(x : P), T` into
-non-dependend functions `P → T`.  The latter has a more specific
+non-dependend functions `P  T`.  The latter has a more specific
 discrimination tree key `.arrow..` and this improves the accuracy of the
 discrimination tree.
 
@@ -294,7 +294,7 @@ private structure Trie (α : Type) where
 instance : EmptyCollection (Trie α) := ⟨.node #[] 0 {} #[]⟩
 
 /-- Push lazy entry to trie. -/
-private def Trie.pushPending : Trie α → LazyEntry α → Trie α
+private def Trie.pushPending : Trie α  LazyEntry α  Trie α
 | .node vs star cs p, e => .node vs star cs (p.push e)
 
 end LazyDiscrTree
@@ -390,7 +390,7 @@ Get the root key and rest of terms of an expression using the specified config.
 private def rootKey (e : Expr) : MetaM (Key × Array Expr) :=
   pushArgs true (Array.mkEmpty initCapacity) e
 
-private partial def buildPath (op : Bool → Array Expr → Expr → MetaM (Key × Array Expr)) (root : Bool) (todo : Array Expr) (keys : Array Key) : MetaM (Array Key) := do
+private partial def buildPath (op : Bool  Array Expr  Expr  MetaM (Key × Array Expr)) (root : Bool) (todo : Array Expr) (keys : Array Key) : MetaM (Array Key) := do
   if todo.isEmpty then
     return keys
   else
@@ -563,7 +563,7 @@ partial def size (mr : MatchResult α) : Nat :=
 Append results to array
 -/
 @[specialize]
-partial def appendResultsAux (mr : MatchResult α) (a : Array β) (f : Nat → α → β) : Array β :=
+partial def appendResultsAux (mr : MatchResult α) (a : Array β) (f : Nat  α  β) : Array β :=
   let aa := mr.elts
   let n := aa.size
   Nat.fold (n := n) (init := a) fun i _ r =>
@@ -706,7 +706,7 @@ private structure PreDiscrTree (α : Type) where
 namespace PreDiscrTree
 
 private def modifyAt (d : PreDiscrTree α) (k : Key)
-    (f : Array (LazyEntry α) → Array (LazyEntry α)) : PreDiscrTree α :=
+    (f : Array (LazyEntry α)  Array (LazyEntry α)) : PreDiscrTree α :=
   let { roots, tries } := d
   match roots[k]? with
   | .none =>
@@ -812,7 +812,7 @@ private def addConstImportData
     (d : ImportData)
     (cacheRef : IO.Ref Cache)
     (tree : PreDiscrTree α)
-    (act : Name → ConstantInfo → MetaM (Array (InitEntry α)))
+    (act : Name  ConstantInfo  MetaM (Array (InitEntry α)))
     (name : Name) (constInfo : ConstantInfo) : BaseIO (PreDiscrTree α) := do
   if constInfo.isUnsafe then return tree
   if blacklistInsertion env name then return tree
@@ -867,7 +867,7 @@ private def toFlat (d : ImportData) (tree : PreDiscrTree α) :
 private partial def loadImportedModule
     (cctx : Core.Context)
     (env : Environment)
-    (act : Name → ConstantInfo → MetaM (Array (InitEntry α)))
+    (act : Name  ConstantInfo  MetaM (Array (InitEntry α)))
     (d : ImportData)
     (cacheRef : IO.Ref Cache)
     (tree : PreDiscrTree α)
@@ -883,7 +883,7 @@ private partial def loadImportedModule
     pure tree
 
 private def createImportedEnvironmentSeq (cctx : Core.Context) (ngen : NameGenerator) (env : Environment)
-    (act : Name → ConstantInfo → MetaM (Array (InitEntry α)))
+    (act : Name  ConstantInfo  MetaM (Array (InitEntry α)))
     (start stop : Nat) : BaseIO (InitResults α) := do
       let cacheRef ← IO.mkRef (Cache.empty ngen)
       go (← ImportData.new) cacheRef {} start stop
@@ -912,7 +912,7 @@ def createLocalPreDiscrTree
     (ngen : NameGenerator)
     (env : Environment)
     (d : ImportData)
-    (act : Name → ConstantInfo → MetaM (Array (InitEntry α))) :
+    (act : Name  ConstantInfo  MetaM (Array (InitEntry α))) :
     BaseIO (PreDiscrTree α) := do
   let modName := env.header.mainModule
   let cacheRef ← IO.mkRef (Cache.empty ngen)
@@ -930,7 +930,7 @@ def logImportFailure [Monad m] [MonadLog m] [AddMessageContext m] [MonadOptions 
 /-- Create a discriminator tree for imported environment. -/
 def createImportedDiscrTree [Monad m] [MonadLog m] [AddMessageContext m] [MonadOptions m] [MonadLiftT BaseIO m]
     (cctx : Core.Context) (ngen : NameGenerator) (env : Environment)
-    (act : Name → ConstantInfo → MetaM (Array (InitEntry α)))
+    (act : Name  ConstantInfo  MetaM (Array (InitEntry α)))
     (constantsPerTask : Nat := 1000) :
     m (LazyDiscrTree α) := do
   let n := env.header.moduleData.size
@@ -972,7 +972,7 @@ private def createTreeCtx (ctx : Core.Context) : Core.Context := {
 
 def findImportMatches
       (ext : EnvExtension (IO.Ref (Option (LazyDiscrTree α))))
-      (addEntry : Name → ConstantInfo → MetaM (Array (InitEntry α)))
+      (addEntry : Name  ConstantInfo  MetaM (Array (InitEntry α)))
       (droppedKeys : List (List LazyDiscrTree.Key) := [])
       (constantsPerTask : Nat := 1000)
       (ty : Expr) : MetaM (MatchResult α) := do
@@ -1003,7 +1003,7 @@ structure ModuleDiscrTreeRef (α : Type _)  where
 
 /-- Create a discriminator tree for current module declarations. -/
 def createModuleDiscrTree
-    (entriesForConst : Name → ConstantInfo → MetaM (Array (InitEntry α))) :
+    (entriesForConst : Name  ConstantInfo  MetaM (Array (InitEntry α))) :
     CoreM (LazyDiscrTree α) := do
   let env ← getEnv
   let ngen ← getChildNgen
@@ -1016,7 +1016,7 @@ def createModuleDiscrTree
 /--
 Creates reference for lazy discriminator tree that only contains this module's definitions.
 -/
-def createModuleTreeRef (entriesForConst : Name → ConstantInfo → MetaM (Array (InitEntry α)))
+def createModuleTreeRef (entriesForConst : Name  ConstantInfo  MetaM (Array (InitEntry α)))
     (droppedKeys : List (List LazyDiscrTree.Key)) : MetaM (ModuleDiscrTreeRef α) := do
   profileitM Exception "build module discriminator tree" (←getOptions) $ do
     let t ← createModuleDiscrTree entriesForConst
@@ -1057,10 +1057,10 @@ based on priority and cache module declarations
 def findMatchesExt
     (moduleTreeRef : ModuleDiscrTreeRef α)
     (ext : EnvExtension (IO.Ref (Option (LazyDiscrTree α))))
-    (addEntry : Name → ConstantInfo → MetaM (Array (InitEntry α)))
+    (addEntry : Name  ConstantInfo  MetaM (Array (InitEntry α)))
     (droppedKeys : List (List LazyDiscrTree.Key) := [])
     (constantsPerTask : Nat := 1000)
-    (adjustResult : Nat → α → β)
+    (adjustResult : Nat  α  β)
     (ty : Expr) : MetaM (Array β) := do
   let moduleMatches ← findModuleMatches moduleTreeRef ty
   let importMatches ← findImportMatches ext addEntry droppedKeys constantsPerTask ty
@@ -1078,7 +1078,7 @@ def findMatchesExt
   It is used for dropping very general keys.
 -/
 def findMatches (ext : EnvExtension (IO.Ref (Option (LazyDiscrTree α))))
-    (addEntry : Name → ConstantInfo → MetaM (Array (InitEntry α)))
+    (addEntry : Name  ConstantInfo  MetaM (Array (InitEntry α)))
     (droppedKeys : List (List LazyDiscrTree.Key) := [])
     (constantsPerTask : Nat := 1000)
     (ty : Expr) : MetaM (Array α) := do

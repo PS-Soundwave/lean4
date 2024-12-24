@@ -124,7 +124,7 @@ has type
 but is expected to have type
   false = false : Prop
 ---
-info: Try this: Bool.casesOn (motive := fun t => b = t → b = b) b (fun h => Eq.symm h ▸ sorry) (fun h => Eq.symm h ▸ sorry)
+info: Try this: Bool.casesOn (motive := fun t => b = t  b = b) b (fun h => Eq.symm h ▸ sorry) (fun h => Eq.symm h ▸ sorry)
   (Eq.refl b)
 -/
 #guard_msgs in

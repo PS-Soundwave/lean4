@@ -1,4 +1,4 @@
-theorem modifySize {A : Type u} (as : Array A) (f : A → A) (n : Nat) : (as.modify n f).size = as.size := by
+theorem modifySize {A : Type u} (as : Array A) (f : A  A) (n : Nat) : (as.modify n f).size = as.size := by
   simp [Array.modify, Array.modifyM, Id.run]; split <;> simp [Id.run]
 
 structure Idx (p : Array String) where
@@ -9,7 +9,7 @@ structure Store where
   -- integer pointers into `arr`, type-indexed by `arr`
   ids : Array (Idx arr)
 
-instance {arr : Array String} {f : String → String} {n : Nat} : Coe (Array (Idx arr)) (Array (Idx (arr.modify n f))) where
+instance {arr : Array String} {f : String  String} {n : Nat} : Coe (Array (Idx arr)) (Array (Idx (arr.modify n f))) where
   coe xs :=
     xs.map (fun x => Idx.mk ((modifySize arr f n) ▸ x.n))
 

@@ -6,14 +6,14 @@ inductive Partial (α : Type u)
 
 def terminates {α : Type u} (p : Partial α) : Prop := p ≠ Partial.bot
 
-def fooAux (s : String) (c : Char) : Nat → String.Pos → Partial String.Pos
+def fooAux (s : String) (c : Char) : Nat  String.Pos  Partial String.Pos
 | 0            i := Partial.bot
 | (Nat.succ k) i :=
   if s.atEnd i then Partial.val i
   else if s.get i == c then Partial.val i
   else fooAux k (s.next i)
 
-theorem fooAuxEqSucc (s : String) (c : Char) : ∀ (k : Nat) (i : String.Pos), terminates (fooAux s c k i) → fooAux s c k.succ i = fooAux s c k i
+theorem fooAuxEqSucc (s : String) (c : Char) : ∀ (k : Nat) (i : String.Pos), terminates (fooAux s c k i)  fooAux s c k.succ i = fooAux s c k i
 | 0            i ht := absurd rfl ht
 | (Nat.succ k) i ht :=
   show (fooAux s c k.succ.succ i = fooAux s c k.succ i), from
@@ -46,11 +46,11 @@ def foo (s : String) (c : Char) (i : String.Pos) : Partial String.Pos :=
 fooAux s c bigNat i
 
 theorem fooEq (s : String) (c : Char) (i : String.Pos) :
-     terminates (foo s c i) →
+     terminates (foo s c i) 
      foo s c i =  if s.atEnd i then Partial.val i
                   else if s.get i == c then Partial.val i
                   else foo s c (s.next i) :=
-show terminates (fooAux s c bigNat i) → fooAux s c bigNat i =  (if s.atEnd i then Partial.val i
+show terminates (fooAux s c bigNat i)  fooAux s c bigNat i =  (if s.atEnd i then Partial.val i
                                           else if s.get i == c then Partial.val i
                                           else fooAux s c bigNat (s.next i)), from
 Nat.casesOn bigNat

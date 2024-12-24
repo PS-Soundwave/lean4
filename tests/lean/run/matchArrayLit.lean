@@ -21,8 +21,8 @@ Matcher for the following patterns
 | #[a₁, a₂, a₃] => _
 | a             => _
 ``` -/
-def matchArrayLit {α : Type u} (C : Array α → Sort v) (a : Array α)
-    (h₁ : Unit →      C #[])
+def matchArrayLit {α : Type u} (C : Array α  Sort v) (a : Array α)
+    (h₁ : Unit       C #[])
     (h₂ : ∀ a₁,       C #[a₁])
     (h₃ : ∀ a₁ a₂ a₃, C #[a₁, a₂, a₃])
     (h₄ : ∀ a,        C a)
@@ -37,16 +37,16 @@ else
   h₄ a
 
 /- Equational lemmas that should be generated automatically. -/
-theorem matchArrayLit.eq1 {α : Type u} (C : Array α → Sort v)
-    (h₁ : Unit →      C #[])
+theorem matchArrayLit.eq1 {α : Type u} (C : Array α  Sort v)
+    (h₁ : Unit       C #[])
     (h₂ : ∀ a₁,       C #[a₁])
     (h₃ : ∀ a₁ a₂ a₃, C #[a₁, a₂, a₃])
     (h₄ : ∀ a,        C a)
     : matchArrayLit C #[] h₁ h₂ h₃ h₄ = h₁ () :=
 rfl
 
-theorem matchArrayLit.eq2 {α : Type u} (C : Array α → Sort v)
-    (h₁ : Unit →      C #[])
+theorem matchArrayLit.eq2 {α : Type u} (C : Array α  Sort v)
+    (h₁ : Unit       C #[])
     (h₂ : ∀ a₁,       C #[a₁])
     (h₃ : ∀ a₁ a₂ a₃, C #[a₁, a₂, a₃])
     (h₄ : ∀ a,        C a)
@@ -54,8 +54,8 @@ theorem matchArrayLit.eq2 {α : Type u} (C : Array α → Sort v)
     : matchArrayLit C #[a₁] h₁ h₂ h₃ h₄ = h₂ a₁ :=
 rfl
 
-theorem matchArrayLit.eq3 {α : Type u} (C : Array α → Sort v)
-    (h₁ : Unit →      C #[])
+theorem matchArrayLit.eq3 {α : Type u} (C : Array α  Sort v)
+    (h₁ : Unit       C #[])
     (h₂ : ∀ a₁,       C #[a₁])
     (h₃ : ∀ a₁ a₂ a₃, C #[a₁, a₂, a₃])
     (h₄ : ∀ a,        C a)

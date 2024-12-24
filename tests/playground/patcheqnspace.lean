@@ -3,7 +3,7 @@ import init.lean.parser.transform
 open Lean
 open Lean.Parser
 
-def getAtomTrailingSpace : Syntax → Nat
+def getAtomTrailingSpace : Syntax  Nat
 | Syntax.atom (some info) _ => info.trailing.stopPos - info.trailing.startPos
 | _ => 0
 
@@ -13,12 +13,12 @@ ps.foldl (fun acc (p : Syntax) =>
   if space < acc then space else acc)
   100000
 
-def reduceTrailingSpace : Syntax → Nat → Syntax
+def reduceTrailingSpace : Syntax  Nat  Syntax
 | Syntax.atom (some info) val, delta => Syntax.atom (some { trailing := { stopPos := info.trailing.stopPos - delta, .. info.trailing }, .. info }) val
 
 | stx, _ => stx
 
-partial def fixPats : Array Syntax → Nat → Nat → Array Syntax
+partial def fixPats : Array Syntax  Nat  Nat  Array Syntax
 | ps, i, sz =>
   if i < sz then
     let minSpace := getMinTrailingSpace ps i;

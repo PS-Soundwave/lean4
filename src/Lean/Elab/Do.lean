@@ -79,7 +79,7 @@ private def liftMethodForbiddenBinder (stx : Syntax) : Bool :=
     false
 
 -- TODO: we must track whether we are inside a quotation or not.
-private partial def hasLiftMethod : Syntax → Bool
+private partial def hasLiftMethod : Syntax  Bool
   | Syntax.node _ k args =>
     if liftMethodDelimiter k then false
     -- NOTE: We don't check for lifts in quotations here, which doesn't break anything but merely makes this rare case a
@@ -225,7 +225,7 @@ inductive Code where
   | jmp          (ref : Syntax) (jpName : Name) (args : Array Syntax)
   deriving Inhabited
 
-def Code.getRef? : Code → Option Syntax
+def Code.getRef? : Code  Option Syntax
   | .decl _ doElem _     => doElem
   | .reassign _ doElem _ => doElem
   | .joinpoint ..        => none
@@ -254,7 +254,7 @@ private def varsToMessageData (vars : Array Var) : MessageData :=
 
 partial def CodeBlocl.toMessageData (codeBlock : CodeBlock) : MessageData :=
   let us := MessageData.ofList <| (varSetToArray codeBlock.uvars).toList.map MessageData.ofSyntax
-  let rec loop : Code → MessageData
+  let rec loop : Code  MessageData
     | .decl xs _ k           => m!"let {varsToMessageData xs} := ...\n{loop k}"
     | .reassign xs _ k       => m!"{varsToMessageData xs} := ...\n{loop k}"
     | .joinpoint n ps body k => m!"let {n.simpMacroScopes} {varsToMessageData (ps.map Prod.fst)} := {indentD (loop body)}\n{loop k}"
@@ -279,8 +279,8 @@ partial def CodeBlocl.toMessageData (codeBlock : CodeBlock) : MessageData :=
   loop codeBlock.code
 
 /-- Return true if the give code contains an exit point that satisfies `p` -/
-partial def hasExitPointPred (c : Code) (p : Code → Bool) : Bool :=
-  let rec loop : Code → Bool
+partial def hasExitPointPred (c : Code) (p : Code  Bool) : Bool :=
+  let rec loop : Code  Bool
     | .decl _ _ k             => loop k
     | .reassign _ _ k         => loop k
     | .joinpoint _ _ b k      => loop b || loop k
@@ -318,7 +318,7 @@ def hasBreakContinueReturn (c : Code) : Bool :=
     | .return _ _ => true
     | _ => false
 
-def mkAuxDeclFor {m} [Monad m] [MonadQuotation m] (e : Syntax) (mkCont : Syntax → m Code) : m Code := withRef e <| withFreshMacroScope do
+def mkAuxDeclFor {m} [Monad m] [MonadQuotation m] (e : Syntax) (mkCont : Syntax  m Code) : m Code := withRef e <| withFreshMacroScope do
   let y ← `(y)
   let doElem ← `(doElem| let y ← $e:term)
   -- Add elaboration hint for producing sane error message
@@ -328,7 +328,7 @@ def mkAuxDeclFor {m} [Monad m] [MonadQuotation m] (e : Syntax) (mkCont : Syntax 
 
 /-- Convert `action _ e` instructions in `c` into `let y ← e; jmp _ jp (xs y)`. -/
 partial def convertTerminalActionIntoJmp (code : Code) (jp : Name) (xs : Array Var) : MacroM Code :=
-  let rec loop : Code → MacroM Code
+  let rec loop : Code  MacroM Code
     | .decl xs stx k         => return .decl xs stx (← loop k)
     | .reassign xs stx k     => return .reassign xs stx (← loop k)
     | .joinpoint n ps b k    => return .joinpoint n ps (← loop b) (← loop k)
@@ -400,7 +400,7 @@ def mkSimpleJmp (ref : Syntax) (rs : VarSet) (c : Code) : StateRefT (Array JPDec
 /-- Create a new joinpoint that takes `rs` and `val` as arguments. `val` must be syntax representing a pure value.
    The body of the joinpoint is created using `mkJPBody yFresh`, where `yFresh`
    is a fresh variable created by this method. -/
-def mkJmp (ref : Syntax) (rs : VarSet) (val : Syntax) (mkJPBody : Syntax → MacroM Code) : StateRefT (Array JPDecl) TermElabM Code := do
+def mkJmp (ref : Syntax) (rs : VarSet) (val : Syntax) (mkJPBody : Syntax  MacroM Code) : StateRefT (Array JPDecl) TermElabM Code := do
   let xs := varSetToArray rs
   let args := xs.push val
   let yFresh ← withRef ref `(y)
@@ -688,7 +688,7 @@ def getDoLetVars (doLet : Syntax) : TermElabM (Array Var) :=
   -- leading_parser "let " >> optional "mut " >> letDecl
   getLetDeclVars doLet[2]
 
-def getDoHaveVars : Syntax → TermElabM (Array Var)
+def getDoHaveVars : Syntax  TermElabM (Array Var)
   -- NOTE: `hygieneInfo` case should come first as `id` will match anything else
   | `(doElem| have $info:hygieneInfo $_params* $[$_:typeSpec]? := $_val)
   | `(doElem| have $info:hygieneInfo $_params* $[$_:typeSpec]? $_eqns:matchAlts) =>
@@ -912,7 +912,7 @@ We use this method to convert
    - `a`, `r`, `b/c`: `Kind.nestedPRBC`, type type `m (DoResultPRBC α β σ)`
 
 Here is the recipe for adding new combinators with nested `do`s.
-Example: suppose we want to support `repeat doSeq`. Assuming we have `repeat : m α → m α`
+Example: suppose we want to support `repeat doSeq`. Assuming we have `repeat : m α  m α`
 1- Convert `doSeq` into `codeBlock : CodeBlock`
 2- Create term `term` using `mkNestedTerm code m uvars a r bc` where
    `code` is `codeBlock.code`, `uvars` is an array containing `codeBlock.uvars`,
@@ -963,7 +963,7 @@ inductive Kind where
 
 instance : Inhabited Kind := ⟨Kind.regular⟩
 
-def Kind.isRegular : Kind → Bool
+def Kind.isRegular : Kind  Bool
   | .regular => true
   | _        => false
 
@@ -1110,8 +1110,8 @@ def mkJoinPoint (j : Name) (ps : Array (Syntax × Bool)) (body : Syntax) (k : Sy
   else
     jp ()
   ```
-  If we use the regular `let` instead of `let_delayed`, the joinpoint `jp` will be elaborated and its type will be inferred to be `Unit → IO (IO.Ref Bool)`.
-  Then, we get a typing error at `jp ()`. By using `let_delayed`, we first elaborate `if x > 0 ...` and learn that `jp` has type `Unit → IO Unit`.
+  If we use the regular `let` instead of `let_delayed`, the joinpoint `jp` will be elaborated and its type will be inferred to be `Unit  IO (IO.Ref Bool)`.
+  Then, we get a typing error at `jp ()`. By using `let_delayed`, we first elaborate `if x > 0 ...` and learn that `jp` has type `Unit  IO Unit`.
   Then, we get the expected type mismatch error at `IO.mkRef true`. -/
   `(let_delayed $(← mkIdentFromRef j):ident $[($ps : $pTypes)]* : $((← read).m) _ := $body; $k)
 
@@ -1301,7 +1301,7 @@ def ensureEOS (doElems : List Syntax) : M Unit :=
     throwError "must be last element in a `do` sequence"
 
 variable (baseId : Name) in
-private partial def expandLiftMethodAux (inQuot : Bool) (inBinder : Bool) : Syntax → StateT (List Syntax) M Syntax
+private partial def expandLiftMethodAux (inQuot : Bool) (inBinder : Bool) : Syntax  StateT (List Syntax) M Syntax
   | stx@(Syntax.node i k args) =>
     if k == choiceKind then do
       -- choice node: check that lifts are consistent
@@ -1378,7 +1378,7 @@ def getTryCatchUpdatedVars (tryCode : CodeBlock) (catches : Array Catch) (finall
     | some c => union c.uvars ws
   ws
 
-def tryCatchPred (tryCode : CodeBlock) (catches : Array Catch) (finallyCode? : Option CodeBlock) (p : Code → Bool) : Bool :=
+def tryCatchPred (tryCode : CodeBlock) (catches : Array Catch) (finallyCode? : Option CodeBlock) (p : Code  Bool) : Bool :=
   p tryCode.code ||
   catches.any (fun «catch» => p «catch».codeBlock.code) ||
   match finallyCode? with
@@ -1697,7 +1697,7 @@ mutual
     let doElemsNew ← liftMacroM <| ToTerm.matchNestedTermResult term uvars a r bc
     doSeqToCode (doElemsNew ++ doElems)
 
-  partial def doSeqToCode : List Syntax → M CodeBlock
+  partial def doSeqToCode : List Syntax  M CodeBlock
     | [] => do liftMacroM mkPureUnitAction
     | doElem::doElems => withIncRecDepth <| withRef doElem do
       checkSystem "`do`-expander"

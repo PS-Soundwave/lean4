@@ -29,7 +29,7 @@ private inductive ExprDiffTag where
   | delete
   | insert
 
-def ExprDiffTag.toDiffTag : (useAfter : Bool) → ExprDiffTag → Lean.Widget.DiffTag
+def ExprDiffTag.toDiffTag : (useAfter : Bool)  ExprDiffTag  Lean.Widget.DiffTag
   | true,  .change => .wasChanged
   | false, .change => .willChange
   | true,  .delete => .wasDeleted
@@ -37,7 +37,7 @@ def ExprDiffTag.toDiffTag : (useAfter : Bool) → ExprDiffTag → Lean.Widget.Di
   | true,  .insert => .wasInserted
   | false, .insert => .willInsert
 
-def ExprDiffTag.toString : ExprDiffTag → String
+def ExprDiffTag.toString : ExprDiffTag  String
   | .change => "change"
   | .delete => "delete"
   | .insert => "insert"
@@ -100,7 +100,7 @@ TODO(ed): experiment with a 'greatest common subexpression' design where
 
 Two binding domains are identified if they have the same user name and the same type.
 The most common tactic that modifies binders is after an `intros`.
-To deal with this case, if `before = (a : α) → β` and `after`, is not a matching binder (ie: not `(a : α) → _`)
+To deal with this case, if `before = (a : α)  β` and `after`, is not a matching binder (ie: not `(a : α)  _`)
 then we instantiate the `before` variable in a new context and continue diffing `β` against `after`.
 
  -/

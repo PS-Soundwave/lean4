@@ -25,7 +25,7 @@ The `simp` tactic invokes `shortCircuitAnd` whenever it finds a term of the form
 The simplification procedures are stored in an (imperfect) discrimination tree.
 The procedure should **not** assume the term `e` perfectly matches the given pattern.
 The body of a simplification procedure must have type `Simproc`, which is an alias for
-`Expr → SimpM Step`
+`Expr  SimpM Step`
 You can instruct the simplifier to apply the procedure before its sub-expressions
 have been simplified by using the modifier `↓` before the procedure name.
 Simplification procedures can be also scoped or local.

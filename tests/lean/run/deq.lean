@@ -5,7 +5,7 @@ inductive LazyList (α : Type u)
 
 namespace LazyList
 
-def force : LazyList α → Option (α × LazyList α)
+def force : LazyList α  Option (α × LazyList α)
 | delayed as => force as.get
 | nil        => none
 | cons a as  => some (a,as)

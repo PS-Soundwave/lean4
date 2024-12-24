@@ -37,9 +37,9 @@ error: type mismatch
 has type
   sorry : Sort _
 but is expected to have type
-  limit f → sorry : Sort (imax (max (u + 1) (v + 1)) _)
+  limit f  sorry : Sort (imax (max (u + 1) (v + 1)) _)
 -/
 #guard_msgs in
 theorem pi_lift_π_apply {C : Type v} [Category.{v} C] (f : Functor' C (Type max v u)) :
-    (limit.π sorry sorry : limit f → sorry) sorry = sorry :=
+    (limit.π sorry sorry : limit f  sorry) sorry = sorry :=
   sorry

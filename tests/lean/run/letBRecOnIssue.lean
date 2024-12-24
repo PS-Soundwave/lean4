@@ -4,9 +4,9 @@ section events
 universe u v
 
 -- | Polymorphic to and sum.
-def pto (E: Type → Type u) (F: Type → Type v) :=
-  ∀ T, E T → F T
-def psum (E: Type → Type u) (F: Type → Type v) :=
+def pto (E: Type  Type u) (F: Type  Type v) :=
+  ∀ T, E T  F T
+def psum (E: Type  Type u) (F: Type  Type v) :=
   fun T => E T ⊕ F T
 inductive PVoid: Type -> Type u
 infixr:40 " ~> " => pto
@@ -16,9 +16,9 @@ end events
 
 
 /- finite interaction trees -/
-inductive Fitree (E : Type → Type u) (R : Type) where
+inductive Fitree (E : Type  Type u) (R : Type) where
   | Ret (r : R) : Fitree E R
-  | Vis (e : E T) (k : T → Fitree E R) : Fitree E R
+  | Vis (e : E T) (k : T  Fitree E R) : Fitree E R
 
 /-
 Describe the ability to split a sum type L + R into LR.

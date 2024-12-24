@@ -1,7 +1,7 @@
 
 
 partial def reverse {α} (as : List α) : List α :=
-let rec loop : List α → List α → List α
+let rec loop : List α  List α  List α
   | [],    r => r
   | a::as, r => loop as (a::r)
 loop as []

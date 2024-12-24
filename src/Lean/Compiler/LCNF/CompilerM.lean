@@ -117,7 +117,7 @@ def getFunDecl (fvarId : FVarId) : CompilerM FunDecl := do
   let some decl ← findFunDecl? fvarId | throwError "unknown local function {fvarId.name}"
   return decl
 
-@[inline] def modifyLCtx (f : LCtx → LCtx) : CompilerM Unit := do
+@[inline] def modifyLCtx (f : LCtx  LCtx) : CompilerM Unit := do
    modify fun s => { s with lctx := f s.lctx }
 
 def eraseLetDecl (decl : LetDecl) : CompilerM Unit := do
@@ -276,7 +276,7 @@ private partial def normLetValueImp (s : FVarSubst) (e : LetValue) (translator :
 /--
 Interface for monads that have a free substitutions.
 -/
-class MonadFVarSubst (m : Type → Type) (translator : outParam Bool) where
+class MonadFVarSubst (m : Type  Type) (translator : outParam Bool) where
   getSubst : m FVarSubst
 
 export MonadFVarSubst (getSubst)
@@ -284,8 +284,8 @@ export MonadFVarSubst (getSubst)
 instance (m n) [MonadLift m n] [MonadFVarSubst m t] : MonadFVarSubst n t where
   getSubst := liftM (getSubst : m _)
 
-class MonadFVarSubstState (m : Type → Type) where
-  modifySubst : (FVarSubst → FVarSubst) → m Unit
+class MonadFVarSubstState (m : Type  Type) where
+  modifySubst : (FVarSubst  FVarSubst)  m Unit
 
 export MonadFVarSubstState (modifySubst)
 
@@ -429,7 +429,7 @@ instance : MonadFVarSubst (NormalizerM t) t where
 If `result` is `.fvar fvarId`, then return `x fvarId`. Otherwise, it is `.erased`,
 and method returns `let _x.i := .erased; return _x.i`.
 -/
-@[inline] def withNormFVarResult [MonadLiftT CompilerM m] [Monad m] (result : NormFVarResult) (x : FVarId → m Code) : m Code := do
+@[inline] def withNormFVarResult [MonadLiftT CompilerM m] [Monad m] (result : NormFVarResult) (x : FVarId  m Code) : m Code := do
   match result with
   | .fvar fvarId => x fvarId
   | .erased => mkReturnErased

@@ -40,7 +40,7 @@ theorem denote_bitblast (expr : BVLogicalExpr) (assign : BVExpr.Assignment) :
   unfold ofBoolExprCached
   rw [bitblast.go_eval_eq_eval]
 
-theorem unsat_of_bitblast (expr : BVLogicalExpr) : expr.bitblast.Unsat → expr.Unsat :=  by
+theorem unsat_of_bitblast (expr : BVLogicalExpr) : expr.bitblast.Unsat  expr.Unsat :=  by
   intro h assign
   rw [← denote_bitblast]
   apply h

@@ -4,7 +4,7 @@ import Lean.Elab.Tactic
 structure A (α : Type u) where
   x : α
   y : α
-  f : α → α
+  f : α  α
 
 structure B (α : Type u) extends A α where
   z : α

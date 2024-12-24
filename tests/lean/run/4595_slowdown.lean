@@ -6,13 +6,13 @@ universe v v₁ v₂ v₃ u u₁ u₂ u₃
 section Mathlib.Combinatorics.Quiver.Basic
 
 class Quiver (V : Type u) where
-  Hom : V → V → Sort v
+  Hom : V  V  Sort v
 
 infixr:10 " ⟶ " => Quiver.Hom
 
 structure Prefunctor (V : Type u₁) [Quiver.{v₁} V] (W : Type u₂) [Quiver.{v₂} W] where
-  obj : V → W
-  map : ∀ {X Y : V}, (X ⟶ Y) → (obj X ⟶ obj Y)
+  obj : V  W
+  map : ∀ {X Y : V}, (X ⟶ Y)  (obj X ⟶ obj Y)
 
 end Mathlib.Combinatorics.Quiver.Basic
 
@@ -22,7 +22,7 @@ namespace CategoryTheory
 
 class CategoryStruct (obj : Type u) extends Quiver.{v + 1} obj : Type max u (v + 1) where
   id : ∀ X : obj, Hom X X
-  comp : ∀ {X Y Z : obj}, (X ⟶ Y) → (Y ⟶ Z) → (X ⟶ Z)
+  comp : ∀ {X Y Z : obj}, (X ⟶ Y)  (Y ⟶ Z)  (X ⟶ Z)
 
 scoped notation "𝟙" => CategoryStruct.id
 

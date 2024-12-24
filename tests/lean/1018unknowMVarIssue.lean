@@ -1,6 +1,6 @@
-inductive Fam2 : Type → Type → Type 1 where
+inductive Fam2 : Type  Type  Type 1 where
   | any : Fam2 α α
-  | nat : Nat → Fam2 Nat Nat
+  | nat : Nat  Fam2 Nat Nat
 
 set_option pp.rawOnError true
 set_option trace.Elab.info true

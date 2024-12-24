@@ -12,7 +12,7 @@ namespace Lean
 /--
 The `MonadLog` interface for logging error messages.
 -/
-class MonadLog (m : Type → Type) extends MonadFileMap m where
+class MonadLog (m : Type  Type) extends MonadFileMap m where
   /-- Return the current reference syntax being used to provide position information. -/
   getRef       : m Syntax
   /-- The name of the file being processed. -/
@@ -20,7 +20,7 @@ class MonadLog (m : Type → Type) extends MonadFileMap m where
   /-- Return `true` if errors have been logged. -/
   hasErrors    : m Bool
   /-- Log a new message. -/
-  logMessage   : Message → m Unit
+  logMessage   : Message  m Unit
 
 export MonadLog (getFileName logMessage)
 

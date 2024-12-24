@@ -42,7 +42,7 @@ instance : MonadLift (Except ε) (Except (Array ε)) where
 If the value is not `none`, run the decode action.
 If it fails, add the errors to the state and return `default`.
 -/
-@[inline] def optDecodeD (default : β)  (a? : Option α) (f : α → Except (Array ε) β) : StateM (Array ε) β :=
+@[inline] def optDecodeD (default : β)  (a? : Option α) (f : α  Except (Array ε) β) : StateM (Array ε) β :=
   match a? with
   | some a => tryDecodeD default (f a)
   | none => pure default
@@ -51,7 +51,7 @@ If it fails, add the errors to the state and return `default`.
 If the value is not `none`, run the decode action.
 If it fails, add the errors to the state and return `Inhabited.default`.
 -/
-@[inline] def optDecode [Inhabited β] (a? : Option α) (f : α → Except (Array ε) β) : StateM (Array ε) β :=
+@[inline] def optDecode [Inhabited β] (a? : Option α) (f : α  Except (Array ε) β) : StateM (Array ε) β :=
   optDecodeD default a? f
 
 
@@ -60,14 +60,14 @@ If the value is not `none`, run the decode action.
 If it fails, add the errors to the state and return `none`.
 Otherwise, return the result in `some`.
 -/
-@[inline] def optDecode? (a? : Option α)  (f : α → Except (Array ε) β) : StateM (Array ε) (Option β) :=
+@[inline] def optDecode? (a? : Option α)  (f : α  Except (Array ε) β) : StateM (Array ε) (Option β) :=
   optDecodeD none a? fun a  => some <$> f a
 
 /--
 If either action errors, throw the concatenated errors.
 Otherwise, if no errors, combine the results with `f`.
 -/
-def mergeErrors (x₁ : Except (Array ε) α) (x₂ : Except (Array ε) β) (f : α → β → γ) : Except (Array ε) γ :=
+def mergeErrors (x₁ : Except (Array ε) α) (x₂ : Except (Array ε) β) (f : α  β  γ) : Except (Array ε) γ :=
   match x₁, x₂ with
   | .ok a, .ok b => .ok (f a b)
   | .ok _, .error es => .error es
@@ -95,7 +95,7 @@ instance : DecodeToml Value := ⟨pure⟩
 
 namespace Value
 
-@[inline] def decodeString : Value → Except DecodeError String
+@[inline] def decodeString : Value  Except DecodeError String
 | .string _ v => .ok v
 | x => .error (.mk x.ref "expected string")
 
@@ -109,37 +109,37 @@ instance : DecodeToml System.FilePath := ⟨(.mk <$> decodeToml ·)⟩
 
 instance : DecodeToml Lean.Name := ⟨(·.decodeName)⟩
 
-@[inline] def decodeInt : Value → Except DecodeError Int
+@[inline] def decodeInt : Value  Except DecodeError Int
 | .integer _ v => .ok v
 | x => .error (.mk x.ref "expected integer")
 
 instance : DecodeToml Int := ⟨(·.decodeInt)⟩
 
-@[inline] def decodeNat : Value → Except DecodeError Nat
+@[inline] def decodeNat : Value  Except DecodeError Nat
 | .integer _ (.ofNat v) => .ok v
 | x => .error (.mk x.ref "expected nonnegative integer")
 
 instance : DecodeToml Nat := ⟨(·.decodeNat)⟩
 
-@[inline] def decodeFloat : Value → Except DecodeError Float
+@[inline] def decodeFloat : Value  Except DecodeError Float
 | .float _ v => .ok v
 | x => .error (.mk x.ref "expected float")
 
 instance : DecodeToml Float := ⟨(·.decodeFloat)⟩
 
-@[inline] def decodeBool : Value → Except DecodeError Bool
+@[inline] def decodeBool : Value  Except DecodeError Bool
 | .boolean _ v => .ok v
 | x => .error (.mk x.ref "expected boolean")
 
 instance : DecodeToml Bool := ⟨(·.decodeBool)⟩
 
-@[inline] def decodeDateTime : Value → Except DecodeError DateTime
+@[inline] def decodeDateTime : Value  Except DecodeError DateTime
 | .dateTime _ v => .ok v
 | x => .error (.mk x.ref "expected date-time")
 
 instance : DecodeToml DateTime := ⟨(·.decodeDateTime)⟩
 
-@[inline] def decodeValueArray : Value → Except DecodeError (Array Value)
+@[inline] def decodeValueArray : Value  Except DecodeError (Array Value)
 | .array _ vs => .ok vs
 | x => .error (.mk x.ref "expected array")
 
@@ -148,11 +148,11 @@ instance : DecodeToml DateTime := ⟨(·.decodeDateTime)⟩
 
 instance [DecodeToml α] : DecodeToml (Array α) := ⟨Value.decodeArray⟩
 
-@[inline] def decodeArrayOrSingleton [dec : DecodeToml α] : Value → Except (Array DecodeError) (Array α)
+@[inline] def decodeArrayOrSingleton [dec : DecodeToml α] : Value  Except (Array DecodeError) (Array α)
 | .array _ vs => decodeArray (dec := dec) vs
 | v => Array.singleton <$> dec.decode v
 
-@[inline] def decodeTable : Value → Except DecodeError Table
+@[inline] def decodeTable : Value  Except DecodeError Table
 | .table _ t => .ok t
 | x => .error (.mk x.ref "expected table")
 

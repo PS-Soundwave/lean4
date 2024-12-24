@@ -22,30 +22,30 @@ inductive Gate
 
 namespace Gate
 
-def toString : Gate → String
+def toString : Gate  String
   | and => "&&"
   | xor => "^^"
   | beq => "=="
   | imp => "->"
 
-def eval : Gate → Bool → Bool → Bool
+def eval : Gate  Bool  Bool  Bool
   | and => (· && ·)
   | xor => (· ^^ ·)
   | beq => (· == ·)
-  | imp => (· → ·)
+  | imp => (·  ·)
 
 end Gate
 
 inductive BoolExpr (α : Type)
-  | literal : α → BoolExpr α
-  | const : Bool → BoolExpr α
-  | not : BoolExpr α → BoolExpr α
-  | gate : Gate → BoolExpr α → BoolExpr α → BoolExpr α
-  | ite : BoolExpr α → BoolExpr α → BoolExpr α → BoolExpr α
+  | literal : α  BoolExpr α
+  | const : Bool  BoolExpr α
+  | not : BoolExpr α  BoolExpr α
+  | gate : Gate  BoolExpr α  BoolExpr α  BoolExpr α
+  | ite : BoolExpr α  BoolExpr α  BoolExpr α  BoolExpr α
 
 namespace BoolExpr
 
-def toString [ToString α] : BoolExpr α → String
+def toString [ToString α] : BoolExpr α  String
   | literal a => ToString.toString a
   | const b => ToString.toString b
   | not x => "!" ++ toString x
@@ -54,7 +54,7 @@ def toString [ToString α] : BoolExpr α → String
 
 instance [ToString α] : ToString (BoolExpr α) := ⟨toString⟩
 
-def eval (a : α → Bool) : BoolExpr α → Bool
+def eval (a : α  Bool) : BoolExpr α  Bool
   | .literal l => a l
   | .const b => b
   | .not x => !eval a x
@@ -67,15 +67,15 @@ def eval (a : α → Bool) : BoolExpr α → Bool
 @[simp] theorem eval_gate : eval a (.gate g x y) = g.eval (eval a x) (eval a y) := rfl
 @[simp] theorem eval_ite : eval a (.ite d l r) = if d.eval a then l.eval a else r.eval a := rfl
 
-def Sat (a : α → Bool) (x : BoolExpr α) : Prop := eval a x = true
+def Sat (a : α  Bool) (x : BoolExpr α) : Prop := eval a x = true
 def Unsat (x : BoolExpr α) : Prop := ∀ f, eval f x = false
 
-theorem sat_and {x y : BoolExpr α} {a : α → Bool} (hx : Sat a x) (hy : Sat a y) :
+theorem sat_and {x y : BoolExpr α} {a : α  Bool} (hx : Sat a x) (hy : Sat a y) :
     Sat a (BoolExpr.gate .and x y) := by
   simp only [Sat] at *
   simp [hx, hy, Gate.eval]
 
-theorem sat_true {a : α → Bool} : Sat a (BoolExpr.const true : BoolExpr α) := rfl
+theorem sat_true {a : α  Bool} : Sat a (BoolExpr.const true : BoolExpr α) := rfl
 
 end BoolExpr
 

@@ -76,7 +76,7 @@ def checkSyntaxNodeKind [Monad m] [MonadEnv m] [MonadError m] (k : Name) : m Nam
   if Parser.isValidSyntaxNodeKind (← getEnv) k then pure k
   else throwError "failed"
 
-def checkSyntaxNodeKindAtNamespaces [Monad m] [MonadEnv m] [MonadError m] (k : Name) : Name → m Name
+def checkSyntaxNodeKindAtNamespaces [Monad m] [MonadEnv m] [MonadError m] (k : Name) : Name  m Name
   | n@(.str p _) => checkSyntaxNodeKind (n ++ k) <|> checkSyntaxNodeKindAtNamespaces k p
   | .anonymous   => checkSyntaxNodeKind k
   | _ => throwError "failed"
@@ -129,7 +129,7 @@ builtin_initialize macroAttribute : KeyedDeclsAttribute Macro ← mkMacroAttribu
 Try to expand macro at syntax tree root and return macro declaration name and new syntax if successful.
 Return none if all macros threw `Macro.Exception.unsupportedSyntax`.
 -/
-def expandMacroImpl? (env : Environment) : Syntax → MacroM (Option (Name × Except Macro.Exception Syntax)) := fun stx => do
+def expandMacroImpl? (env : Environment) : Syntax  MacroM (Option (Name × Except Macro.Exception Syntax)) := fun stx => do
   for e in macroAttribute.getEntries env stx.getKind do
     try
       let stx' ← withFreshMacroScope (e.value stx)
@@ -139,10 +139,10 @@ def expandMacroImpl? (env : Environment) : Syntax → MacroM (Option (Name × Ex
       | ex                                => return (e.declName, Except.error ex)
   return none
 
-class MonadMacroAdapter (m : Type → Type) where
+class MonadMacroAdapter (m : Type  Type) where
   getCurrMacroScope                  : m MacroScope
   getNextMacroScope                  : m MacroScope
-  setNextMacroScope                  : MacroScope → m Unit
+  setNextMacroScope                  : MacroScope  m Unit
 
 @[always_inline]
 instance (m n) [MonadLift m n] [MonadMacroAdapter m] : MonadMacroAdapter n := {
@@ -185,7 +185,7 @@ def liftMacroM [Monad m] [MonadMacroAdapter m] [MonadEnv m] [MonadRecDepth m] [M
     s.traceMsgs.reverse.forM fun (clsName, msg) => trace clsName fun _ => msg
     return a
 
-@[inline] def adaptMacro {m : Type → Type} [Monad m] [MonadMacroAdapter m] [MonadEnv m] [MonadRecDepth m] [MonadError m]  [MonadResolveName m] [MonadTrace m] [MonadOptions m] [AddMessageContext m] [MonadLiftT IO m] (x : Macro) (stx : Syntax) : m Syntax :=
+@[inline] def adaptMacro {m : Type  Type} [Monad m] [MonadMacroAdapter m] [MonadEnv m] [MonadRecDepth m] [MonadError m]  [MonadResolveName m] [MonadTrace m] [MonadOptions m] [AddMessageContext m] [MonadLiftT IO m] (x : Macro) (stx : Syntax) : m Syntax :=
   liftMacroM (x stx)
 
 partial def mkUnusedBaseName (baseName : Name) : MacroM Name := do

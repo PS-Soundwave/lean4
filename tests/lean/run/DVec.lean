@@ -1,13 +1,13 @@
 /-- A `Vec` is just a `List α` of statically known size -/
 def Vec (α : Type _) (n : Nat) : Type _
-  := Fin n → α
+  := Fin n  α
 
-abbrev TypeVec : Nat → Type _
+abbrev TypeVec : Nat  Type _
   := Vec (Type _)
 
 /-- A dependent vector is a heterogeneous list of statically known size -/
 def DVec {n : Nat} (αs : TypeVec n) : Type _
-  := (i : Fin n) → (αs i)
+  := (i : Fin n)  (αs i)
 
 /-- A vector that repeats a single element `a` -/
 def Vec.const {α : Type _} (a : α) (n : Nat) : Vec α n

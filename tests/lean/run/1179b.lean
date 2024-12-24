@@ -1,4 +1,4 @@
-inductive Foo : Nat → Type _
+inductive Foo : Nat  Type _
 | nil : Foo 0
 | cons (t: Foo l) : Foo l
 

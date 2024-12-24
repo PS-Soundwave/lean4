@@ -14,7 +14,7 @@ import Init.Data.BitVec.BasicAux
 We define the basic algebraic structure of bitvectors. We choose the `Fin` representation over
 others for its relative efficiency (Lean has special support for `Nat`),  and the fact that bitwise
 operations on `Fin` are already defined. Some other possible representations are `List Bool`,
-`{ l : List Bool // l.length = w }`, `Fin w → Bool`.
+`{ l : List Bool // l.length = w }`, `Fin w  Bool`.
 
 We define many of the bitvector operations from the
 [`QF_BV` logic](https://smtlib.cs.uiowa.edu/logics-all.shtml#QF_BV).
@@ -485,7 +485,7 @@ instance : Xor (BitVec w) := ⟨.xor⟩
 Bitwise NOT for bit vectors.
 
 ```lean
-~~~(0b0101#4) == 0b1010
+(0b0101#4) == 0b1010
 ```
 SMT-Lib name: `bvnot`.
 -/
@@ -585,7 +585,7 @@ instance : HAppend (BitVec w) (BitVec v) (BitVec (w + v)) := ⟨.append⟩
 
 -- TODO: write this using multiplication
 /-- `replicate i x` concatenates `i` copies of `x` into a new vector of length `w*i`. -/
-def replicate : (i : Nat) → BitVec w → BitVec (w*i)
+def replicate : (i : Nat)  BitVec w  BitVec (w*i)
   | 0,   _ => 0#0
   | n+1, x =>
     (x ++ replicate n x).cast (by rw [Nat.mul_succ]; omega)
@@ -646,7 +646,7 @@ section normalization_eqs
 @[simp] theorem append_eq (x : BitVec w) (y : BitVec v)   : BitVec.append x y = x ++ y        := rfl
 @[simp] theorem shiftLeft_eq (x : BitVec w) (n : Nat)     : BitVec.shiftLeft x n = x <<< n    := rfl
 @[simp] theorem ushiftRight_eq (x : BitVec w) (n : Nat)   : BitVec.ushiftRight x n = x >>> n  := rfl
-@[simp] theorem not_eq (x : BitVec w)                     : BitVec.not x = ~~~x               := rfl
+@[simp] theorem not_eq (x : BitVec w)                     : BitVec.not x = x               := rfl
 @[simp] theorem and_eq (x y : BitVec w)                   : BitVec.and x y = x &&& y          := rfl
 @[simp] theorem or_eq (x y : BitVec w)                    : BitVec.or x y = x ||| y           := rfl
 @[simp] theorem xor_eq (x y : BitVec w)                   : BitVec.xor x y = x ^^^ y          := rfl
@@ -660,12 +660,12 @@ section normalization_eqs
 end normalization_eqs
 
 /-- Converts a list of `Bool`s to a big-endian `BitVec`. -/
-def ofBoolListBE : (bs : List Bool) → BitVec bs.length
+def ofBoolListBE : (bs : List Bool)  BitVec bs.length
 | [] => 0#0
 | b :: bs => cons b (ofBoolListBE bs)
 
 /-- Converts a list of `Bool`s to a little-endian `BitVec`. -/
-def ofBoolListLE : (bs : List Bool) → BitVec bs.length
+def ofBoolListLE : (bs : List Bool)  BitVec bs.length
 | [] => 0#0
 | b :: bs => concat (ofBoolListLE bs) b
 

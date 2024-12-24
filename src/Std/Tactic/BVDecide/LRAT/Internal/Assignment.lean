@@ -102,19 +102,19 @@ def removeNegAssignment (oldAssignment : Assignment) : Assignment :=
   | both => pos
   | unassigned => unassigned -- Note: This case should not occur
 
-def addAssignment (b : Bool) : Assignment → Assignment :=
+def addAssignment (b : Bool) : Assignment  Assignment :=
   if b then
     addPosAssignment
   else
     addNegAssignment
 
-def removeAssignment (b : Bool) : Assignment → Assignment :=
+def removeAssignment (b : Bool) : Assignment  Assignment :=
   if b then
     removePosAssignment
   else
     removeNegAssignment
 
-def hasAssignment (b : Bool) : Assignment → Bool :=
+def hasAssignment (b : Bool) : Assignment  Bool :=
   if b then
     hasPosAssignment
   else
@@ -165,7 +165,7 @@ theorem not_has_remove (assignment : Assignment) (b : Bool) :
     removePosAssignment, hasPosAssignment, removeNegAssignment, hasNegAssignment]
 
 theorem has_remove_irrelevant (assignment : Assignment) (b : Bool) :
-    hasAssignment b (removeAssignment (!b) assignment) → hasAssignment b assignment := by
+    hasAssignment b (removeAssignment (!b) assignment)  hasAssignment b assignment := by
   by_cases hb : b
   · simp only [hb, removeAssignment, Bool.not_true, ite_false, hasAssignment, ite_true]
     cases assignment <;> decide

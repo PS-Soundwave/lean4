@@ -52,7 +52,7 @@ Some occurrences of variables are deliberately unused, or at least we don't want
 to lint on unused variables in these positions. For example:
 
 ```
-def foo (x : Nat) : (y : Nat) → Nat := fun _ => x
+def foo (x : Nat) : (y : Nat)  Nat := fun _ => x
                   -- ^ don't lint this unused variable because it is public API
 ```
 
@@ -126,7 +126,7 @@ or `false` to proceed with linting as usual (other `IgnoreFunction`s may still
 say it is ignored). A variable is only linted if it is unused and no
 `IgnoreFunction` returns `true` on this syntax.
 -/
-abbrev IgnoreFunction := Syntax → Syntax.Stack → Options → Bool
+abbrev IgnoreFunction := Syntax  Syntax.Stack  Options  Bool
 
 /-- Interpret an `IgnoreFunction` from the environment. -/
 unsafe def mkIgnoreFnImpl (constName : Name) : ImportM IgnoreFunction := do
@@ -235,7 +235,7 @@ builtin_initialize addBuiltinUnusedVariablesIgnoreFn (fun _ stack _ =>
 
 /--
 Dependent arrow
-* `def foo : (unused : Nat) → Nat := id`
+* `def foo : (unused : Nat)  Nat := id`
 -/
 builtin_initialize addBuiltinUnusedVariablesIgnoreFn (fun _ stack _ =>
   stack.matches [`null, ``Lean.Parser.Term.explicitBinder, ``Lean.Parser.Term.depArrow])

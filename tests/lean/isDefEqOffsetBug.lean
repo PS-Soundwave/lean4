@@ -1,8 +1,8 @@
 class AddGroup (α : Type u) extends Add α, Zero α, Neg α where
-  addAssoc : {a b c : α} → a + b + c = a + (b + c)
-  zeroAdd  : {a : α} → 0 + a = a
-  addZero  : {a : α} → a + 0 = a
-  negAdd   : {a : α} → -a + a = 0
+  addAssoc : {a b c : α}  a + b + c = a + (b + c)
+  zeroAdd  : {a : α}  0 + a = a
+  addZero  : {a : α}  a + 0 = a
+  negAdd   : {a : α}  -a + a = 0
 
 open AddGroup
 

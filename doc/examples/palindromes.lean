@@ -6,15 +6,15 @@ For example, `[a, b, b, a]` and `[a, h, a]` are palindromes.
 
 We use an inductive predicate to specify whether a list is a palindrome or not.
 Recall that inductive predicates, or inductively defined propositions, are a convenient
-way to specify functions of type `... → Prop`.
+way to specify functions of type `...  Prop`.
 
 This example is a based on an example from the book "The Hitchhiker's Guide to Logical Verification".
 -/
 
-inductive Palindrome : List α → Prop where
+inductive Palindrome : List α  Prop where
   | nil      : Palindrome []
-  | single   : (a : α) → Palindrome [a]
-  | sandwich : (a : α) → Palindrome as → Palindrome ([a] ++ as ++ [a])
+  | single   : (a : α)  Palindrome [a]
+  | sandwich : (a : α)  Palindrome as  Palindrome ([a] ++ as ++ [a])
 
 /-!
 The definition distinguishes three cases: (1) `[]` is a palindrome; (2) for any element
@@ -46,7 +46,7 @@ example (h : Palindrome as) : Palindrome as.reverse := by
 Given a nonempty list, the function `List.last` returns its element.
 Note that we use `(by simp)` to prove that `a₂ :: as ≠ []` in the recursive application.
 -/
-def List.last : (as : List α) → as ≠ [] → α
+def List.last : (as : List α)  as ≠ []  α
   | [a],         _ => a
   | _::a₂:: as, _ => (a₂::as).last (by simp)
 
@@ -69,10 +69,10 @@ We can read it as follows, to prove `motive as`, it suffices to show that: (1) `
 (3) if `motive as` holds, then `motive ([a] ++ as ++ [b])` also holds for any `a`, `b`, and `as`.
 Note that the structure of this induction principle is very similar to the `Palindrome` inductive predicate.
 -/
-theorem List.palindrome_ind (motive : List α → Prop)
+theorem List.palindrome_ind (motive : List α  Prop)
     (h₁ : motive [])
-    (h₂ : (a : α) → motive [a])
-    (h₃ : (a b : α) → (as : List α) → motive as → motive ([a] ++ as ++ [b]))
+    (h₂ : (a : α)  motive [a])
+    (h₃ : (a b : α)  (as : List α)  motive as  motive ([a] ++ as ++ [b]))
     (as : List α)
     : motive as :=
   match as with

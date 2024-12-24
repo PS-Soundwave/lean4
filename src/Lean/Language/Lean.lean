@@ -225,7 +225,7 @@ def isBeforeEditPos (pos : String.Pos) : LeanProcessingM Bool := do
 /--
   Adds unexpected exceptions from header processing to the message log as a last resort; standard
   errors should already have been caught earlier. -/
-private def withHeaderExceptions (ex : Snapshot → α) (act : LeanProcessingT IO α) :
+private def withHeaderExceptions (ex : Snapshot  α) (act : LeanProcessingT IO α) :
     LeanProcessingM α := do
   match (← (act (← read)).toBaseIO) with
   | .error e => return ex { diagnostics := (← diagnosticsOfHeaderError e.toString) }
@@ -315,7 +315,7 @@ General notes:
   the `sync` parameter on `parseCmd` and spawn an elaboration task when we leave it.
 -/
 partial def process
-    (setupImports : Syntax → ProcessingT IO (Except HeaderProcessedSnapshot SetupImportsResult))
+    (setupImports : Syntax  ProcessingT IO (Except HeaderProcessedSnapshot SetupImportsResult))
     (old? : Option InitialSnapshot) : ProcessingM InitialSnapshot := do
   parseHeader old? |>.run (old?.map (·.ictx)) (old?.bind (·.cancelTk?))
 where

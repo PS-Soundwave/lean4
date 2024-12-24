@@ -36,16 +36,16 @@ macro_rules
 
 /-- Custom eliminator for `Vector α n` through `Array α` -/
 @[elab_as_elim]
-def elimAsArray {motive : Vector α n → Sort u}
+def elimAsArray {motive : Vector α n  Sort u}
     (mk : ∀ (a : Array α) (ha : a.size = n), motive ⟨a, ha⟩) :
-    (v : Vector α n) → motive v
+    (v : Vector α n)  motive v
   | ⟨a, ha⟩ => mk a ha
 
 /-- Custom eliminator for `Vector α n` through `List α` -/
 @[elab_as_elim]
-def elimAsList {motive : Vector α n → Sort u}
+def elimAsList {motive : Vector α n  Sort u}
     (mk : ∀ (a : List α) (ha : a.length = n), motive ⟨⟨a⟩, ha⟩) :
-    (v : Vector α n) → motive v
+    (v : Vector α n)  motive v
   | ⟨⟨a⟩, ha⟩ => mk a ha
 
 /-- Make an empty vector with pre-allocated capacity. -/
@@ -155,15 +155,15 @@ result is empty. If `stop` is greater than the size of the vector, the size is u
   ⟨v.toArray.extract start stop, by simp⟩
 
 /-- Maps elements of a vector using the function `f`. -/
-@[inline] def map (f : α → β) (v : Vector α n) : Vector β n :=
+@[inline] def map (f : α  β) (v : Vector α n) : Vector β n :=
   ⟨v.toArray.map f, by simp⟩
 
 /-- Maps corresponding elements of two vectors of equal size using the function `f`. -/
-@[inline] def zipWith (a : Vector α n) (b : Vector β n) (f : α → β → φ) : Vector φ n :=
+@[inline] def zipWith (a : Vector α n) (b : Vector β n) (f : α  β  φ) : Vector φ n :=
   ⟨Array.zipWith a.toArray b.toArray f, by simp⟩
 
 /-- The vector of length `n` whose `i`-th element is `f i`. -/
-@[inline] def ofFn (f : Fin n → α) : Vector α n :=
+@[inline] def ofFn (f : Fin n  α) : Vector α n :=
   ⟨Array.ofFn f, by simp⟩
 
 /--
@@ -225,7 +225,7 @@ vector then the empty vector is returned.
 Compares two vectors of the same size using a given boolean relation `r`. `isEqv v w r` returns
 `true` if and only if `r v[i] w[i]` is true for all indices `i`.
 -/
-@[inline] def isEqv (v w : Vector α n) (r : α → α → Bool) : Bool :=
+@[inline] def isEqv (v w : Vector α n) (r : α  α  Bool) : Bool :=
   Array.isEqvAux v.toArray w.toArray (by simp) r n (by simp)
 
 instance [BEq α] : BEq (Vector α n) where
@@ -267,19 +267,19 @@ no element of the index matches the given value.
   v.toArray.isPrefixOf w.toArray
 
 /-- Returns `true` with the monad if `p` returns `true` for any element of the vector. -/
-@[inline] def anyM [Monad m] (p : α → m Bool) (v : Vector α n) : m Bool :=
+@[inline] def anyM [Monad m] (p : α  m Bool) (v : Vector α n) : m Bool :=
   v.toArray.anyM p
 
 /-- Returns `true` with the monad if `p` returns `true` for all elements of the vector. -/
-@[inline] def allM [Monad m] (p : α → m Bool) (v : Vector α n) : m Bool :=
+@[inline] def allM [Monad m] (p : α  m Bool) (v : Vector α n) : m Bool :=
   v.toArray.allM p
 
 /-- Returns `true` if `p` returns `true` for any element of the vector. -/
-@[inline] def any (v : Vector α n) (p : α → Bool) : Bool :=
+@[inline] def any (v : Vector α n) (p : α  Bool) : Bool :=
   v.toArray.any p
 
 /-- Returns `true` if `p` returns `true` for all elements of the vector. -/
-@[inline] def all (v : Vector α n) (p : α → Bool) : Bool :=
+@[inline] def all (v : Vector α n) (p : α  Bool) : Bool :=
   v.toArray.all p
 
 /-! ### Lexicographic ordering -/
@@ -294,7 +294,7 @@ Lexicographic comparator for vectors.
 - `v` is pairwise equivalent via `==` to `w`, or
 - there is an index `i` such that `lt v[i] w[i]`, and for all `j < i`, `v[j] == w[j]`.
 -/
-def lex [BEq α] (v w : Vector α n) (lt : α → α → Bool := by exact (· < ·)) : Bool := Id.run do
+def lex [BEq α] (v w : Vector α n) (lt : α  α  Bool := by exact (· < ·)) : Bool := Id.run do
   for h : i in [0 : n] do
     if lt v[i] w[i] then
       return true

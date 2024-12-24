@@ -5,9 +5,9 @@ open Lean.Meta
 
 universe u
 
-inductive Vec (α : Type u) : Nat → Type u
+inductive Vec (α : Type u) : Nat  Type u
 | nil      : Vec α 0
-| cons {n} : α → Vec α n → Vec α (n+1)
+| cons {n} : α  Vec α n  Vec α (n+1)
 
 set_option trace.Meta.debug true
 
@@ -64,7 +64,7 @@ printDef `foo2
 set_option pp.mvars false in
 /--
 info: [Meta.debug] foo2 α v1 v2 p ?_
-[Meta.debug] fun α v1 v2 p _x_1 => v1 = v2 ∧ (_x_1 v2 ∨ p)
+[Meta.debug] fun α v1 v2 p _x_1 => v1 = v2 ∧ (_x_1 v2  p)
 -/
 #guard_msgs in
 #eval tst2

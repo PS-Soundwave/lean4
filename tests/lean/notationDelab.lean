@@ -5,8 +5,8 @@ notation "unitTest " x => Prod.mk x ()
 notation "parenthesisTest " x => Nat.sub (x)
 #check parenthesisTest 12
 
-def Set (α : Type u) := α → Prop
-def setOf {α : Type} (p : α → Prop) : Set α := p
+def Set (α : Type u) := α  Prop
+def setOf {α : Type} (p : α  Prop) : Set α := p
 notation "{ " x " | " p " }" => setOf (fun x => p)
 
 #check { (x : Nat) | x ≤ 1 }

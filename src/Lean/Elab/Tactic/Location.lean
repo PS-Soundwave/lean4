@@ -48,7 +48,7 @@ Runs the given `atLocal` and `atTarget` methods on each of the locations selecte
   If `atTarget` closes the main goal, `withLocation` does not run `atLocal`.
   If all tactic applications fail, `withLocation` with call `failed` with the main goal mvar.
 -/
-def withLocation (loc : Location) (atLocal : FVarId → TacticM Unit) (atTarget : TacticM Unit) (failed : MVarId → TacticM Unit) : TacticM Unit := do
+def withLocation (loc : Location) (atLocal : FVarId  TacticM Unit) (atTarget : TacticM Unit) (failed : MVarId  TacticM Unit) : TacticM Unit := do
   match loc with
   | Location.targets hyps type =>
     hyps.forM fun hyp => withMainContext do

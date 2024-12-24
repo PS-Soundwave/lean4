@@ -200,12 +200,12 @@ def elabSimpleKey (x : TSyntax ``simpleKey) : CoreM String := do
 /-! ## Complex Values -/
 --------------------------------------------------------------------------------
 
-def elabArray (x : TSyntax ``array) (elabVal : TSyntax ``val → CoreM α) : CoreM (Array α) := do
+def elabArray (x : TSyntax ``array) (elabVal : TSyntax ``val  CoreM α) : CoreM (Array α) := do
   let `(val|[$xs,*]) := x
     | throwErrorAt x "ill-formed array syntax"
   xs.getElems.mapM elabVal
 
-def elabInlineTable (x : TSyntax ``inlineTable) (elabVal : TSyntax ``val → CoreM Value) : CoreM Table := do
+def elabInlineTable (x : TSyntax ``inlineTable) (elabVal : TSyntax ``val  CoreM Value) : CoreM Table := do
   let `(val|{$kvs,*}) := x
     | throwErrorAt x "ill-formed inline table syntax"
   let t : NameDict (Option Value) := {}  -- some: static value, none: partial table

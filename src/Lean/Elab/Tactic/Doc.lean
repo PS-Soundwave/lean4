@@ -104,7 +104,7 @@ Displays all available tactic tags, with documentation.
     for (tac, tag) in arr do
       mapping := mapping.insert tag (mapping.findD tag {} |>.insert tac)
 
-  let showDocs : Option String → MessageData
+  let showDocs : Option String  MessageData
     | none => .nil
     | some d => Format.line ++ MessageData.joinSep ((d.splitOn "\n").map toMessageData) Format.line
 

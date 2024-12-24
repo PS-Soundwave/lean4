@@ -1,6 +1,6 @@
-variable {α} (p : α → Prop) [DecidablePred p]
+variable {α} (p : α  Prop) [DecidablePred p]
 
-def filter : List α → List α
+def filter : List α  List α
 | []    => []
 | a::as => if p a then a :: filter as else filter as
 

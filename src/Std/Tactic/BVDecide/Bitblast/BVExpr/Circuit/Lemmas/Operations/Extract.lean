@@ -46,7 +46,7 @@ termination_by newWidth - curr
 theorem go_get (aig : AIG α) (input : RefVec aig w) (lo : Nat) (curr : Nat)
     (hcurr : curr ≤ newWidth) (falseRef : Ref aig) (s : RefVec aig curr) :
     ∀ (idx : Nat) (hidx1 : idx < newWidth),
-        curr ≤ idx → (go input lo falseRef curr hcurr s).get idx hidx1 = input.getD (lo + idx) falseRef
+        curr ≤ idx  (go input lo falseRef curr hcurr s).get idx hidx1 = input.getD (lo + idx) falseRef
     := by
   intro idx hidx1 hidx2
   generalize hgo : go input lo falseRef curr hcurr s = res
@@ -70,7 +70,7 @@ end blastExtract
 
 @[simp]
 theorem denote_blastExtract (aig : AIG α) (target : ExtractTarget aig newWidth)
-    (assign : α → Bool) :
+    (assign : α  Bool) :
     ∀ (idx : Nat) (hidx : idx < newWidth),
         ⟦(blastExtract aig target).aig, (blastExtract aig target).vec.get idx hidx, assign⟧
           =

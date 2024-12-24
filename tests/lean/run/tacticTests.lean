@@ -1,13 +1,13 @@
-inductive Le (m : Nat) : Nat → Prop
+inductive Le (m : Nat) : Nat  Prop
   | base : Le m m
-  | succ : (n : Nat) → Le m n → Le m n.succ
+  | succ : (n : Nat)  Le m n  Le m n.succ
 
-theorem ex1 (m : Nat) : Le m 0 → m = 0 := by
+theorem ex1 (m : Nat) : Le m 0  m = 0 := by
   intro h
   cases h
   rfl
 
-theorem ex2 (m n : Nat) : Le m n → Le m.succ n.succ := by
+theorem ex2 (m n : Nat) : Le m n  Le m.succ n.succ := by
   intro h
   induction h with
   | base => apply Le.base
@@ -26,13 +26,13 @@ theorem ex4 (m : Nat) : ¬ Le m.succ 0 := by
   intro h
   cases h
 
-theorem ex5 {m n : Nat} : Le m n.succ → m = n.succ ∨ Le m n := by
+theorem ex5 {m n : Nat} : Le m n.succ  m = n.succ  Le m n := by
   intro h
   cases h with
   | base => apply Or.inl; rfl
   | succ => apply Or.inr; assumption
 
-theorem ex6 {m n : Nat} : Le m.succ n.succ → Le m n := by
+theorem ex6 {m n : Nat} : Le m.succ n.succ  Le m n := by
   revert m
   induction n with
   | zero =>
@@ -52,7 +52,7 @@ theorem ex6 {m n : Nat} : Le m.succ n.succ → Le m n := by
       apply Le.succ
       exact ih h
 
-theorem ex7 {m n o : Nat} : Le m n → Le n o → Le m o := by
+theorem ex7 {m n o : Nat} : Le m n  Le n o  Le m o := by
   intro h
   induction h with
   | base => intros; assumption
@@ -63,13 +63,13 @@ theorem ex7 {m n o : Nat} : Le m n → Le n o → Le m o := by
     apply Le.succ
     assumption
 
-theorem ex8 {m n : Nat} : Le m.succ n → Le m n := by
+theorem ex8 {m n : Nat} : Le m.succ n  Le m n := by
   intro h
   apply ex6
   apply Le.succ
   assumption
 
-theorem ex9 {m n : Nat} : Le m n → m = n ∨ Le m.succ n := by
+theorem ex9 {m n : Nat} : Le m n  m = n  Le m.succ n := by
   intro h
   cases h with
   | base => apply Or.inl; rfl
@@ -99,7 +99,7 @@ theorem ex11 (n : Nat) : ¬ Le n.succ n := by
     exact absurd aux ih
     done
 
-theorem ex12 (m n : Nat) : Le m n → Le n m → m = n := by
+theorem ex12 (m n : Nat) : Le m n  Le n m  m = n := by
   revert m
   induction n with
   | zero => intro m h1 h2; apply ex1; assumption; done
@@ -116,7 +116,7 @@ theorem ex12 (m n : Nat) : Le m n → Le n m → m = n := by
       apply absurd h2 (ex11 _)
       done
 
-inductive Foo : Nat → Prop where
+inductive Foo : Nat  Prop where
   | foo : Foo 0
   | bar : Foo 0
   | baz : Foo 1

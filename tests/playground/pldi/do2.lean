@@ -8,7 +8,7 @@ inductive Syntax
 | ident  (info : SourceInfo) (rawVal : Substring) (val : Name) (preresolved : List (Name × List String)) : Syntax
 -/
 
-partial def expandHash : Syntax → StateT Bool MacroM Syntax
+partial def expandHash : Syntax  StateT Bool MacroM Syntax
 | Syntax.node k args =>
   if k == `doHash then do set true; `(←MonadState.get)
   else do

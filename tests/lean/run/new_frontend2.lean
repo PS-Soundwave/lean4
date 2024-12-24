@@ -1,6 +1,6 @@
 declare_syntax_cat foo
 
-variable {m : Type → Type}
+variable {m : Type  Type}
 variable [s : Functor m]
 
 #check @Nat.rec
@@ -23,7 +23,7 @@ theorem aux (a b c : Nat) (h₁ : a = b) (h₂ : c = b) : a = c := by
   exact rfl
 
 
-def ex1 : {α : Type} → {a b c : α} → a = b → b = c → a = c :=
+def ex1 : {α : Type}  {a b c : α}  a = b  b = c  a = c :=
   @(by intro α a b c h₁ h₂
        exact Eq.trans h₁ h₂)
 

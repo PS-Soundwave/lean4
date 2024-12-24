@@ -1,6 +1,6 @@
-inductive MyFin : Nat → Type
+inductive MyFin : Nat  Type
   | z : MyFin (n+1)
-  | s : MyFin n → MyFin (n+1)
+  | s : MyFin n  MyFin (n+1)
 
 theorem ex1 (x : MyFin 0) : False := by
   contradiction
@@ -10,7 +10,7 @@ inductive Color
 | Black
 open Color
 
-inductive rbnode : Nat → Color → Type where
+inductive rbnode : Nat  Color  Type where
   | Leaf : rbnode 1 Black
   | R {h}
       (left : rbnode h Black)

@@ -1,6 +1,6 @@
 /-! Incremental reuse in combinator -/
 
-def case (h : a ∨ b ∨ c) : True := by
+def case (h : a  b  c) : True := by
   cases h
   case inr h =>
     cases h
@@ -16,7 +16,7 @@ def case (h : a ∨ b ∨ c) : True := by
 -/
 
 -- RESET
-def case2 (h : a ∨ b ∨ c) : True := by
+def case2 (h : a  b  c) : True := by
   cases h
   case inl | inr =>
     skip
@@ -26,7 +26,7 @@ def case2 (h : a ∨ b ∨ c) : True := by
        --^ collectDiagnostics
 
 -- RESET
-def cdot (h : a ∨ b) : True := by
+def cdot (h : a  b) : True := by
   cases h
   . dbg_trace "d 0"
     dbg_trace "d 1"

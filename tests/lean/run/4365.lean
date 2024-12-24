@@ -19,14 +19,14 @@ def f (α : Sort u) : α :=
 error: numerals are data in Lean, but the expected type is universe polymorphic and may be a proposition
   α : Sort u
 ---
-info: fun {α} => id (id sorry) : {α : Sort u} → α
+info: fun {α} => id (id sorry) : {α : Sort u}  α
 -/
 #guard_msgs in
 #check fun {α : Sort u} => id (α := α) (id 0)
 
 /--
 error: numerals are data in Lean, but the expected type is a proposition
-  Nat → True : Prop
+  Nat  True : Prop
 -/
 #guard_msgs in
 #check (1 : ∀ (n : Nat), True)
@@ -55,14 +55,14 @@ Additional diagnostic information may be available using the `set_option diagnos
 
 /--
 error: failed to synthesize
-  OfNat (Bool → Nat) 1
+  OfNat (Bool  Nat) 1
 numerals are polymorphic in Lean, but the numeral `1` cannot be used in a context where the expected type is
-  Bool → Nat
+  Bool  Nat
 due to the absence of the instance above
 Additional diagnostic information may be available using the `set_option diagnostics true` command.
 -/
 #guard_msgs in
-#check (1 : Bool → Nat)
+#check (1 : Bool  Nat)
 
 /--
 error: failed to synthesize

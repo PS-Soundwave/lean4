@@ -51,7 +51,7 @@ deriving Inhabited, Repr
 
 namespace CliError
 
-def toString : CliError → String
+def toString : CliError  String
 | missingCommand          => "missing command"
 | unknownCommand cmd      => s!"unknown command '{cmd}'"
 | missingArg arg          => s!"missing {arg}"

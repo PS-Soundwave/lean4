@@ -12,6 +12,6 @@ Making sure that the type synonym `Foo'` still works.
 This used to be unfolded during `forallTelescopeReducing`,
 and now it is "manually" unfolded in the elaboration algorithm.
 -/
-example : Nat → Option Nat := .some
-def Foo' := Nat → Option Nat
+example : Nat  Option Nat := .some
+def Foo' := Nat  Option Nat
 example : Foo' := .some

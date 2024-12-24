@@ -1,5 +1,5 @@
 section
-variable (A : Type) (B : A → Prop)
+variable (A : Type) (B : A  Prop)
 
 def foo := PSigma B
 

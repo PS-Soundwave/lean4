@@ -83,7 +83,7 @@ protected def Glob.decodeToml (v : Value) : Except DecodeError Glob := do
 
 instance : DecodeToml Glob := ⟨(Glob.decodeToml ·)⟩
 
-protected def LeanOptionValue.decodeToml : Value → Except DecodeError LeanOptionValue
+protected def LeanOptionValue.decodeToml : Value  Except DecodeError LeanOptionValue
 | .string _ v => return .ofString v
 | .boolean _ v => return .ofBool v
 | .integer _ (.ofNat v) => return .ofNat v

@@ -8,7 +8,7 @@ namespace Ordering
 end Ordering
 
 /-- `OrientedCmp cmp` asserts that `cmp` is determined by the relation `cmp x y = .lt`. -/
-class OrientedCmp (cmp : α → α → Ordering) : Prop where
+class OrientedCmp (cmp : α  α  Ordering) : Prop where
   /-- The comparator operation is symmetric, in the sense that if `cmp x y` equals `.lt` then
   `cmp y x = .gt` and vice versa. -/
   symm (x y) : (cmp x y).swap = cmp y x
@@ -21,9 +21,9 @@ theorem cmp_eq_gt [OrientedCmp cmp] : cmp x y = .gt ↔ cmp y x = .lt := by
 end OrientedCmp
 
 /-- `TransCmp cmp` asserts that `cmp` induces a transitive relation. -/
-class TransCmp (cmp : α → α → Ordering) extends OrientedCmp cmp : Prop where
+class TransCmp (cmp : α  α  Ordering) extends OrientedCmp cmp : Prop where
   /-- The comparator operation is transitive. -/
-  le_trans : cmp x y ≠ .gt → cmp y z ≠ .gt → cmp x z ≠ .gt
+  le_trans : cmp x y ≠ .gt  cmp y z ≠ .gt  cmp x z ≠ .gt
 
 namespace TransCmp
 variable [TransCmp cmp]

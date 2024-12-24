@@ -2,7 +2,7 @@ open Lean
 
 def foo : Name := `foo
 
-def isFoo : Name → Bool
+def isFoo : Name  Bool
   | ``foo => true
   | _     => false
 
@@ -13,7 +13,7 @@ def Bla.boo : Name := `boo
 
 open Bla
 
-def isBoo : Name → Bool
+def isBoo : Name  Bool
   | ``boo => true
   | _     => false
 

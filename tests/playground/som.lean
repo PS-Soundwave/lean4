@@ -1,10 +1,10 @@
 abbrev Var := Nat
 
 structure Env (α : Type u) where
-  ofInt : Int → α
-  add : α → α → α
-  mul : α → α → α
-  sub : α → α → α
+  ofInt : Int  α
+  add : α  α  α
+  mul : α  α  α
+  sub : α  α  α
   add_comm  : ∀ a b, add a b = add b a
   add_assoc : ∀ a b c, add (add a b) c = add a (add b c)
   add_zero  : ∀ a, add a (ofInt 0) = a
@@ -43,7 +43,7 @@ structure Context (α : Type u) extends Env α where
 def Var.denote (ctx : Context α) (v : Var) : α :=
   go ctx.map v (ctx.ofInt 0)
 where
-  go : List α → Nat → α → α
+  go : List α  Nat  α  α
    | [],    i,   d  => d
    | a::as, 0,   d  => a
    | _::as, i+1, d  => go as i d
@@ -56,7 +56,7 @@ inductive Expr where
   | sub (a b : Expr)
   deriving Inhabited
 
-def Expr.denote (ctx : Context α) : Expr → α
+def Expr.denote (ctx : Context α) : Expr  α
   | num n   => ctx.ofInt n
   | var v   => v.denote ctx
   | add a b => ctx.add (a.denote ctx) (b.denote ctx)
@@ -65,7 +65,7 @@ def Expr.denote (ctx : Context α) : Expr → α
 
 abbrev Mon := List Var
 
-def Mon.denote (ctx : Context α) : Mon → α
+def Mon.denote (ctx : Context α) : Mon  α
   | [] => ctx.ofInt 1
   | v::vs => ctx.mul (v.denote ctx) (denote ctx vs)
 
@@ -89,7 +89,7 @@ where
 
 abbrev Poly := List (Int × Mon)
 
-def Poly.denote (ctx : Context α) : Poly → α
+def Poly.denote (ctx : Context α) : Poly  α
   | [] => ctx.ofInt 0
   | (k, m) :: p => ctx.add (ctx.mul (ctx.ofInt k) (m.denote ctx)) (denote ctx p)
 
@@ -139,7 +139,7 @@ def Poly.neg (p : Poly) : Poly :=
   | [] => []
   | (k, v) :: p => ((-1)*k, v) :: neg p
 
-def Expr.toPoly : Expr → Poly
+def Expr.toPoly : Expr  Poly
   | num k   => bif k == 0 then [] else [(k, [])]
   | var v   => [(1, [v])]
   | add a b => a.toPoly.add b.toPoly

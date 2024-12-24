@@ -42,7 +42,7 @@ inductive CellContents where
   | wall   : CellContents
   | player : CellContents
 
-def update_state_with_row_aux : Nat → Nat → List CellContents → GameState → GameState
+def update_state_with_row_aux : Nat  Nat  List CellContents  GameState  GameState
 | currentRowNum, currentColNum, [], oldState => oldState
 | currentRowNum, currentColNum, cell::contents, oldState =>
     let oldState' := update_state_with_row_aux currentRowNum (currentColNum+1) contents oldState
@@ -53,27 +53,27 @@ def update_state_with_row_aux : Nat → Nat → List CellContents → GameState 
     | CellContents.player => {oldState' .. with
                               position := ⟨currentColNum,currentRowNum⟩}
 
-def update_state_with_row : Nat → List CellContents → GameState → GameState
+def update_state_with_row : Nat  List CellContents  GameState  GameState
 | currentRowNum, rowContents, oldState => update_state_with_row_aux currentRowNum 0 rowContents oldState
 
 -- size, current row, remaining cells -> gamestate
-def game_state_from_cells_aux : Coords → Nat → List (List CellContents) → GameState
+def game_state_from_cells_aux : Coords  Nat  List (List CellContents)  GameState
 | size, _, [] => ⟨size, ⟨0,0⟩, []⟩
 | size, currentRow, row::rows =>
         let prevState := game_state_from_cells_aux size (currentRow + 1) rows
         update_state_with_row currentRow row prevState
 
 -- size, remaining cells -> gamestate
-def game_state_from_cells : Coords → List (List CellContents) → GameState
+def game_state_from_cells : Coords  List (List CellContents)  GameState
 | size, cells => game_state_from_cells_aux size 0 cells
 
-def termOfCell : Lean.TSyntax `game_cell → Lean.MacroM (Lean.TSyntax `term)
+def termOfCell : Lean.TSyntax `game_cell  Lean.MacroM (Lean.TSyntax `term)
 | `(game_cell| ░) => `(CellContents.empty)
 | `(game_cell| ▓) => `(CellContents.wall)
 | `(game_cell| @) => `(CellContents.player)
 | _ => Lean.Macro.throwError "unknown game cell"
 
-def termOfGameRow : Nat → Lean.TSyntax `game_row → Lean.MacroM (Lean.TSyntax `term)
+def termOfGameRow : Nat  Lean.TSyntax `game_row  Lean.MacroM (Lean.TSyntax `term)
 | expectedRowSize, `(game_row| │$cells:game_cell*│) =>
       do if cells.size != expectedRowSize
          then Lean.Macro.throwError "row has wrong size"
@@ -94,7 +94,7 @@ macro_rules
 ---------------------------
 -- Now we define a delaborator that will cause GameState to be rendered as a maze.
 
-def extractXY : Lean.Expr → Lean.MetaM Coords
+def extractXY : Lean.Expr  Lean.MetaM Coords
 | e => do
   let e':Lean.Expr ← (Lean.Meta.whnf e)
   let sizeArgs := Lean.Expr.getAppArgs e'
@@ -104,7 +104,7 @@ def extractXY : Lean.Expr → Lean.MetaM Coords
   let numRows := (Lean.Expr.rawNatLit? y).get!
   return Coords.mk numCols numRows
 
-partial def extractWallList : Lean.Expr → Lean.MetaM (List Coords)
+partial def extractWallList : Lean.Expr  Lean.MetaM (List Coords)
 | exp => do
   let exp':Lean.Expr ← (Lean.Meta.whnf exp)
   let f := Lean.Expr.getAppFn exp'
@@ -115,7 +115,7 @@ partial def extractWallList : Lean.Expr → Lean.MetaM (List Coords)
        return (Coords.mk wallCol wallRow) :: rest
   else return [] -- "List.nil"
 
-partial def extractGameState : Lean.Expr → Lean.MetaM GameState
+partial def extractGameState : Lean.Expr  Lean.MetaM GameState
 | exp => do
     let exp': Lean.Expr ← (Lean.Meta.whnf exp)
     let gameStateArgs := Lean.Expr.getAppArgs exp'
@@ -124,20 +124,20 @@ partial def extractGameState : Lean.Expr → Lean.MetaM GameState
     let walls ← extractWallList gameStateArgs[2]!
     pure ⟨size, playerCoords, walls⟩
 
-def update2dArray {α : Type} : Array (Array α) → Coords → α → Array (Array α)
+def update2dArray {α : Type} : Array (Array α)  Coords  α  Array (Array α)
 | a, ⟨x,y⟩, v =>
    Array.set! a y $ Array.set! (Array.get! a y) x v
 
-def update2dArrayMulti {α : Type} : Array (Array α) → List Coords → α → Array (Array α)
+def update2dArrayMulti {α : Type} : Array (Array α)  List Coords  α  Array (Array α)
 | a, [], _ => a
 | a, c::cs, v =>
      let a' := update2dArrayMulti a cs v
      update2dArray a' c v
 
-def delabGameRow : Array (Lean.TSyntax `game_cell) → Lean.PrettyPrinter.Delaborator.DelabM (Lean.TSyntax `game_row)
+def delabGameRow : Array (Lean.TSyntax `game_cell)  Lean.PrettyPrinter.Delaborator.DelabM (Lean.TSyntax `game_row)
 | a => `(game_row| │ $a:game_cell* │)
 
-def delabGameState : Lean.Expr → Lean.PrettyPrinter.Delaborator.Delab
+def delabGameState : Lean.Expr  Lean.PrettyPrinter.Delaborator.Delab
 | e =>
   do guard $ e.getAppNumArgs == 3
      let ⟨⟨numCols, numRows⟩, playerCoords, walls⟩ ←
@@ -179,7 +179,7 @@ inductive Move where
   | south : Move
 
 @[simp]
-def make_move : GameState → Move → GameState
+def make_move : GameState  Move  GameState
 | ⟨s, ⟨x,y⟩, w⟩, Move.east =>
              if !w.elem ⟨x+1, y⟩ ∧ x + 1 ≤ s.x
              then ⟨s, ⟨x+1, y⟩, w⟩
@@ -197,8 +197,8 @@ def make_move : GameState → Move → GameState
              then ⟨s, ⟨x, y+1⟩, w⟩
              else ⟨s, ⟨x,y⟩, w⟩
 
-def is_win : GameState → Prop
-| ⟨⟨sx, sy⟩, ⟨x,y⟩, w⟩ => x = 0 ∨ y = 0 ∨ x + 1 = sx ∨ y + 1 = sy
+def is_win : GameState  Prop
+| ⟨⟨sx, sy⟩, ⟨x,y⟩, w⟩ => x = 0  y = 0  x + 1 = sx  y + 1 = sy
 
 def can_escape (state : GameState) : Prop :=
   ∃ (gs : List Move), is_win (List.foldl make_move state gs)

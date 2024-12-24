@@ -40,7 +40,7 @@ def expandMatchAlt (stx : TSyntax ``matchAlt) : MacroM (Array (TSyntax ``matchAl
        patss.mapM fun pats => `(matchAltExpr| | $pats,* => $rhs)
   | _ => return #[stx]
 
-def shouldExpandMatchAlt : TSyntax ``matchAlt → Bool
+def shouldExpandMatchAlt : TSyntax ``matchAlt  Bool
   | `(matchAltExpr| | $[$patss,*]|* => $_) => patss.size > 1
   | _ => false
 

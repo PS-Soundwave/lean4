@@ -16,7 +16,7 @@ particular the `ToExpr` instance.
 namespace Lean
 
 -- This function could live in Init/Data/RArray.lean, but without omega it's tedious to implement
-def RArray.ofFn {n : Nat} (f : Fin n → α) (h : 0 < n) : RArray α :=
+def RArray.ofFn {n : Nat} (f : Fin n  α) (h : 0 < n) : RArray α :=
   go 0 n h (Nat.le_refl _)
 where
   go (lb ub : Nat) (h1 : lb < ub) (h2 : ub ≤ n) : RArray α :=
@@ -30,7 +30,7 @@ def RArray.ofArray (xs : Array α) (h : 0 < xs.size) : RArray α :=
   .ofFn (xs[·]) h
 
 /-- The correctness theorem for `ofFn` -/
-theorem RArray.get_ofFn {n : Nat} (f : Fin n → α) (h : 0 < n) (i : Fin n) :
+theorem RArray.get_ofFn {n : Nat} (f : Fin n  α) (h : 0 < n) (i : Fin n) :
     (ofFn f h).get i = f i :=
   go 0 n h (Nat.le_refl _) (Nat.zero_le _) i.2
 where
@@ -48,7 +48,7 @@ where
       · rw [ih2] <;> omega
 
 @[simp]
-theorem RArray.size_ofFn {n : Nat} (f : Fin n → α) (h : 0 < n) :
+theorem RArray.size_ofFn {n : Nat} (f : Fin n  α) (h : 0 < n) :
     (ofFn f h).size = n :=
   go 0 n h (Nat.le_refl _)
 where
@@ -60,7 +60,7 @@ where
 section Meta
 open Lean
 
-def RArray.toExpr (ty : Expr) (f : α → Expr) : RArray α → Expr
+def RArray.toExpr (ty : Expr) (f : α  Expr) : RArray α  Expr
   | .leaf x  =>
     mkApp2 (mkConst ``RArray.leaf) ty (f x)
   | .branch p l r =>

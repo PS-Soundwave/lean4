@@ -1,5 +1,5 @@
 inductive Foo where
-  | foo : (String → Option Foo) → Foo
+  | foo : (String  Option Foo)  Foo
 
 -- Would be great if this worked, but it doesn't yet:
 
@@ -10,7 +10,7 @@ Cannot use parameter #2:
     map m x
 -/
 #guard_msgs in
-def Foo.map (m : Foo → Foo) : Foo → Foo
+def Foo.map (m : Foo  Foo) : Foo  Foo
   | .foo f => .foo fun s => match f s with
     | none => none
     | some x => map m x
@@ -19,11 +19,11 @@ termination_by structural x => x
 -- workaround:
 
 mutual
-def Foo.bar (m : Foo → Foo) : Foo → Foo
+def Foo.bar (m : Foo  Foo) : Foo  Foo
   | .foo f => .foo fun s => Foo.bar_aux m (f s)
 termination_by structural x => x
 
-def Foo.bar_aux (m : Foo → Foo) : Option Foo → Option Foo
+def Foo.bar_aux (m : Foo  Foo) : Option Foo  Option Foo
     | none => none
     | some x => bar m x
 termination_by structural x => x
@@ -51,7 +51,7 @@ termination_by structural xs
 
 inductive Foo2 where
   | none
-  | foo : (String → Foo2) → Foo2
+  | foo : (String  Foo2)  Foo2
 
 /--
 error: failed to infer structural recursion:
@@ -60,7 +60,7 @@ Cannot use parameter #2:
     map m (f₂ s)
 -/
 #guard_msgs in
-def Foo2.map (m : Foo2 → Foo2) : Foo2 → Foo2
+def Foo2.map (m : Foo2  Foo2) : Foo2  Foo2
   | none => none
   | .foo f => .foo fun s => match f s with
     | none => none
@@ -75,7 +75,7 @@ Cannot use parameter #2:
     map_tricky m (f₂ s)
 -/
 #guard_msgs in
-def Foo2.map_tricky (m : Foo2 → Foo2) : Foo2 → Foo2
+def Foo2.map_tricky (m : Foo2  Foo2) : Foo2  Foo2
   | none => none
   | .foo f => .foo fun s => match f s, f (s ++ s) with
     | foo f₂, foo f₃ => .foo fun s => if s = "test" then map_tricky m (f₂ s) else map_tricky m (f₃ s)

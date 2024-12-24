@@ -1,4 +1,4 @@
-inductive EQ {α : Type} (a : α) : α → Type where
+inductive EQ {α : Type} (a : α) : α  Type where
   | refl : EQ a a
 
 def EQ.trans (h₁ : EQ a b) (h₂ : EQ b c) : EQ a c := by

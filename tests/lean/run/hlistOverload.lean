@@ -1,6 +1,6 @@
-inductive HList : List (Type u) → Type (u+1)
+inductive HList : List (Type u)  Type (u+1)
   | nil  : HList []
-  | cons : α → HList αs → HList (α::αs)
+  | cons : α  HList αs  HList (α::αs)
 
 -- Overload `::` notation for HLists
 infixr:67 " :: " => HList.cons
@@ -12,15 +12,15 @@ macro_rules (kind := hlist)
   | `([ $a ])        => `(HList.cons $a HList.nil)
   | `([ $a, $as,* ]) => `(HList.cons $a [$as,*])
 
-def List.nth : (as : List α) → (i : Fin as.length) → α
+def List.nth : (as : List α)  (i : Fin as.length)  α
   | a::as, ⟨0, _⟩   => a
   | a::as, ⟨i+1, h⟩ => nth as ⟨i, Nat.lt_of_succ_lt_succ h⟩
 
-def HList.nth : HList αs → (n : Fin αs.length) → αs.nth n
+def HList.nth : HList αs  (n : Fin αs.length)  αs.nth n
   | x::_,  ⟨0, _⟩   => x
   | _::xs, ⟨n+1, h⟩ => xs.nth ⟨n, Nat.lt_of_succ_lt_succ h⟩
 
-def HList.length : HList αs → Nat
+def HList.length : HList αs  Nat
   | []    => 0
   | _::xs => xs.length
 

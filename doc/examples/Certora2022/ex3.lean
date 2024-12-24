@@ -30,7 +30,7 @@ def Weekday.next (d : Weekday) : Weekday :=
   | friday    => saturday
   | saturday  => sunday
 
-def Weekday.previous : Weekday → Weekday
+def Weekday.previous : Weekday  Weekday
   | sunday    => saturday
   | monday    => sunday
   | tuesday   => monday

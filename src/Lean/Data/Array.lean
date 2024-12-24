@@ -22,7 +22,7 @@ remaining elements.
 This can be used to remove elements from an array where a “better” element, in some partial
 order, exists in the array.
 -/
-def filterPairsM {m} [Monad m] {α} (a : Array α) (f : α → α → m (Bool × Bool)) :
+def filterPairsM {m} [Monad m] {α} (a : Array α) (f : α  α  m (Bool × Bool)) :
     m (Array α) := do
   let mut removed := Array.mkArray a.size false
   let mut numRemoved := 0

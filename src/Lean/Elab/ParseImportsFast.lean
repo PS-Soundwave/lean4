@@ -15,7 +15,7 @@ structure State where
   error?  : Option String := none
   deriving Inhabited
 
-def Parser := String → State → State
+def Parser := String  State  State
 
 instance : Inhabited Parser where
   default := fun _ s => s
@@ -61,13 +61,13 @@ partial def finishCommentBlock (nesting : Nat) : Parser := fun input s =>
 where
   eoi s := s.mkError "unterminated comment"
 
-@[specialize] partial def takeUntil (p : Char → Bool) : Parser := fun input s =>
+@[specialize] partial def takeUntil (p : Char  Bool) : Parser := fun input s =>
   let i := s.pos
   if h : input.atEnd i then s
   else if p (input.get' i h) then s
   else takeUntil p input (s.next' input i h)
 
-@[inline] def takeWhile (p : Char → Bool) : Parser :=
+@[inline] def takeWhile (p : Char  Bool) : Parser :=
   takeUntil (fun c => !p c)
 
 @[inline] def andthen (p q : Parser) : Parser := fun input s =>
@@ -119,7 +119,7 @@ partial def whitespace : Parser := fun input s =>
 @[inline] partial def keyword (k : String) : Parser :=
   keywordCore k (fun _ s => s.mkError s!"`{k}` expected") (fun _ s => s)
 
-@[inline] def isIdCont : String → State → Bool := fun input s =>
+@[inline] def isIdCont : String  State  Bool := fun input s =>
   let i := s.pos
   let curr := input.get i
   if curr == '.' then

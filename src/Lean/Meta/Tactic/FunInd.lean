@@ -26,16 +26,16 @@ function(s).
 
 For example from:
 ```
-def ackermann : Nat → Nat → Nat
+def ackermann : Nat  Nat  Nat
   | 0, m => m + 1
   | n+1, 0 => ackermann n 1
   | n+1, m+1 => ackermann n (ackermann (n + 1) m)
 ```
 we get
 ```
-ackermann.induct (motive : Nat → Nat → Prop) (case1 : ∀ (m : Nat), motive 0 m)
-  (case2 : ∀ (n : Nat), motive n 1 → motive (Nat.succ n) 0)
-  (case3 : ∀ (n m : Nat), motive (n + 1) m → motive n (ackermann (n + 1) m) → motive (Nat.succ n) (Nat.succ m))
+ackermann.induct (motive : Nat  Nat  Prop) (case1 : ∀ (m : Nat), motive 0 m)
+  (case2 : ∀ (n : Nat), motive n 1  motive (Nat.succ n) 0)
+  (case3 : ∀ (n m : Nat), motive (n + 1) m  motive n (ackermann (n + 1) m)  motive (Nat.succ n) (Nat.succ m))
   (x x : Nat) : motive x x
 ```
 
@@ -76,7 +76,7 @@ For a non-mutual, unary function `foo` (or else for the `_unary` function), we
 2. From this structure we derive the type of the motive, and start assembling the induction
    principle:
    ```
-   def foo.induct := fun x₁ … xₙ (motive : (y : a) → Prop) =>
+   def foo.induct := fun x₁ … xₙ (motive : (y : a)  Prop) =>
     fix (fun y' newIH => T[body])
    ```
 
@@ -137,15 +137,15 @@ If `foo` is not unary and/or part of a mutual reduction, then the induction theo
 (i.e. the unary non-mutual recursion function produced by the equation compiler)
 of the form
 ```
-foo._unary.induct : {motive : (a ⊗' b) ⊕' c → Prop} →
-  (case1 : ∀ …, motive (PSum.inl (x,y)) →  …) → … →
-  (x : (a ⊗' b) ⊕' c) → motive x
+foo._unary.induct : {motive : (a ⊗' b) ⊕' c  Prop} 
+  (case1 : ∀ …, motive (PSum.inl (x,y))   …)  … 
+  (x : (a ⊗' b) ⊕' c)  motive x
 ```
 will first in `unpackMutualInduction` be turned into a joint induction theorem of the form
 ```
-foo.mutual_induct : {motive1 : a → b → Prop} {motive2 : c → Prop} →
-  (case1 : ∀ …, motive1 x y  →  …) → … →
-  ((x : a) → (y : b) → motive1 x y) ∧ ((z : c) → motive2 z)
+foo.mutual_induct : {motive1 : a  b  Prop} {motive2 : c  Prop} 
+  (case1 : ∀ …, motive1 x y    …)  … 
+  ((x : a)  (y : b)  motive1 x y) ∧ ((z : c)  motive2 z)
 ```
 where all the `PSum`/`PSigma` encoding has been resolved. This theorem is attached to the
 name of the first function in the mutual group, like the `._unary` definition.
@@ -153,9 +153,9 @@ name of the first function in the mutual group, like the `._unary` definition.
 Finally, in `deriveUnpackedInduction`, for each of the functions in the mutual group, a simple
 projection yields the final `foo.induct` theorem:
 ```
-foo.induct : {motive1 : a → b → Prop} {motive2 : c → Prop} →
-  (case1 : ∀ …, motive1 x y  →  …) → … →
-  (x : a) → (y : b) → motive1 x y
+foo.induct : {motive1 : a  b  Prop} {motive2 : c  Prop} 
+  (case1 : ∀ …, motive1 x y    …)  … 
+  (x : a)  (y : b)  motive1 x y
 ```
 
 ## Implementation overview (structural recursion)
@@ -184,7 +184,7 @@ open Lean Elab Meta
 This is used when replacing parameters with different expressions.
 This way it will not be picked up by metavariables.
 -/
-def removeLamda {n} [MonadLiftT MetaM n] [MonadError n] [MonadNameGenerator n] [Monad n] {α} (e : Expr) (k : FVarId → Expr → n α) : n α := do
+def removeLamda {n} [MonadLiftT MetaM n] [MonadError n] [MonadNameGenerator n] [Monad n] {α} (e : Expr) (k : FVarId  Expr  n α) : n α := do
   let .lam _n _d b _bi := ← whnfD e | throwError "removeLamda: expected lambda, got {e}"
   let x ← mkFreshFVarId
   let b := b.instantiate1 (.fvar x)
@@ -210,12 +210,12 @@ def exec (act : M α) : MetaM (Array Expr) := do return (← run act).2
 
 def tell (x : Expr) : M Unit := fun xs => pure ((), xs.push x)
 
-def localM (f : Array Expr → MetaM (Array Expr)) (act : M α) : M α := fun xs => do
+def localM (f : Array Expr  MetaM (Array Expr)) (act : M α) : M α := fun xs => do
   let n := xs.size
   let (b, xs') ← act xs
   pure (b, xs'[:n] ++ (← f xs'[n:]))
 
-def localMapM (f : Expr → MetaM Expr) (act : M α) : M α :=
+def localMapM (f : Expr  MetaM Expr) (act : M α) : M α :=
   localM (·.mapM f) act
 
 def ask : M (Array Expr) := get
@@ -254,7 +254,7 @@ improve the errors, for example by passing down a flag whether we expect the sam
 occurrences of `newIH`), or whether we are in “supple mode”, and catch it earlier if the rewriting
 fails.
 -/
-partial def foldAndCollect (oldIH newIH : FVarId) (isRecCall : Expr → Option Expr) (e : Expr) : M Expr := do
+partial def foldAndCollect (oldIH newIH : FVarId) (isRecCall : Expr  Option Expr) (e : Expr) : M Expr := do
   unless e.containsFVar oldIH do
     return e
   withTraceNode `Meta.FunInd (pure m!"{exceptEmoji ·} foldAndCollect:{indentExpr e}") do
@@ -461,7 +461,7 @@ def M2.branch {α} (act : M2 α) : M2 α :=
 
 
 /-- Base case of `buildInductionBody`: Construct a case for the final induction hypthesis.  -/
-def buildInductionCase (oldIH newIH : FVarId) (isRecCall : Expr → Option Expr) (toClear : Array FVarId)
+def buildInductionCase (oldIH newIH : FVarId) (isRecCall : Expr  Option Expr) (toClear : Array FVarId)
     (goal : Expr)  (e : Expr) : M2 Expr := do
   withTraceNode `Meta.FunInd (pure m!"{exceptEmoji ·} buildInductionCase:{indentExpr e}") do
   let _e' ← foldAndCollect oldIH newIH isRecCall e
@@ -519,9 +519,9 @@ where it calls `buildInductionCase`. Collects the cases of the final induction h
 as `MVars` as it goes.
 -/
 partial def buildInductionBody (toClear : Array FVarId) (goal : Expr)
-    (oldIH newIH : FVarId) (isRecCall : Expr → Option Expr) (e : Expr) : M2 Expr := do
+    (oldIH newIH : FVarId) (isRecCall : Expr  Option Expr) (e : Expr) : M2 Expr := do
   withTraceNode `Meta.FunInd
-    (pure m!"{exceptEmoji ·} buildInductionBody: {oldIH.name} → {newIH.name}:{indentExpr e}") do
+    (pure m!"{exceptEmoji ·} buildInductionBody: {oldIH.name}  {newIH.name}:{indentExpr e}") do
 
   -- if-then-else cause case split:
   match_expr e with
@@ -690,7 +690,7 @@ def deriveUnaryInduction (name : Name) : MetaM Name := do
       let motiveType ← mkForallFVars #[target] (.sort levelZero)
       withLocalDeclD `motive motiveType fun motive => do
         let fn := mkAppN (← mkConstWithLevelParams name) fixedParams
-        let isRecCall : Expr → Option Expr := fun e =>
+        let isRecCall : Expr  Option Expr := fun e =>
           if e.isApp && e.appFn!.isFVarOf motive.fvarId! then
             mkApp fn e.appArg!
           else
@@ -882,7 +882,7 @@ def stripPProdProjs (e : Expr) : Expr :=
   | .proj ``And _ e' => stripPProdProjs e'
   | e => e
 
-def withLetDecls {α} (name : Name) (ts : Array Expr) (es : Array Expr) (k : Array Expr → MetaM α) : MetaM α := do
+def withLetDecls {α} (name : Name) (ts : Array Expr) (es : Array Expr) (k : Array Expr  MetaM α) : MetaM α := do
   assert! es.size = ts.size
   go 0 #[]
 where
@@ -989,7 +989,7 @@ def deriveInductionStructural (names : Array Name) (numFixed : Nat) : MetaM Unit
           -- Prepare the `isRecCall` that recognizes recursive calls
           let fns := infos.map fun info =>
             mkAppN (.const info.name (info.levelParams.map mkLevelParam)) xs
-          let isRecCall : Expr → Option Expr := fun e => do
+          let isRecCall : Expr  Option Expr := fun e => do
             if let .some i := motives.indexOf? e.getAppFn then
               if e.getAppNumArgs = motiveArities[i]! then
                 return mkAppN fns[i]! e.getAppArgs

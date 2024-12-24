@@ -1,14 +1,14 @@
-class OpAssoc (op : α → α → α) : Prop where
+class OpAssoc (op : α  α  α) : Prop where
   protected op_assoc (x y z) : op (op x y) z = op x (op y z)
 
-abbrev op_assoc (op : α → α → α) [self : OpAssoc op] := self.op_assoc
+abbrev op_assoc (op : α  α  α) [self : OpAssoc op] := self.op_assoc
 
 structure SemigroupSig (α) where
-  op : α → α → α
+  op : α  α  α
 
 structure SemiringSig (α) where
-  add : α → α → α
-  mul : α → α → α
+  add : α  α  α
+  mul : α  α  α
 
 def SemiringSig.toAddSemigroupSig (s : SemiringSig α) : SemigroupSig α where
   op := s.add

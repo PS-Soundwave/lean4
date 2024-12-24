@@ -34,8 +34,8 @@ Example arithmetic expressions
 /-!
 Implication chains
 -/
-/-- info: p → (q → r) : Prop -/
-#guard_msgs in variable (p q r : Prop) in #check p → q → r
+/-- info: p  (q  r) : Prop -/
+#guard_msgs in variable (p q r : Prop) in #check p  q  r
 
 /-!
 No parentheses around list literals
@@ -46,8 +46,8 @@ No parentheses around list literals
 /-!
 Parentheses around body of forall.
 -/
-/-- info: ∀ (p : (Nat → (Nat → Prop))), (p (1 + 2) 3) : Prop -/
-#guard_msgs in #check ∀ (p : Nat → Nat → Prop), p (1 + 2) 3
+/-- info: ∀ (p : (Nat  (Nat  Prop))), (p (1 + 2) 3) : Prop -/
+#guard_msgs in #check ∀ (p : Nat  Nat  Prop), p (1 + 2) 3
 
 /-!
 Parentheses around branches of `if`.

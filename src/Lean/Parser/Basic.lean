@@ -25,7 +25,7 @@ Given these constraints, we decided to implement a combinatoric, non-monadic, le
 parser. Using combinators instead of some more formal and introspectible grammar representation ensures ultimate
 flexibility as well as efficient extensibility: there is (almost) no pre-processing necessary when extending the grammar
 with a new parser. However, because all the results the combinators produce are of the homogeneous `Syntax` type, the
-basic parser type is not actually a monad but a monomorphic linear function `ParserState → ParserState`, avoiding
+basic parser type is not actually a monad but a monomorphic linear function `ParserState  ParserState`, avoiding
 constructing and deconstructing countless monadic return values. Instead of explicitly returning syntax objects, parsers
 push (zero or more of) them onto a syntax stack inside the linear state. Chaining parsers via `>>` accumulates their
 output on the stack. Combinators such as `node` then pop off all syntax objects produced during their invocation and
@@ -69,16 +69,16 @@ def dbgTraceStateFn (label : String) (p : ParserFn) : ParserFn :=
   out: {s'.stxStack.extract sz s'.stxStack.size}"
     s'
 
-def dbgTraceState (label : String) : Parser → Parser := withFn (dbgTraceStateFn label)
+def dbgTraceState (label : String) : Parser  Parser := withFn (dbgTraceStateFn label)
 
 @[noinline]def epsilonInfo : ParserInfo :=
   { firstTokens := FirstTokens.epsilon }
 
-def checkStackTopFn (p : Syntax → Bool) (msg : String) : ParserFn := fun _ s =>
+def checkStackTopFn (p : Syntax  Bool) (msg : String) : ParserFn := fun _ s =>
   if p s.stxStack.back then s
   else s.mkUnexpectedError msg
 
-def checkStackTop (p : Syntax → Bool) (msg : String) : Parser := {
+def checkStackTop (p : Syntax  Bool) (msg : String) : Parser := {
   info := epsilonInfo,
   fn   := checkStackTopFn p msg
 }
@@ -88,8 +88,8 @@ def andthenFn (p q : ParserFn) : ParserFn := fun c s =>
   if s.hasError then s else q c s
 
 @[noinline] def andthenInfo (p q : ParserInfo) : ParserInfo := {
-  collectTokens := p.collectTokens ∘ q.collectTokens,
-  collectKinds  := p.collectKinds ∘ q.collectKinds,
+  collectTokens := p.collectTokens  q.collectTokens,
+  collectKinds  := p.collectKinds  q.collectKinds,
   firstTokens   := p.firstTokens.seq q.firstTokens
 }
 
@@ -185,7 +185,7 @@ def incQuotDepth (p : Parser) : Parser := addQuotDepth 1 p
 
 def decQuotDepth (p : Parser) : Parser := addQuotDepth (-1) p
 
-def suppressInsideQuot : Parser → Parser :=
+def suppressInsideQuot : Parser  Parser :=
   adaptCacheableContext fun c =>
     -- if we are already within a quotation, don't change anything
     if c.quotDepth == 0 then { c with suppressInsideQuot := true } else c
@@ -260,8 +260,8 @@ def orelseFn (p q : ParserFn) : ParserFn :=
   orelseFnCore p q
 
 @[noinline] def orelseInfo (p q : ParserInfo) : ParserInfo := {
-  collectTokens := p.collectTokens ∘ q.collectTokens
-  collectKinds  := p.collectKinds ∘ q.collectKinds
+  collectTokens := p.collectTokens  q.collectTokens
+  collectKinds  := p.collectKinds  q.collectKinds
   firstTokens   := p.firstTokens.merge q.firstTokens
 }
 
@@ -295,7 +295,7 @@ This is important for the `p <|> q` combinator, because it is not backtracking, 
 `p` fails after consuming some tokens. To get backtracking behavior, use `atomic(p) <|> q` instead.
 
 This parser has the same arity as `p` - it produces the same result as `p`. -/
-@[builtin_doc] def atomic : Parser → Parser := withFn atomicFn
+@[builtin_doc] def atomic : Parser  Parser := withFn atomicFn
 
 /-- Information about the state of the parse prior to the failing parser's execution -/
 structure RecoveryContext where
@@ -311,7 +311,7 @@ If `recover` fails itself, then no recovery is performed.
 
 `recover` is provided with information about the failing parser's effects , and it is run in the
 state immediately after the failure. -/
-def recoverFn (p : ParserFn) (recover : RecoveryContext → ParserFn) : ParserFn := fun c s =>
+def recoverFn (p : ParserFn) (recover : RecoveryContext  ParserFn) : ParserFn := fun c s =>
   let iniPos := s.pos
   let iniSz := s.stxStack.size
   let s' := p c s
@@ -335,7 +335,7 @@ state immediately after the failure.
 
 The interactions between <|> and `recover'` are subtle, especially for syntactic
 categories that admit user extension. Consider avoiding it in these cases. -/
-@[builtin_doc] def recover' (parser : Parser) (handler : RecoveryContext → Parser) : Parser where
+@[builtin_doc] def recover' (parser : Parser) (handler : RecoveryContext  Parser) : Parser where
   info := parser.info
   fn := recoverFn parser.fn fun s => handler s |>.fn
 
@@ -378,7 +378,7 @@ position to the original state on success. So for example `lookahead("=>")` will
 next token is `"=>"`, without actually consuming this token.
 
 This parser has arity 0 - it does not capture anything. -/
-@[builtin_doc] def lookahead : Parser → Parser := withFn lookaheadFn
+@[builtin_doc] def lookahead : Parser  Parser := withFn lookaheadFn
 
 def notFollowedByFn (p : ParserFn) (msg : String) : ParserFn := fun c s =>
   let iniSz  := s.stackSize
@@ -424,7 +424,7 @@ def many1Fn (p : ParserFn) : ParserFn := fun c s =>
   let s := andthenFn p (manyAux p) c s
   s.mkNode nullKind iniSz
 
-def many1NoAntiquot : Parser → Parser := withFn many1Fn
+def many1NoAntiquot : Parser  Parser := withFn many1Fn
 
 private partial def sepByFnAux (p : ParserFn) (sep : ParserFn) (allowTrailingSep : Bool) (iniSz : Nat) (pOpt : Bool) : ParserFn :=
   let rec parse (pOpt : Bool) (c s) := Id.run do
@@ -463,13 +463,13 @@ def sepBy1Fn (allowTrailingSep : Bool) (p : ParserFn) (sep : ParserFn) : ParserF
   sepByFnAux p sep allowTrailingSep iniSz false c s
 
 @[noinline] def sepByInfo (p sep : ParserInfo) : ParserInfo := {
-  collectTokens := p.collectTokens ∘ sep.collectTokens
-  collectKinds  := p.collectKinds ∘ sep.collectKinds
+  collectTokens := p.collectTokens  sep.collectTokens
+  collectKinds  := p.collectKinds  sep.collectKinds
 }
 
 @[noinline] def sepBy1Info (p sep : ParserInfo) : ParserInfo := {
-  collectTokens := p.collectTokens ∘ sep.collectTokens
-  collectKinds  := p.collectKinds ∘ sep.collectKinds
+  collectTokens := p.collectTokens  sep.collectTokens
+  collectKinds  := p.collectKinds  sep.collectKinds
   firstTokens   := p.firstTokens
 }
 
@@ -484,7 +484,7 @@ def sepBy1NoAntiquot (p sep : Parser) (allowTrailingSep : Bool := false) : Parse
 }
 
 /-- Apply `f` to the syntax object produced by `p` -/
-def withResultOfFn (p : ParserFn) (f : Syntax → Syntax) : ParserFn := fun c s =>
+def withResultOfFn (p : ParserFn) (f : Syntax  Syntax) : ParserFn := fun c s =>
   let s := p c s
   if s.hasError then s
   else
@@ -496,7 +496,7 @@ def withResultOfFn (p : ParserFn) (f : Syntax → Syntax) : ParserFn := fun c s 
   collectKinds  := p.collectKinds
 }
 
-def withResultOf (p : Parser) (f : Syntax → Syntax) : Parser := {
+def withResultOf (p : Parser) (f : Syntax  Syntax) : Parser := {
   info := withResultOfInfo p.info
   fn   := withResultOfFn p.fn f
 }
@@ -504,22 +504,22 @@ def withResultOf (p : Parser) (f : Syntax → Syntax) : Parser := {
 def many1Unbox (p : Parser) : Parser :=
   withResultOf (many1NoAntiquot p) fun stx => if stx.getNumArgs == 1 then stx.getArg 0 else stx
 
-partial def satisfyFn (p : Char → Bool) (errorMsg : String := "unexpected character") : ParserFn := fun c s =>
+partial def satisfyFn (p : Char  Bool) (errorMsg : String := "unexpected character") : ParserFn := fun c s =>
   let i := s.pos
   if h : c.input.atEnd i then s.mkEOIError
   else if p (c.input.get' i h) then s.next' c.input i h
   else s.mkUnexpectedError errorMsg
 
-partial def takeUntilFn (p : Char → Bool) : ParserFn := fun c s =>
+partial def takeUntilFn (p : Char  Bool) : ParserFn := fun c s =>
   let i := s.pos
   if h : c.input.atEnd i then s
   else if p (c.input.get' i h) then s
   else takeUntilFn p c (s.next' c.input i h)
 
-def takeWhileFn (p : Char → Bool) : ParserFn :=
+def takeWhileFn (p : Char  Bool) : ParserFn :=
   takeUntilFn (fun c => !p c)
 
-def takeWhile1Fn (p : Char → Bool) (errorMsg : String) : ParserFn :=
+def takeWhile1Fn (p : Char  Bool) (errorMsg : String) : ParserFn :=
   andthenFn (satisfyFn p errorMsg) (takeWhileFn p)
 
 variable (pushMissingOnError : Bool) in
@@ -648,7 +648,7 @@ Parses a string quotation after a `\`.
 - `inString` enables features that are only valid within strings,
   in particular `"\" newline whitespace*` gaps.
 -/
-def quotedCharCoreFn (isQuotable : Char → Bool) (inString : Bool) : ParserFn := fun c s =>
+def quotedCharCoreFn (isQuotable : Char  Bool) (inString : Bool) : ParserFn := fun c s =>
   let input := c.input
   let i     := s.pos
   if h : input.atEnd i then s.mkEOIError
@@ -810,7 +810,7 @@ Parses a sequence of the form `many (many '_' >> many1 digit)`, but if `needDigi
 Note: this does not report that it is expecting `_` if we reach EOI or an unexpected character.
 Rationale: this error happens if there is already a `_`, and while sequences of `_` are allowed, it's a bit perverse to suggest extending the sequence.
 -/
-partial def takeDigitsFn (isDigit : Char → Bool) (expecting : String) (needDigit : Bool) : ParserFn := fun c s =>
+partial def takeDigitsFn (isDigit : Char  Bool) (expecting : String) (needDigit : Bool) : ParserFn := fun c s =>
   let input := c.input
   let i     := s.pos
   if h : input.atEnd i then
@@ -825,7 +825,7 @@ partial def takeDigitsFn (isDigit : Char → Bool) (expecting : String) (needDig
     else if needDigit then s.mkUnexpectedError "unexpected character" (expected := [expecting])
     else s
 
-def decimalNumberFn (startPos : String.Pos) (c : ParserContext) : ParserState → ParserState := fun s =>
+def decimalNumberFn (startPos : String.Pos) (c : ParserContext) : ParserState  ParserState := fun s =>
   let s     := takeDigitsFn (fun c => c.isDigit) "decimal number" false c s
   let input := c.input
   let i     := s.pos
@@ -906,7 +906,7 @@ def numberFnAux : ParserFn := fun c s =>
     else
       s.mkError "numeral"
 
-def isIdCont : String → ParserState → Bool := fun input s =>
+def isIdCont : String  ParserState  Bool := fun input s =>
   let i    := s.pos
   let curr := input.get i
   if curr == '.' then
@@ -1076,7 +1076,7 @@ def rawIdentFn : ParserFn := fun c s =>
   if input.atEnd i then s.mkEOIError
   else identFnAux i none .anonymous c s
 
-def satisfySymbolFn (p : String → Bool) (expected : List String) : ParserFn := fun c s => Id.run do
+def satisfySymbolFn (p : String  Bool) (expected : List String) : ParserFn := fun c s => Id.run do
   let iniPos := s.pos
   let s := tokenFn expected c s
   if s.hasError then
@@ -1396,7 +1396,7 @@ def runLongestMatchParser (left? : Option Syntax) (startLhsPrec : Nat) (p : Pars
     invalidLongestMatchParser s
 
 def longestMatchStep (left? : Option Syntax) (startSize startLhsPrec : Nat) (startPos : String.Pos) (prevPrio : Nat) (prio : Nat) (p : ParserFn)
-    : ParserContext → ParserState → ParserState × Nat := fun c s =>
+    : ParserContext  ParserState  ParserState × Nat := fun c s =>
   let score (s : ParserState) (prio : Nat) :=
     (s.pos.byteIdx, if s.errorMsg.isSome then (0 : Nat) else 1, prio)
   let previousScore := score s prevPrio
@@ -1428,7 +1428,7 @@ def longestMatchFnAux (left? : Option Syntax) (startSize startLhsPrec : Nat) (st
       parse prevPrio ps c s
   parse prevPrio ps
 
-def longestMatchFn (left? : Option Syntax) : List (Parser × Nat) → ParserFn
+def longestMatchFn (left? : Option Syntax) : List (Parser × Nat)  ParserFn
   | []    => fun _ s => s.mkError "longestMatch: empty list"
   | [p]   => fun c s => runLongestMatchParser left? s.lhsPrec p.1.fn c s
   | p::ps => fun c s =>
@@ -1438,7 +1438,7 @@ def longestMatchFn (left? : Option Syntax) : List (Parser × Nat) → ParserFn
     let s         := runLongestMatchParser left? s.lhsPrec p.1.fn c s
     longestMatchFnAux left? startSize startLhsPrec startPos p.2 ps c s
 
-def anyOfFn : List Parser → ParserFn
+def anyOfFn : List Parser  ParserFn
   | [],    _, s => s.mkError "anyOf: empty list"
   | [p],   c, s => p.fn c s
   | p::ps, c, s => orelseFn p.fn (anyOfFn ps) c s
@@ -1534,10 +1534,10 @@ The saved position is only available in the read-only state, which is why this i
 after the `withPosition(..)` block the saved position will be restored to its original value.
 
 This parser has the same arity as `p` - it just forwards the results of `p`. -/
-@[builtin_doc] def withPosition : Parser → Parser := withFn fun f c s =>
+@[builtin_doc] def withPosition : Parser  Parser := withFn fun f c s =>
     adaptCacheableContextFn ({ · with savedPos? := s.pos }) f c s
 
-def withPositionAfterLinebreak : Parser → Parser := withFn fun f c s =>
+def withPositionAfterLinebreak : Parser  Parser := withFn fun f c s =>
   let prev := s.stxStack.back
   adaptCacheableContextFn (fun c => if checkTailLinebreak prev then { c with savedPos? := s.pos } else c) f c s
 
@@ -1698,7 +1698,7 @@ def indexed {α : Type} (map : TokenMap α) (c : ParserContext) (s : ParserState
   | .ok _             => (s, [])
   | .error s'         => (s', [])
 
-abbrev CategoryParserFn := Name → ParserFn
+abbrev CategoryParserFn := Name  ParserFn
 
 builtin_initialize categoryParserFnRef : IO.Ref CategoryParserFn ← IO.mkRef fun (_ : Name) => whitespace
 
@@ -1739,7 +1739,7 @@ def setExpectedFn (expected : List String) (p : ParserFn) : ParserFn := fun c s 
     | s'@{ errorMsg := some msg, .. } => { s' with errorMsg := some { msg with expected } }
     | s'                              => s'
 
-def setExpected (expected : List String) : Parser → Parser := withFn (setExpectedFn expected)
+def setExpected (expected : List String) : Parser  Parser := withFn (setExpectedFn expected)
 
 def pushNone : Parser := {
   fn := fun _ s => s.pushSyntax mkNullNode
@@ -1759,7 +1759,7 @@ def tokenAntiquotFn : ParserFn := fun c s => Id.run do
     return s.restore iniSz iniPos
   s.mkNode (`token_antiquot) (iniSz - 1)
 
-def tokenWithAntiquot : Parser → Parser := withFn fun f c s =>
+def tokenWithAntiquot : Parser  Parser := withFn fun f c s =>
   let s := f c s
   -- fast check that is false in most cases
   if c.input.get s.pos == '%' then
@@ -1966,13 +1966,13 @@ namespace Syntax
 section
 variable [Monad m]
 
-def foldArgsM (s : Syntax) (f : Syntax → β → m β) (b : β) : m β :=
+def foldArgsM (s : Syntax) (f : Syntax  β  m β) (b : β) : m β :=
   s.getArgs.foldlM (flip f) b
 
-def foldArgs (s : Syntax) (f : Syntax → β → β) (b : β) : β :=
+def foldArgs (s : Syntax) (f : Syntax  β  β) (b : β) : β :=
   Id.run (s.foldArgsM f b)
 
-def forArgsM (s : Syntax) (f : Syntax → m Unit) : m Unit :=
+def forArgsM (s : Syntax) (f : Syntax  m Unit) : m Unit :=
   s.foldArgsM (fun s _ => f s) ()
 end
 

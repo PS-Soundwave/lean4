@@ -14,30 +14,30 @@ open Lean Meta Simp
 def fromExpr? (e : Expr) : SimpM (Option Int) :=
   getIntValue? e
 
-@[inline] def reduceUnary (declName : Name) (arity : Nat) (op : Int → Int) (e : Expr) : SimpM DStep := do
+@[inline] def reduceUnary (declName : Name) (arity : Nat) (op : Int  Int) (e : Expr) : SimpM DStep := do
   unless e.isAppOfArity declName arity do return .continue
   let some n ← fromExpr? e.appArg! | return .continue
   return .done <| toExpr (op n)
 
-@[inline] def reduceBin (declName : Name) (arity : Nat) (op : Int → Int → Int) (e : Expr) : SimpM DStep := do
+@[inline] def reduceBin (declName : Name) (arity : Nat) (op : Int  Int  Int) (e : Expr) : SimpM DStep := do
   unless e.isAppOfArity declName arity do return .continue
   let some v₁ ← fromExpr? e.appFn!.appArg! | return .continue
   let some v₂ ← fromExpr? e.appArg! | return .continue
   return .done <| toExpr (op v₁ v₂)
 
-def reduceBinIntNatOp (name : Name) (op : Int → Nat → Int) (e : Expr) : SimpM DStep := do
+def reduceBinIntNatOp (name : Name) (op : Int  Nat  Int) (e : Expr) : SimpM DStep := do
   unless e.isAppOfArity name 2 do return .continue
   let some v₁ ← getIntValue? e.appFn!.appArg! | return .continue
   let some v₂ ← getNatValue? e.appArg! | return .continue
   return .done <| toExpr (op v₁ v₂)
 
-@[inline] def reduceBinPred (declName : Name) (arity : Nat) (op : Int → Int → Bool) (e : Expr) : SimpM Step := do
+@[inline] def reduceBinPred (declName : Name) (arity : Nat) (op : Int  Int  Bool) (e : Expr) : SimpM Step := do
   unless e.isAppOfArity declName arity do return .continue
   let some v₁ ← fromExpr? e.appFn!.appArg! | return .continue
   let some v₂ ← fromExpr? e.appArg! | return .continue
   evalPropStep e (op v₁ v₂)
 
-@[inline] def reduceBoolPred (declName : Name) (arity : Nat) (op : Int → Int → Bool) (e : Expr) : SimpM DStep := do
+@[inline] def reduceBoolPred (declName : Name) (arity : Nat) (op : Int  Int  Bool) (e : Expr) : SimpM DStep := do
   unless e.isAppOfArity declName arity do return .continue
   let some n ← fromExpr? e.appFn!.appArg! | return .continue
   let some m ← fromExpr? e.appArg! | return .continue
@@ -94,7 +94,7 @@ builtin_simproc [simp, seval] reduceNe  (( _ : Int) ≠ _)  := reduceBinPred ``N
 builtin_dsimproc [simp, seval] reduceBEq  (( _ : Int) == _)  := reduceBoolPred ``BEq.beq 4 (. == .)
 builtin_dsimproc [simp, seval] reduceBNe  (( _ : Int) != _)  := reduceBoolPred ``bne 4 (. != .)
 
-@[inline] def reduceNatCore (declName : Name) (op : Int → Nat) (e : Expr) : SimpM DStep := do
+@[inline] def reduceNatCore (declName : Name) (op : Int  Nat) (e : Expr) : SimpM DStep := do
   unless e.isAppOfArity declName 1 do return .continue
   let some v ← fromExpr? e.appArg! | return .continue
   return .done <| mkNatLit (op v)

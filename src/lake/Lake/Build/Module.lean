@@ -44,7 +44,7 @@ def Module.importsFacetConfig : ModuleFacetConfig importsFacet :=
 
 @[inline] def collectImportsAux
   (leanFile : FilePath) (imports : Array Module)
-  (f : Module → FetchM (Bool × Array Module))
+  (f : Module  FetchM (Bool × Array Module))
 : FetchM (Array Module) := do
   withLogErrorPos do
   let mut didError := false

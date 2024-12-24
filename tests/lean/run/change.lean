@@ -29,7 +29,7 @@ example (h : n + 3 = m) (h' : n + 2 = m) : False := by
   exact test_sorry
 
 -- `change ... at ...` preserves dependencies
-example (p : n + 2 = m → Type) (h : n + 2 = m) (x : p h) : false := by
+example (p : n + 2 = m  Type) (h : n + 2 = m) (x : p h) : false := by
   change _ + 1 = _ at h
   guard_hyp x :ₛ p h
   exact test_sorry
@@ -138,7 +138,7 @@ example (ty : {α : Prop // Nonempty α}) : ty.val := by
 Fails, type hint can't hint enough since `.some _` is postponed.
 -/
 /--
-error: invalid dotted identifier notation, expected type is not of the form (... → C ...) where C is a constant
+error: invalid dotted identifier notation, expected type is not of the form (...  C ...) where C is a constant
   ?_
 -/
 #guard_msgs in example : some true = (some true).map id := by

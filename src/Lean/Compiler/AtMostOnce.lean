@@ -14,7 +14,7 @@ structure AtMostOnceData where
   found : Bool
   result : Bool
 
-def Visitor := AtMostOnceData → AtMostOnceData
+def Visitor := AtMostOnceData  AtMostOnceData
 
 @[inline] def seq (f g : Visitor) : Visitor := fun d =>
   match f d with
@@ -31,7 +31,7 @@ instance : AndThen Visitor where
   | {found := false, result := true} => {found := x == y, result := true}
   | {found := true,  result := true} => {found := true, result := x != y}
 
-def visit (x : FVarId) : Expr → Visitor
+def visit (x : FVarId) : Expr  Visitor
   | Expr.fvar y          => visitFVar y x
   | Expr.app f a         => visit x a >> visit x f
   | Expr.lam _ d b _     => visit x d >> visit x b

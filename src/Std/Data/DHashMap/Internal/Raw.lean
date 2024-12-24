@@ -18,7 +18,7 @@ set_option autoImplicit false
 
 universe u v w
 
-variable {α : Type u} {β : α → Type v} {γ : Type w} {δ : α → Type w}
+variable {α : Type u} {β : α  Type v} {γ : Type w} {δ : α  Type w}
 
 namespace Std.DHashMap.Internal
 
@@ -175,27 +175,27 @@ theorem erase_val [BEq α] [Hashable α] {m : Raw₀ α β} {a : α} :
   simp [Raw.erase, m.2]
 
 theorem filterMap_eq [BEq α] [Hashable α] {m : Raw α β} (h : m.WF)
-    {f : (a : α) → β a → Option (δ a)} : m.filterMap f =
+    {f : (a : α)  β a  Option (δ a)} : m.filterMap f =
       Raw₀.filterMap f ⟨m, h.size_buckets_pos⟩ := by
   simp [Raw.filterMap, h.size_buckets_pos]
 
-theorem filterMap_val [BEq α] [Hashable α] {m : Raw₀ α β} {f : (a : α) → β a → Option (δ a)} :
+theorem filterMap_val [BEq α] [Hashable α] {m : Raw₀ α β} {f : (a : α)  β a  Option (δ a)} :
     m.val.filterMap f = m.filterMap f := by
   simp [Raw.filterMap, m.2]
 
-theorem map_eq [BEq α] [Hashable α] {m : Raw α β} (h : m.WF) {f : (a : α) → β a → δ a} :
+theorem map_eq [BEq α] [Hashable α] {m : Raw α β} (h : m.WF) {f : (a : α)  β a  δ a} :
     m.map f = Raw₀.map f ⟨m, h.size_buckets_pos⟩ := by
   simp [Raw.map, h.size_buckets_pos]
 
-theorem map_val [BEq α] [Hashable α] {m : Raw₀ α β} {f : (a : α) → β a → δ a} :
+theorem map_val [BEq α] [Hashable α] {m : Raw₀ α β} {f : (a : α)  β a  δ a} :
     m.val.map f = m.map f := by
   simp [Raw.map, m.2]
 
-theorem filter_eq [BEq α] [Hashable α] {m : Raw α β} (h : m.WF) {f : (a : α) → β a → Bool} :
+theorem filter_eq [BEq α] [Hashable α] {m : Raw α β} (h : m.WF) {f : (a : α)  β a  Bool} :
     m.filter f = Raw₀.filter f ⟨m, h.size_buckets_pos⟩ := by
   simp [Raw.filter, h.size_buckets_pos]
 
-theorem filter_val [BEq α] [Hashable α] {m : Raw₀ α β} {f : (a : α) → β a → Bool} :
+theorem filter_val [BEq α] [Hashable α] {m : Raw₀ α β} {f : (a : α)  β a  Bool} :
     m.val.filter f = m.filter f := by
   simp [Raw.filter, m.2]
 

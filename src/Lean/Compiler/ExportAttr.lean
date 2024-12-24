@@ -12,7 +12,7 @@ private def isValidCppId (id : String) : Bool :=
   let first := id.get 0;
   first.isAlpha  && (id.toSubstring.drop 1).all (fun c => c.isAlpha || c.isDigit || c == '_')
 
-private def isValidCppName : Name → Bool
+private def isValidCppName : Name  Bool
   | .str .anonymous s => isValidCppId s
   | .str p s          => isValidCppId s && isValidCppName p
   | _                 => false

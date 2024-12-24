@@ -17,13 +17,13 @@ instance : ToString NamePart where
     | NamePart.str s => s
     | NamePart.num n => toString n
 
-def NamePart.cmp : NamePart → NamePart → Ordering
+def NamePart.cmp : NamePart  NamePart  Ordering
   | NamePart.str a, NamePart.str b => compare a b
   | NamePart.num a, NamePart.num b => compare a b
   | NamePart.num _, NamePart.str _ => Ordering.lt
   | _, _ => Ordering.gt
 
-def NamePart.lt : NamePart → NamePart → Bool
+def NamePart.lt : NamePart  NamePart  Bool
   | NamePart.str a, NamePart.str b => a < b
   | NamePart.num a, NamePart.num b => a < b
   | NamePart.num _, NamePart.str _ => true
@@ -55,19 +55,19 @@ def NameTrie.find? (t : NameTrie β) (k : Name) : Option β :=
   PrefixTree.find? t (toKey k)
 
 @[inline]
-def NameTrie.foldMatchingM [Monad m] (t : NameTrie β) (k : Name) (init : σ) (f : β → σ → m σ) : m σ :=
+def NameTrie.foldMatchingM [Monad m] (t : NameTrie β) (k : Name) (init : σ) (f : β  σ  m σ) : m σ :=
   PrefixTree.foldMatchingM t (toKey k) init f
 
 @[inline]
-def NameTrie.foldM [Monad m] (t : NameTrie β) (init : σ) (f : β → σ → m σ) : m σ :=
+def NameTrie.foldM [Monad m] (t : NameTrie β) (init : σ) (f : β  σ  m σ) : m σ :=
   t.foldMatchingM Name.anonymous init f
 
 @[inline]
-def NameTrie.forMatchingM [Monad m] (t : NameTrie β) (k : Name) (f : β → m Unit) : m Unit :=
+def NameTrie.forMatchingM [Monad m] (t : NameTrie β) (k : Name) (f : β  m Unit) : m Unit :=
   PrefixTree.forMatchingM t (toKey k) f
 
 @[inline]
-def NameTrie.forM [Monad m] (t : NameTrie β) (f : β → m Unit) : m Unit :=
+def NameTrie.forM [Monad m] (t : NameTrie β) (f : β  m Unit) : m Unit :=
   t.forMatchingM Name.anonymous f
 
 def NameTrie.matchingToArray (t : NameTrie β) (k : Name) : Array β :=

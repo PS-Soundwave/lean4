@@ -47,7 +47,7 @@ private def addImport (name : Name) (constInfo : ConstantInfo) :
   if name matches .str _ "injEq" then return #[]
   if name matches .str _ "sizeOf_spec" then return #[]
   match name with
-  | .str _ n => if n.endsWith "_inj" ∨ n.endsWith "_inj'" then return #[]
+  | .str _ n => if n.endsWith "_inj"  n.endsWith "_inj'" then return #[]
   | _ => pure ()
   withNewMCtxDepth do withReducible do
     forallTelescopeReducing constInfo.type fun _ type => do
@@ -106,14 +106,14 @@ initialization performance.
 -/
 private def constantsPerImportTask : Nat := 6500
 
-def incPrio : Nat → Name × RwDirection → Name × Bool × Nat
+def incPrio : Nat  Name × RwDirection  Name × Bool × Nat
 | q, (nm, d) =>
   match d with
   | .forward => (nm, false, 2 * q)
   | .backward => (nm, true, q)
 
 /-- Create function for finding relevant declarations. -/
-def rwFindDecls (moduleRef : LazyDiscrTree.ModuleDiscrTreeRef (Name × RwDirection)) : Expr → MetaM (Array (Name × Bool × Nat)) :=
+def rwFindDecls (moduleRef : LazyDiscrTree.ModuleDiscrTreeRef (Name × RwDirection)) : Expr  MetaM (Array (Name × Bool × Nat)) :=
   LazyDiscrTree.findMatchesExt moduleRef ext addImport
       (droppedKeys := droppedKeys)
       (constantsPerTask := constantsPerImportTask)
@@ -214,7 +214,7 @@ Implementation: we reverse the results from `getMatch`,
 so that we return lemmas matching larger subexpressions first,
 and amongst those we return more specific lemmas first.
 -/
-partial def getSubexpressionMatches (op : Expr → MetaM (Array α)) (e : Expr) : MetaM (Array α) := do
+partial def getSubexpressionMatches (op : Expr  MetaM (Array α)) (e : Expr) : MetaM (Array α) := do
   match e with
   | .bvar _ => return #[]
   | .forallE _ _ _ _ =>

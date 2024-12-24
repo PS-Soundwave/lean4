@@ -6,7 +6,7 @@ def f (x : α) := x
 example (a : α) (b : List α) : f (a::b = []) = False :=
   by simp [f]
 
-def length : List α → Nat
+def length : List α  Nat
   | []    => 0
   | a::as => length as + 1
 
@@ -15,7 +15,7 @@ example (a b c : α) (as : List α) : length (a :: b :: as) > length as := by
   apply Nat.lt.step
   apply Nat.lt_succ_self
 
-def fact : Nat → Nat
+def fact : Nat  Nat
   | 0 => 1
   | x+1 => (x+1) * fact x
 
@@ -26,7 +26,7 @@ theorem ex3 : fact x > 0 := by
     simp [fact]
     apply ih
 
-def head [Inhabited α] : List α → α
+def head [Inhabited α] : List α  α
   | []   => default
   | a::_ => a
 
@@ -122,7 +122,7 @@ end
 -- This example tests tracing of class projections.
 
 class HasProp (A) where
-  toProp : A → Prop
+  toProp : A  Prop
 
 instance : HasProp Nat where
   toProp _ := True
@@ -138,18 +138,18 @@ theorem my_thm' : a ↔ a ∧ a := my_thm.symm
 
 example (P : Prop) : P ∧ P ↔ P := by simp only [← my_thm']
 
-example {P : Prop} : P → P := by intro h; simp [*]
+example {P : Prop} : P  P := by intro h; simp [*]
 
-example {P : Prop} : P → P := by intro; simp [*]
+example {P : Prop} : P  P := by intro; simp [*]
 
 -- `simp_all only [h]`, where `h` is a local hypothesis, is redundant and
 -- misleading since `simp_all` uses all local hypotheses anyway. `simp_all?`
 -- should therefore omit hypotheses from the suggested theorem list.
 
-example {P : Nat → Type} (h₁ : n = m) (h₂ : P m) : P n := by
+example {P : Nat  Type} (h₁ : n = m) (h₂ : P m) : P n := by
   simp_all
   exact h₂
 
-example {Q : ∀ {n m : Nat}, n = m → Prop} {P : Nat → Type} (h₁ : n = m) (h₂ : P m) (h₃ : Q h₁) : P n := by
+example {Q : ∀ {n m : Nat}, n = m  Prop} {P : Nat  Type} (h₁ : n = m) (h₂ : P m) (h₃ : Q h₁) : P n := by
   simp_all
   exact h₂

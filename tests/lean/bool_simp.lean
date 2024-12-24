@@ -4,17 +4,17 @@ variable (u v w : Prop) [Decidable u] [Decidable v] [Decidable w]
 
 -- Specific regressions found when introducing Boolean normalization
 #check_simp (b != !c) = false ~> b ≠ c
-#check_simp ¬(u → v ∨ w) ~> u ∧ ¬v ∧ ¬w
-#check_simp decide (u ∧ (v → False)) ~> decide u && !decide v
+#check_simp ¬(u  v  w) ~> u ∧ ¬v ∧ ¬w
+#check_simp decide (u ∧ (v  False)) ~> decide u && !decide v
 #check_simp decide (cond true b c = true) ~> b
 #check_simp decide (ite u b c = true) ~> ite u b c
 #check_simp true ≠ (b || c) ~> b = false ∧ c = false
-#check_simp ¬((!b = false) ∧ (c = false)) ~> b = true → c = true
+#check_simp ¬((!b = false) ∧ (c = false)) ~> b = true  c = true
 #check_simp (((!b) && c) ≠ false) ~> b = false ∧ c = true
 #check_simp (cond b false c ≠ false) ~> b = false ∧ c
-#check_simp (b && c) = false ~> b → c = false
+#check_simp (b && c) = false ~> b  c = false
 #check_simp (b && c) ≠   false ~> b ∧ c
-#check_simp decide (u → False) ~> !decide u
+#check_simp decide (u  False) ~> !decide u
 #check_simp decide (¬u) ~> !decide u
 #check_simp (b = true) ≠ (c = false) ~> b = c
 #check_simp (b != c) != (false != d) ~> b != (c != d)
@@ -23,7 +23,7 @@ variable (u v w : Prop) [Decidable u] [Decidable v] [Decidable w]
 #check_simp ¬b = !c ~> b = c
 #check_simp (b == c) = false ~> ¬(b = c)
 #check_simp (true ≠ if u then b else c) ~> (if u then b = false else c = false)
-#check_simp (u ∧ v → False) ~> u → v → False
+#check_simp (u ∧ v  False) ~> u  v  False
 #check_simp (u = (v ≠ w)) ~> (u ↔ ¬(v ↔ w))
 #check_simp ((b = false) = (c = false)) ~> b = c
 #check_simp True ≠ (c = false) ~> c = true
@@ -31,7 +31,7 @@ variable (u v w : Prop) [Decidable u] [Decidable v] [Decidable w]
 #check_simp b || (b || c) ~> b || c
 #check_simp ((b ≠ c) : Bool) ~> !(decide (b = c))
 #check_simp ((u ≠ v) : Bool) ~> !((u : Bool) == (v : Bool))
-#check_simp decide (u → False) ~> !(decide u)
+#check_simp decide (u  False) ~> !(decide u)
 #check_simp decide (¬u) ~> !u
 -- Specific regressions done
 
@@ -132,13 +132,13 @@ variable [Decidable u]
 #check_simp (¬b && b) ~> false
 
 -- Check we swap operators, but do apply deMorgan etc
-#check_simp ¬(u ∧ v)  ~> u → ¬v
+#check_simp ¬(u ∧ v)  ~> u  ¬v
 #check_simp decide (¬(u ∧ v))  ~> !u || !v
 #check_simp !(u ∧ v)  ~> !u || !v
-#check_simp ¬(b ∧ c)  ~> b → c = false
+#check_simp ¬(b ∧ c)  ~> b  c = false
 #check_simp !(b ∧ c)  ~> !b || !c
-#check_simp ¬(u && v) ~> u → ¬ v
-#check_simp ¬(b && c) ~> b = true → c = false
+#check_simp ¬(u && v) ~> u  ¬ v
+#check_simp ¬(b && c) ~> b = true  c = false
 #check_simp !(u && v) ~> !u || !v
 #check_simp !(b && c) ~> !b || !c
 #check_simp ¬u ∧  ¬v !~>
@@ -159,90 +159,90 @@ variable [Decidable u]
 /- # or -/
 
 -- Validate coercions
-#check_simp p ∨ q !~>
-#check_simp q ∨ p !~>
-#check_simp (u ∨ v : Prop) !~>
-#check_simp (u ∨ v : Bool)  ~> u || v
-#check_simp (u || v : Prop) ~> u ∨  v
+#check_simp p  q !~>
+#check_simp q  p !~>
+#check_simp (u  v : Prop) !~>
+#check_simp (u  v : Bool)  ~> u || v
+#check_simp (u || v : Prop) ~> u   v
 #check_simp (u || v : Bool) !~>
-#check_simp (b ∨ c : Prop)  !~>
-#check_simp (b ∨ c : Bool)  ~> b || c
-#check_simp (b || c : Prop) ~> b ∨  c
+#check_simp (b  c : Prop)  !~>
+#check_simp (b  c : Bool)  ~> b || c
+#check_simp (b || c : Prop) ~> b   c
 #check_simp (b || c : Bool) !~>
 
 -- Partial evaluation
-#check_simp (True ∨ v : Prop)  ~> True
-#check_simp (True ∨ v : Bool)  ~> true
+#check_simp (True  v : Prop)  ~> True
+#check_simp (True  v : Bool)  ~> true
 #check_simp (True || v : Prop) ~> True
 #check_simp (True || v : Bool) ~> true
-#check_simp (true ∨  c : Prop) ~> True
-#check_simp (true ∨  c : Bool) ~> true
+#check_simp (true   c : Prop) ~> True
+#check_simp (true   c : Bool) ~> true
 #check_simp (true || c : Prop) ~> True
 #check_simp (true || c : Bool) ~> true
 
-#check_simp (u ∨  True : Prop) ~> True
-#check_simp (u ∨  True : Bool) ~> true
+#check_simp (u   True : Prop) ~> True
+#check_simp (u   True : Bool) ~> true
 #check_simp (u || True : Prop) ~> True
 #check_simp (u || True : Bool) ~> true
-#check_simp (b ∨  true : Prop) ~> True
-#check_simp (b ∨  true : Bool) ~> true
+#check_simp (b   true : Prop) ~> True
+#check_simp (b   true : Bool) ~> true
 #check_simp (b || true : Prop) ~> True
 #check_simp (b || true : Bool) ~> true
 
-#check_simp (False ∨ v : Prop)  ~> v
-#check_simp (False ∨ v : Bool)  ~> (v : Bool)
+#check_simp (False  v : Prop)  ~> v
+#check_simp (False  v : Bool)  ~> (v : Bool)
 #check_simp (False || v : Prop) ~> v
 #check_simp (False || v : Bool) ~> (v : Bool)
-#check_simp (false ∨ c : Prop)  ~> (c : Prop)
-#check_simp (false ∨ c : Bool)  ~> c
+#check_simp (false  c : Prop)  ~> (c : Prop)
+#check_simp (false  c : Bool)  ~> c
 #check_simp (false || c : Prop) ~> (c : Prop)
 #check_simp (false || c : Bool) ~> c
 
-#check_simp (u ∨ False : Prop)  ~> u
-#check_simp (u ∨ False : Bool)  ~> (u : Bool)
+#check_simp (u  False : Prop)  ~> u
+#check_simp (u  False : Bool)  ~> (u : Bool)
 #check_simp (u || False : Prop) ~> u
 #check_simp (u || False : Bool) ~> (u : Bool)
-#check_simp (b ∨ false : Prop)  ~> (b : Prop)
-#check_simp (b ∨ false : Bool)  ~> b
+#check_simp (b  false : Prop)  ~> (b : Prop)
+#check_simp (b  false : Bool)  ~> b
 #check_simp (b || false : Prop) ~> (b : Prop)
 #check_simp (b || false : Bool) ~> b
 
 -- Idempotence
-#check_simp (u ∨ u)  ~> u
+#check_simp (u  u)  ~> u
 #check_simp (u || u) ~> (u : Bool)
-#check_simp (b ∨  b) ~> (b : Prop)
+#check_simp (b   b) ~> (b : Prop)
 #check_simp (b || b) ~> b
 
 -- Complement
 -- Note. We may want to revisit this.
 --   Decidable excluded middle currently does not simplify.
-#check_simp ( u ∨  ¬u) !~>
-#check_simp (¬u ∨   u) !~>
+#check_simp ( u   ¬u) !~>
+#check_simp (¬u    u) !~>
 #check_simp ( b || ¬b)  ~> true
 #check_simp (¬b ||  b)  ~> true
 
 -- Check we swap operators, but do apply deMorgan etc
-#check_simp ¬(u ∨ v)  ~> ¬u ∧ ¬v
-#check_simp !(u ∨ v)  ~> !u && !v
-#check_simp ¬(b ∨ c)  ~> b = false ∧ c =false
-#check_simp !(b ∨ c)  ~> !b && !c
+#check_simp ¬(u  v)  ~> ¬u ∧ ¬v
+#check_simp !(u  v)  ~> !u && !v
+#check_simp ¬(b  c)  ~> b = false ∧ c =false
+#check_simp !(b  c)  ~> !b && !c
 #check_simp ¬(u || v) ~> ¬u ∧ ¬v
 #check_simp ¬(b || c) ~> b = false ∧ c = false
 #check_simp !(u || v) ~> !u && !v
 #check_simp !(b || c) ~> !b && !c
-#check_simp ¬u ∨  ¬v !~>
-#check_simp (¬b) ∨ (¬c)  ~> b = false ∨ c = false
+#check_simp ¬u   ¬v !~>
+#check_simp (¬b)  (¬c)  ~> b = false  c = false
 #check_simp ¬u || ¬v  ~> (!u || !v)
 #check_simp ¬b || ¬c  ~> (!b || !c)
 
 -- Some ternary test cases
-#check_simp (u ∨ (v ∨ w) : Prop) !~>
-#check_simp (u ∨ (v ∨ w) : Bool)   ~> (u || (v || w))
-#check_simp ((u ∨ v) ∨ w : Prop) !~>
-#check_simp ((u ∨ v) ∨ w : Bool)   ~> ((u || v) || w)
-#check_simp (b || (c || d) : Prop) ~> (b ∨ c ∨ d)
+#check_simp (u  (v  w) : Prop) !~>
+#check_simp (u  (v  w) : Bool)   ~> (u || (v || w))
+#check_simp ((u  v)  w : Prop) !~>
+#check_simp ((u  v)  w : Bool)   ~> ((u || v) || w)
+#check_simp (b || (c || d) : Prop) ~> (b  c  d)
 #check_simp (b || (c || d) : Bool) !~>
-#check_simp ((b || c) || d : Prop) ~> ((b ∨ c) ∨ d)
+#check_simp ((b || c) || d : Prop) ~> ((b  c)  d)
 #check_simp ((b || c) || d : Bool) !~>
 
 /- # and/or -/
@@ -250,13 +250,13 @@ variable [Decidable u]
 -- We don't currently do automatic simplification across and/or/not
 -- This tests for non-unexpected reductions.
 
-#check_simp p ∧ (p ∨ q) !~>
-#check_simp (p ∨ q) ∧ p !~>
+#check_simp p ∧ (p  q) !~>
+#check_simp (p  q) ∧ p !~>
 
-#check_simp u ∧ (v ∨ w) !~>
-#check_simp u ∨ (v ∧ w) !~>
-#check_simp (v ∨ w) ∧ u !~>
-#check_simp (v ∧ w) ∨ u !~>
+#check_simp u ∧ (v  w) !~>
+#check_simp u  (v ∧ w) !~>
+#check_simp (v  w) ∧ u !~>
+#check_simp (v ∧ w)  u !~>
 #check_simp b && (c || d) !~>
 #check_simp b || (c && d) !~>
 #check_simp (c || d) && b !~>
@@ -264,10 +264,10 @@ variable [Decidable u]
 
 /- # implication -/
 
-#check_simp (b → c) !~>
-#check_simp (u → v) !~>
-#check_simp p → q !~>
-#check_simp decide (u → ¬v)  ~> !u || !v
+#check_simp (b  c) !~>
+#check_simp (u  v) !~>
+#check_simp p  q !~>
+#check_simp decide (u  ¬v)  ~> !u || !v
 
 /- # iff -/
 
@@ -373,7 +373,7 @@ variable [Decidable u]
 
 /- # equality and and/or interactions -/
 
-#check_simp (u == (v ∨ w)) ~>  u == (v || w)
+#check_simp (u == (v  w)) ~>  u == (v || w)
 #check_simp (u == (v || w)) !~>
 #check_simp ((u ∧ v) == w) ~> (u && v) == w
 
@@ -383,7 +383,7 @@ variable [Decidable u]
 #check_simp if b then p else q !~>
 #check_simp if u then p else q !~>
 #check_simp if u then b else c !~>
-#check_simp if u then u else q ~> ¬u → q
+#check_simp if u then u else q ~> ¬u  q
 #check_simp if u then q else u ~> u ∧ q
 #check_simp if u then q else q  ~> q
 #check_simp cond b c d !~>

@@ -1,5 +1,5 @@
 universe u
-variable {α : Sort u} {p : α → Prop}
+variable {α : Sort u} {p : α  Prop}
 
 @[simp]
 theorem Subtype.coe_mk  (x : α) (h : p x) : (Subtype.mk x h).val = x :=

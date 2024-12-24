@@ -9,9 +9,9 @@ def small (ps : Array (Nat × Nat)) : Array (Nat × Nat) :=
 
 variable {α β : Type} [Inhabited α] [Inhabited β]
 
-def P (xys : Array (α × β)) (f : α → β) : Prop := True
+def P (xys : Array (α × β)) (f : α  β) : Prop := True
 
 example (xys : Array (α × β))
-        (pred? : α → Bool)
+        (pred? : α  Bool)
         (H : Subtype $ P (xys.filter fun (x, _) => pred? x))
         : Unit := ()

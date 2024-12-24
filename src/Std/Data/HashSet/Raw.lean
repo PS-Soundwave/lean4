@@ -172,44 +172,44 @@ section Unverified
 /-! We currently do not provide lemmas for the functions below. -/
 
 /-- Removes all elements from the hash set for which the given function returns `false`. -/
-@[inline] def filter [BEq α] [Hashable α] (f : α → Bool) (m : Raw α) : Raw α :=
+@[inline] def filter [BEq α] [Hashable α] (f : α  Bool) (m : Raw α) : Raw α :=
   ⟨m.inner.filter fun a _ => f a⟩
 
 /--
 Monadically computes a value by folding the given function over the elements in the hash set in some
 order.
 -/
-@[inline] def foldM {m : Type v → Type v} [Monad m] {β : Type v} (f : β → α → m β) (init : β)
+@[inline] def foldM {m : Type v  Type v} [Monad m] {β : Type v} (f : β  α  m β) (init : β)
     (b : Raw α) : m β :=
   b.inner.foldM (fun b a _ => f b a) init
 
 /-- Folds the given function over the elements of the hash set in some order. -/
-@[inline] def fold {β : Type v} (f : β → α → β) (init : β) (m : Raw α) : β :=
+@[inline] def fold {β : Type v} (f : β  α  β) (init : β) (m : Raw α) : β :=
   m.inner.fold (fun b a _ => f b a) init
 
 /-- Carries out a monadic action on each element in the hash set in some order. -/
-@[inline] def forM {m : Type v → Type v} [Monad m] (f : α → m PUnit) (b : Raw α) : m PUnit :=
+@[inline] def forM {m : Type v  Type v} [Monad m] (f : α  m PUnit) (b : Raw α) : m PUnit :=
   b.inner.forM (fun a _ => f a)
 
 /-- Support for the `for` loop construct in `do` blocks. -/
-@[inline] def forIn {m : Type v → Type v} [Monad m] {β : Type v} (f : α → β → m (ForInStep β))
+@[inline] def forIn {m : Type v  Type v} [Monad m] {β : Type v} (f : α  β  m (ForInStep β))
     (init : β) (b : Raw α) : m β :=
   b.inner.forIn (fun a _ acc => f a acc) init
 
-instance {m : Type v → Type v} : ForM m (Raw α) α where
+instance {m : Type v  Type v} : ForM m (Raw α) α where
   forM m f := m.forM f
 
-instance {m : Type v → Type v} : ForIn m (Raw α) α where
+instance {m : Type v  Type v} : ForIn m (Raw α) α where
   forIn m init f := m.forIn f init
 
 /-- Check if all elements satisfy the predicate, short-circuiting if a predicate fails. -/
-@[inline] def all (m : Raw α) (p : α → Bool) : Bool := Id.run do
+@[inline] def all (m : Raw α) (p : α  Bool) : Bool := Id.run do
   for a in m do
     if ¬ p a then return false
   return true
 
 /-- Check if any element satisfies the predicate, short-circuiting if a predicate succeeds. -/
-@[inline] def any (m : Raw α) (p : α → Bool) : Bool := Id.run do
+@[inline] def any (m : Raw α) (p : α  Bool) : Bool := Id.run do
   for a in m do
     if p a then return true
   return false
@@ -292,7 +292,7 @@ theorem WF.containsThenInsert [BEq α] [Hashable α] {m : Raw α} {a : α} (h : 
 theorem WF.erase [BEq α] [Hashable α] {m : Raw α} {a : α} (h : m.WF) : (m.erase a).WF :=
   ⟨HashMap.Raw.WF.erase h.out⟩
 
-theorem WF.filter [BEq α] [Hashable α] {m : Raw α} {f : α → Bool} (h : m.WF) : (m.filter f).WF :=
+theorem WF.filter [BEq α] [Hashable α] {m : Raw α} {f : α  Bool} (h : m.WF) : (m.filter f).WF :=
   ⟨HashMap.Raw.WF.filter h.out⟩
 
 theorem WF.insertMany [BEq α] [Hashable α] {ρ : Type v} [ForIn Id ρ α] {m : Raw α} {l : ρ}

@@ -30,11 +30,11 @@ instance : EmptyCollection ByteArray where
   emptyCollection := ByteArray.empty
 
 @[extern "lean_byte_array_push"]
-def push : ByteArray → UInt8 → ByteArray
+def push : ByteArray  UInt8  ByteArray
   | ⟨bs⟩, b => ⟨bs.push b⟩
 
 @[extern "lean_byte_array_size"]
-def size : (@& ByteArray) → Nat
+def size : (@& ByteArray)  Nat
   | ⟨bs⟩ => bs.size
 
 @[extern "lean_sarray_size", simp]
@@ -42,15 +42,15 @@ def usize (a : @& ByteArray) : USize :=
   a.size.toUSize
 
 @[extern "lean_byte_array_uget"]
-def uget : (a : @& ByteArray) → (i : USize) → (h : i.toNat < a.size := by get_elem_tactic) → UInt8
+def uget : (a : @& ByteArray)  (i : USize)  (h : i.toNat < a.size := by get_elem_tactic)  UInt8
   | ⟨bs⟩, i, h => bs[i]
 
 @[extern "lean_byte_array_get"]
-def get! : (@& ByteArray) → (@& Nat) → UInt8
+def get! : (@& ByteArray)  (@& Nat)  UInt8
   | ⟨bs⟩, i => bs.get! i
 
 @[extern "lean_byte_array_fget"]
-def get : (a : @& ByteArray) → (i : @& Nat) → (h : i < a.size := by get_elem_tactic) → UInt8
+def get : (a : @& ByteArray)  (i : @& Nat)  (h : i < a.size := by get_elem_tactic)  UInt8
   | ⟨bs⟩, i, _ => bs[i]
 
 instance : GetElem ByteArray Nat UInt8 fun xs i => i < xs.size where
@@ -60,15 +60,15 @@ instance : GetElem ByteArray USize UInt8 fun xs i => i.val < xs.size where
   getElem xs i h := xs.uget i h
 
 @[extern "lean_byte_array_set"]
-def set! : ByteArray → (@& Nat) → UInt8 → ByteArray
+def set! : ByteArray  (@& Nat)  UInt8  ByteArray
   | ⟨bs⟩, i, b => ⟨bs.set! i b⟩
 
 @[extern "lean_byte_array_fset"]
-def set : (a : ByteArray) → (i : @& Nat) → UInt8 → (h : i < a.size := by get_elem_tactic) → ByteArray
+def set : (a : ByteArray)  (i : @& Nat)  UInt8  (h : i < a.size := by get_elem_tactic)  ByteArray
   | ⟨bs⟩, i, b, h => ⟨bs.set i b h⟩
 
 @[extern "lean_byte_array_uset"]
-def uset : (a : ByteArray) → (i : USize) → UInt8 → (h : i.toNat < a.size := by get_elem_tactic) → ByteArray
+def uset : (a : ByteArray)  (i : USize)  UInt8  (h : i.toNat < a.size := by get_elem_tactic)  ByteArray
   | ⟨bs⟩, i, v, h => ⟨bs.uset i v h⟩
 
 @[extern "lean_byte_array_hash"]
@@ -106,7 +106,7 @@ def toList (bs : ByteArray) : List UInt8 :=
     decreasing_by decreasing_trivial_pre_omega
   loop 0 []
 
-@[inline] def findIdx? (a : ByteArray) (p : UInt8 → Bool) (start := 0) : Option Nat :=
+@[inline] def findIdx? (a : ByteArray) (p : UInt8  Bool) (start := 0) : Option Nat :=
   let rec @[specialize] loop (i : Nat) :=
     if h : i < a.size then
       if p a[i] then some i else loop (i+1)
@@ -116,7 +116,7 @@ def toList (bs : ByteArray) : List UInt8 :=
     decreasing_by decreasing_trivial_pre_omega
   loop start
 
-@[inline] def findFinIdx? (a : ByteArray) (p : UInt8 → Bool) (start := 0) : Option (Fin a.size) :=
+@[inline] def findFinIdx? (a : ByteArray) (p : UInt8  Bool) (start := 0) : Option (Fin a.size) :=
   let rec @[specialize] loop (i : Nat) :=
     if h : i < a.size then
       if p a[i] then some ⟨i, h⟩ else loop (i+1)
@@ -132,7 +132,7 @@ def toList (bs : ByteArray) : List UInt8 :=
 
   TODO: avoid code duplication in the future after we improve the compiler.
 -/
-@[inline] unsafe def forInUnsafe {β : Type v} {m : Type v → Type w} [Monad m] (as : ByteArray) (b : β) (f : UInt8 → β → m (ForInStep β)) : m β :=
+@[inline] unsafe def forInUnsafe {β : Type v} {m : Type v  Type w} [Monad m] (as : ByteArray) (b : β) (f : UInt8  β  m (ForInStep β)) : m β :=
   let sz := as.usize
   let rec @[specialize] loop (i : USize) (b : β) : m β := do
     if i < sz then
@@ -146,7 +146,7 @@ def toList (bs : ByteArray) : List UInt8 :=
 
 /-- Reference implementation for `forIn` -/
 @[implemented_by ByteArray.forInUnsafe]
-protected def forIn {β : Type v} {m : Type v → Type w} [Monad m] (as : ByteArray) (b : β) (f : UInt8 → β → m (ForInStep β)) : m β :=
+protected def forIn {β : Type v} {m : Type v  Type w} [Monad m] (as : ByteArray) (b : β) (f : UInt8  β  m (ForInStep β)) : m β :=
   let rec loop (i : Nat) (h : i ≤ as.size) (b : β) : m β := do
     match i, h with
     | 0,   _ => pure b
@@ -165,7 +165,7 @@ instance : ForIn m ByteArray UInt8 where
 /-- See comment at `forInUnsafe` -/
 -- TODO: avoid code duplication.
 @[inline]
-unsafe def foldlMUnsafe {β : Type v} {m : Type v → Type w} [Monad m] (f : β → UInt8 → m β) (init : β) (as : ByteArray) (start := 0) (stop := as.size) : m β :=
+unsafe def foldlMUnsafe {β : Type v} {m : Type v  Type w} [Monad m] (f : β  UInt8  m β) (init : β) (as : ByteArray) (start := 0) (stop := as.size) : m β :=
   let rec @[specialize] fold (i : USize) (stop : USize) (b : β) : m β := do
     if i == stop then
       pure b
@@ -181,7 +181,7 @@ unsafe def foldlMUnsafe {β : Type v} {m : Type v → Type w} [Monad m] (f : β 
 
 /-- Reference implementation for `foldlM` -/
 @[implemented_by foldlMUnsafe]
-def foldlM {β : Type v} {m : Type v → Type w} [Monad m] (f : β → UInt8 → m β) (init : β) (as : ByteArray) (start := 0) (stop := as.size) : m β :=
+def foldlM {β : Type v} {m : Type v  Type w} [Monad m] (f : β  UInt8  m β) (init : β) (as : ByteArray) (start := 0) (stop := as.size) : m β :=
   let fold (stop : Nat) (h : stop ≤ as.size) :=
     let rec loop (i : Nat) (j : Nat) (b : β) : m β := do
       if hlt : j < stop then
@@ -198,7 +198,7 @@ def foldlM {β : Type v} {m : Type v → Type w} [Monad m] (f : β → UInt8 →
     fold as.size (Nat.le_refl _)
 
 @[inline]
-def foldl {β : Type v} (f : β → UInt8 → β) (init : β) (as : ByteArray) (start := 0) (stop := as.size) : β :=
+def foldl {β : Type v} (f : β  UInt8  β) (init : β) (as : ByteArray) (start := 0) (stop := as.size) : β :=
   Id.run <| as.foldlM f init start stop
 
 /-- Iterator over the bytes (`UInt8`) of a `ByteArray`.
@@ -243,7 +243,7 @@ theorem Iterator.sizeOf_eq (i : Iterator) : sizeOf i = i.array.size - i.idx :=
 namespace Iterator
 
 /-- Number of bytes remaining in the iterator. -/
-def remainingBytes : Iterator → Nat
+def remainingBytes : Iterator  Nat
   | ⟨arr, i⟩ => arr.size - i
 
 @[inherit_doc Iterator.idx]
@@ -253,7 +253,7 @@ def pos := Iterator.idx
 
 On an invalid position, returns `(default : UInt8)`. -/
 @[inline]
-def curr : Iterator → UInt8
+def curr : Iterator  UInt8
   | ⟨arr, i⟩ =>
     if h : i < arr.size then
       arr[i]'h
@@ -265,24 +265,24 @@ def curr : Iterator → UInt8
 It is only valid to call this function if the iterator is not at the end of the array, *i.e.*
 `Iterator.atEnd` is `false`; otherwise, the resulting iterator will be invalid. -/
 @[inline]
-def next : Iterator → Iterator
+def next : Iterator  Iterator
   | ⟨arr, i⟩ => ⟨arr, i + 1⟩
 
 /-- Decreases the iterator's position.
 
 If the position is zero, this function is the identity. -/
 @[inline]
-def prev : Iterator → Iterator
+def prev : Iterator  Iterator
   | ⟨arr, i⟩ => ⟨arr, i - 1⟩
 
 /-- True if the iterator is past the array's last byte. -/
 @[inline]
-def atEnd : Iterator → Bool
+def atEnd : Iterator  Bool
   | ⟨arr, i⟩ => i ≥ arr.size
 
 /-- True if the iterator is not past the array's last byte. -/
 @[inline]
-def hasNext : Iterator → Bool
+def hasNext : Iterator  Bool
   | ⟨arr, i⟩ => i < arr.size
 
 /-- The byte at the current position. --/
@@ -303,14 +303,14 @@ def next' (it : Iterator) (_h : it.hasNext) : Iterator :=
 
 /-- True if the position is not zero. -/
 @[inline]
-def hasPrev : Iterator → Bool
+def hasPrev : Iterator  Bool
   | ⟨_, i⟩ => i > 0
 
 /-- Moves the iterator's position to the end of the array.
 
 Note that `i.toEnd.atEnd` is always `true`. -/
 @[inline]
-def toEnd : Iterator → Iterator
+def toEnd : Iterator  Iterator
   | ⟨arr, _⟩ => ⟨arr, arr.size⟩
 
 /-- Moves the iterator's position several bytes forward.
@@ -318,17 +318,17 @@ def toEnd : Iterator → Iterator
 The resulting iterator is only valid if the number of bytes to skip is less than or equal to
 the number of bytes left in the iterator. -/
 @[inline]
-def forward : Iterator → Nat → Iterator
+def forward : Iterator  Nat  Iterator
   | ⟨arr, i⟩, f => ⟨arr, i + f⟩
 
 @[inherit_doc forward, inline]
-def nextn : Iterator → Nat → Iterator := forward
+def nextn : Iterator  Nat  Iterator := forward
 
 /-- Moves the iterator's position several bytes back.
 
 If asked to go back more bytes than available, stops at the beginning of the array. -/
 @[inline]
-def prevn : Iterator → Nat → Iterator
+def prevn : Iterator  Nat  Iterator
   | ⟨arr, i⟩, f => ⟨arr, i - f⟩
 
 end Iterator

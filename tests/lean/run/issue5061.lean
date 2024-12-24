@@ -1,4 +1,4 @@
-opaque fin_max {n: Nat} (f: Fin n → Nat) : Nat
+opaque fin_max {n: Nat} (f: Fin n  Nat) : Nat
 
 set_option maxRecDepth 30 in
 -- NB: Important to not specify the implicit argument of fin_max here

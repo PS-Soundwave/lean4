@@ -1,15 +1,15 @@
 universe u
 
-def concat {α} : List α → α → List α
+def concat {α} : List α  α  List α
   | [],    a => [a]
   | x::xs, a => x :: concat xs a
 
-def last {α} : (xs : List α) → xs ≠ [] → α
+def last {α} : (xs : List α)  xs ≠ []  α
   | [],       h => by contradiction
   | [a],      h => a
   | _::a::as, h => last (a::as) (fun h => by injection h)
 
-def dropLast {α} : List α → List α
+def dropLast {α} : List α  List α
   | []    => []
   | [a]   => []
   | a::as => a :: dropLast as
@@ -25,11 +25,11 @@ theorem concatEq (xs : List α) (h : xs ≠ []) : concat (dropLast xs) (last xs 
 theorem lengthCons {α} (x : α) (xs : List α) : (x::xs).length = xs.length + 1 :=
   rfl
 
-theorem eqNilOfLengthZero {α} : (xs : List α) → xs.length = 0 → xs = []
+theorem eqNilOfLengthZero {α} : (xs : List α)  xs.length = 0  xs = []
   | [],    h => rfl
   | x::xs, h => by rw [lengthCons] at h; contradiction
 
-theorem dropLastLen {α} (xs : List α) : (n : Nat) → xs.length = n+1 → (dropLast xs).length = n := by
+theorem dropLastLen {α} (xs : List α) : (n : Nat)  xs.length = n+1  (dropLast xs).length = n := by
   match xs with
   | []    => intros; contradiction
   | [a]   =>
@@ -50,12 +50,12 @@ theorem dropLastLen {α} (xs : List α) : (n : Nat) → xs.length = n+1 → (dro
 
 @[inline]
 def concatElim {α}
-    (motive : List α → Sort u)
-    (base   : Unit → motive [])
-    (ind    : (xs : List α) → (a : α) → motive xs → motive (concat xs a))
+    (motive : List α  Sort u)
+    (base   : Unit  motive [])
+    (ind    : (xs : List α)  (a : α)  motive xs  motive (concat xs a))
     (xs : List α)
     : motive xs :=
-  let rec @[specialize] aux : (n : Nat) → (xs : List α) → xs.length = n → motive xs
+  let rec @[specialize] aux : (n : Nat)  (xs : List α)  xs.length = n  motive xs
     | 0, xs, h   => by
       have aux := eqNilOfLengthZero _ h
       subst aux

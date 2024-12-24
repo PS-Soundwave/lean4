@@ -144,7 +144,7 @@ set_option autoImplicit false
 
 universe u v w
 
-variable {α : Type u} {β : α → Type v} {δ : Type w} {m : Type w → Type w} [Monad m]
+variable {α : Type u} {β : α  Type v} {δ : Type w} {m : Type w  Type w} [Monad m]
 
 namespace Std
 
@@ -163,7 +163,7 @@ def toListModel (buckets : Array (AssocList α β)) : List ((a : α) × β a) :=
   buckets.foldl (fun d b => d + b.length) 0
 
 /-- Internal implementation detail of the hash map -/
-abbrev Raw₀ (α : Type u) (β : α → Type v) :=
+abbrev Raw₀ (α : Type u) (β : α  Type v) :=
   { m : Raw α β // 0 < m.buckets.size }
 
 namespace Raw₀
@@ -176,7 +176,7 @@ namespace Raw₀
 -- Take `hash` as a function instead of `Hashable α` as per
 -- https://github.com/leanprover/lean4/issues/4191
 /-- Internal implementation detail of the hash map -/
-@[inline] def reinsertAux (hash : α → UInt64) (data : { d : Array (AssocList α β) // 0 < d.size })
+@[inline] def reinsertAux (hash : α  UInt64) (data : { d : Array (AssocList α β) // 0 < d.size })
     (a : α) (b : β a) : { d : Array (AssocList α β) // 0 < d.size } :=
   let ⟨data, hd⟩ := data
   let ⟨i, h⟩ := mkIdx data.size hd (hash a)
@@ -324,30 +324,30 @@ where
 
 -- Computing the size after the fact was determined to be faster than computing it inline
 /-- Internal implementation detail of the hash map -/
-@[inline] def filterMap {γ : α → Type w} (f : (a : α) → β a → Option (γ a))
+@[inline] def filterMap {γ : α  Type w} (f : (a : α)  β a  Option (γ a))
     (m : Raw₀ α β) : Raw₀ α γ :=
   let ⟨⟨_, buckets⟩, hb⟩ := m
   let newBuckets := buckets.map (AssocList.filterMap f)
   ⟨⟨computeSize newBuckets, newBuckets⟩, by simpa [newBuckets] using hb⟩
 
 /-- Internal implementation detail of the hash map -/
-@[inline] def map {γ : α → Type w} (f : (a : α) → β a → γ a) (m : Raw₀ α β) : Raw₀ α γ :=
+@[inline] def map {γ : α  Type w} (f : (a : α)  β a  γ a) (m : Raw₀ α β) : Raw₀ α γ :=
   let ⟨⟨size, buckets⟩, hb⟩ := m
   let newBuckets := buckets.map (AssocList.map f)
   ⟨⟨size, newBuckets⟩, by simpa [newBuckets] using hb⟩
 
 /-- Internal implementation detail of the hash map -/
-@[inline] def filter (f : (a : α) → β a → Bool) (m : Raw₀ α β) : Raw₀ α β :=
+@[inline] def filter (f : (a : α)  β a  Bool) (m : Raw₀ α β) : Raw₀ α β :=
   let ⟨⟨_, buckets⟩, hb⟩ := m
   let newBuckets := buckets.map (AssocList.filter f)
   ⟨⟨computeSize newBuckets, newBuckets⟩, by simpa [newBuckets] using hb⟩
 
 /-- Internal implementation detail of the hash map -/
 @[inline] def insertMany {ρ : Type w} [ForIn Id ρ ((a : α) × β a)] [BEq α] [Hashable α]
-    (m : Raw₀ α β) (l : ρ) : { m' : Raw₀ α β // ∀ (P : Raw₀ α β → Prop),
-      (∀ {m'' a b}, P m'' → P (m''.insert a b)) → P m → P m' } := Id.run do
-  let mut r : { m' : Raw₀ α β // ∀ (P : Raw₀ α β → Prop),
-    (∀ {m'' a b}, P m'' → P (m''.insert a b)) → P m → P m' } := ⟨m, fun _ _ => id⟩
+    (m : Raw₀ α β) (l : ρ) : { m' : Raw₀ α β // ∀ (P : Raw₀ α β  Prop),
+      (∀ {m'' a b}, P m''  P (m''.insert a b))  P m  P m' } := Id.run do
+  let mut r : { m' : Raw₀ α β // ∀ (P : Raw₀ α β  Prop),
+    (∀ {m'' a b}, P m''  P (m''.insert a b))  P m  P m' } := ⟨m, fun _ _ => id⟩
   for ⟨a, b⟩ in l do
     r := ⟨r.1.insert a b, fun _ h hm => h (r.2 _ h hm)⟩
   return r
@@ -398,10 +398,10 @@ variable {β : Type v}
 /-- Internal implementation detail of the hash map -/
 @[inline] def Const.insertMany {ρ : Type w} [ForIn Id ρ (α × β)] [BEq α] [Hashable α]
     (m : Raw₀ α (fun _ => β)) (l : ρ) :
-    { m' : Raw₀ α (fun _ => β) // ∀ (P : Raw₀ α (fun _ => β) → Prop),
-      (∀ {m'' a b}, P m'' → P (m''.insert a b)) → P m → P m' } := Id.run do
-  let mut r : { m' : Raw₀ α (fun _ => β) // ∀ (P : Raw₀ α (fun _ => β) → Prop),
-    (∀ {m'' a b}, P m'' → P (m''.insert a b)) → P m → P m' } := ⟨m, fun _ _ => id⟩
+    { m' : Raw₀ α (fun _ => β) // ∀ (P : Raw₀ α (fun _ => β)  Prop),
+      (∀ {m'' a b}, P m''  P (m''.insert a b))  P m  P m' } := Id.run do
+  let mut r : { m' : Raw₀ α (fun _ => β) // ∀ (P : Raw₀ α (fun _ => β)  Prop),
+    (∀ {m'' a b}, P m''  P (m''.insert a b))  P m  P m' } := ⟨m, fun _ _ => id⟩
   for (a, b) in l do
     r := ⟨r.1.insert a b, fun _ h hm => h (r.2 _ h hm)⟩
   return r
@@ -409,10 +409,10 @@ variable {β : Type v}
 /-- Internal implementation detail of the hash map -/
 @[inline] def Const.insertManyIfNewUnit {ρ : Type w} [ForIn Id ρ α] [BEq α] [Hashable α]
     (m : Raw₀ α (fun _ => Unit)) (l : ρ) :
-    { m' : Raw₀ α (fun _ => Unit) // ∀ (P : Raw₀ α (fun _ => Unit) → Prop),
-      (∀ {m'' a b}, P m'' → P (m''.insertIfNew a b)) → P m → P m' } := Id.run do
-  let mut r : { m' : Raw₀ α (fun _ => Unit) // ∀ (P : Raw₀ α (fun _ => Unit) → Prop),
-    (∀ {m'' a b}, P m'' → P (m''.insertIfNew a b)) → P m → P m' } := ⟨m, fun _ _ => id⟩
+    { m' : Raw₀ α (fun _ => Unit) // ∀ (P : Raw₀ α (fun _ => Unit)  Prop),
+      (∀ {m'' a b}, P m''  P (m''.insertIfNew a b))  P m  P m' } := Id.run do
+  let mut r : { m' : Raw₀ α (fun _ => Unit) // ∀ (P : Raw₀ α (fun _ => Unit)  Prop),
+    (∀ {m'' a b}, P m''  P (m''.insertIfNew a b))  P m  P m' } := ⟨m, fun _ _ => id⟩
   for a in l do
     r := ⟨r.1.insertIfNew a (), fun _ h hm => h (r.2 _ h hm)⟩
   return r
@@ -449,7 +449,7 @@ end Raw₀
 structure List.HashesTo [BEq α] [Hashable α] (l : List ((a : α) × β a)) (i : Nat)
     (size : Nat) : Prop where
   /-- Internal implementation detail of the hash map -/
-  hash_self : (h : 0 < size) → ∀ p, p ∈ l → (mkIdx size h (hash p.1)).1.toNat = i
+  hash_self : (h : 0 < size)  ∀ p, p ∈ l  (mkIdx size h (hash p.1)).1.toNat = i
 
 /-- Internal implementation detail of the hash map -/
 structure IsHashSelf [BEq α] [Hashable α] (m : Array (AssocList α β)) : Prop where

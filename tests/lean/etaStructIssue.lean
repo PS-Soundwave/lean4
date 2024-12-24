@@ -1,8 +1,8 @@
 inductive E : Type where
-  | mk : E → E
+  | mk : E  E
 
-inductive F : E → Prop
-  | mk : F e → F (E.mk e)
+inductive F : E  Prop
+  | mk : F e  F (E.mk e)
 
 theorem dec (x : F (E.mk e)) : F e ∧ True :=
   match x with

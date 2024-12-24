@@ -11,26 +11,26 @@ inductive Exp
   | a4
   | a5
 with
-  @[computed_field] hash : Exp → UInt64
+  @[computed_field] hash : Exp  UInt64
     | .var i => Hashable.hash i + 1000
     | .app a b => mixHash (hash a) (hash b)
     | _ => 42
 
 def f := Exp.hash (.app (.var 10) .a4)
 
--- should use 'default →' case
-def g : Exp → Bool
+-- should use 'default ' case
+def g : Exp  Bool
   | .a3 => true
   | _ => false
 
 -- using the same matcher as in the computed field should work
-def hash' : Exp → Nat
+def hash' : Exp  Nat
   | .var i => i.toNat
   | .app a b => hash' a + hash' b
   | _ => 42
 
 -- should not invoke Exp.var._override
-def getAppFn : Exp → Exp
+def getAppFn : Exp  Exp
   | .app f _ => getAppFn f
   | e => e
 

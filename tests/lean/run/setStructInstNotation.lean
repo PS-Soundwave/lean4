@@ -5,9 +5,9 @@ structure Foo where
 def bla (x : Foo) : IO Unit := do
   let { a, b } := x
 
-def Set (α : Type u) := α → Prop
+def Set (α : Type u) := α  Prop
 
-def setOf {α : Type u} (p : α → Prop) : Set α :=
+def setOf {α : Type u} (p : α  Prop) : Set α :=
   p
 
 namespace Set
@@ -19,13 +19,13 @@ instance : Membership α (Set α) :=
   ⟨Set.mem⟩
 
 protected def subset (s₁ s₂ : Set α) :=
-  ∀ {a}, a ∈ s₁ → a ∈ s₂
+  ∀ {a}, a ∈ s₁  a ∈ s₂
 
 instance : EmptyCollection (Set α) :=
   ⟨λ a => false⟩
 
 protected def insert (a : α) (s : Set α) : Set α :=
-  fun b => b = a ∨ b ∈ s
+  fun b => b = a  b ∈ s
 
 protected def singleton (a : α) : Set α :=
   fun b => b = a
@@ -55,7 +55,7 @@ def f3 (a b : Nat) : Set Nat :=
 def f4 (a b : α) : Set α :=
   { a, b }
 
-/-- info: @f4 : {α : Type u_1} → α → α → Set α -/
+/-- info: @f4 : {α : Type u_1}  α  α  Set α -/
 #guard_msgs in
 #check @f4
 
@@ -70,6 +70,6 @@ def boo2 (x : Foo) : IO Unit := do
   let { a, b } := x
   pure ()
 
-def boo3 (x : Nat → IO Foo) : IO Nat := do
+def boo3 (x : Nat  IO Foo) : IO Nat := do
   let { a, b } ← x 0
   return a + b

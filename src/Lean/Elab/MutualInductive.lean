@@ -133,9 +133,9 @@ structure InductiveElabStep2 where
   /-- Step to finalize term elaboration, done immediately after universe level processing is complete. -/
   finalizeTermElab : TermElabM Unit := pure ()
   /-- Like `finalize`, but occurs before `afterTypeChecking` attributes. -/
-  prefinalize (levelParams : List Name) (params : Array Expr) (replaceIndFVars : Expr → MetaM Expr) : TermElabM Unit := fun _ _ _ => pure ()
+  prefinalize (levelParams : List Name) (params : Array Expr) (replaceIndFVars : Expr  MetaM Expr) : TermElabM Unit := fun _ _ _ => pure ()
   /-- Finalize the inductive type, after they are all added to the environment, after auxiliary definitions are added, and after computed fields are registered. -/
-  finalize (levelParams : List Name) (params : Array Expr) (replaceIndFVars : Expr → MetaM Expr) : TermElabM Unit := fun _ _ _ => pure ()
+  finalize (levelParams : List Name) (params : Array Expr) (replaceIndFVars : Expr  MetaM Expr) : TermElabM Unit := fun _ _ _ => pure ()
   deriving Inhabited
 
 /-- An intermediate step for mutual inductive elaboration. See `InductiveElabDescr`. -/
@@ -163,7 +163,7 @@ Elaboration occurs in the following steps:
   by `InductiveStep2.prefinalize` and `InductiveStep2.finalize`.
 -/
 structure InductiveElabDescr where
-  mkInductiveView : Modifiers → Syntax → TermElabM InductiveElabStep1
+  mkInductiveView : Modifiers  Syntax  TermElabM InductiveElabStep1
   deriving Inhabited
 
 /--
@@ -324,7 +324,7 @@ We use the local context/instances and parameters of rs[0].
 Note that this method is executed after we executed `checkHeaders` and established all
 parameters are compatible.
 -/
-private def withInductiveLocalDecls (rs : Array PreElabHeaderResult) (x : Array Expr → Array Expr → TermElabM α) : TermElabM α := do
+private def withInductiveLocalDecls (rs : Array PreElabHeaderResult) (x : Array Expr  Array Expr  TermElabM α) : TermElabM α := do
   let namesAndTypes ← rs.mapM fun r => do
     let type ← mkTypeFor r
     pure (r.view.declName, r.view.shortDeclName, type)
@@ -413,11 +413,11 @@ private def computeFixedIndexBitMask (numParams : Nat) (indType : InductiveType)
               /-If an index is missing in the arguments of the inductive type, then it must be non-fixed.
                 Consider the following example:
                 ```lean
-                inductive All {I : Type u} (P : I → Type v) : List I → Type (max u v) where
-                  | cons : P x → All P xs → All P (x :: xs)
+                inductive All {I : Type u} (P : I  Type v) : List I  Type (max u v) where
+                  | cons : P x  All P xs  All P (x :: xs)
 
-                inductive Iμ {I : Type u}  : I → Type (max u v) where
-                  | mk : (i : I)  → All Iμ [] → Iμ i
+                inductive Iμ {I : Type u}  : I  Type (max u v) where
+                  | mk : (i : I)   All Iμ []  Iμ i
                 ```
                 because `i` doesn't appear in `All Iμ []`, the index shouldn't be fixed.
               -/
@@ -435,7 +435,7 @@ private def isDomainDefEq (arrowType : Expr) (type : Expr) : MetaM Bool := do
       We used to use `withNewMCtxDepth` to make sure we do not assign universe metavariables,
       but it was not satisfactory. For example, in declarations such as
       ```
-      inductive Eq : α → α → Prop where
+      inductive Eq : α  α  Prop where
       | refl (a : α) : Eq a a
       ```
       We want the first two indices to be promoted to parameters, and this will only
@@ -478,7 +478,7 @@ private def fixedIndicesToParams (numParams : Nat) (indTypes : Array InductiveTy
         return i
     go numParams type typesToCheck
 
-private def getResultingUniverse : List InductiveType → TermElabM Level
+private def getResultingUniverse : List InductiveType  TermElabM Level
   | []           => throwError "unexpected empty inductive declaration"
   | indType :: _ => forallTelescopeReducing indType.type fun _ r => do
     let r ← whnfD r
@@ -800,7 +800,7 @@ private def removeUnused (elabs : Array InductiveElabStep2) (vars : Array Expr) 
   let (_, used) ← (collectUsed indTypes *> elabs.forM fun e => e.collectUsedFVars).run {}
   Meta.removeUnused vars used
 
-private def withUsed {α} (elabs : Array InductiveElabStep2) (vars : Array Expr) (indTypes : List InductiveType) (k : Array Expr → TermElabM α) : TermElabM α := do
+private def withUsed {α} (elabs : Array InductiveElabStep2) (vars : Array Expr) (indTypes : List InductiveType) (k : Array Expr  TermElabM α) : TermElabM α := do
   let (lctx, localInsts, vars) ← removeUnused elabs vars indTypes
   withLCtx lctx localInsts <| k vars
 
@@ -854,7 +854,7 @@ private structure FinalizeContext where
   params : Array Expr
   lctx : LocalContext
   localInsts : LocalInstances
-  replaceIndFVars : Expr → MetaM Expr
+  replaceIndFVars : Expr  MetaM Expr
 
 private def mkInductiveDecl (vars : Array Expr) (elabs : Array InductiveElabStep1) : TermElabM FinalizeContext :=
   Term.withoutSavingRecAppSyntax do

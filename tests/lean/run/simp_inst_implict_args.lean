@@ -9,7 +9,7 @@ theorem dec_and (p q : Prop) [Decidable (p ∧ q)] [Decidable p] [Decidable q] :
 theorem dec_not (p : Prop) [Decidable (¬p)] [Decidable p] : decide (¬p) = !p := by
   by_cases p <;> simp [*]
 
-example [Decidable u] [Decidable v] : decide (u ∧ (v → False)) = (decide u && !decide v) := by
+example [Decidable u] [Decidable v] : decide (u ∧ (v  False)) = (decide u && !decide v) := by
   simp only [imp_false]
   simp only [dec_and]
   simp only [dec_not]

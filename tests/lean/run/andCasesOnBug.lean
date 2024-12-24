@@ -1,6 +1,6 @@
-inductive FinInt: Nat → Type :=
+inductive FinInt: Nat  Type :=
   | nil: FinInt 0
-  | next: Bool → FinInt n → FinInt (n+1)
+  | next: Bool  FinInt n  FinInt (n+1)
 deriving DecidableEq
 
 def zero (sz: Nat): FinInt sz :=
@@ -11,7 +11,7 @@ def zero (sz: Nat): FinInt sz :=
 inductive Pair :=
   | mk (sz: Nat) (lhs rhs: FinInt sz)
 
-def makePair?: (n m: (sz: Nat) × FinInt sz) → Option Pair
+def makePair?: (n m: (sz: Nat) × FinInt sz)  Option Pair
   | ⟨sz, lhs⟩, ⟨sz', rhs⟩ =>
       if EQ: true /\ sz = sz' then
             have rhs' : FinInt sz := by {
@@ -23,7 +23,7 @@ def makePair?: (n m: (sz: Nat) × FinInt sz) → Option Pair
             some (Pair.mk sz lhs rhs')
       else none
 
-def usePair: Pair → Bool := fun ⟨sz, lhs, rhs⟩ => lhs = rhs
+def usePair: Pair  Bool := fun ⟨sz, lhs, rhs⟩ => lhs = rhs
 
 /-- info: some true -/
 #guard_msgs in

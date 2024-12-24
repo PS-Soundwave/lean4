@@ -2,11 +2,11 @@
 
 mutual
 
-def f (x : Nat) : Nat → Nat
+def f (x : Nat) : Nat  Nat
 | 0   => 1
 | x+1 => g x
 
-theorem g (x : Nat) : Nat → Nat -- cannot mix theorems and definitions
+theorem g (x : Nat) : Nat  Nat -- cannot mix theorems and definitions
 | 0   => 2
 | x+1 => f x
 
@@ -14,7 +14,7 @@ end
 
 mutual
 
-def f  : Nat → Nat
+def f  : Nat  Nat
 | 0   => 1
 | x+1 => g x
 
@@ -25,11 +25,11 @@ end
 
 mutual
 
-def f (x : Nat) : Nat → Nat
+def f (x : Nat) : Nat  Nat
 | 0   => 1
 | x+1 => g x
 
-unsafe def g (x : Nat) : Nat → Nat -- cannot mix safe and unsafe definitions
+unsafe def g (x : Nat) : Nat  Nat -- cannot mix safe and unsafe definitions
 | 0   => 2
 | x+1 => f x
 

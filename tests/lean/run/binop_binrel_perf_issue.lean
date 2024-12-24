@@ -8,9 +8,9 @@ section Mathlib.Init.Set
 
 set_option autoImplicit true
 
-def Set (α : Type u) := α → Prop
+def Set (α : Type u) := α  Prop
 
-def setOf {α : Type u} (p : α → Prop) : Set α := p
+def setOf {α : Type u} (p : α  Prop) : Set α := p
 
 namespace Set
 
@@ -40,17 +40,17 @@ universe u₁ u₂
 
 variable {α : Sort u₁} {β : Sort u₂}
 
-def Function.Injective (f : α → β) : Prop :=
-  ∀ ⦃a₁ a₂⦄, f a₁ = f a₂ → a₁ = a₂
+def Function.Injective (f : α  β) : Prop :=
+  ∀ ⦃a₁ a₂⦄, f a₁ = f a₂  a₁ = a₂
 
-def Function.Surjective (f : α → β) : Prop :=
+def Function.Surjective (f : α  β) : Prop :=
   ∀ b, ∃ a, f a = b
 
 end Mathlib.Init.Function
 
 section Mathlib.Data.Subtype
 
-variable {α : Sort _} {p : α → Prop}
+variable {α : Sort _} {p : α  Prop}
 
 theorem Subtype.coe_injective : Function.Injective (fun (a : Subtype p) ↦ (a : α)) := fun _ _ ↦ Subtype.ext
 
@@ -64,13 +64,13 @@ namespace Set
 
 variable {α : Type u} {β : Type v}
 
-def preimage (f : α → β) (s : Set β) : Set α := setOf fun x => f x ∈ s
+def preimage (f : α  β) (s : Set β) : Set α := setOf fun x => f x ∈ s
 
 infixl:80 " ⁻¹' " => preimage
 
-variable {ι : Sort _} {f : ι → α}
+variable {ι : Sort _} {f : ι  α}
 
-def range (f : ι → α) : Set α := setOf fun x => ∃ y, f y = x
+def range (f : ι  α) : Set α := setOf fun x => ∃ y, f y = x
 
 end Set
 
@@ -78,8 +78,8 @@ end Mathlib.Data.Set.Defs
 
 section Mathlib.Data.FunLike.Basic
 
-class DFunLike (F : Sort _) (α : outParam (Sort _)) (β : outParam <| α → Sort _) where
-  coe : F → ∀ a : α, β a
+class DFunLike (F : Sort _) (α : outParam (Sort _)) (β : outParam <| α  Sort _) where
+  coe : F  ∀ a : α, β a
 
 abbrev FunLike F α β := DFunLike F α fun _ => β
 
@@ -99,10 +99,10 @@ section Mathlib.Logic.Relator
 universe u₁ u₂ v₁ v₂
 
 variable {α : Sort u₁} {β : Sort u₂} {γ : Sort v₁} {δ : Sort v₂}
-variable (R : α → β → Prop) (S : γ → δ → Prop)
+variable (R : α  β  Prop) (S : γ  δ  Prop)
 
-def LiftFun (f : α → γ) (g : β → δ) : Prop :=
-  ∀⦃a b⦄, R a b → S (f a) (g b)
+def LiftFun (f : α  γ) (g : β  δ) : Prop :=
+  ∀⦃a b⦄, R a b  S (f a) (g b)
 
 infixr:40 " ⇒ " => LiftFun
 
@@ -119,18 +119,18 @@ variable {γ : Sort _} {φ : Sort _} {s₁ : Setoid α} {s₂ : Setoid β} {s₃
 protected def mk'' (a : α) : Quotient s₁ :=
   Quot.mk s₁.1 a
 
-theorem surjective_Quotient_mk'' : Function.Surjective (Quotient.mk'' : α → Quotient s₁) :=
+theorem surjective_Quotient_mk'' : Function.Surjective (Quotient.mk'' : α  Quotient s₁) :=
   Quot.exists_rep
 
-protected def liftOn' (q : Quotient s₁) (f : α → φ) (h : ∀ a b, @Setoid.r α s₁ a b → f a = f b) :
+protected def liftOn' (q : Quotient s₁) (f : α  φ) (h : ∀ a b, @Setoid.r α s₁ a b  f a = f b) :
     φ :=
   Quotient.liftOn q f h
 
-protected def map' (f : α → β) (h : (s₁.r ⇒ s₂.r) f f) : Quotient s₁ → Quotient s₂ :=
+protected def map' (f : α  β) (h : (s₁.r ⇒ s₂.r) f f) : Quotient s₁  Quotient s₂ :=
   (Quot.lift fun x ↦ Quot.mk _ (f x)) fun _ _ h₁ ↦ Quot.sound <| h h₁
 
-protected def map₂' (f : α → β → γ) (h : (s₁.r ⇒ s₂.r ⇒ s₃.r) f f) :
-    Quotient s₁ → Quotient s₂ → Quotient s₃ :=
+protected def map₂' (f : α  β  γ) (h : (s₁.r ⇒ s₂.r ⇒ s₃.r) f f) :
+    Quotient s₁  Quotient s₂  Quotient s₃ :=
   Quotient.lift₂ (fun x y ↦ Quotient.mk _ (f x y)) fun _ _ _ _ h₁ h₂ ↦ Quot.sound <| h h₁ h₂
 
 end Quotient
@@ -140,7 +140,7 @@ end Mathlib.Data.Quot
 section Mathlib.Data.SetLike.Basic
 
 class SetLike (A : Type _) (B : outParam <| Type _) where
-  protected coe : A → Set B
+  protected coe : A  Set B
 
 namespace SetLike
 
@@ -163,16 +163,16 @@ section Mathlib.Algebra.Group.Defs
 universe u v w
 
 class HVAdd (α : Type u) (β : Type v) (γ : outParam (Type w)) where
-  hVAdd : α → β → γ
+  hVAdd : α  β  γ
 
 class HSMul (α : Type u) (β : Type v) (γ : outParam (Type w)) where
-  hSMul : α → β → γ
+  hSMul : α  β  γ
 
 class VAdd (G : Type u) (P : Type v) where
-  vadd : G → P → P
+  vadd : G  P  P
 
 class SMul (M : Type u) (α : Type v) where
-  smul : M → α → α
+  smul : M  α  α
 
 infixl:65 " +ᵥ " => HVAdd.hVAdd
 infixr:73 " • " => HSMul.hSMul
@@ -196,7 +196,7 @@ class AddZeroClass (M : Type u) extends Zero M, Add M where
 
 
 class AddMonoid (M : Type u) extends AddSemigroup M, AddZeroClass M where
-  protected nsmul : Nat → M → M
+  protected nsmul : Nat  M  M
 
 instance AddMonoid.toNatSMul {M : Type _} [AddMonoid M] : SMul Nat M :=
   ⟨AddMonoid.nsmul⟩
@@ -207,7 +207,7 @@ def SubNegMonoid.sub' {G : Type u} [AddMonoid G] [Neg G] (a b : G) : G := a + -b
 
 class SubNegMonoid (G : Type u) extends AddMonoid G, Neg G, Sub G where
   protected sub := SubNegMonoid.sub'
-  protected zsmul : Int → G → G
+  protected zsmul : Int  G  G
 
 instance SubNegMonoid.SMulInt {M} [SubNegMonoid M] : SMul Int M :=
   ⟨SubNegMonoid.zsmul⟩
@@ -236,17 +236,17 @@ postfix:max "ᵃᵒᵖ" => AddOpposite
 
 namespace MulOpposite
 
-def unop : αᵐᵒᵖ → α :=
+def unop : αᵐᵒᵖ  α :=
   PreOpposite.unop'
 
 end MulOpposite
 
 namespace AddOpposite
 
-def op : α → αᵃᵒᵖ :=
+def op : α  αᵃᵒᵖ :=
   PreOpposite.op'
 
-def unop : αᵃᵒᵖ → α :=
+def unop : αᵃᵒᵖ  α :=
   PreOpposite.unop'
 
 instance instZero [Zero α] : Zero αᵃᵒᵖ where zero := op 0
@@ -262,19 +262,19 @@ section Mathlib.Algebra.Group.Hom.Defs
 variable {M N A B : Type _}
 
 structure AddMonoidHom (M : Type _) (N : Type _) [Add M] [Add N] where
-  protected toFun : M → N
+  protected toFun : M  N
 
-infixr:25 " →+ " => AddMonoidHom
+infixr:25 " + " => AddMonoidHom
 
 structure MonoidHom (M : Type _) (N : Type _) [Mul M] [Mul N] where
-  protected toFun : M → N
+  protected toFun : M  N
 
-infixr:25 " →* " => MonoidHom
+infixr:25 " * " => MonoidHom
 
-instance MonoidHom.instFunLike [Mul M] [Mul N] : FunLike (M →* N) M N where
+instance MonoidHom.instFunLike [Mul M] [Mul N] : FunLike (M * N) M N where
   coe f := f.toFun
 
-instance AddMonoidHom.instFunLike [Add A] [Add B] : FunLike (A →+ B) A B where
+instance AddMonoidHom.instFunLike [Add A] [Add B] : FunLike (A + B) A B where
   coe f := f.toFun
 
 end Mathlib.Algebra.Group.Hom.Defs
@@ -290,12 +290,12 @@ namespace SMul
 
 variable [SMul M α]
 
-def comp.smul (g : N → M) (n : N) (a : α) : α :=
+def comp.smul (g : N  M) (n : N) (a : α) : α :=
   g n • a
 
 variable (α)
 
-def comp (g : N → M) : SMul N α where smul := SMul.comp.smul g
+def comp (g : N  M) : SMul N α where smul := SMul.comp.smul g
 
 end SMul
 
@@ -303,7 +303,7 @@ namespace VAdd
 
 variable [VAdd M α]
 
-def comp.vadd (g : N → M) (n : N) (a : α) : α :=
+def comp.vadd (g : N  M) (n : N) (a : α) : α :=
   g n +ᵥ a
 
 end VAdd
@@ -314,7 +314,7 @@ namespace VAdd
 
 variable (α)
 
-def compHom [AddMonoid N] (g : N →+ M) : VAdd N α where
+def compHom [AddMonoid N] (g : N + M) : VAdd N α where
   vadd := VAdd.comp.vadd g
 
 end VAdd
@@ -343,25 +343,25 @@ namespace Injective
 
 variable {M₁ : Type _} {M₂ : Type _}
 
-protected def mulOneClass [Mul M₁] [One M₁] [MulOneClass M₂] (f : M₁ → M₂) (hf : Injective f) (one : f 1 = 1)
+protected def mulOneClass [Mul M₁] [One M₁] [MulOneClass M₂] (f : M₁  M₂) (hf : Injective f) (one : f 1 = 1)
     (mul : ∀ x y, f (x * y) = f x * f y) : MulOneClass M₁ :=
   { ‹One M₁›, ‹Mul M₁› with }
 
 variable [Add M₁] [Zero M₁]
 
-protected def addZeroClass [AddZeroClass M₂] (f : M₁ → M₂) (hf : Injective f) (zero : f 0 = 0)
+protected def addZeroClass [AddZeroClass M₂] (f : M₁  M₂) (hf : Injective f) (zero : f 0 = 0)
     (add : ∀ x y, f (x + y) = f x + f y) : AddZeroClass M₁ :=
   { ‹Zero M₁›, ‹Add M₁› with
     zero_add := sorry,
     add_zero := sorry }
 
-protected def addSemigroup [AddSemigroup M₂] (f : M₁ → M₂) (hf : Injective f)
+protected def addSemigroup [AddSemigroup M₂] (f : M₁  M₂) (hf : Injective f)
     (add : ∀ x y, f (x + y) = f x + f y) : AddSemigroup M₁ :=
   { ‹Add M₁› with add_assoc := sorry }
 
 variable [SMul Nat M₁]
 
-protected def addMonoid [AddMonoid M₂] (f : M₁ → M₂) (hf : Injective f) (zero : f 0 = 0)
+protected def addMonoid [AddMonoid M₂] (f : M₁  M₂) (hf : Injective f) (zero : f 0 = 0)
     (add : ∀ x y, f (x + y) = f x + f y) (nsmul : ∀ (x) (n : Nat), f (n • x) = n • f x) : AddMonoid M₁ :=
   { hf.addZeroClass f zero add, hf.addSemigroup f add with
     nsmul := fun n x => n • x }
@@ -372,13 +372,13 @@ namespace Surjective
 
 variable {M₁ : Type _} {M₂ : Type _} [Add M₂]
 
-protected def addSemigroup [AddSemigroup M₁] (f : M₁ → M₂) (hf : Surjective f)
+protected def addSemigroup [AddSemigroup M₁] (f : M₁  M₂) (hf : Surjective f)
     (add : ∀ x y, f (x + y) = f x + f y) : AddSemigroup M₂ :=
   { ‹Add M₂› with add_assoc := sorry }
 
 variable [Zero M₂]
 
-protected def addZeroClass [AddZeroClass M₁] (f : M₁ → M₂) (hf : Surjective f) (zero : f 0 = 0)
+protected def addZeroClass [AddZeroClass M₁] (f : M₁  M₂) (hf : Surjective f) (zero : f 0 = 0)
     (add : ∀ x y, f (x + y) = f x + f y) : AddZeroClass M₂ :=
   { ‹Zero M₂›, ‹Add M₂› with
     zero_add := sorry,
@@ -386,20 +386,20 @@ protected def addZeroClass [AddZeroClass M₁] (f : M₁ → M₂) (hf : Surject
 
 variable [SMul Nat M₂]
 
-protected def addMonoid [AddMonoid M₁] (f : M₁ → M₂) (hf : Surjective f) (zero : f 0 = 0)
+protected def addMonoid [AddMonoid M₁] (f : M₁  M₂) (hf : Surjective f) (zero : f 0 = 0)
     (add : ∀ x y, f (x + y) = f x + f y) (nsmul : ∀ (x) (n : Nat), f (n • x) = n • f x) : AddMonoid M₂ :=
   { hf.addSemigroup f add, hf.addZeroClass f zero add with
     nsmul := fun n x => n • x }
 
 variable [Neg M₂] [Sub M₂] [SMul Int M₂]
 
-protected def subNegMonoid [SubNegMonoid M₁] (f : M₁ → M₂) (hf : Surjective f) (zero : f 0 = 0)
+protected def subNegMonoid [SubNegMonoid M₁] (f : M₁  M₂) (hf : Surjective f) (zero : f 0 = 0)
     (add : ∀ x y, f (x + y) = f x + f y)
     (nsmul : ∀ (x) (n : Nat), f (n • x) = n • f x) : SubNegMonoid M₂ :=
   { hf.addMonoid f zero add nsmul, ‹Sub M₂›, ‹Neg M₂› with
     zsmul := fun n x => n • x }
 
-protected def addGroup [AddGroup M₁] (f : M₁ → M₂) (hf : Surjective f) (zero : f 0 = 0)
+protected def addGroup [AddGroup M₁] (f : M₁  M₂) (hf : Surjective f) (zero : f 0 = 0)
     (add : ∀ x y, f (x + y) = f x + f y)
     (nsmul : ∀ (x) (n : Nat), f (n • x) = n • f x) : AddGroup M₂ :=
   { hf.subNegMonoid f zero add nsmul with
@@ -546,14 +546,14 @@ end SubmonoidClass
 
 namespace AddSubmonoid
 
-def subtype : T →+ B where
+def subtype : T + B where
   toFun := Subtype.val
 
 end AddSubmonoid
 
 namespace Submonoid
 
-def subtype : S →* M where
+def subtype : S * M where
   toFun := Subtype.val
 
 end Submonoid
@@ -597,7 +597,7 @@ variable [Add M] (c : AddCon M)
 protected def Quotient :=
   Quotient c.toSetoid
 
-protected def liftOn {β} {c : AddCon M} (q : c.Quotient) (f : M → β) (h : ∀ a b, c.r a b → f a = f b) :
+protected def liftOn {β} {c : AddCon M} (q : c.Quotient) (f : M  β) (h : ∀ a b, c.r a b  f a = f b) :
     β :=
   Quotient.liftOn' q f h
 
@@ -610,9 +610,9 @@ section AddZeroClass
 
 variable [AddZeroClass M] [AddZeroClass P] (c : AddCon M)
 
-variable (f : M →+ P)
+variable (f : M + P)
 
-def lift : c.Quotient →+ P where
+def lift : c.Quotient + P where
   toFun x := (AddCon.liftOn x f) sorry
 
 end AddZeroClass
@@ -723,7 +723,7 @@ section Mathlib.Algebra.Quotient
 universe u v
 
 class HasQuotient (A : outParam <| Type u) (B : Type v) where
-  quotient' : B → Type max u v
+  quotient' : B  Type max u v
 
 def HasQuotient.Quotient (A : outParam <| Type u) {B : Type v}
     [HasQuotient A B] (b : B) : Type max u v :=
@@ -765,7 +765,7 @@ structure LinearMap (R : Type _) [Mul R] (M : Type _)
     (M₂ : Type _) [AddCommMonoid M] [AddCommMonoid M₂] [SMul R M] [SMul R M₂] extends
     AddMonoidHom M M₂
 
-notation:25 M " →ₗ[" R:25 "] " M₂:0 => LinearMap R M M₂
+notation:25 M " ₗ[" R:25 "] " M₂:0 => LinearMap R M M₂
 
 namespace LinearMap
 
@@ -778,7 +778,7 @@ section
 variable [AddCommMonoid M] [AddCommMonoid M₃]
 variable [SMul R M] [SMul R M₃]
 
-instance instFunLike : FunLike (M →ₗ[R] M₃) M M₃ where
+instance instFunLike : FunLike (M ₗ[R] M₃) M M₃ where
   coe f := f.toFun
 
 end
@@ -787,10 +787,10 @@ section
 
 variable [AddCommMonoid M] [AddCommMonoid M₁] [AddCommMonoid M₂] [AddCommMonoid M₃]
 variable {module_M₁ : SMul R M₁} {module_M₂ : SMul R M₂} {module_M₃ : SMul R M₃}
-variable (f : M₂ →ₗ[R] M₃) (g : M₁ →ₗ[R] M₂)
+variable (f : M₂ ₗ[R] M₃) (g : M₁ ₗ[R] M₂)
 
-def comp : M₁ →ₗ[R] M₃ where
-  toFun := f ∘ g
+def comp : M₁ ₗ[R] M₃ where
+  toFun := f  g
 
 end
 
@@ -844,7 +844,7 @@ instance Quotient.addGroup : AddGroup (G ⧸ N) :=
 instance Quotient.addCommGroup {G : Type _} [AddCommGroup G] (N : AddSubgroup G) : AddCommGroup (G ⧸ N) :=
   { toAddGroup := @QuotientAddGroup.Quotient.addGroup _ _ N }
 
-def lift (φ : G →+ M) : G ⧸ N →+ M :=
+def lift (φ : G + M) : G ⧸ N + M :=
   (QuotientAddGroup.con N).lift φ
 
 end QuotientAddGroup
@@ -856,7 +856,7 @@ section Mathlib.Algebra.Algebra.Basic
 universe u v
 
 class Algebra (R : Type u) (A : Type v) [Mul R] [Mul A] extends SMul R A,
-  R →* A where
+  R * A where
 
 end Mathlib.Algebra.Algebra.Basic
 
@@ -899,16 +899,16 @@ universe u v
 variable {R : Type _} [MulOneClass R] (S : Submonoid R)
 variable {M M' M'' : Type _} [AddCommMonoid M] [AddCommMonoid M']
 variable [SMul R M] [SMul R M']
-variable (f : M →ₗ[R] M')
+variable (f : M ₗ[R] M')
 
-class IsLocalizedModule (S : Submonoid R) (f : M →ₗ[R] M') : Prop where
+class IsLocalizedModule (S : Submonoid R) (f : M ₗ[R] M') : Prop where
 
 namespace IsLocalizedModule
 
 variable [IsLocalizedModule S f]
 
-noncomputable def fromLocalizedModule (f : M →ₗ[R] M') [IsLocalizedModule S f] :
-    LocalizedModule S M →ₗ[R] M' :=
+noncomputable def fromLocalizedModule (f : M ₗ[R] M') [IsLocalizedModule S f] :
+    LocalizedModule S M ₗ[R] M' :=
   sorry
 
 variable {S}
@@ -937,7 +937,7 @@ instance hasQuotient : HasQuotient M (Submodule R M) :=
 
 namespace Quotient
 
-def mk {p : Submodule R M} : M → M ⧸ p :=
+def mk {p : Submodule R M} : M  M ⧸ p :=
   Quotient.mk''
 
 instance addCommGroup : AddCommGroup (M ⧸ p) :=
@@ -961,19 +961,19 @@ section
 
 variable {M₂ : Type _} [AddCommGroup M₂] [SMul R M₂]
 
-def mkQ : M →ₗ[R] M ⧸ p where
+def mkQ : M ₗ[R] M ⧸ p where
   toFun := Quotient.mk
 
 end
 
 variable {M₂ : Type _} [AddCommGroup M₂] [SMul R M₂]
 
-def liftQ (f : M →ₗ[R] M₂) : M ⧸ p →ₗ[R] M₂ :=
+def liftQ (f : M ₗ[R] M₂) : M ⧸ p ₗ[R] M₂ :=
   { QuotientAddGroup.lift p.toAddSubgroup f.toAddMonoidHom with }
 
 variable (q : Submodule R M₂)
 
-def mapQ (f : M →ₗ[R] M₂) : M ⧸ p →ₗ[R] M₂ ⧸ q :=
+def mapQ (f : M ₗ[R] M₂) : M ⧸ p ₗ[R] M₂ ⧸ q :=
   p.liftQ (q.mkQ.comp f)
 
 end Submodule
@@ -987,7 +987,7 @@ universe u u' v v'
 variable {R : Type u} (S : Type u') {M : Type v} {N : Type v'}
 variable [MulOneClass R] [Mul S] [AddCommGroup M] [AddCommGroup N]
 variable [SMul R M] [SMul R N] [Algebra R S] [SMul S N]
-variable (p : Submonoid R) (f : M →ₗ[R] N) [IsLocalizedModule p f]
+variable (p : Submonoid R) (f : M ₗ[R] N) [IsLocalizedModule p f]
 variable (M' : Submodule R M)
 
 /-- Let `S` be the localization of `R` at `p` and `N` be the localization of `M` at `p`.
@@ -996,7 +996,7 @@ def Submodule.localized' : Submodule S N where
   carrier := setOf fun x => ∃ m ∈ M', ∃ s : p, IsLocalizedModule.mk' f m s = x
 
 /-- The localization map of a quotient module. -/
-def Submodule.toLocalizedQuotient' : M ⧸ M' →ₗ[R] N ⧸ M'.localized' S p f :=
+def Submodule.toLocalizedQuotient' : M ⧸ M' ₗ[R] N ⧸ M'.localized' S p f :=
   Submodule.mapQ M' ((M'.localized' S p f).restrictScalars R) f
 
 -- Should after `binrel%` and `binop%` were fixed

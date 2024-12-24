@@ -171,7 +171,7 @@ def categories : Array Category := #[
 ]
 
 /-- Returns first `startTime` in the trace tree, if any. -/
-private partial def getFirstStart? : MessageData → Option Float
+private partial def getFirstStart? : MessageData  Option Float
     | .trace data _ children => do
       if data.startTime != 0 then
         return data.startTime
@@ -185,7 +185,7 @@ private partial def addTrace (pp : Bool) (thread : ThreadWithMaps) (trace : Mess
     IO ThreadWithMaps :=
   (·.2) <$> StateT.run (go none none trace) thread
 where
-  go parentStackIdx? ctx? : _ → StateT ThreadWithMaps IO Unit
+  go parentStackIdx? ctx? : _  StateT ThreadWithMaps IO Unit
     | .trace data msg children => do
       if data.startTime == 0 then
         return  -- no time data, skip

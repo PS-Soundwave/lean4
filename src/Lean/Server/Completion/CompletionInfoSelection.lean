@@ -21,7 +21,7 @@ private def filterDuplicateCompletionInfos
     deduplicatedInfos := deduplicatedInfos.push i
   deduplicatedInfos
 where
-  eq : CompletionInfo → CompletionInfo → Bool
+  eq : CompletionInfo  CompletionInfo  Bool
     | .dot ti₁ .., .dot ti₂ .. =>
       ti₁.stx.eqWithInfo ti₂.stx && ti₁.expr == ti₂.expr
     | .id stx₁ id₁ .., .id stx₂ id₂ .. =>

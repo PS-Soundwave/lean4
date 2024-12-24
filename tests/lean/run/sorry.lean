@@ -21,11 +21,11 @@ Pretty printing
 /-- info: sorry : Nat -/
 #guard_msgs in #check (sorry : Nat)
 
-/-- info: fun x => sorry : Nat → Nat -/
+/-- info: fun x => sorry : Nat  Nat -/
 #guard_msgs in #check fun x : Nat => (sorry : Nat)
 
-/-- info: fun x => sorry (x + 1) : Nat → Nat -/
-#guard_msgs in #check fun x : Nat => (sorry : Nat → Nat) (x + 1)
+/-- info: fun x => sorry (x + 1) : Nat  Nat -/
+#guard_msgs in #check fun x : Nat => (sorry : Nat  Nat) (x + 1)
 
 /-!
 Uniqueness
@@ -39,7 +39,7 @@ example : (sorry : Nat) = sorry := by
 
 /-- warning: declaration uses 'sorry' -/
 #guard_msgs in
-def f (n : Nat) : Nat → Nat := sorry
+def f (n : Nat) : Nat  Nat := sorry
 
 example : f 0 0 = f 0 0 := rfl -- succeeds
 

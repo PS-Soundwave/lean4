@@ -1,7 +1,7 @@
 abbrev semantics (α:Type) := StateM (List Nat) α
 
-inductive expression : Nat → Type
-| const : (n : Nat) → expression n
+inductive expression : Nat  Type
+| const : (n : Nat)  expression n
 
 def uext {w:Nat} (x: expression w) (o:Nat) : expression w := expression.const _
 def eval {n : Nat} (v:expression n) : semantics (expression n) := pure (expression.const _)

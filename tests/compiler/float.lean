@@ -66,7 +66,7 @@ def tst2 (x : Nat) : IO Unit := do
   IO.println foo.y
   IO.println foo.z
 
-@[noinline] def fMap (f : Float → Float) (xs : List Float) :=
+@[noinline] def fMap (f : Float  Float) (xs : List Float) :=
   xs.map f
 
 def tst3 (xs : List Float) (y : Float) : IO Unit :=

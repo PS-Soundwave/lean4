@@ -36,7 +36,7 @@ inductive Pattern : Type where
 
 namespace Pattern
 
-partial def toMessageData : Pattern → MessageData
+partial def toMessageData : Pattern  MessageData
   | inaccessible e         => m!".({e})"
   | var varId              => mkFVar varId
   | ctor ctorName _ _ []   => ctorName
@@ -71,7 +71,7 @@ where
       pure $ mkAppN (mkConst ctorName us) (params ++ fields).toArray
 
 /-- Apply the free variable substitution `s` to the given pattern -/
-partial def applyFVarSubst (s : FVarSubst) : Pattern → Pattern
+partial def applyFVarSubst (s : FVarSubst) : Pattern  Pattern
   | inaccessible e  => inaccessible $ s.apply e
   | ctor n us ps fs => ctor n us (ps.map s.apply) $ fs.map (applyFVarSubst s)
   | val e           => val $ s.apply e
@@ -87,7 +87,7 @@ def replaceFVarId (fvarId : FVarId) (v : Expr) (p : Pattern) : Pattern :=
   let s : FVarSubst := {}
   p.applyFVarSubst (s.insert fvarId v)
 
-partial def hasExprMVar : Pattern → Bool
+partial def hasExprMVar : Pattern  Bool
   | inaccessible e => e.hasExprMVar
   | ctor _ _ ps fs => ps.any (·.hasExprMVar) || fs.any hasExprMVar
   | val e          => e.hasExprMVar
@@ -109,7 +109,7 @@ partial def collectFVars (p : Pattern) : StateRefT CollectFVars.State MetaM Unit
 
 end Pattern
 
-partial def instantiatePatternMVars : Pattern → MetaM Pattern
+partial def instantiatePatternMVars : Pattern  MetaM Pattern
   | Pattern.inaccessible e      => return Pattern.inaccessible (← instantiateMVars e)
   | Pattern.val e               => return Pattern.val (← instantiateMVars e)
   | Pattern.ctor n us ps fields => return Pattern.ctor n us (← ps.mapM instantiateMVars) (← fields.mapM instantiatePatternMVars)
@@ -198,15 +198,15 @@ def isLocalDecl (fvarId : FVarId) (alt : Alt) : Bool :=
   For example, consider the following code fragment:
 
 ```
-inductive Vec (α : Type u) : Nat → Type u where
+inductive Vec (α : Type u) : Nat  Type u where
   | nil : Vec α 0
   | cons {n} (head : α) (tail : Vec α n) : Vec α (n+1)
 
-inductive VecPred {α : Type u} (P : α → Prop) : {n : Nat} → Vec α n → Prop where
+inductive VecPred {α : Type u} (P : α  Prop) : {n : Nat}  Vec α n  Prop where
   | nil   : VecPred P Vec.nil
-  | cons  {n : Nat} {head : α} {tail : Vec α n} : P head → VecPred P tail → VecPred P (Vec.cons head tail)
+  | cons  {n : Nat} {head : α} {tail : Vec α n} : P head  VecPred P tail  VecPred P (Vec.cons head tail)
 
-theorem ex {α : Type u} (P : α → Prop) : {n : Nat} → (v : Vec α (n+1)) → VecPred P v → Exists P
+theorem ex {α : Type u} (P : α  Prop) : {n : Nat}  (v : Vec α (n+1))  VecPred P v  Exists P
   | _, Vec.cons head _, VecPred.cons h (w : VecPred P Vec.nil) => ⟨head, h⟩
 ```
 Recall that `_` in a pattern can be elaborated into pattern variable or an inaccessible term.
@@ -225,7 +225,7 @@ Then, when we process this alternative in this module, the following check will 
 `w` has type `VecPred P Vec.nil`, when it is supposed to have type `VecPred P tail`.
 Note that if we had written
 ```
-theorem ex {α : Type u} (P : α → Prop) : {n : Nat} → (v : Vec α (n+1)) → VecPred P v → Exists P
+theorem ex {α : Type u} (P : α  Prop) : {n : Nat}  (v : Vec α (n+1))  VecPred P v  Exists P
   | _, Vec.cons head Vec.nil, VecPred.cons h (w : VecPred P Vec.nil) => ⟨head, h⟩
 ```
 we would get the easier to digest error message
@@ -248,21 +248,21 @@ def checkAndReplaceFVarId (fvarId : FVarId) (v : Expr) (alt : Alt) : MetaM Alt :
 end Alt
 
 inductive Example where
-  | var        : FVarId → Example
+  | var        : FVarId  Example
   | underscore : Example
-  | ctor       : Name → List Example → Example
-  | val        : Expr → Example
-  | arrayLit   : List Example → Example
+  | ctor       : Name  List Example  Example
+  | val        : Expr  Example
+  | arrayLit   : List Example  Example
 
 namespace Example
 
-partial def replaceFVarId (fvarId : FVarId) (ex : Example) : Example → Example
+partial def replaceFVarId (fvarId : FVarId) (ex : Example) : Example  Example
   | var x        => if x == fvarId then ex else var x
   | ctor n exs   => ctor n $ exs.map (replaceFVarId fvarId ex)
   | arrayLit exs => arrayLit $ exs.map (replaceFVarId fvarId ex)
   | ex           => ex
 
-partial def applyFVarSubst (s : FVarSubst) : Example → Example
+partial def applyFVarSubst (s : FVarSubst) : Example  Example
   | var fvarId =>
     match s.get fvarId with
     | Expr.fvar fvarId' => var fvarId'
@@ -271,13 +271,13 @@ partial def applyFVarSubst (s : FVarSubst) : Example → Example
   | arrayLit exs => arrayLit $ exs.map (applyFVarSubst s)
   | ex           => ex
 
-partial def varsToUnderscore : Example → Example
+partial def varsToUnderscore : Example  Example
   | var _        => underscore
   | ctor n exs   => ctor n $ exs.map varsToUnderscore
   | arrayLit exs => arrayLit $ exs.map varsToUnderscore
   | ex           => ex
 
-partial def toMessageData : Example → MessageData
+partial def toMessageData : Example  MessageData
   | var fvarId        => mkFVar fvarId
   | ctor ctorName []  => mkConst ctorName
   | ctor ctorName exs => m!"({.ofConstName ctorName}{exs.foldl (fun msg pat => m!"{msg} {toMessageData pat}") Format.nil})"
@@ -288,7 +288,7 @@ partial def toMessageData : Example → MessageData
 end Example
 
 def examplesToMessageData (cex : List Example) : MessageData :=
-  MessageData.joinSep (cex.map (Example.toMessageData ∘ Example.varsToUnderscore)) ", "
+  MessageData.joinSep (cex.map (Example.toMessageData  Example.varsToUnderscore)) ", "
 
 structure Problem where
   mvarId        : MVarId
@@ -325,7 +325,7 @@ structure MatcherResult where
   For example, we can use this method to convert `x::y::xs` at
   ```
   ...
-  (motive : List Nat → Sort u_1) (xs : List Nat) (h_1 : (x y : Nat) → (xs : List Nat) → motive (x :: y :: xs))
+  (motive : List Nat  Sort u_1) (xs : List Nat) (h_1 : (x y : Nat)  (xs : List Nat)  motive (x :: y :: xs))
   ...
   ```
   into a pattern object

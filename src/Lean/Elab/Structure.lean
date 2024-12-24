@@ -52,7 +52,7 @@ structure StructView extends InductiveView where
   fields          : Array StructFieldView
   deriving Inhabited
 
-def StructView.ctor : StructView → CtorView
+def StructView.ctor : StructView  CtorView
   | { ctors := #[ctor], ..} => ctor
   | _ => unreachable!
 
@@ -286,7 +286,7 @@ private def findExistingField? (infos : Array StructFieldInfo) (parentStructName
   return none
 
 private def processSubfields (structDeclName : Name) (parentFVar : Expr) (parentStructName : Name) (subfieldNames : Array Name)
-    (infos : Array StructFieldInfo) (k : Array StructFieldInfo → TermElabM α) : TermElabM α :=
+    (infos : Array StructFieldInfo) (k : Array StructFieldInfo  TermElabM α) : TermElabM α :=
   go 0 infos
 where
   go (i : Nat) (infos : Array StructFieldInfo) := do
@@ -390,7 +390,7 @@ private def reduceProjs (e : Expr) (structNames : NameSet) : MetaM Expr :=
   ```
   Without the reduction, it produces
   ```
-  def D.c._default : A → Nat → Nat → Nat → Nat :=
+  def D.c._default : A  Nat  Nat  Nat  Nat :=
   fun toA b c d => id ({ a := toA.a, b := b, c := c : B }.b + d)
   ```
 -/
@@ -425,10 +425,10 @@ where
       let r := if e.isAppOfArity ``id 2 then e.appArg! else e
       return some (← reduceProjs (← instantiateMVars r) expandedStructNames)
 
-private partial def copyNewFieldsFrom (structDeclName : Name) (infos : Array StructFieldInfo) (parentType : Expr) (k : Array StructFieldInfo → TermElabM α) : TermElabM α := do
+private partial def copyNewFieldsFrom (structDeclName : Name) (infos : Array StructFieldInfo) (parentType : Expr) (k : Array StructFieldInfo  TermElabM α) : TermElabM α := do
   copyFields infos {} parentType fun infos _ _ => k infos
 where
-  copyFields (infos : Array StructFieldInfo) (expandedStructNames : NameSet) (parentType : Expr) (k : Array StructFieldInfo → FieldMap → NameSet → TermElabM α) : TermElabM α := do
+  copyFields (infos : Array StructFieldInfo) (expandedStructNames : NameSet) (parentType : Expr) (k : Array StructFieldInfo  FieldMap  NameSet  TermElabM α) : TermElabM α := do
     let parentStructName ← getStructureName parentType
     let fieldNames := getStructureFields (← getEnv) parentStructName
     let rec copy (i : Nat) (infos : Array StructFieldInfo) (fieldMap : FieldMap) (expandedStructNames : NameSet) : TermElabM α := do
@@ -496,7 +496,7 @@ where
       | none => throwError "failed to copy fields from parent structure{indentExpr parentType}" -- TODO improve error message
     return result
 
-private partial def mkToParentName (parentStructName : Name) (p : Name → Bool) : Name := Id.run do
+private partial def mkToParentName (parentStructName : Name) (p : Name  Bool) : Name := Id.run do
   let base := Name.mkSimple $ "to" ++ parentStructName.eraseMacroScopes.getString!
   if p base then
     base
@@ -507,7 +507,7 @@ private partial def mkToParentName (parentStructName : Name) (p : Name → Bool)
     go 1
 
 private def withParents (view : StructView) (rs : Array ElabHeaderResult) (indFVar : Expr)
-    (k : Array StructFieldInfo → Array StructParentInfo → TermElabM α) : TermElabM α := do
+    (k : Array StructFieldInfo  Array StructParentInfo  TermElabM α) : TermElabM α := do
   go 0 #[] #[]
 where
   go (i : Nat) (infos : Array StructFieldInfo) (parents : Array StructParentInfo) : TermElabM α := do
@@ -585,7 +585,7 @@ private def elabFieldTypeValue (view : StructFieldView) : TermElabM (Option Expr
         let value ← mkLambdaFVars params value
         return (type, value)
 
-private partial def withFields (views : Array StructFieldView) (infos : Array StructFieldInfo) (k : Array StructFieldInfo → TermElabM α) : TermElabM α := do
+private partial def withFields (views : Array StructFieldView) (infos : Array StructFieldInfo) (k : Array StructFieldInfo  TermElabM α) : TermElabM α := do
   go 0 {} infos
 where
   go (i : Nat) (defaultValsOverridden : NameSet) (infos : Array StructFieldInfo) : TermElabM α := do
@@ -647,7 +647,7 @@ private def collectUsedFVars (lctx : LocalContext) (localInsts : LocalInstances)
       if let some value := info.value? then
         value.collectFVars
 
-private def addCtorFields (fieldInfos : Array StructFieldInfo) : Nat → Expr → TermElabM Expr
+private def addCtorFields (fieldInfos : Array StructFieldInfo) : Nat  Expr  TermElabM Expr
   | 0,   type => pure type
   | i+1, type => do
     let info := fieldInfos[i]!
@@ -720,7 +720,7 @@ private def checkDefaults (fieldInfos : Array StructFieldInfo) : TermElabM Unit 
   else if ← Term.logUnassignedLevelMVarsUsingErrorInfos lmvars.result then
     return
 
-private def addDefaults (params : Array Expr) (replaceIndFVars : Expr → MetaM Expr) (fieldInfos : Array StructFieldInfo) : TermElabM Unit := do
+private def addDefaults (params : Array Expr) (replaceIndFVars : Expr  MetaM Expr) (fieldInfos : Array StructFieldInfo) : TermElabM Unit := do
   let lctx ← getLCtx
   /- The `lctx` and `defaultAuxDecls` are used to create the auxiliary "default value" declarations
     The parameters `params` for these definitions must be marked as implicit, and all others as explicit. -/

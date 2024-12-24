@@ -141,7 +141,7 @@ Stops if it encounters a condition in the passed-in `List Expr`.
 private partial def splitIfsCore
     (loc : Location)
     (hNames : IO.Ref (List (TSyntax `Lean.binderIdent))) :
-    List Expr → TacticM Unit := fun done ↦ withMainContext do
+    List Expr  TacticM Unit := fun done ↦ withMainContext do
   let some (_,cond) ← findIfCondAt loc
       | Meta.throwTacticEx `split_ifs (← getMainGoal) "no if-then-else conditions to split"
 
@@ -194,11 +194,11 @@ class PartialOrder (α : Type _) extends Preorder α where
 
 class LinearOrder (α : Type _) extends PartialOrder α, Min α, Max α, Ord α where
   /-- In a linearly ordered type, we assume the order relations are all decidable. -/
-  decidableLE : DecidableRel (· ≤ · : α → α → Prop)
+  decidableLE : DecidableRel (· ≤ · : α  α  Prop)
   /-- In a linearly ordered type, we assume the order relations are all decidable. -/
   decidableEq : DecidableEq α
   /-- In a linearly ordered type, we assume the order relations are all decidable. -/
-  decidableLT : DecidableRel (· < · : α → α → Prop)
+  decidableLT : DecidableRel (· < · : α  α  Prop)
   min := fun a b => if a ≤ b then a else b
   max := fun a b => if a ≤ b then b else a
 
@@ -217,7 +217,7 @@ universe u v w
 variable {α : Type u}
 
 class SemilatticeSup (α : Type u) extends PartialOrder α where
-  sup : α → α → α
+  sup : α  α  α
 
 class Lattice (α : Type u) extends SemilatticeSup α
 
@@ -230,7 +230,7 @@ elab (name := guardGoalNums) "guard_goal_nums " n:num : tactic => do
   guard (numGoals = n.getNat) <|>
     throwError "expected {n.getNat} goals but found {numGoals}"
 
-example (a m tl : α) (f : α → β) [LinearOrder β] :
+example (a m tl : α) (f : α  β) [LinearOrder β] :
     (if f (if f a < f m then m else a) < f tl then some tl else some (if f a < f m then m else a)) =
       if f a < f (if f m < f tl then tl else m) then some (if f m < f tl then tl else m) else some a := by
   split_ifs
@@ -241,7 +241,7 @@ instance LinearOrder.toLattice {α : Type u} [o : LinearOrder α] : Lattice α :
   let __spread := o
   { __spread with sup := max }
 
-example (a m tl : α) (f : α → β) [LinearOrder β] :
+example (a m tl : α) (f : α  β) [LinearOrder β] :
     (if f (if f a < f m then m else a) < f tl then some tl else some (if f a < f m then m else a)) =
       if f a < f (if f m < f tl then tl else m) then some (if f m < f tl then tl else m) else some a := by
   split_ifs

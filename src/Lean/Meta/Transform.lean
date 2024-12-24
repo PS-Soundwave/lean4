@@ -39,8 +39,8 @@ namespace Core
 -/
 partial def transform {m} [Monad m] [MonadLiftT CoreM m] [MonadControlT CoreM m]
     (input : Expr)
-    (pre   : Expr → m TransformStep := fun _ => return .continue)
-    (post  : Expr → m TransformStep := fun e => return .done e)
+    (pre   : Expr  m TransformStep := fun _ => return .continue)
+    (post  : Expr  m TransformStep := fun e => return .done e)
     : m Expr :=
   let _ : STWorld IO.RealWorld m := ⟨⟩
   let _ : MonadLiftT (ST IO.RealWorld) m := { monadLift := fun x => liftM (m := CoreM) (liftM (m := ST IO.RealWorld) x) }
@@ -83,8 +83,8 @@ namespace Meta
  -/
 partial def transform {m} [Monad m] [MonadLiftT MetaM m] [MonadControlT MetaM m]
     (input : Expr)
-    (pre   : Expr → m TransformStep := fun _ => return .continue)
-    (post  : Expr → m TransformStep := fun e => return .done e)
+    (pre   : Expr  m TransformStep := fun _ => return .continue)
+    (post  : Expr  m TransformStep := fun e => return .done e)
     (usedLetOnly := false)
     (skipConstInApp := false)
     : m Expr := do

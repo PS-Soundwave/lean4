@@ -25,7 +25,7 @@ be a `let` or function type.
 * `intro x y` introduces two hypotheses and names them. Individual hypotheses
   can be anonymized via `_`, or matched against a pattern:
   ```lean
-  -- ... ⊢ α × β → ...
+  -- ... ⊢ α × β  ...
   intro (a, b)
   -- ..., a : α, b : β ⊢ ...
   ```
@@ -57,31 +57,31 @@ Introduces zero or more hypotheses, optionally naming them.
 
 Basic properties:
 ```lean
-def AllEven (f : Nat → Nat) := ∀ n, f n % 2 = 0
+def AllEven (f : Nat  Nat) := ∀ n, f n % 2 = 0
 
 -- Introduces the two obvious hypotheses automatically
-example : ∀ (f : Nat → Nat), AllEven f → AllEven (fun k => f (k + 1)) := by
+example : ∀ (f : Nat  Nat), AllEven f  AllEven (fun k => f (k + 1)) := by
   intros
   /- Tactic state
-     f✝ : Nat → Nat
+     f✝ : Nat  Nat
      a✝ : AllEven f✝
      ⊢ AllEven fun k => f✝ (k + 1) -/
   sorry
 
 -- Introduces exactly two hypotheses, naming only the first
-example : ∀ (f : Nat → Nat), AllEven f → AllEven (fun k => f (k + 1)) := by
+example : ∀ (f : Nat  Nat), AllEven f  AllEven (fun k => f (k + 1)) := by
   intros g _
   /- Tactic state
-     g : Nat → Nat
+     g : Nat  Nat
      a✝ : AllEven g
      ⊢ AllEven fun k => g (k + 1) -/
   sorry
 
 -- Introduces exactly three hypotheses, which requires unfolding `AllEven`
-example : ∀ (f : Nat → Nat), AllEven f → AllEven (fun k => f (k + 1)) := by
+example : ∀ (f : Nat  Nat), AllEven f  AllEven (fun k => f (k + 1)) := by
   intros f h n
   /- Tactic state
-     f : Nat → Nat
+     f : Nat  Nat
      h : AllEven f
      n : Nat
      ⊢ (fun k => f (k + 1)) n % 2 = 0 -/
@@ -90,7 +90,7 @@ example : ∀ (f : Nat → Nat), AllEven f → AllEven (fun k => f (k + 1)) := b
 
 Implications:
 ```lean
-example (p q : Prop) : p → q → p := by
+example (p q : Prop) : p  q  p := by
   intros
   /- Tactic state
      a✝¹ : p
@@ -228,7 +228,7 @@ syntax (name := constructor) "constructor" : tactic
 Applies the first constructor when
 the goal is an inductive type with exactly two constructors, or fails otherwise.
 ```
-example : True ∨ False := by
+example : True  False := by
   left
   trivial
 ```
@@ -239,7 +239,7 @@ syntax (name := left) "left" : tactic
 Applies the second constructor when
 the goal is an inductive type with exactly two constructors, or fails otherwise.
 ```
-example {p q : Prop} (h : q) : p ∨ q := by
+example {p q : Prop} (h : q) : p  q := by
   right
   exact h
 ```
@@ -832,7 +832,7 @@ so that the inductive hypothesis incorporates that hypothesis as well.
 
 For example, given `n : Nat` and a goal with a hypothesis `h : P n` and target `Q n`,
 `induction n` produces one goal with hypothesis `h : P 0` and target `Q 0`,
-and one goal with hypotheses `h : P (Nat.succ a)` and `ih₁ : P a → Q a` and target `Q (Nat.succ a)`.
+and one goal with hypotheses `h : P (Nat.succ a)` and `ih₁ : P a  Q a` and target `Q (Nat.succ a)`.
 Here the names `a` and `ih₁` are chosen automatically and are not accessible.
 You can use `with` to provide the variables names for each constructor.
 - `induction e`, where `e` is an expression instead of a variable,
@@ -966,7 +966,7 @@ syntax (name := split) "split" (ppSpace colGt term)? (location)? : tactic
 /-- `dbg_trace "foo"` prints `foo` when elaborated.
 Useful for debugging tactic control flow:
 ```
-example : False ∨ True := by
+example : False  True := by
   first
   | apply Or.inl; trivial; dbg_trace "left"
   | apply Or.inr; trivial; dbg_trace "right"
@@ -1106,7 +1106,7 @@ Acts like `have`, but removes a hypothesis with the same name as
 this one if possible. For example, if the state is:
 
 ```lean
-f : α → β
+f : α  β
 h : α
 ⊢ goal
 ```
@@ -1114,7 +1114,7 @@ h : α
 Then after `replace h := f h` the state will be:
 
 ```lean
-f : α → β
+f : α  β
 h : β
 ⊢ goal
 ```
@@ -1122,7 +1122,7 @@ h : β
 whereas `have h := f h` would result in:
 
 ```lean
-f : α → β
+f : α  β
 h† : α
 h : β
 ⊢ goal
@@ -1295,7 +1295,7 @@ can be used to:
   if the problem is not otherwise solvable.
 * `splitNatSub`: for each appearance of `((a - b : Nat) : Int)`, split on `a ≤ b` if necessary.
 * `splitNatAbs`: for each appearance of `Int.natAbs a`, split on `0 ≤ a` if necessary.
-* `splitMinMax`: for each occurrence of `min a b`, split on `min a b = a ∨ min a b = b`
+* `splitMinMax`: for each occurrence of `min a b`, split on `min a b = a  min a b = b`
 Currently, all of these are on by default.
 -/
 syntax (name := omega) "omega" optConfig : tactic
@@ -1491,7 +1491,7 @@ syntax (name := solveByElim)
   "solve_by_elim" "*"? optConfig (&" only")? (args)? (using_)? : tactic
 
 /--
-`apply_assumption` looks for an assumption of the form `... → ∀ _, ... → head`
+`apply_assumption` looks for an assumption of the form `...  ∀ _, ...  head`
 where `head` matches the current goal.
 
 You can specify additional rules to apply using `apply_assumption [...]`.
@@ -1504,7 +1504,7 @@ with the attributes `aᵢ` (these attributes must be created using `register_lab
 `apply_assumption` will use consequences of local hypotheses obtained via `symm`.
 
 If `apply_assumption` fails, it will call `exfalso` and try again.
-Thus if there is an assumption of the form `P → ¬ Q`, the new tactic state
+Thus if there is an assumption of the form `P  ¬ Q`, the new tactic state
 will have two goals, `P` and `Q`.
 
 You can pass a further configuration via the syntax `apply_rules (config := {...}) lemmas`.
@@ -1627,7 +1627,7 @@ We say it performs a bottom-up simplification.
 You can instruct the simplifier to apply a theorem before its sub-expressions
 have been simplified by using the modifier `↓`. Here is an example
 ```lean
-@[simp↓] theorem not_and_eq (p q : Prop) : (¬ (p ∧ q)) = (¬p ∨ ¬q) :=
+@[simp↓] theorem not_and_eq (p q : Prop) : (¬ (p ∧ q)) = (¬p  ¬q) :=
 ```
 
 You can instruct the simplifier to rewrite the lemma from right-to-left:
@@ -1640,7 +1640,7 @@ The equational theorems of function are applied at very low priority (100 and be
 If there are several with the same priority, it is uses the "most recent one". Example:
 ```lean
 @[simp high] theorem cond_true (a b : α) : cond true a b = a := rfl
-@[simp low+1] theorem or_true (p : Prop) : (p ∨ True) = True :=
+@[simp low+1] theorem or_true (p : Prop) : (p  True) = True :=
   propext <| Iff.intro (fun _ => trivial) (fun _ => Or.inr trivial)
 @[simp 100] theorem ite_self {d : Decidable c} (a : α) : ite c a a = a := by
   cases d <;> rfl

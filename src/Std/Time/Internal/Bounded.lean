@@ -16,7 +16,7 @@ set_option linter.all true in
 A `Bounded` is represented by an `Int` that is constrained by a lower and higher bounded using some
 relation `rel`. It includes all the integers that `rel lo val ∧ rel val hi`.
 -/
-def Bounded (rel : Int → Int → Prop) (lo : Int) (hi : Int) := { val : Int // rel lo val ∧ rel val hi }
+def Bounded (rel : Int  Int  Prop) (lo : Int) (hi : Int) := { val : Int // rel lo val ∧ rel val hi }
 
 namespace Bounded
 
@@ -50,7 +50,7 @@ abbrev LE := @Bounded LE.le
 Casts the boundaries of the `Bounded` using equivalences.
 -/
 @[inline]
-def cast {rel : Int → Int → Prop} {lo₁ lo₂ hi₁ hi₂ : Int} (h₁ : lo₁ = lo₂) (h₂ : hi₁ = hi₂) (b : Bounded rel lo₁ hi₁) : Bounded rel lo₂ hi₂ :=
+def cast {rel : Int  Int  Prop} {lo₁ lo₂ hi₁ hi₂ : Int} (h₁ : lo₁ = lo₂) (h₂ : hi₁ = hi₂) (b : Bounded rel lo₁ hi₁) : Bounded rel lo₂ hi₂ :=
   .mk b.val ⟨h₁ ▸ b.property.1, h₂ ▸ b.property.2⟩
 
 /--
@@ -63,7 +63,7 @@ abbrev LT := @Bounded LT.lt
 Creates a new `Bounded` Integer.
 -/
 @[inline]
-def mk {rel : Int → Int → Prop} (val : Int) (proof : rel lo val ∧ rel val hi) : @Bounded rel lo hi :=
+def mk {rel : Int  Int  Prop} (val : Int) (proof : rel lo val ∧ rel val hi) : @Bounded rel lo hi :=
   ⟨val, proof⟩
 
 /--

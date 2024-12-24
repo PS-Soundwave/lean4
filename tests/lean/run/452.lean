@@ -1,4 +1,4 @@
-example (h : x ∨ y) : y ∨ x := by
+example (h : x  y) : y  x := by
   cases h with
   | inl hx => first
     | apply Or.inr; assumption
@@ -6,7 +6,7 @@ example (h : x ∨ y) : y ∨ x := by
   | inr hy => exact Or.inl hy
 
 
-example (h : x ∨ y) : y ∨ x := by
+example (h : x  y) : y  x := by
   cases h with
   | inl hx => first
     | apply Or.inl; assumption

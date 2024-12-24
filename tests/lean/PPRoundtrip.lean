@@ -71,18 +71,18 @@ set_option pp.analyze.knowsType false in
 #eval checkM `(fun (a : Nat) (b : Bool) => a)
 #eval checkM `(fun {a b : Nat} => a)
 -- implicit lambdas work as long as the expected type is preserved
-#eval checkM `(typeAs ({α : Type} → (a : α) → α) fun a => a)
+#eval checkM `(typeAs ({α : Type}  (a : α)  α) fun a => a)
 section
   set_option pp.explicit true
   #eval checkM `(fun {α : Type} [ToString α] (a : α) => toString a)
 end
 
-#eval checkM `((α : Type) → α)
-#eval checkM `((α β : Type) → α)  -- group
-#eval checkM `((α β : Type) → Type)  -- don't group
-#eval checkM `((α : Type) → (a : α) → α)
-#eval checkM `({α : Type} → α)
-#eval checkM `({α : Type} → [ToString α] → α)
+#eval checkM `((α : Type)  α)
+#eval checkM `((α β : Type)  α)  -- group
+#eval checkM `((α β : Type)  Type)  -- don't group
+#eval checkM `((α : Type)  (a : α)  α)
+#eval checkM `({α : Type}  α)
+#eval checkM `({α : Type}  [ToString α]  α)
 #eval checkM `(∀ x : Nat, x = x)
 #eval checkM `(∀ {x : Nat} [ToString Nat], x = x)
 set_option pp.piBinderTypes false in

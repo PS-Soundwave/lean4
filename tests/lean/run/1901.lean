@@ -1,7 +1,7 @@
 class Funny (F : Type _) (A B : outParam (Type _)) where
-  toFun : F → A → B
+  toFun : F  A  B
 
-instance [Funny F A B] : CoeFun F fun _ => A → B where coe := Funny.toFun
+instance [Funny F A B] : CoeFun F fun _ => A  B where coe := Funny.toFun
 
 class MulHomClass (F) (A B : outParam _) [Mul A] [Mul B] extends Funny F A B
 class Monoid (M) extends Mul M

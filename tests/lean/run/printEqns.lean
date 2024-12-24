@@ -14,7 +14,7 @@ theorem List.append.eq_2.{u} : ∀ {α : Type u} (x : List α) (a : α) (l : Lis
 #guard_msgs in
 #print equations List.append
 
-@[simp] def ack : Nat → Nat → Nat
+@[simp] def ack : Nat  Nat  Nat
   | 0,   y   => y+1
   | x+1, 0   => ack x 1
   | x+1, y+1 => ack x (ack (x+1) y)

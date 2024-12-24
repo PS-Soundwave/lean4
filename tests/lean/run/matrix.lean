@@ -13,7 +13,7 @@ instance [One α] : OfNat α (nat_lit 1) where
 /- Simple Matrix -/
 
 def Matrix (m n : Nat) (α : Type u) : Type u :=
-  Fin m → Fin n → α
+  Fin m  Fin n  α
 
 namespace Matrix
 
@@ -23,7 +23,7 @@ scoped syntax:max (name := matrixAccess) (priority := high) term noWs "[" term "
 macro_rules (kind := matrixAccess)
   | `($x[$i, $j]) => `($x $i $j)
 
-def dotProduct [Mul α] [Add α] [Zero α] (u v : Fin m → α) : α :=
+def dotProduct [Mul α] [Add α] [Zero α] (u v : Fin m  α) : α :=
   loop m (Nat.le_refl ..) Zero.zero
 where
   loop (i : Nat) (h : i ≤ m) (acc : α) : α :=

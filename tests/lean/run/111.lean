@@ -10,7 +10,7 @@ open Lean
 #guard_msgs in
 #check mkNullNode #[]
 
-/-- info: @mkNullNode : optParam (Array Syntax) #[] → Syntax -/
+/-- info: @mkNullNode : optParam (Array Syntax) #[]  Syntax -/
 #guard_msgs in
 #check @mkNullNode
 
@@ -20,7 +20,7 @@ f #[] : Syntax
 -/
 #guard_msgs in
 #check
- let f : Array Syntax → Syntax := @mkNullNode;
+ let f : Array Syntax  Syntax := @mkNullNode;
  f #[]
 
 /--

@@ -80,7 +80,7 @@ builtin_initialize externAttr : ParametricAttribute ExternAttrData ←
 def getExternAttrData? (env : Environment) (n : Name) : Option ExternAttrData :=
   externAttr.getParam? env n
 
-private def parseOptNum : Nat → String.Iterator → Nat → String.Iterator × Nat
+private def parseOptNum : Nat  String.Iterator  Nat  String.Iterator × Nat
   | 0,   it, r => (it, r)
   | n+1, it, r =>
     if !it.hasNext then (it, r)
@@ -90,7 +90,7 @@ private def parseOptNum : Nat → String.Iterator → Nat → String.Iterator ×
       then parseOptNum n it.next (r*10 + (c.toNat - '0'.toNat))
       else (it, r)
 
-def expandExternPatternAux (args : List String) : Nat → String.Iterator → String → String
+def expandExternPatternAux (args : List String) : Nat  String.Iterator  String  String
   | 0,   _,  r => r
   | i+1, it, r =>
     if ¬ it.hasNext then r
@@ -108,13 +108,13 @@ def expandExternPattern (pattern : String) (args : List String) : String :=
 def mkSimpleFnCall (fn : String) (args : List String) : String :=
   fn ++ "(" ++ ((args.intersperse ", ").foldl (·++·) "") ++ ")"
 
-def ExternEntry.backend : ExternEntry → Name
+def ExternEntry.backend : ExternEntry  Name
   | ExternEntry.adhoc n      => n
   | ExternEntry.inline n _   => n
   | ExternEntry.standard n _ => n
   | ExternEntry.foreign n _  => n
 
-def getExternEntryForAux (backend : Name) : List ExternEntry → Option ExternEntry
+def getExternEntryForAux (backend : Name) : List ExternEntry  Option ExternEntry
   | []    => none
   | e::es =>
     if e.backend == `all then some e
@@ -143,7 +143,7 @@ def getExternNameFor (env : Environment) (backend : Name) (fn : Name) : Option S
   | _ => failure
 
 private def getExternConstArity (declName : Name) : CoreM Nat := do
-  let fromSignature : Unit → CoreM Nat := fun _ => do
+  let fromSignature : Unit  CoreM Nat := fun _ => do
     let cinfo ← getConstInfo declName
     let (arity, _) ← (Meta.forallTelescopeReducing cinfo.type fun xs _ => pure xs.size : MetaM Nat).run
     return arity

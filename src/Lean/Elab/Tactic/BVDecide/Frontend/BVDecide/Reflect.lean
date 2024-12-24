@@ -47,7 +47,7 @@ instance : ToExpr (BVExpr w) where
   toExpr x := go x
   toTypeExpr := mkApp (mkConst ``BVExpr) (toExpr w)
 where
-  go {w : Nat} : BVExpr w → Expr
+  go {w : Nat} : BVExpr w  Expr
   | .var idx => mkApp2 (mkConst ``BVExpr.var) (toExpr w) (toExpr idx)
   | .const val => mkApp2 (mkConst ``BVExpr.const) (toExpr w) (toExpr val)
   | .zeroExtend (w := oldWidth) val inner =>
@@ -89,7 +89,7 @@ instance : ToExpr BVPred where
   toExpr x := go x
   toTypeExpr := mkConst ``BVPred
 where
-  go : BVPred → Expr
+  go : BVPred  Expr
   | .bin (w := w) lhs op rhs =>
     mkApp4 (mkConst ``BVPred.bin) (toExpr w) (toExpr lhs) (toExpr op) (toExpr rhs)
   | .getLsbD (w := w) expr idx =>
@@ -100,7 +100,7 @@ instance [ToExpr α] : ToExpr (BoolExpr α) where
   toExpr x := go x
   toTypeExpr := mkApp (mkConst ``BoolExpr) (toTypeExpr α)
 where
-  go : (BoolExpr α) → Expr
+  go : (BoolExpr α)  Expr
   | .literal lit => mkApp2 (mkConst ``BoolExpr.literal) (toTypeExpr α) (toExpr lit)
   | .const b => mkApp2 (mkConst ``BoolExpr.const) (toTypeExpr α) (toExpr b)
   | .not x => mkApp2 (mkConst ``BoolExpr.not) (toTypeExpr α) (go x)
@@ -270,8 +270,8 @@ where
       throwError "updateAtomsAssignment should only be called when there is an atom"
 
 @[specialize]
-def simplifyBinaryProof' (mkFRefl : Expr → Expr) (fst : Expr) (fproof : Option Expr)
-    (mkSRefl : Expr → Expr) (snd : Expr) (sproof : Option Expr) : Option (Expr × Expr) := do
+def simplifyBinaryProof' (mkFRefl : Expr  Expr) (fst : Expr) (fproof : Option Expr)
+    (mkSRefl : Expr  Expr) (snd : Expr) (sproof : Option Expr) : Option (Expr × Expr) := do
   match fproof, sproof with
   | some fproof, some sproof => some (fproof, sproof)
   | some fproof, none => some (fproof, mkSRefl snd)
@@ -279,12 +279,12 @@ def simplifyBinaryProof' (mkFRefl : Expr → Expr) (fst : Expr) (fproof : Option
   | none, none => none
 
 @[specialize]
-def simplifyBinaryProof (mkRefl : Expr → Expr) (fst : Expr) (fproof : Option Expr) (snd : Expr)
+def simplifyBinaryProof (mkRefl : Expr  Expr) (fst : Expr) (fproof : Option Expr) (snd : Expr)
     (sproof : Option Expr) : Option (Expr × Expr) := do
   simplifyBinaryProof' mkRefl fst fproof mkRefl snd sproof
 
 @[specialize]
-def simplifyTernaryProof (mkRefl : Expr → Expr) (fst : Expr) (fproof : Option Expr) (snd : Expr)
+def simplifyTernaryProof (mkRefl : Expr  Expr) (fst : Expr) (fproof : Option Expr) (snd : Expr)
     (sproof : Option Expr) (thd : Expr) (tproof : Option Expr) : Option (Expr × Expr × Expr) := do
   match fproof, simplifyBinaryProof mkRefl snd sproof thd tproof with
   | some fproof, some stproof => some (fproof, stproof)

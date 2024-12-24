@@ -16,7 +16,7 @@ This file contains some theorems about `Array` and `List` needed for `Init.Data.
 namespace Array
 
 theorem foldlM_toList.aux [Monad m]
-    (f : β → α → m β) (arr : Array α) (i j) (H : arr.size ≤ i + j) (b) :
+    (f : β  α  m β) (arr : Array α) (i j) (H : arr.size ≤ i + j) (b) :
     foldlM.loop f arr arr.size (Nat.le_refl _) i j b = (arr.toList.drop j).foldlM f b := by
   unfold foldlM.loop
   split; split
@@ -28,35 +28,35 @@ theorem foldlM_toList.aux [Monad m]
   · rw [List.drop_of_length_le (Nat.ge_of_not_lt ‹_›)]; rfl
 
 @[simp] theorem foldlM_toList [Monad m]
-    (f : β → α → m β) (init : β) (arr : Array α) :
+    (f : β  α  m β) (init : β) (arr : Array α) :
     arr.toList.foldlM f init = arr.foldlM f init := by
   simp [foldlM, foldlM_toList.aux]
 
-@[simp] theorem foldl_toList (f : β → α → β) (init : β) (arr : Array α) :
+@[simp] theorem foldl_toList (f : β  α  β) (init : β) (arr : Array α) :
     arr.toList.foldl f init = arr.foldl f init :=
   List.foldl_eq_foldlM .. ▸ foldlM_toList ..
 
 theorem foldrM_eq_reverse_foldlM_toList.aux [Monad m]
-    (f : α → β → m β) (arr : Array α) (init : β) (i h) :
+    (f : α  β  m β) (arr : Array α) (init : β) (i h) :
     (arr.toList.take i).reverse.foldlM (fun x y => f y x) init = foldrM.fold f arr 0 i h init := by
   unfold foldrM.fold
   match i with
   | 0 => simp [List.foldlM, List.take]
   | i+1 => rw [← List.take_concat_get _ _ h]; simp [← (aux f arr · i)]
 
-theorem foldrM_eq_reverse_foldlM_toList [Monad m] (f : α → β → m β) (init : β) (arr : Array α) :
+theorem foldrM_eq_reverse_foldlM_toList [Monad m] (f : α  β  m β) (init : β) (arr : Array α) :
     arr.foldrM f init = arr.toList.reverse.foldlM (fun x y => f y x) init := by
-  have : arr = #[] ∨ 0 < arr.size :=
+  have : arr = #[]  0 < arr.size :=
     match arr with | ⟨[]⟩ => .inl rfl | ⟨a::l⟩ => .inr (Nat.zero_lt_succ _)
   match arr, this with | _, .inl rfl => rfl | arr, .inr h => ?_
   simp [foldrM, h, ← foldrM_eq_reverse_foldlM_toList.aux, List.take_length]
 
 @[simp] theorem foldrM_toList [Monad m]
-    (f : α → β → m β) (init : β) (arr : Array α) :
+    (f : α  β  m β) (init : β) (arr : Array α) :
     arr.toList.foldrM f init = arr.foldrM f init := by
   rw [foldrM_eq_reverse_foldlM_toList, List.foldlM_reverse]
 
-@[simp] theorem foldr_toList (f : α → β → β) (init : β) (arr : Array α) :
+@[simp] theorem foldr_toList (f : α  β  β) (init : β) (arr : Array α) :
     arr.toList.foldr f init = arr.foldr f init :=
   List.foldr_eq_foldrM .. ▸ foldrM_toList ..
 
@@ -103,25 +103,25 @@ abbrev appendList_toList := @toList_appendList
 
 @[deprecated "Use the reverse direction of `foldrM_toList`." (since := "2024-11-13")]
 theorem foldrM_eq_foldrM_toList [Monad m]
-    (f : α → β → m β) (init : β) (arr : Array α) :
+    (f : α  β  m β) (init : β) (arr : Array α) :
     arr.foldrM f init = arr.toList.foldrM f init := by
   simp
 
 @[deprecated "Use the reverse direction of `foldlM_toList`." (since := "2024-11-13")]
 theorem foldlM_eq_foldlM_toList [Monad m]
-    (f : β → α → m β) (init : β) (arr : Array α) :
+    (f : β  α  m β) (init : β) (arr : Array α) :
     arr.foldlM f init = arr.toList.foldlM f init:= by
   simp
 
 @[deprecated "Use the reverse direction of `foldr_toList`." (since := "2024-11-13")]
 theorem foldr_eq_foldr_toList
-    (f : α → β → β) (init : β) (arr : Array α) :
+    (f : α  β  β) (init : β) (arr : Array α) :
     arr.foldr f init = arr.toList.foldr f init := by
   simp
 
 @[deprecated "Use the reverse direction of `foldl_toList`." (since := "2024-11-13")]
 theorem foldl_eq_foldl_toList
-    (f : β → α → β) (init : β) (arr : Array α) :
+    (f : β  α  β) (init : β) (arr : Array α) :
     arr.foldl f init = arr.toList.foldl f init:= by
   simp
 

@@ -206,7 +206,7 @@ def mkCast (x : VarId) (xType : IRType) (expectedType : IRType) : M Expr := do
       pure auxConst
   | none => pure $ if xType.isScalar then Expr.box xType x else Expr.unbox x
 
-@[inline] def castVarIfNeeded (x : VarId) (expected : IRType) (k : VarId → M FnBody) : M FnBody := do
+@[inline] def castVarIfNeeded (x : VarId) (expected : IRType) (k : VarId  M FnBody) : M FnBody := do
   let xType ← getVarType x
   if eqvTypes xType expected then
     k x
@@ -215,12 +215,12 @@ def mkCast (x : VarId) (xType : IRType) (expectedType : IRType) : M Expr := do
     let v ← mkCast x xType expected
     FnBody.vdecl y expected v <$> k y
 
-@[inline] def castArgIfNeeded (x : Arg) (expected : IRType) (k : Arg → M FnBody) : M FnBody :=
+@[inline] def castArgIfNeeded (x : Arg) (expected : IRType) (k : Arg  M FnBody) : M FnBody :=
   match x with
   | Arg.var x => castVarIfNeeded x expected (fun x => k (Arg.var x))
   | _         => k x
 
-def castArgsIfNeededAux (xs : Array Arg) (typeFromIdx : Nat → IRType) : M (Array Arg × Array FnBody) := do
+def castArgsIfNeededAux (xs : Array Arg) (typeFromIdx : Nat  IRType) : M (Array Arg × Array FnBody) := do
   let mut xs' := #[]
   let mut bs  := #[]
   let mut i   := 0
@@ -242,12 +242,12 @@ def castArgsIfNeededAux (xs : Array Arg) (typeFromIdx : Nat → IRType) : M (Arr
     i := i + 1
   return (xs', bs)
 
-@[inline] def castArgsIfNeeded (xs : Array Arg) (ps : Array Param) (k : Array Arg → M FnBody) : M FnBody := do
+@[inline] def castArgsIfNeeded (xs : Array Arg) (ps : Array Param) (k : Array Arg  M FnBody) : M FnBody := do
   let (ys, bs) ← castArgsIfNeededAux xs fun i => ps[i]!.ty
   let b ← k ys
   pure (reshape bs b)
 
-@[inline] def boxArgsIfNeeded (xs : Array Arg) (k : Array Arg → M FnBody) : M FnBody := do
+@[inline] def boxArgsIfNeeded (xs : Array Arg) (k : Array Arg  M FnBody) : M FnBody := do
   let (ys, bs) ← castArgsIfNeededAux xs (fun _ => IRType.object)
   let b ← k ys
   pure (reshape bs b)
@@ -291,7 +291,7 @@ def visitVDeclExpr (x : VarId) (ty : IRType) (e : Expr) (b : FnBody) : M FnBody 
   | _     =>
     return FnBody.vdecl x ty e b
 
-partial def visitFnBody : FnBody → M FnBody
+partial def visitFnBody : FnBody  M FnBody
   | FnBody.vdecl x t v b     => do
     let b ← withVDecl x t v (visitFnBody b)
     visitVDeclExpr x t v b

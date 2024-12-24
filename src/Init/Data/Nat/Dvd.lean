@@ -43,7 +43,7 @@ theorem dvd_mod_iff {k m n : Nat} (h: k ∣ n) : k ∣ m % n ↔ k ∣ m := by
   have := Nat.dvd_add_iff_left (m := m % n) <| Nat.dvd_trans h <| Nat.dvd_mul_right n (m / n)
   rwa [mod_add_div] at this
 
-theorem le_of_dvd {m n : Nat} (h : 0 < n) : m ∣ n → m ≤ n
+theorem le_of_dvd {m n : Nat} (h : 0 < n) : m ∣ n  m ≤ n
   | ⟨k, e⟩ => by
     revert h
     rw [e]
@@ -54,7 +54,7 @@ theorem le_of_dvd {m n : Nat} (h : 0 < n) : m ∣ n → m ≤ n
       have := Nat.mul_le_mul_left m (succ_pos pk)
       rwa [Nat.mul_one] at this
 
-protected theorem dvd_antisymm : ∀ {m n : Nat}, m ∣ n → n ∣ m → m = n
+protected theorem dvd_antisymm : ∀ {m n : Nat}, m ∣ n  n ∣ m  m = n
   | _, 0, _, h₂ => Nat.eq_zero_of_zero_dvd h₂
   | 0, _, h₁, _ => (Nat.eq_zero_of_zero_dvd h₁).symm
   | _+1, _+1, h₁, h₂ => Nat.le_antisymm (le_of_dvd (succ_pos _) h₁) (le_of_dvd (succ_pos _) h₂)
@@ -109,7 +109,7 @@ protected theorem dvd_of_mul_dvd_mul_right (kpos : 0 < k) (H : m * k ∣ n * k) 
 theorem dvd_sub {k m n : Nat} (H : n ≤ m) (h₁ : k ∣ m) (h₂ : k ∣ n) : k ∣ m - n :=
   (Nat.dvd_add_iff_left h₂).2 <| by rwa [Nat.sub_add_cancel H]
 
-protected theorem mul_dvd_mul {a b c d : Nat} : a ∣ b → c ∣ d → a * c ∣ b * d
+protected theorem mul_dvd_mul {a b c d : Nat} : a ∣ b  c ∣ d  a * c ∣ b * d
   | ⟨e, he⟩, ⟨f, hf⟩ =>
     ⟨e * f, by simp [he, hf, Nat.mul_assoc, Nat.mul_left_comm, Nat.mul_comm]⟩
 

@@ -24,7 +24,7 @@ partial def runLakeSetupFile
     (m                 : DocumentMeta)
     (lakePath filePath : System.FilePath)
     (imports           : Array Import)
-    (handleStderr      : String → IO Unit)
+    (handleStderr      : String  IO Unit)
     : IO LakeSetupFileOutput := do
   let mut args := #["setup-file", filePath.toString] ++ imports.map (toString ·.module)
   if m.dependencyBuildMode matches .never then
@@ -100,7 +100,7 @@ def FileSetupResult.ofError (msg : String) : IO FileSetupResult := do return {
 /-- Uses `lake setup-file` to compile dependencies on the fly and add them to `LEAN_PATH`.
 Compilation progress is reported to `handleStderr`. Returns the search path for
 source files and the options for the file. -/
-partial def setupFile (m : DocumentMeta) (imports : Array Import) (handleStderr : String → IO Unit) : IO FileSetupResult := do
+partial def setupFile (m : DocumentMeta) (imports : Array Import) (handleStderr : String  IO Unit) : IO FileSetupResult := do
   let some filePath := System.Uri.fileUriToPath? m.uri
     | return ← FileSetupResult.ofNoLakefile -- untitled files have no lakefile
 

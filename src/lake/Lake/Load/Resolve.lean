@@ -112,7 +112,7 @@ See `Workspace.updateAndMaterializeCore` for more details.
 -/
 @[inline] private def Workspace.resolveDepsCore
   [Monad m] [MonadError m] (ws : Workspace)
-  (load : Package → Dependency → StateT Workspace m Package)
+  (load : Package  Dependency  StateT Workspace m Package)
   (root : Package := ws.root) (stack : DepStack := {})
 : m Workspace := do
   ws.runResolveT go root stack

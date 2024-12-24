@@ -64,7 +64,7 @@ inductive Simp.DischargeWrapper where
   | default
   | custom (ref : IO.Ref Term.State) (discharge : Simp.Discharge)
 
-def Simp.DischargeWrapper.with (w : Simp.DischargeWrapper) (x : Option Simp.Discharge → TacticM α) : TacticM α := do
+def Simp.DischargeWrapper.with (w : Simp.DischargeWrapper) (x : Option Simp.Discharge  TacticM α) : TacticM α := do
   match w with
   | default => x none
   | custom ref d =>
@@ -510,12 +510,12 @@ to parse `simp` arguments.
 namespace Lean.Parser.Tactic
 
 /-- Extract the arguments from a `simpArgs` syntax as an array of syntaxes -/
-def getSimpArgs? : Syntax → Option (Array Syntax)
+def getSimpArgs? : Syntax  Option (Array Syntax)
   | `(simpArgs| [$args,*]) => pure args.getElems
   | _ => none
 
 /-- Extract the arguments from a `dsimpArgs` syntax as an array of syntaxes -/
-def getDSimpArgs? : Syntax → Option (Array Syntax)
+def getDSimpArgs? : Syntax  Option (Array Syntax)
   | `(dsimpArgs| [$args,*]) => pure args.getElems
   | _                       => none
 

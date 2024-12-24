@@ -1,4 +1,4 @@
-def f : Nat → Bool → Nat
+def f : Nat  Bool  Nat
   | 0,  true  => 1
   | 0,  false => 2
   | 1,  true => 3
@@ -14,7 +14,7 @@ theorem f_main_eq : f x b = f.match_1 (fun _ _ => Nat) x b (fun _ => 1) (fun _ =
 
 #check @f_main_eq
 
-def g : List Nat → List Nat → Nat
+def g : List Nat  List Nat  Nat
   | [],         y::ys => y
   | [],         ys    => 0
   | x1::x2::xs, ys    => g xs ys

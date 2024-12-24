@@ -14,16 +14,16 @@ namespace Lean.Meta
 /--
   Return true iff `lvl` occurs in `max u_1 ... u_n` and `lvl != u_i` for all `i in [1, n]`.
   That is, `lvl` is a proper level subterm of some `u_i`. -/
-private def strictOccursMax (lvl : Level) : Level → Bool
+private def strictOccursMax (lvl : Level) : Level  Bool
   | Level.max u v => visit u || visit v
   | _             => false
 where
-  visit : Level → Bool
+  visit : Level  Bool
     | Level.max u v => visit u || visit v
     | u             => u != lvl && lvl.occurs u
 
 /-- `mkMaxArgsDiff mvarId (max u_1 ... (mvar mvarId) ... u_n) v` => `max v u_1 ... u_n` -/
-private def mkMaxArgsDiff (mvarId : LMVarId) : Level → Level → Level
+private def mkMaxArgsDiff (mvarId : LMVarId) : Level  Level  Level
   | Level.max u v,     acc => mkMaxArgsDiff mvarId v <| mkMaxArgsDiff mvarId u acc
   | l@(Level.mvar id), acc => if id != mvarId then mkLevelMax' acc l else acc
   | l,                 acc => mkLevelMax' acc l
@@ -127,7 +127,7 @@ mutual
       return LBool.undef
 
   @[export lean_is_level_def_eq]
-  partial def isLevelDefEqAuxImpl : Level → Level → MetaM Bool
+  partial def isLevelDefEqAuxImpl : Level  Level  MetaM Bool
     | Level.succ lhs, Level.succ rhs => isLevelDefEqAux lhs rhs
     | lhs, rhs =>
       withTraceNode `Meta.isLevelDefEq (return m!"{exceptBoolEmoji ·} {lhs} =?= {rhs}") do

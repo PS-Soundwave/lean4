@@ -47,7 +47,7 @@ where
   This is needed when applying or rewriting with functions with complex instances.
   For example, consider `rw [@map_smul]` where `map_smul` is
   ```
-  map_smul {F : Type u_1} {M : Type u_2} {N : Type u_3} {φ : M → N}
+  map_smul {F : Type u_1} {M : Type u_2} {N : Type u_3} {φ : M  N}
            {X : Type u_4} {Y : Type u_5}
            [SMul M X] [SMul N Y] [FunLike F X Y] [MulActionSemiHomClass F φ X Y]
            (f : F) (c : M) (x : X) : DFunLike.coe f (c • x) = φ c • DFunLike.coe f x
@@ -55,7 +55,7 @@ where
   and `MulActionSemiHomClass` is defined as
   ```
   class MulActionSemiHomClass (F : Type _)
-     {M N : outParam (Type _)} (φ : outParam (M → N))
+     {M N : outParam (Type _)} (φ : outParam (M  N))
      (X Y : outParam (Type _)) [SMul M X] [SMul N Y] [FunLike F X Y] : Prop where
   ```
   The left-hand-side of the equation does not bind `N`. Thus, `SMul N Y` cannot
@@ -140,7 +140,7 @@ private def partitionDependentMVars (mvars : Array Expr) : MetaM (Array MVarId �
     else
       return (nonDeps.push currMVarId, deps)
 
-private def reorderGoals (mvars : Array Expr) : ApplyNewGoals → MetaM (List MVarId)
+private def reorderGoals (mvars : Array Expr) : ApplyNewGoals  MetaM (List MVarId)
   | ApplyNewGoals.nonDependentFirst => do
       let (nonDeps, deps) ← partitionDependentMVars mvars
       return nonDeps.toList ++ deps.toList
@@ -171,14 +171,14 @@ def _root_.Lean.MVarId.apply (mvarId : MVarId) (e : Expr) (cfg : ApplyConfig := 
     We used to try only `numArgs-targetTypeNumArgs` when `hasMVarHead = false`, but this is not always correct.
     For example, consider the following example
     ```
-    example {α β} [LE_trans β] (x y z : α → β) (h₀ : x ≤ y) (h₁ : y ≤ z) : x ≤ z := by
+    example {α β} [LE_trans β] (x y z : α  β) (h₀ : x ≤ y) (h₁ : y ≤ z) : x ≤ z := by
       apply le_trans
       assumption
       assumption
     ```
     In this example, `targetTypeNumArgs = 1` because `LE` for functions is defined as
     ```
-    instance {α : Type u} {β : Type v} [LE β] : LE (α → β) where
+    instance {α : Type u} {β : Type v} [LE β] : LE (α  β) where
       le f g := ∀ i, f i ≤ g i
     ```
     -/

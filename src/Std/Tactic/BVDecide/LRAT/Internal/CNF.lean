@@ -14,10 +14,10 @@ open Clause Formula Std Sat
 
 namespace Literal
 
-theorem sat_iff (p : α → Bool) (a : α) (b : Bool) : p ⊨ (a, b) ↔ (p a) = b := by
+theorem sat_iff (p : α  Bool) (a : α) (b : Bool) : p ⊨ (a, b) ↔ (p a) = b := by
   simp only [Entails.eval]
 
-theorem sat_negate_iff_not_sat {p : α → Bool} {l : Literal α} : p ⊨ Literal.negate l ↔ p ⊭ l := by
+theorem sat_negate_iff_not_sat {p : α  Bool} {l : Literal α} : p ⊨ Literal.negate l ↔ p ⊭ l := by
   simp only [Literal.negate, sat_iff]
   constructor
   · intro h pl
@@ -28,7 +28,7 @@ theorem sat_negate_iff_not_sat {p : α → Bool} {l : Literal α} : p ⊨ Litera
     cases h : p l.fst <;> simp_all
 
 theorem unsat_of_limplies_complement [Entails α t] (x : t) (l : Literal α) :
-    Limplies α x l → Limplies α x (Literal.negate l) → Unsatisfiable α x := by
+    Limplies α x l  Limplies α x (Literal.negate l)  Unsatisfiable α x := by
   intro h1 h2 p px
   specialize h1 p px
   specialize h2 p px
@@ -39,7 +39,7 @@ end Literal
 
 namespace Clause
 
-theorem sat_iff_exists [Clause α β] (p : α → Bool) (c : β) : p ⊨ c ↔ ∃ l ∈ toList c, p ⊨ l := by
+theorem sat_iff_exists [Clause α β] (p : α  Bool) (c : β) : p ⊨ c ↔ ∃ l ∈ toList c, p ⊨ l := by
   simp only [(· ⊨ ·), eval]
   simp only [List.any_eq_true, decide_eq_true_eq, Prod.exists, Bool.exists_bool]
 
@@ -85,9 +85,9 @@ theorem limplies_iff_mem [DecidableEq α] [Clause α β] (l : Literal α) (c : �
       rw [← hl]
       exact ⟨h, pl⟩
 
-theorem entails_of_entails_delete [DecidableEq α] [Clause α β] {p : α → Bool} {c : β}
+theorem entails_of_entails_delete [DecidableEq α] [Clause α β] {p : α  Bool} {c : β}
     {l : Literal α} :
-    p ⊨ delete c l → p ⊨ c := by
+    p ⊨ delete c l  p ⊨ c := by
   intro h
   simp only [(· ⊨ ·), eval, List.any_eq_true, decide_eq_true_eq, Prod.exists, Bool.exists_bool] at h
   simp only [(· ⊨ ·), eval, List.any_eq_true, decide_eq_true_eq, Prod.exists, Bool.exists_bool]
@@ -101,8 +101,8 @@ end Clause
 
 namespace Formula
 
-theorem sat_iff_forall [Clause α β] [Entails α σ] [Formula α β σ] (p : α → Bool) (f : σ) :
-    p ⊨ f ↔ ∀ c : β, c ∈ toList f → p ⊨ c := by
+theorem sat_iff_forall [Clause α β] [Entails α σ] [Formula α β σ] (p : α  Bool) (f : σ) :
+    p ⊨ f ↔ ∀ c : β, c ∈ toList f  p ⊨ c := by
   simp only [(· ⊨ ·), formulaEntails_def p f]
   simp only [List.all_eq_true, decide_eq_true_eq]
 

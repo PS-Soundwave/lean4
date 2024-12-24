@@ -34,7 +34,7 @@ inductive Expr where
   | mulR (a : Expr) (k : Nat)
   deriving Inhabited
 
-def Expr.denote (ctx : Context) : Expr → Nat
+def Expr.denote (ctx : Context) : Expr  Nat
   | Expr.add a b  => Nat.add (denote ctx a) (denote ctx b)
   | Expr.num k    => k
   | Expr.var v    => v.denote ctx
@@ -74,7 +74,7 @@ def Poly.mul (k : Nat) (p : Poly) : Poly :=
   else
     go p
 where
-  go : Poly → Poly
+  go : Poly  Poly
   | [] => []
   | (k', v) :: p => (Nat.mul k k', v) :: go p
 
@@ -145,10 +145,10 @@ def Expr.toPoly (e : Expr) :=
 where
   -- Implementation note: This assembles the result using difference lists
   -- to avoid `++` on lists.
-  go (coeff : Nat) : Expr → (Poly → Poly)
+  go (coeff : Nat) : Expr  (Poly  Poly)
     | Expr.num k    => bif k == 0 then id else ((coeff * k, fixedVar) :: ·)
     | Expr.var i    => ((coeff, i) :: ·)
-    | Expr.add a b  => go coeff a ∘ go coeff b
+    | Expr.add a b  => go coeff a  go coeff b
     | Expr.mulL k a
     | Expr.mulR a k => bif k == 0 then id else go (coeff * k) a
 
@@ -240,7 +240,7 @@ def Certificate.combine (hs : Certificate) : PolyCnstr :=
 def Certificate.denote (ctx : Context) (c : Certificate) : Prop :=
   match c with
   | [] => False
-  | (_, c)::hs => c.denote ctx → denote ctx hs
+  | (_, c)::hs => c.denote ctx  denote ctx hs
 
 def monomialToExpr (k : Nat) (v : Var) : Expr :=
   bif v == fixedVar then
@@ -584,8 +584,8 @@ attribute [-simp] Nat.right_distrib Nat.left_distrib
 
 theorem PolyCnstr.denote_mul (ctx : Context) (k : Nat) (c : PolyCnstr) : (c.mul (k+1)).denote ctx = c.denote ctx := by
   cases c; rename_i eq lhs rhs
-  have : k ≠ 0 → k + 1 ≠ 1 := by intro h; match k with | 0 => contradiction | k+1 => simp [Nat.succ.injEq]
-  have : ¬ (k == 0) → (k + 1 == 1) = false := fun h => beq_false_of_ne (this (ne_of_beq_false (Bool.of_not_eq_true h)))
+  have : k ≠ 0  k + 1 ≠ 1 := by intro h; match k with | 0 => contradiction | k+1 => simp [Nat.succ.injEq]
+  have : ¬ (k == 0)  (k + 1 == 1) = false := fun h => beq_false_of_ne (this (ne_of_beq_false (Bool.of_not_eq_true h)))
   have : ¬ ((k + 1 == 0) = true)  := fun h => absurd (eq_of_beq h) (Nat.succ_ne_zero k)
   by_cases he : eq = true <;> simp [he, PolyCnstr.mul, PolyCnstr.denote, Poly.denote_le, Poly.denote_eq]
      <;> by_cases hk : k == 0 <;> (try simp [eq_of_beq hk]) <;> simp [*] <;> apply Iff.intro <;> intro h
@@ -610,7 +610,7 @@ theorem PolyCnstr.denote_combine {ctx : Context} {c₁ c₂ : PolyCnstr} (h₁ :
 
 attribute [local simp] PolyCnstr.denote_combine
 
-theorem Poly.isNum?_eq_some (ctx : Context) {p : Poly} {k : Nat} : p.isNum? = some k → p.denote ctx = k := by
+theorem Poly.isNum?_eq_some (ctx : Context) {p : Poly} {k : Nat} : p.isNum? = some k  p.denote ctx = k := by
   simp [isNum?]
   split
   next => intro h; injection h
@@ -632,7 +632,7 @@ theorem Poly.of_isNonZero (ctx : Context) {p : Poly} (h : isNonZero p = true) : 
     · have ih := of_isNonZero ctx h
       exact Nat.le_trans ih (Nat.le_add_right ..)
 
-theorem PolyCnstr.eq_false_of_isUnsat (ctx : Context) {c : PolyCnstr} : c.isUnsat → c.denote ctx = False := by
+theorem PolyCnstr.eq_false_of_isUnsat (ctx : Context) {c : PolyCnstr} : c.isUnsat  c.denote ctx = False := by
   cases c; rename_i eq lhs rhs
   simp [isUnsat]
   by_cases he : eq = true <;> simp [he, denote, Poly.denote_eq, Poly.denote_le, -and_imp]
@@ -643,7 +643,7 @@ theorem PolyCnstr.eq_false_of_isUnsat (ctx : Context) {c : PolyCnstr} : c.isUnsa
     simp [Poly.of_isZero, h₂]
     exact Poly.of_isNonZero ctx h₁
 
-theorem PolyCnstr.eq_true_of_isValid (ctx : Context) {c : PolyCnstr} : c.isValid → c.denote ctx = True := by
+theorem PolyCnstr.eq_true_of_isValid (ctx : Context) {c : PolyCnstr} : c.isValid  c.denote ctx = True := by
   cases c; rename_i eq lhs rhs
   simp [isValid]
   by_cases he : eq = true <;> simp [he, denote, Poly.denote_eq, Poly.denote_le, -and_imp]
@@ -662,7 +662,7 @@ theorem ExprCnstr.eq_true_of_isValid (ctx : Context) (c : ExprCnstr) (h : c.toNo
   simp [-eq_iff_iff] at this
   assumption
 
-theorem Certificate.of_combineHyps (ctx : Context) (c : PolyCnstr) (cs : Certificate) (h : (combineHyps c cs).denote ctx → False) : c.denote ctx → cs.denote ctx := by
+theorem Certificate.of_combineHyps (ctx : Context) (c : PolyCnstr) (cs : Certificate) (h : (combineHyps c cs).denote ctx  False) : c.denote ctx  cs.denote ctx := by
   match cs with
   | [] => simp [combineHyps, denote] at *; exact h
   | (k, c')::cs =>
@@ -673,7 +673,7 @@ theorem Certificate.of_combineHyps (ctx : Context) (c : PolyCnstr) (cs : Certifi
     have ih := of_combineHyps ctx (PolyCnstr.combine c (PolyCnstr.mul (k + 1) (ExprCnstr.toNormPoly c'))) cs
     exact ih h this
 
-theorem Certificate.of_combine (ctx : Context) (cs : Certificate) (h : cs.combine.denote ctx → False) : cs.denote ctx := by
+theorem Certificate.of_combine (ctx : Context) (cs : Certificate) (h : cs.combine.denote ctx  False) : cs.denote ctx := by
   match cs with
   | [] => simp [combine, PolyCnstr.denote, Poly.denote_eq] at h
   | (k, c)::cs =>
@@ -718,7 +718,7 @@ theorem Expr.eq_of_toNormPoly_eq (ctx : Context) (e e' : Expr) (h : e.toNormPoly
 
 end Linear
 
-def elimOffset {α : Sort u} (a b k : Nat) (h₁ : a + k = b + k) (h₂ : a = b → α) : α := by
+def elimOffset {α : Sort u} (a b k : Nat) (h₁ : a + k = b + k) (h₂ : a = b  α) : α := by
   simp_arith at h₁
   exact h₂ h₁
 

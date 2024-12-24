@@ -45,19 +45,19 @@ namespace Ex3
 mutual
 inductive Foo
   | somefoo : Foo
-  | bar : Bar → Foo
+  | bar : Bar  Foo
 
 inductive Bar
   | somebar : Bar
-  | foobar : Foo → Bar → Bar
+  | foobar : Foo  Bar  Bar
 end
 
 mutual
-def Foo.toString : Foo → String
+def Foo.toString : Foo  String
   | Foo.somefoo => "foo"
   | Foo.bar b => Bar.toString b
 
-def Bar.toString : Bar → String
+def Bar.toString : Bar  String
   | Bar.somebar => "bar"
   | Bar.foobar f b => (Foo.toString f) ++ (Bar.toString b)
 end
@@ -69,19 +69,19 @@ namespace Ex4
 mutual
 inductive Foo
   | somefoo : Foo
-  | bar : Bar → Foo
+  | bar : Bar  Foo
 
 inductive Bar
   | somebar : Bar
-  | foobar : Foo → Bar → Bar
+  | foobar : Foo  Bar  Bar
 end
 
 mutual
-def Foo.toString : Foo → String
+def Foo.toString : Foo  String
   | .somefoo => "foo"
   | .bar b => b.toString
 
-def Bar.toString : Bar → String
+def Bar.toString : Bar  String
   | .somebar => "bar"
   | .foobar f b => f.toString ++ b.toString
 end

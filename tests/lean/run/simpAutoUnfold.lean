@@ -15,7 +15,7 @@ theorem append_assoc (as bs cs : List α) : append (append as bs) cs = append as
 theorem append_assoc' (as bs cs : List α) : append (append as bs) cs = append as (append bs cs) := by
   induction as <;> simp! [*]
 
-def g : Nat → Nat
+def g : Nat  Nat
   | 0   => 1
   | n+1 => n + 2
 

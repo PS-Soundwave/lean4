@@ -22,7 +22,7 @@ inductive ParserDescr (k : ParserKind := leading)
 
 abbrev TrailingParserDescr := ParserDescr trailing
 
-def toParser {k : ParserKind} : ParserDescr k → ExceptT String Id (Parser k)
+def toParser {k : ParserKind} : ParserDescr k  ExceptT String Id (Parser k)
 | ParserDescr.ident            := pure ident
 | ParserDescr.numLit           := pure numLit
 | ParserDescr.strLit           := pure strLit

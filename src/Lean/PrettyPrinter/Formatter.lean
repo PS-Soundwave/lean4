@@ -48,7 +48,7 @@ end Formatter
 
 abbrev FormatterM := ReaderT Formatter.Context $ StateRefT Formatter.State CoreM
 
-@[inline] def FormatterM.orElse {α} (p₁ : FormatterM α) (p₂ : Unit → FormatterM α) : FormatterM α := do
+@[inline] def FormatterM.orElse {α} (p₁ : FormatterM α) (p₂ : Unit  FormatterM α) : FormatterM α := do
   let s ← get
   catchInternalId backtrackExceptionId
     p₁
@@ -141,7 +141,7 @@ def visitArgs (x : FormatterM Unit) : FormatterM Unit := do
   goLeft
 
 /-- Execute `x`, pass array of generated Format objects to `fn`, and push result. -/
-def fold (fn : Array Format → Format) (x : FormatterM Unit) : FormatterM Unit := do
+def fold (fn : Array Format  Format) (x : FormatterM Unit) : FormatterM Unit := do
   let sp ← getStackSize
   x
   let stack ← getStack
@@ -213,13 +213,13 @@ opaque mkAntiquot.formatter' (name : String) (kind : SyntaxNodeKind) (anonymous 
 
 -- break up big mutual recursion
 @[extern "lean_pretty_printer_formatter_interpret_parser_descr"]
-opaque interpretParserDescr' : ParserDescr → CoreM Formatter
+opaque interpretParserDescr' : ParserDescr  CoreM Formatter
 
-private def SourceInfo.getExprPos? : SourceInfo → Option String.Pos
+private def SourceInfo.getExprPos? : SourceInfo  Option String.Pos
   | SourceInfo.synthetic (pos := pos) .. => pos
   | _ => none
 
-private def getExprPos? : Syntax → Option String.Pos
+private def getExprPos? : Syntax  Option String.Pos
   | Syntax.node info _ _ => SourceInfo.getExprPos? info
   | Syntax.atom info _ => SourceInfo.getExprPos? info
   | Syntax.ident info _ _ _ => SourceInfo.getExprPos? info
@@ -316,7 +316,7 @@ def node.formatter (k : SyntaxNodeKind) (p : Formatter) : Formatter := do
   visitArgs p
 
 @[combinator_formatter withFn]
-def withFn.formatter (_ : ParserFn → ParserFn) (p : Formatter) : Formatter := p
+def withFn.formatter (_ : ParserFn  ParserFn) (p : Formatter) : Formatter := p
 
 @[combinator_formatter trailingNode]
 def trailingNode.formatter (k : SyntaxNodeKind) (_ _ : Nat) (p : Formatter) : Formatter := do
@@ -536,8 +536,8 @@ def registerAlias (aliasName : Name) (v : FormatterAliasValue) : IO Unit := do
   Parser.registerAliasCore formatterAliasesRef aliasName v
 
 instance : Coe Formatter FormatterAliasValue := { coe := AliasValue.const }
-instance : Coe (Formatter → Formatter) FormatterAliasValue := { coe := AliasValue.unary }
-instance : Coe (Formatter → Formatter → Formatter) FormatterAliasValue := { coe := AliasValue.binary }
+instance : Coe (Formatter  Formatter) FormatterAliasValue := { coe := AliasValue.unary }
+instance : Coe (Formatter  Formatter  Formatter) FormatterAliasValue := { coe := AliasValue.binary }
 
 end Formatter
 open Formatter

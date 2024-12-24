@@ -246,7 +246,7 @@ private structure AnalyzeResult where
   /-- `true` if there are any leaf terms with an unknown type (according to `isUnknown`). -/
   hasUnknown      : Bool := false
 
-private def isUnknown : Expr → Bool
+private def isUnknown : Expr  Bool
   | .mvar ..        => true
   | .app f _        => isUnknown f
   | .letE _ _ _ b _ => isUnknown b

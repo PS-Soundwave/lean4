@@ -1,7 +1,7 @@
 inductive Foo (n : Nat)
 
 class Bar (n: Nat) (α : Type u) (β: outParam (Type u)) where
-  bar: Foo n → Fin (n+1) → α → β
+  bar: Foo n  Fin (n+1)  α  β
 
 instance: Bar n (Foo (n+1)) (Foo n) := sorry
 

@@ -18,7 +18,7 @@ variable {α : Type} [Hashable α] [DecidableEq α] {aig : AIG α}
 structure FoldTarget (aig : AIG α) where
   {len : Nat}
   vec : RefVec aig len
-  func : (aig : AIG α) → BinaryInput aig → Entrypoint α
+  func : (aig : AIG α)  BinaryInput aig  Entrypoint α
   [lawful : LawfulOperator α BinaryInput func]
 
 attribute [instance] FoldTarget.lawful
@@ -41,7 +41,7 @@ def fold (aig : AIG α) (target : FoldTarget aig) : Entrypoint α :=
 where
   @[specialize]
   go (aig : AIG α) (acc : Ref aig) (idx : Nat) (len : Nat) (input : RefVec aig len)
-     (f : (aig : AIG α) → BinaryInput aig → Entrypoint α) [LawfulOperator α BinaryInput f] :
+     (f : (aig : AIG α)  BinaryInput aig  Entrypoint α) [LawfulOperator α BinaryInput f] :
      Entrypoint α :=
     if hidx : idx < len then
       let res := f aig ⟨acc, input.get idx hidx⟩
@@ -57,7 +57,7 @@ where
   termination_by len - idx
 
 theorem fold.go_le_size {aig : AIG α} (acc : Ref aig) (idx : Nat) (s : RefVec aig len)
-    (f : (aig : AIG α) → BinaryInput aig → Entrypoint α) [LawfulOperator α BinaryInput f] :
+    (f : (aig : AIG α)  BinaryInput aig  Entrypoint α) [LawfulOperator α BinaryInput f] :
     aig.decls.size ≤ (go aig acc idx len s f).1.decls.size := by
   unfold go
   split
@@ -76,7 +76,7 @@ theorem fold_le_size {aig : AIG α} (target : FoldTarget aig) :
   apply LawfulOperator.le_size (f := mkConstCached)
 
 theorem fold.go_decl_eq {aig : AIG α} (acc : Ref aig) (i : Nat) (s : RefVec aig len)
-    (f : (aig : AIG α) → BinaryInput aig → Entrypoint α) [LawfulOperator α BinaryInput f] :
+    (f : (aig : AIG α)  BinaryInput aig  Entrypoint α) [LawfulOperator α BinaryInput f] :
     ∀ (idx : Nat) (h1) (h2),
       (go aig acc i len s f).1.decls[idx]'h2 = aig.decls[idx]'h1 := by
   generalize hgo : go aig acc i len s f = res
@@ -124,7 +124,7 @@ theorem denote_go_and {aig : AIG α} (acc : AIG.Ref aig) (curr : Nat) (hcurr : c
     (
       ⟦aig, acc, assign⟧
         ∧
-      (∀ (idx : Nat) (hidx1 : idx < len), curr ≤ idx → ⟦aig, input.get idx hidx1, assign⟧)
+      (∀ (idx : Nat) (hidx1 : idx < len), curr ≤ idx  ⟦aig, input.get idx hidx1, assign⟧)
     ) := by
   generalize hgo : go aig acc curr len input mkAndCached = res
   unfold go at hgo

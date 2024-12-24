@@ -19,8 +19,8 @@ termination_by n
 -- No HEq between the two `h`s due to proof irrelevance
 
 /--
-info: bar.induct (motive : Nat → Prop) (case1 : motive 0)
-  (case2 : ∀ (m : Nat), ¬m + 1 = 0 → ¬m.succ = 0 → motive m → motive m.succ) (n : Nat) : motive n
+info: bar.induct (motive : Nat  Prop) (case1 : motive 0)
+  (case2 : ∀ (m : Nat), ¬m + 1 = 0  ¬m.succ = 0  motive m  motive m.succ) (n : Nat) : motive n
 -/
 #guard_msgs in
 #check bar.induct
@@ -37,12 +37,12 @@ termination_by n
 -- #print baz._unary
 
 /--
-info: baz.induct (motive : (n : Nat) → Fin (n + 1) → Prop) (case1 : ∀ (i : Fin (0 + 1)), motive 0 i)
-  (case2 : ¬1 = 0 → ∀ (i : Fin (1 + 1)), ¬1 = 0 → motive 1 i)
+info: baz.induct (motive : (n : Nat)  Fin (n + 1)  Prop) (case1 : ∀ (i : Fin (0 + 1)), motive 0 i)
+  (case2 : ¬1 = 0  ∀ (i : Fin (1 + 1)), ¬1 = 0  motive 1 i)
   (case3 :
     ∀ (m : Nat),
-      ¬m + 2 = 0 →
-        ∀ (i : Fin (m.succ.succ + 1)), ¬m.succ.succ = 0 → motive (m + 1) ⟨↑(i + 1) - 1, ⋯⟩ → motive m.succ.succ i)
+      ¬m + 2 = 0 
+        ∀ (i : Fin (m.succ.succ + 1)), ¬m.succ.succ = 0  motive (m + 1) ⟨↑(i + 1) - 1, ⋯⟩  motive m.succ.succ i)
   (n : Nat) (i : Fin (n + 1)) : motive n i
 -/
 #guard_msgs in

@@ -14,12 +14,12 @@ import Lean.Meta.Tactic.FVarSubst
 
 namespace Lean.Meta
 
-private partial def getTargetArity : Expr → Nat
+private partial def getTargetArity : Expr  Nat
   | Expr.mdata _ b       => getTargetArity b
   | Expr.forallE _ _ b _ => getTargetArity b + 1
   | e                    => if e.isHeadBetaTarget then getTargetArity e.headBeta else 0
 
-private def addRecParams (mvarId : MVarId) (majorTypeArgs : Array Expr) : List (Option Nat) → Expr → MetaM Expr
+private def addRecParams (mvarId : MVarId) (majorTypeArgs : Array Expr) : List (Option Nat)  Expr  MetaM Expr
   | [], recursor => pure recursor
   | some pos :: rest, recursor =>
     if h : pos < majorTypeArgs.size then

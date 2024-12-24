@@ -4,5 +4,5 @@ The DecidableEq deriving handler should succeed even if fields have types starti
 
 structure Foo where
   a : List Nat
-  ha : ∀ {i}, i ∈ a → 0 < i
+  ha : ∀ {i}, i ∈ a  0 < i
 deriving DecidableEq

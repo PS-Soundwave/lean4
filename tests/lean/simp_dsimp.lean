@@ -1,4 +1,4 @@
-opaque A : Nat → Type
+opaque A : Nat  Type
 opaque f (x : Nat) (a : A x) : Nat
 
 example (x : Nat) (a : A (x + 0)) : f (x + 0) a = x := by

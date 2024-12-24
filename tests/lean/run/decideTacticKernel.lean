@@ -60,12 +60,12 @@ theorem thm1' : ∀ x < 100, x * x ≤ 10000 := by decide +kernel
 
 -- (Note: when run within VS Code, these tests fail since the auxLemmas have a `lean.run` prefix.)
 /--
-info: theorem thm1 : ∀ (x : Nat), x < 100 → x * x ≤ 10000 :=
+info: theorem thm1 : ∀ (x : Nat), x < 100  x * x ≤ 10000 :=
 decideTacticKernel._auxLemma.3
 -/
 #guard_msgs in #print thm1
 /--
-info: theorem thm1' : ∀ (x : Nat), x < 100 → x * x ≤ 10000 :=
+info: theorem thm1' : ∀ (x : Nat), x < 100  x * x ≤ 10000 :=
 decideTacticKernel._auxLemma.3
 -/
 #guard_msgs in #print thm1'
@@ -90,7 +90,7 @@ example (x : Nat) (h : x < 5) : x + 1 ≤ 5 := by decide +kernel +revert
 Can handle universe levels.
 -/
 
-instance (p : PUnit.{u} → Prop) [Decidable (p PUnit.unit)] : Decidable (∀ x : PUnit.{u}, p x) :=
+instance (p : PUnit.{u}  Prop) [Decidable (p PUnit.unit)] : Decidable (∀ x : PUnit.{u}, p x) :=
   decidable_of_iff (p PUnit.unit) (by constructor; rintro _ ⟨⟩; assumption; intro h; apply h)
 
 example : ∀ (x : PUnit.{u}), x = PUnit.unit := by decide +kernel

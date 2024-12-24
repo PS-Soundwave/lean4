@@ -415,7 +415,7 @@ where
         replaceMainGoal [mvarId]
   | _ => throwUnsupportedSyntax
 
-def forEachVar (hs : Array Syntax) (tac : MVarId → FVarId → MetaM MVarId) : TacticM Unit := do
+def forEachVar (hs : Array Syntax) (tac : MVarId  FVarId  MetaM MVarId) : TacticM Unit := do
   for h in hs do
     withMainContext do
       let fvarId ← getFVarId h

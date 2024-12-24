@@ -64,63 +64,63 @@ a b : Nat
 case h.h
 a b : Nat
 | 0 + a + b
-p : Nat → Prop
+p : Nat  Prop
 h : ∀ (a : Nat), p a
 x : Nat
 | p (id (0 + x))
-p : Nat → Prop
+p : Nat  Prop
 h : ∀ (a : Nat), p a
 x : Nat
 | id (0 + x)
-p : Nat → Prop
+p : Nat  Prop
 h : ∀ (a : Nat), p a
 x : Nat
 | 0 + x
 case h₁
 p : Prop
 x : Nat
-| x = x → p
+| x = x  p
 p : Prop
 x : Nat
-⊢ (True → p) → p
+⊢ (True  p)  p
 case h
 x : Nat
 | 0 + x
 p : Prop
 x : Nat
-⊢ (True → p) → p
+⊢ (True  p)  p
 x y : Nat
-f : Nat → Nat → Nat
-g : Nat → Nat
+f : Nat  Nat  Nat
+g : Nat  Nat
 h₁ : ∀ (z : Nat), f z z = z
 h₂ : ∀ (x y : Nat), f (g x) (g y) = y
 ⊢ f (g y) (f (g x) (g (0 + x))) = x
 x y : Nat
-f : Nat → Nat → Nat
-g : Nat → Nat
+f : Nat  Nat  Nat
+g : Nat  Nat
 h₁ : ∀ (z : Nat), f z z = z
 h₂ : ∀ (x y : Nat), f (g x) (g y) = y
 ⊢ f (g y) (f (g x) (g x)) = x
 x y : Nat
 h : y = 0
 | y + x
-p : Nat → Prop
+p : Nat  Prop
 x y : Nat
 h1 : y = 0
 h2 : p x
 | y + x
 j : Fin 5
-p : (n : Nat) → Fin n → Prop
+p : (n : Nat)  Fin n  Prop
 i : Fin 5
 hp : p 5 i
 hi : j = i
 | j
-p : {x : Nat} → Nat → Prop
+p : {x : Nat}  Nat  Prop
 x y : Nat
 h1 : y = 0
 h2 : p x
 | y
-p : {x : Nat} → Nat → Prop
+p : {x : Nat}  Nat  Prop
 x y : Nat
 h1 : y = 0
 h2 : p x
@@ -164,29 +164,29 @@ conv1.lean:248:58-248:83: error: 'pattern' conv tactic failed, pattern was found
 conv1.lean:249:58-249:85: error: 'pattern' conv tactic failed, pattern was found only 4 times but 5 expected
 conv1.lean:250:58-250:85: error: 'pattern' conv tactic failed, pattern was found only 3 times but 5 expected
 conv1.lean:251:58-251:87: error: 'pattern' conv tactic failed, pattern was found only 2 times but 5 expected
-P Q : Nat → Nat → Nat → Prop
+P Q : Nat  Nat  Nat  Prop
 h : P = Q
 h2 : Q 1 2 3
 | P 1 2 3
-P Q : Nat → Nat → Nat → Prop
+P Q : Nat  Nat  Nat  Prop
 h : P = Q
 h2 : Q 1 2 3
 | P 1 2
-P Q : Nat → Nat → Nat → Prop
+P Q : Nat  Nat  Nat  Prop
 h : P = Q
 h2 : Q 1 2 3
 | P 1
-P Q : Nat → Nat → Nat → Prop
+P Q : Nat  Nat  Nat  Prop
 h : P = Q
 h2 : Q 1 2 3
 | P
 conv1.lean:275:10-275:13: error: invalid 'fun' conv tactic, application expected
   p
-P Q : Nat → Nat → Nat → Prop
+P Q : Nat  Nat  Nat  Prop
 h : P = Q
 h2 : Q 1 2 3
 | P 1 2 3
-P Q : Nat → Nat → Nat → Prop
+P Q : Nat  Nat  Nat  Prop
 h : P = Q
 h2 : Q 1 2 3
 | P

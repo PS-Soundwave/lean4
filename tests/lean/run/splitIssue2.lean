@@ -14,7 +14,7 @@ def parentD (arr : Array UFNode) (i : Nat) : Nat :=
 /-- Rank of a union-find node, defaults to 0 when the node is a root -/
 def rankD (arr : Array UFNode) (i : Nat) : Nat := 0
 
-theorem parentD_of_not_lt : ¬i < arr.size → parentD arr i = i := sorry
+theorem parentD_of_not_lt : ¬i < arr.size  parentD arr i = i := sorry
 
 theorem parentD_set {arr : Array UFNode} {x h v i} :
     parentD (arr.set x v h) i = if x = i then v.parent else parentD arr i := by

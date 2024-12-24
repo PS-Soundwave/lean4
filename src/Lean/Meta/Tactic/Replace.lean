@@ -159,7 +159,7 @@ you need to move it into the goal, alter the goal, and then bring it back into t
 all while keeping track of any other local variables that depend on this one.
 -/
 def _root_.Lean.MVarId.withReverted (mvarId : MVarId) (fvarIds : Array FVarId)
-    (k : MVarId → Array FVarId → MetaM (α × Array (Option FVarId) × MVarId))
+    (k : MVarId  Array FVarId  MetaM (α × Array (Option FVarId) × MVarId))
     (clearAuxDeclsInsteadOfRevert := false) : MetaM (α × MVarId) := do
   let (xs, mvarId) ← mvarId.revert fvarIds true clearAuxDeclsInsteadOfRevert
   let (r, xs', mvarId) ← k mvarId xs
@@ -200,7 +200,7 @@ def _root_.Lean.MVarId.changeLocalDecl (mvarId : MVarId) (fvarId : FVarId) (type
 /--
 Modify `mvarId` target type using `f`.
 -/
-def _root_.Lean.MVarId.modifyTarget (mvarId : MVarId) (f : Expr → MetaM Expr) : MetaM MVarId := do
+def _root_.Lean.MVarId.modifyTarget (mvarId : MVarId) (f : Expr  MetaM Expr) : MetaM MVarId := do
   mvarId.withContext do
     mvarId.checkNotAssigned `modifyTarget
     mvarId.change (← f (← mvarId.getType)) (checkDefEq := false)
@@ -209,7 +209,7 @@ def _root_.Lean.MVarId.modifyTarget (mvarId : MVarId) (f : Expr → MetaM Expr) 
 Modify `mvarId` target type left-hand-side using `f`.
 Throw an error if target type is not an equality.
 -/
-def _root_.Lean.MVarId.modifyTargetEqLHS (mvarId : MVarId) (f : Expr → MetaM Expr) : MetaM MVarId := do
+def _root_.Lean.MVarId.modifyTargetEqLHS (mvarId : MVarId) (f : Expr  MetaM Expr) : MetaM MVarId := do
    mvarId.modifyTarget fun target => do
      if let some (_, lhs, rhs) ← matchEq? target then
        mkEq (← f lhs) rhs

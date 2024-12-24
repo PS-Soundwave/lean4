@@ -20,13 +20,13 @@ namespace State
 This invariant ensures that we only insert an atom at most once and with a monotonically increasing
 index.
 -/
-inductive Inv1 : Nat → HashMap α Nat → Prop where
+inductive Inv1 : Nat  HashMap α Nat  Prop where
 | empty : Inv1 0 {}
 | insert (hinv : Inv1 n map) (hfind : map[x]? = none) : Inv1 (n + 1) (map.insert x n)
 
 theorem Inv1.lt_of_get?_eq_some [EquivBEq α] {n m : Nat} (map : HashMap α Nat) (x : α)
     (hinv : Inv1 n map) :
-    map[x]? = some m → m < n := by
+    map[x]? = some m  m < n := by
   induction hinv with
   | empty => simp
   | insert ih1 ih2 ih3 =>
@@ -83,7 +83,7 @@ theorem Inv1.property [EquivBEq α] {n m : Nat} (x y : α) (map : HashMap α Nat
 /--
 This invariant says that we have already visited and inserted all nodes up to a certain index.
 -/
-inductive Inv2 (decls : Array (Decl α)) : Nat → HashMap α Nat → Prop where
+inductive Inv2 (decls : Array (Decl α)) : Nat  HashMap α Nat  Prop where
 | empty : Inv2 decls 0 {}
 | newAtom (hinv : Inv2 decls idx map) (hlt : idx < decls.size) (hatom : decls[idx] = .atom a)
   (hmap : map[a]? = none) : Inv2 decls (idx + 1) (map.insert a val)
@@ -280,7 +280,7 @@ theorem ofAIG.Inv2 (aig : AIG α) : Inv2 aig.decls aig.decls.size (ofAIG aig) :=
 Assuming that we find a `Nat` for an atom in the `ofAIG` map, that `Nat` is unique in the map.
 -/
 theorem ofAIG_find_unique {aig : AIG α} (a : α) (ha : (ofAIG aig)[a]? = some n) :
-    ∀ a', (ofAIG aig)[a']? = some n → a = a' := by
+    ∀ a', (ofAIG aig)[a']? = some n  a = a' := by
   intro a' ha'
   rcases ofAIG.Inv1 aig with ⟨n, hn⟩
   apply Inv1.property <;> assumption

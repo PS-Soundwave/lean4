@@ -69,7 +69,7 @@ private partial def eraseCandidate (fvarId : FVarId) : FindM Unit := do
 /--
 Combinator for modifying the candidates in `FindM`.
 -/
-private def modifyCandidates (f : Std.HashMap FVarId CandidateInfo → Std.HashMap FVarId CandidateInfo) : FindM Unit :=
+private def modifyCandidates (f : Std.HashMap FVarId CandidateInfo  Std.HashMap FVarId CandidateInfo) : FindM Unit :=
   modify (fun state => {state with candidates := f state.candidates })
 
 /--
@@ -136,7 +136,7 @@ partial def find (decl : Decl) : CompilerM FindState := do
   let (_, candidates) ← decl.value.forCodeM go |>.run none |>.run {} |>.run' {}
   return candidates
 where
-  go : Code → FindM Unit
+  go : Code  FindM Unit
   | .let decl k => do
     match k, decl.value with
     | .return valId, .fvar fvarId args =>

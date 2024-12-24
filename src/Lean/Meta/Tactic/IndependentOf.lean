@@ -25,9 +25,9 @@ Examples:
   but if we first assign `2` to `?m_1` then that is no longer possible.
 * `?m_1 : ?m_2` is not independent of `?m_2 : Type`, because we could assign `Bool` to ?m_2`,
   but if we first assign `0 : Nat` to `?m_1` then that is no longer possible.
-* Given `P : Prop` and `f : P → Type`, `?m_1 : P` is independent of `?m_2 : f ?m_1`
+* Given `P : Prop` and `f : P  Type`, `?m_1 : P` is independent of `?m_2 : f ?m_1`
   by proof irrelevance.
-* Similarly given `f : Fin 0 → Type`, `?m_1 : Fin 0` is independent of `?m_2 : f ?m_1`,
+* Similarly given `f : Fin 0  Type`, `?m_1 : Fin 0` is independent of `?m_2 : f ?m_1`,
   because `Fin 0` is a subsingleton.
 * Finally `?m_1 : Nat` is independent of `?m_2 : α`,
   as long as `?m_1` does not appear in `Meta.getMVars α`

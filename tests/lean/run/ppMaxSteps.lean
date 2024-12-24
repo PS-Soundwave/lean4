@@ -6,10 +6,10 @@
 Without setting `pp.maxSteps`, the goal would crash the LSP when trying to create very large JSON.
 -/
 
-opaque myAuxiliaryFunction : Nat → Nat → Nat
-opaque anotherHelper : Nat → Nat
+opaque myAuxiliaryFunction : Nat  Nat  Nat
+opaque anotherHelper : Nat  Nat
 
-def f (m : Nat) : Nat → Nat
+def f (m : Nat) : Nat  Nat
   | 0   => anotherHelper m
   | n+1 => myAuxiliaryFunction (f (anotherHelper m) n) (f (myAuxiliaryFunction m (anotherHelper m)) n)
 

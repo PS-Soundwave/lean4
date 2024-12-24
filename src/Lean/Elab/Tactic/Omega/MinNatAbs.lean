@@ -70,7 +70,7 @@ theorem nonzeroMinimum_le {xs : List Nat} (m : a ∈ xs) (h : a ≠ 0) : xs.nonz
   exact ⟨m, h⟩
 
 theorem nonzeroMinimum_eq_nonzero_iff {xs : List Nat} {y : Nat} (h : y ≠ 0) :
-    xs.nonzeroMinimum = y ↔ y ∈ xs ∧ (∀ x ∈ xs, y ≤ x ∨ x = 0) := by
+    xs.nonzeroMinimum = y ↔ y ∈ xs ∧ (∀ x ∈ xs, y ≤ x  x = 0) := by
   constructor
   · rintro rfl
     constructor
@@ -95,7 +95,7 @@ theorem nonzeroMinimum_eq_of_nonzero {xs : List Nat} (h : xs.nonzeroMinimum ≠ 
   ⟨xs.nonzeroMinimum, ((nonzeroMinimum_eq_nonzero_iff h).mp rfl).1, rfl⟩
 
 theorem nonzeroMinimum_le_iff {xs : List Nat} {y : Nat} :
-    xs.nonzeroMinimum ≤ y ↔ xs.nonzeroMinimum = 0 ∨ ∃ x ∈ xs, x ≤ y ∧ x ≠ 0 := by
+    xs.nonzeroMinimum ≤ y ↔ xs.nonzeroMinimum = 0  ∃ x ∈ xs, x ≤ y ∧ x ≠ 0 := by
   refine ⟨fun h => ?_, fun h => ?_⟩
   · rw [Classical.or_iff_not_imp_right]
     simp only [ne_eq, not_exists, not_and, Classical.not_not, nonzeroMinimum_eq_zero_iff]
@@ -109,9 +109,9 @@ theorem nonzeroMinimum_le_iff {xs : List Nat} {y : Nat} :
     | .inl h => simp [h]
     | .inr ⟨x, m, le, ne⟩ => exact Nat.le_trans (nonzeroMinimum_le m ne) le
 
-theorem nonzeroMininum_map_le_nonzeroMinimum (f : α → β) (p : α → Nat) (q : β → Nat) (xs : List α)
-    (h : ∀ a, a ∈ xs → (p a = 0 ↔ q (f a) = 0))
-    (w : ∀ a, a ∈ xs → p a ≠ 0 → q (f a) ≤ p a) :
+theorem nonzeroMininum_map_le_nonzeroMinimum (f : α  β) (p : α  Nat) (q : β  Nat) (xs : List α)
+    (h : ∀ a, a ∈ xs  (p a = 0 ↔ q (f a) = 0))
+    (w : ∀ a, a ∈ xs  p a ≠ 0  q (f a) ≤ p a) :
     ((xs.map f).map q).nonzeroMinimum ≤ (xs.map p).nonzeroMinimum := by
   rw [nonzeroMinimum_le_iff]
   if z : (xs.map p).nonzeroMinimum = 0 then
@@ -138,7 +138,7 @@ def minNatAbs (xs : List Int) : Nat := xs.map Int.natAbs |>.nonzeroMinimum
   simp [minNatAbs]
 
 theorem minNatAbs_eq_nonzero_iff (xs : List Int) (w : z ≠ 0) :
-    xs.minNatAbs = z ↔ (∃ y ∈ xs, y.natAbs = z) ∧ (∀ y ∈ xs, z ≤ y.natAbs ∨ y = 0) := by
+    xs.minNatAbs = z ↔ (∃ y ∈ xs, y.natAbs = z) ∧ (∀ y ∈ xs, z ≤ y.natAbs  y = 0) := by
   simp [minNatAbs, nonzeroMinimum_eq_nonzero_iff w]
 
 @[simp] theorem minNatAbs_nil : ([] : List Int).minNatAbs = 0 := rfl

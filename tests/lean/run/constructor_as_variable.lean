@@ -21,7 +21,7 @@ warning: Local variable 'x' resembles constructor 'A.x' - write '.x' (with a dot
 note: this linter can be disabled with `set_option linter.constructorNameAsVariable false`
 -/
 #guard_msgs(drop error, warning) in
-def f : A → Unit
+def f : A  Unit
   | x => _
 
 -- Show that the linter also works when there are no errors
@@ -30,18 +30,18 @@ warning: Local variable 'x' resembles constructor 'A.x' - write '.x' (with a dot
 note: this linter can be disabled with `set_option linter.constructorNameAsVariable false`
 -/
 #guard_msgs(warning) in
-def g : A → Unit
+def g : A  Unit
   | x => ()
 
 -- Check that turning it off works
 #guard_msgs in
 set_option linter.constructorNameAsVariable false in
-def g' : A → Unit
+def g' : A  Unit
   | x => ()
 
 -- Avoid false positives
 #guard_msgs in
-def h : A → Unit
+def h : A  Unit
   | z => ()
 
 -- Check that it works for let-bindings
@@ -84,7 +84,7 @@ def x : A := A.x
 /-! Test the interaction with the invalid match pattern error messages -/
 
 inductive MyProd where
-  | construct : Nat → Nat → MyProd
+  | construct : Nat  Nat  MyProd
 
 /--
 error: invalid pattern, constructor or constant marked with '[match_pattern]' expected

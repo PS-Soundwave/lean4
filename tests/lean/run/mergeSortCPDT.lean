@@ -1,9 +1,9 @@
-def List.insert' (p : α → α → Bool) (a : α) (bs : List α) : List α :=
+def List.insert' (p : α  α  Bool) (a : α) (bs : List α) : List α :=
   match bs with
   | [] => [a]
   | b :: bs' => if p a b then a :: bs else b :: bs'.insert' p a
 
-def List.merge' (p : α → α → Bool) (as bs : List α) : List α :=
+def List.merge' (p : α  α  Bool) (as bs : List α) : List α :=
   match as with
   | [] => bs
   | a :: as' => insert' p a (merge' p as' bs)
@@ -36,7 +36,7 @@ theorem List.length_split_of_atLeast2 {as : List α} (h : as.atLeast2) : as.spli
     have ⟨ih₁, ih₂⟩ := ih
     exact ⟨Nat.le_trans ih₁ (by simp_arith), Nat.le_trans ih₂ (by simp_arith)⟩
 
-def List.mergeSort' (p : α → α → Bool) (as : List α) : List α :=
+def List.mergeSort' (p : α  α  Bool) (as : List α) : List α :=
   if h : as.atLeast2 then
     match he:as.split with
     | (as', bs') =>

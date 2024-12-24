@@ -1,4 +1,4 @@
-class A (α : Type _) where  a : α → Unit
+class A (α : Type _) where  a : α  Unit
 
 instance : A Empty where a x := nomatch x
 

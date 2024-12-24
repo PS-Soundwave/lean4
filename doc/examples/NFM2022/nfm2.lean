@@ -1,10 +1,10 @@
 /- First-class functions -/
 
-def twice (f : Nat → Nat) (a : Nat) :=
+def twice (f : Nat  Nat) (a : Nat) :=
   f (f a)
 
 #check twice
--- (Nat → Nat) → Nat → Nat
+-- (Nat  Nat)  Nat  Nat
 
 #eval twice (fun x => x + 2) 10
 

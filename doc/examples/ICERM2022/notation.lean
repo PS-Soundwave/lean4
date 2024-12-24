@@ -13,8 +13,8 @@ notation "unitTest " x => Prod.mk x ()
 notation "parenthesisTest " x => Nat.sub (x)
 #check parenthesisTest 12
 
-def Set (α : Type u) := α → Prop
-def setOf {α : Type} (p : α → Prop) : Set α := p
+def Set (α : Type u) := α  Prop
+def setOf {α : Type} (p : α  Prop) : Set α := p
 notation "{ " x " | " p " }" => setOf (fun x => p)
 
 #check { x | x ≤ 1 }
@@ -35,15 +35,12 @@ open Lean Meta PrettyPrinter Delaborator SubExpr in
 @[delab app.Prod.mk] def delabDoubleRhsTest : Delab := do
    let e ← getExpr
    let #[_, _, x, y] := e.getAppArgs | failure
-   guard (← isDefEq x y) 
+   guard (← isDefEq x y)
    let stx ← withAppArg delab
-   `(diag $stx)     
+   `(diag $stx)
 
 #check diag 3
 #check (3, 3)
 #check (3, 4)
 #check (2+1, 3)
 #check (true, true)
-
-
-

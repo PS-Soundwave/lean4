@@ -32,9 +32,9 @@ constructor:
 info: structure Thunk.{u} (α : Type u) : Type u
 number of parameters: 1
 fields:
-  private Thunk.fn✝ : Unit → α
+  private Thunk.fn✝ : Unit  α
 constructor:
-  Thunk.mk.{u} {α : Type u} (fn : Unit → α) : Thunk α
+  Thunk.mk.{u} {α : Type u} (fn : Unit  α) : Thunk α
 -/
 #guard_msgs in
 #print Thunk
@@ -82,22 +82,22 @@ constructor:
 
 /-! Extended class -/
 /--
-info: class Alternative.{u, v} (f : Type u → Type v) : Type (max (u + 1) v)
+info: class Alternative.{u, v} (f : Type u  Type v) : Type (max (u + 1) v)
 number of parameters: 1
 parents:
   Alternative.toApplicative : Applicative f
 fields:
-  Functor.map : {α β : Type u} → (α → β) → f α → f β
-  Functor.mapConst : {α β : Type u} → α → f β → f α
-  Pure.pure : {α : Type u} → α → f α
-  Seq.seq : {α β : Type u} → f (α → β) → (Unit → f α) → f β
-  SeqLeft.seqLeft : {α β : Type u} → f α → (Unit → f β) → f α
-  SeqRight.seqRight : {α β : Type u} → f α → (Unit → f β) → f β
-  Alternative.failure : {α : Type u} → f α
-  Alternative.orElse : {α : Type u} → f α → (Unit → f α) → f α
+  Functor.map : {α β : Type u}  (α  β)  f α  f β
+  Functor.mapConst : {α β : Type u}  α  f β  f α
+  Pure.pure : {α : Type u}  α  f α
+  Seq.seq : {α β : Type u}  f (α  β)  (Unit  f α)  f β
+  SeqLeft.seqLeft : {α β : Type u}  f α  (Unit  f β)  f α
+  SeqRight.seqRight : {α β : Type u}  f α  (Unit  f β)  f β
+  Alternative.failure : {α : Type u}  f α
+  Alternative.orElse : {α : Type u}  f α  (Unit  f α)  f α
 constructor:
-  Alternative.mk.{u, v} {f : Type u → Type v} [toApplicative : Applicative f] (failure : {α : Type u} → f α)
-    (orElse : {α : Type u} → f α → (Unit → f α) → f α) : Alternative f
+  Alternative.mk.{u, v} {f : Type u  Type v} [toApplicative : Applicative f] (failure : {α : Type u}  f α)
+    (orElse : {α : Type u}  f α  (Unit  f α)  f α) : Alternative f
 field notation resolution order:
   Alternative, Applicative, Functor, Pure, Seq, SeqLeft, SeqRight
 -/
@@ -106,7 +106,7 @@ field notation resolution order:
 
 /-! Multiply extended class -/
 /--
-info: class Applicative.{u, v} (f : Type u → Type v) : Type (max (u + 1) v)
+info: class Applicative.{u, v} (f : Type u  Type v) : Type (max (u + 1) v)
 number of parameters: 1
 parents:
   Applicative.toFunctor : Functor f
@@ -115,14 +115,14 @@ parents:
   Applicative.toSeqLeft : SeqLeft f
   Applicative.toSeqRight : SeqRight f
 fields:
-  Functor.map : {α β : Type u} → (α → β) → f α → f β
-  Functor.mapConst : {α β : Type u} → α → f β → f α
-  Pure.pure : {α : Type u} → α → f α
-  Seq.seq : {α β : Type u} → f (α → β) → (Unit → f α) → f β
-  SeqLeft.seqLeft : {α β : Type u} → f α → (Unit → f β) → f α
-  SeqRight.seqRight : {α β : Type u} → f α → (Unit → f β) → f β
+  Functor.map : {α β : Type u}  (α  β)  f α  f β
+  Functor.mapConst : {α β : Type u}  α  f β  f α
+  Pure.pure : {α : Type u}  α  f α
+  Seq.seq : {α β : Type u}  f (α  β)  (Unit  f α)  f β
+  SeqLeft.seqLeft : {α β : Type u}  f α  (Unit  f β)  f α
+  SeqRight.seqRight : {α β : Type u}  f α  (Unit  f β)  f β
 constructor:
-  Applicative.mk.{u, v} {f : Type u → Type v} [toFunctor : Functor f] [toPure : Pure f] [toSeq : Seq f]
+  Applicative.mk.{u, v} {f : Type u  Type v} [toFunctor : Functor f] [toPure : Pure f] [toSeq : Seq f]
     [toSeqLeft : SeqLeft f] [toSeqRight : SeqRight f] : Applicative f
 field notation resolution order:
   Applicative, Functor, Pure, Seq, SeqLeft, SeqRight
@@ -149,13 +149,13 @@ constructor:
 /-! Structure-like inductive -/
 
 inductive Fake (α : Type _) where
-  | mk : (x : α) → Fake α
+  | mk : (x : α)  Fake α
 
 /--
-info: inductive Fake.{u_1} : Type u_1 → Type u_1
+info: inductive Fake.{u_1} : Type u_1  Type u_1
 number of parameters: 1
 constructors:
-Fake.mk : {α : Type u_1} → α → Fake α
+Fake.mk : {α : Type u_1}  α  Fake α
 -/
 #guard_msgs in
 #print Fake

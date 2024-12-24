@@ -3,7 +3,7 @@ set_option pp.analyze false
 /--
 warning: declaration uses 'sorry'
 ---
-info: p : (n : Nat) → Fin n → Prop
+info: p : (n : Nat)  Fin n  Prop
 n : Nat
 v : Fin n
 n' : Nat
@@ -13,7 +13,7 @@ h₂ : HEq v.succ v'
 ⊢ p n' v'
 -/
 #guard_msgs in
-example (p : (n : Nat) → Fin n → Prop)
+example (p : (n : Nat)  Fin n  Prop)
         (n : Nat)
         (v : Fin n)
         : p (n + 1) v.succ := by

@@ -43,14 +43,14 @@ The `omega` tactic pre-processes the hypotheses in the following ways:
   but replace `x % m` with `- m * α + x`.
 * Split conjunctions, existentials, and subtypes.
 * Record, for each appearance of `(a - b : Int)` with `a b : Nat`, the disjunction
-  `b ≤ a ∧ ((a - b : Nat) : Int) = a - b ∨ a < b ∧ ((a - b : Nat) : Int) = 0`.
+  `b ≤ a ∧ ((a - b : Nat) : Int) = a - b  a < b ∧ ((a - b : Nat) : Int) = 0`.
   We don't immediately split this; see the discussion below for how disjunctions are handled.
 
 After this preprocessing stage, we have a collection of linear inequalities
 (all using `≤` rather than `<`) and equalities in some set of atoms.
 
 TODO: We should identify atoms up to associativity and commutativity,
-so that `omega` can handle problems such as `a * b < 0 && b * a > 0 → False`.
+so that `omega` can handle problems such as `a * b < 0 && b * a > 0  False`.
 This should be a relatively easy modification of the `lookup` function in `OmegaM`.
 After doing so, we could allow the preprocessor to distribute multiplication over addition.
 

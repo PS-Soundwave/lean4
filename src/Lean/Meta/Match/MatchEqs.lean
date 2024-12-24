@@ -114,7 +114,7 @@ def unfoldNamedPattern (e : Expr) : MetaM Expr := do
   This can be used to use the alternative of a match expression in its splitter.
 -/
 partial def forallAltTelescope (altType : Expr) (altNumParams numDiscrEqs : Nat)
-    (k : (ys : Array Expr) → (eqs : Array Expr) → (args : Array Expr) → (mask : Array Bool) → (type : Expr) → MetaM α)
+    (k : (ys : Array Expr)  (eqs : Array Expr)  (args : Array Expr)  (mask : Array Bool)  (type : Expr)  MetaM α)
     : MetaM α := do
   go #[] #[] #[] #[] 0 altType
 where
@@ -176,7 +176,7 @@ namespace SimpH
   Recall that each equation contains additional hypotheses to ensure the associated case does not taken by previous cases.
   We have one hypothesis for each previous case.
 
-  Each hypothesis is of the form `forall xs, eqs → False`
+  Each hypothesis is of the form `forall xs, eqs  False`
 
   We use tactics to minimize code duplication.
 -/
@@ -362,7 +362,7 @@ where
 
 
 /-- Construct new local declarations `xs` with types `altTypes`, and then execute `f xs`  -/
-private partial def withSplitterAlts (altTypes : Array Expr) (f : Array Expr → MetaM α) : MetaM α := do
+private partial def withSplitterAlts (altTypes : Array Expr) (f : Array Expr  MetaM α) : MetaM α := do
   let rec go (i : Nat) (xs : Array Expr) : MetaM α := do
     if h : i < altTypes.size then
       let hName := (`h).appendIndexAfter (i+1)
@@ -461,32 +461,32 @@ where
     Auxiliary function used at `convertTemplate`. It is needed when the auxiliary `match` declaration had to refine the type of its
     minor premises during dependent pattern match. For an example, consider
     ```
-    inductive Foo : Nat → Type _
+    inductive Foo : Nat  Type _
     | nil             : Foo 0
     | cons  (t: Foo l): Foo l
 
-    def Foo.bar (t₁: Foo l₁): Foo l₂ → Bool
+    def Foo.bar (t₁: Foo l₁): Foo l₂  Bool
     | cons s₁ => t₁.bar s₁
     | _ => false
     attribute [simp] Foo.bar
     ```
     The auxiliary `Foo.bar.match_1` is of the form
     ```
-    def Foo.bar.match_1.{u_1} : {l₂ : Nat} →
-      (t₂ : Foo l₂) →
-        (motive : Foo l₂ → Sort u_1) →
-          (t₂ : Foo l₂) → ((s₁ : Foo l₂) → motive (Foo.cons s₁)) → ((x : Foo l₂) → motive x) → motive t₂ :=
+    def Foo.bar.match_1.{u_1} : {l₂ : Nat} 
+      (t₂ : Foo l₂) 
+        (motive : Foo l₂  Sort u_1) 
+          (t₂ : Foo l₂)  ((s₁ : Foo l₂)  motive (Foo.cons s₁))  ((x : Foo l₂)  motive x)  motive t₂ :=
     fun {l₂} t₂ motive t₂_1 h_1 h_2 =>
       (fun t₂_2 =>
-          Foo.casesOn (motive := fun a x => l₂ = a → HEq t₂_1 x → motive t₂_1) t₂_2
+          Foo.casesOn (motive := fun a x => l₂ = a  HEq t₂_1 x  motive t₂_1) t₂_2
             (fun h =>
               Eq.ndrec (motive := fun {l₂} =>
-                (t₂ t₂ : Foo l₂) →
-                  (motive : Foo l₂ → Sort u_1) →
-                    ((s₁ : Foo l₂) → motive (Foo.cons s₁)) → ((x : Foo l₂) → motive x) → HEq t₂ Foo.nil → motive t₂)
+                (t₂ t₂ : Foo l₂) 
+                  (motive : Foo l₂  Sort u_1) 
+                    ((s₁ : Foo l₂)  motive (Foo.cons s₁))  ((x : Foo l₂)  motive x)  HEq t₂ Foo.nil  motive t₂)
                 (fun t₂ t₂ motive h_1 h_2 h => Eq.symm (eq_of_heq h) ▸ h_2 Foo.nil) (Eq.symm h) t₂ t₂_1 motive h_1 h_2) --- HERE
             fun {l} t h =>
-            Eq.ndrec (motive := fun {l} => (t : Foo l) → HEq t₂_1 (Foo.cons t) → motive t₂_1)
+            Eq.ndrec (motive := fun {l} => (t : Foo l)  HEq t₂_1 (Foo.cons t)  motive t₂_1)
               (fun t h => Eq.symm (eq_of_heq h) ▸ h_1 t) h t)
         t₂_1 (Eq.refl l₂) (HEq.refl t₂_1)
     ```
@@ -641,7 +641,7 @@ where
   Recall that `alts` depends on `discrs` when `numDiscrEqs > 0`, where `numDiscrEqs` is the number of discriminants
   annotated with `h : discr`.
 -/
-private partial def withNewAlts (numDiscrEqs : Nat) (discrs : Array Expr) (patterns : Array Expr) (alts : Array Expr) (k : Array Expr → MetaM α) : MetaM α :=
+private partial def withNewAlts (numDiscrEqs : Nat) (discrs : Array Expr) (patterns : Array Expr) (alts : Array Expr) (k : Array Expr  MetaM α) : MetaM α :=
   if numDiscrEqs == 0 then
     k alts
   else

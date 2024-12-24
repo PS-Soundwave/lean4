@@ -19,17 +19,17 @@ open Nat
 
 /-! ### Pairwise -/
 
-theorem Pairwise.sublist : l₁ <+ l₂ → l₂.Pairwise R → l₁.Pairwise R
+theorem Pairwise.sublist : l₁ <+ l₂  l₂.Pairwise R  l₁.Pairwise R
   | .slnil, h => h
   | .cons _ s, .cons _ h₂ => h₂.sublist s
   | .cons₂ _ s, .cons h₁ h₂ => (h₂.sublist s).cons fun _ h => h₁ _ (s.subset h)
 
-theorem Pairwise.imp {α R S} (H : ∀ {a b}, R a b → S a b) :
-    ∀ {l : List α}, l.Pairwise R → l.Pairwise S
+theorem Pairwise.imp {α R S} (H : ∀ {a b}, R a b  S a b) :
+    ∀ {l : List α}, l.Pairwise R  l.Pairwise S
   | _, .nil => .nil
-  | _, .cons h₁ h₂ => .cons (H ∘ h₁ ·) (h₂.imp H)
+  | _, .cons h₁ h₂ => .cons (H  h₁ ·) (h₂.imp H)
 
-theorem rel_of_pairwise_cons (p : (a :: l).Pairwise R) : ∀ {a'}, a' ∈ l → R a a' :=
+theorem rel_of_pairwise_cons (p : (a :: l).Pairwise R) : ∀ {a'}, a' ∈ l  R a a' :=
   (pairwise_cons.1 p).1 _
 
 theorem Pairwise.of_cons (p : (a :: l).Pairwise R) : Pairwise R l :=
@@ -39,8 +39,8 @@ theorem Pairwise.tail : ∀ {l : List α} (_p : Pairwise R l), Pairwise R l.tail
   | [], h => h
   | _ :: _, h => h.of_cons
 
-theorem Pairwise.imp_of_mem {S : α → α → Prop}
-    (H : ∀ {a b}, a ∈ l → b ∈ l → R a b → S a b) (p : Pairwise R l) : Pairwise S l := by
+theorem Pairwise.imp_of_mem {S : α  α  Prop}
+    (H : ∀ {a b}, a ∈ l  b ∈ l  R a b  S a b) (p : Pairwise R l) : Pairwise S l := by
   induction p with
   | nil => constructor
   | @cons a l r _ ih =>
@@ -59,15 +59,15 @@ theorem Pairwise.and (hR : Pairwise R l) (hS : Pairwise S l) :
 theorem pairwise_and_iff : l.Pairwise (fun a b => R a b ∧ S a b) ↔ Pairwise R l ∧ Pairwise S l :=
   ⟨fun h => ⟨h.imp fun h => h.1, h.imp fun h => h.2⟩, fun ⟨hR, hS⟩ => hR.and hS⟩
 
-theorem Pairwise.imp₂ (H : ∀ a b, R a b → S a b → T a b)
+theorem Pairwise.imp₂ (H : ∀ a b, R a b  S a b  T a b)
     (hR : Pairwise R l) (hS : l.Pairwise S) : l.Pairwise T :=
   (hR.and hS).imp fun ⟨h₁, h₂⟩ => H _ _ h₁ h₂
 
-theorem Pairwise.iff_of_mem {S : α → α → Prop} {l : List α}
-    (H : ∀ {a b}, a ∈ l → b ∈ l → (R a b ↔ S a b)) : Pairwise R l ↔ Pairwise S l :=
+theorem Pairwise.iff_of_mem {S : α  α  Prop} {l : List α}
+    (H : ∀ {a b}, a ∈ l  b ∈ l  (R a b ↔ S a b)) : Pairwise R l ↔ Pairwise S l :=
   ⟨Pairwise.imp_of_mem fun m m' => (H m m').1, Pairwise.imp_of_mem fun m m' => (H m m').2⟩
 
-theorem Pairwise.iff {S : α → α → Prop} (H : ∀ a b, R a b ↔ S a b) {l : List α} :
+theorem Pairwise.iff {S : α  α  Prop} (H : ∀ a b, R a b ↔ S a b) {l : List α} :
     Pairwise R l ↔ Pairwise S l :=
   Pairwise.iff_of_mem fun _ _ => H ..
 
@@ -79,11 +79,11 @@ theorem Pairwise.and_mem {l : List α} :
   Pairwise.iff_of_mem <| by simp +contextual
 
 theorem Pairwise.imp_mem {l : List α} :
-    Pairwise R l ↔ Pairwise (fun x y => x ∈ l → y ∈ l → R x y) l :=
+    Pairwise R l ↔ Pairwise (fun x y => x ∈ l  y ∈ l  R x y) l :=
   Pairwise.iff_of_mem <| by simp +contextual
 
 theorem Pairwise.forall_of_forall_of_flip (h₁ : ∀ x ∈ l, R x x) (h₂ : Pairwise R l)
-    (h₃ : l.Pairwise (flip R)) : ∀ ⦃x⦄, x ∈ l → ∀ ⦃y⦄, y ∈ l → R x y := by
+    (h₃ : l.Pairwise (flip R)) : ∀ ⦃x⦄, x ∈ l  ∀ ⦃y⦄, y ∈ l  R x y := by
   induction l with
   | nil => exact forall_mem_nil _
   | cons a l ih =>
@@ -105,15 +105,15 @@ theorem pairwise_map {l : List α} :
   · simp
   · simp only [map, pairwise_cons, forall_mem_map, *]
 
-theorem Pairwise.of_map {S : β → β → Prop} (f : α → β) (H : ∀ a b : α, S (f a) (f b) → R a b)
+theorem Pairwise.of_map {S : β  β  Prop} (f : α  β) (H : ∀ a b : α, S (f a) (f b)  R a b)
     (p : Pairwise S (map f l)) : Pairwise R l :=
   (pairwise_map.1 p).imp (H _ _)
 
-theorem Pairwise.map {S : β → β → Prop} (f : α → β) (H : ∀ a b : α, R a b → S (f a) (f b))
+theorem Pairwise.map {S : β  β  Prop} (f : α  β) (H : ∀ a b : α, R a b  S (f a) (f b))
     (p : Pairwise R l) : Pairwise S (map f l) :=
   pairwise_map.2 <| p.imp (H _ _)
 
-theorem pairwise_filterMap {f : β → Option α} {l : List β} :
+theorem pairwise_filterMap {f : β  Option α} {l : List β} :
     Pairwise R (filterMap f l) ↔ Pairwise (fun a a' : β => ∀ b ∈ f a, ∀ b' ∈ f a', R b b') l := by
   let _S (a a' : β) := ∀ b ∈ f a, ∀ b' ∈ f a', R b b'
   simp only [Option.mem_def]
@@ -129,32 +129,32 @@ theorem pairwise_filterMap {f : β → Option α} {l : List β} :
     simpa [IH, e] using fun _ =>
       ⟨fun h a ha b hab => h _ _ ha hab, fun h a b ha hab => h _ ha _ hab⟩
 
-theorem Pairwise.filterMap {S : β → β → Prop} (f : α → Option β)
-    (H : ∀ a a' : α, R a a' → ∀ b ∈ f a, ∀ b' ∈ f a', S b b') {l : List α} (p : Pairwise R l) :
+theorem Pairwise.filterMap {S : β  β  Prop} (f : α  Option β)
+    (H : ∀ a a' : α, R a a'  ∀ b ∈ f a, ∀ b' ∈ f a', S b b') {l : List α} (p : Pairwise R l) :
     Pairwise S (filterMap f l) :=
   pairwise_filterMap.2 <| p.imp (H _ _)
 
 @[deprecated Pairwise.filterMap (since := "2024-07-29")] abbrev Pairwise.filter_map := @Pairwise.filterMap
 
-theorem pairwise_filter {p : α → Prop} [DecidablePred p] {l : List α} :
-    Pairwise R (filter p l) ↔ Pairwise (fun x y => p x → p y → R x y) l := by
+theorem pairwise_filter {p : α  Prop} [DecidablePred p] {l : List α} :
+    Pairwise R (filter p l) ↔ Pairwise (fun x y => p x  p y  R x y) l := by
   rw [← filterMap_eq_filter, pairwise_filterMap]
   simp
 
-theorem Pairwise.filter (p : α → Bool) : Pairwise R l → Pairwise R (filter p l) :=
+theorem Pairwise.filter (p : α  Bool) : Pairwise R l  Pairwise R (filter p l) :=
   Pairwise.sublist (filter_sublist _)
 
 theorem pairwise_append {l₁ l₂ : List α} :
     (l₁ ++ l₂).Pairwise R ↔ l₁.Pairwise R ∧ l₂.Pairwise R ∧ ∀ a ∈ l₁, ∀ b ∈ l₂, R a b := by
   induction l₁ <;> simp [*, or_imp, forall_and, and_assoc, and_left_comm]
 
-theorem pairwise_append_comm {R : α → α → Prop} (s : ∀ {x y}, R x y → R y x) {l₁ l₂ : List α} :
+theorem pairwise_append_comm {R : α  α  Prop} (s : ∀ {x y}, R x y  R y x) {l₁ l₂ : List α} :
     Pairwise R (l₁ ++ l₂) ↔ Pairwise R (l₂ ++ l₁) := by
-  have (l₁ l₂ : List α) (H : ∀ x : α, x ∈ l₁ → ∀ y : α, y ∈ l₂ → R x y)
+  have (l₁ l₂ : List α) (H : ∀ x : α, x ∈ l₁  ∀ y : α, y ∈ l₂  R x y)
     (x : α) (xm : x ∈ l₂) (y : α) (ym : y ∈ l₁) : R x y := s (H y ym x xm)
   simp only [pairwise_append, and_left_comm]; rw [Iff.intro (this l₁ l₂) (this l₂ l₁)]
 
-theorem pairwise_middle {R : α → α → Prop} (s : ∀ {x y}, R x y → R y x) {a : α} {l₁ l₂ : List α} :
+theorem pairwise_middle {R : α  α  Prop} (s : ∀ {x y}, R x y  R y x) {a : α} {l₁ l₂ : List α} :
     Pairwise R (l₁ ++ a :: l₂) ↔ Pairwise R (a :: (l₁ ++ l₂)) := by
   show Pairwise R (l₁ ++ ([a] ++ l₂)) ↔ Pairwise R ([a] ++ l₁ ++ l₂)
   rw [← append_assoc, pairwise_append, @pairwise_append _ _ ([a] ++ l₁), pairwise_append_comm s]
@@ -173,7 +173,7 @@ theorem pairwise_flatten {L : List (List α)} :
 
 @[deprecated pairwise_flatten (since := "2024-10-14")] abbrev pairwise_join := @pairwise_flatten
 
-theorem pairwise_flatMap {R : β → β → Prop} {l : List α} {f : α → List β} :
+theorem pairwise_flatMap {R : β  β  Prop} {l : List α} {f : α  List β} :
     List.Pairwise R (l.flatMap f) ↔
       (∀ a ∈ l, Pairwise R (f a)) ∧ Pairwise (fun a₁ a₂ => ∀ x ∈ f a₁, ∀ y ∈ f a₂, R x y) l := by
   simp [List.flatMap, pairwise_flatten, pairwise_map]
@@ -185,7 +185,7 @@ theorem pairwise_reverse {l : List α} :
   induction l <;> simp [*, pairwise_append, and_comm]
 
 @[simp] theorem pairwise_replicate {n : Nat} {a : α} :
-    (replicate n a).Pairwise R ↔ n ≤ 1 ∨ R a a := by
+    (replicate n a).Pairwise R ↔ n ≤ 1  R a a := by
   induction n with
   | zero => simp
   | succ n ih =>
@@ -212,7 +212,7 @@ theorem Pairwise.drop {l : List α} {n : Nat} (h : List.Pairwise R l) : List.Pai
 theorem Pairwise.take {l : List α} {n : Nat} (h : List.Pairwise R l) : List.Pairwise R (l.take n) :=
   h.sublist (take_sublist _ _)
 
-theorem pairwise_iff_forall_sublist : l.Pairwise R ↔ (∀ {a b}, [a,b] <+ l → R a b) := by
+theorem pairwise_iff_forall_sublist : l.Pairwise R ↔ (∀ {a b}, [a,b] <+ l  R a b) := by
   induction l with
   | nil => simp
   | cons hd tl IH =>
@@ -242,27 +242,27 @@ theorem Pairwise.rel_of_mem_append
   rw [sublist_append_iff]
   exact ⟨[x], [y], rfl, by simpa, by simpa⟩
 
-theorem pairwise_of_forall_mem_list {l : List α} {r : α → α → Prop} (h : ∀ a ∈ l, ∀ b ∈ l, r a b) :
+theorem pairwise_of_forall_mem_list {l : List α} {r : α  α  Prop} (h : ∀ a ∈ l, ∀ b ∈ l, r a b) :
     l.Pairwise r := by
   rw [pairwise_iff_forall_sublist]
   intro a b hab
   apply h <;> (apply hab.subset; simp)
 
-theorem pairwise_pmap {p : β → Prop} {f : ∀ b, p b → α} {l : List β} (h : ∀ x ∈ l, p x) :
+theorem pairwise_pmap {p : β  Prop} {f : ∀ b, p b  α} {l : List β} (h : ∀ x ∈ l, p x) :
     Pairwise R (l.pmap f h) ↔
       Pairwise (fun b₁ b₂ => ∀ (h₁ : p b₁) (h₂ : p b₂), R (f b₁ h₁) (f b₂ h₂)) l := by
   induction l with
   | nil => simp
   | cons a l ihl =>
-    obtain ⟨_, hl⟩ : p a ∧ ∀ b, b ∈ l → p b := by simpa using h
+    obtain ⟨_, hl⟩ : p a ∧ ∀ b, b ∈ l  p b := by simpa using h
     simp only [ihl hl, pairwise_cons, exists₂_imp, pmap, and_congr_left_iff, mem_pmap]
     refine fun _ => ⟨fun H b hb _ hpb => H _ _ hb rfl, ?_⟩
     rintro H _ b hb rfl
     exact H b hb _ _
 
-theorem Pairwise.pmap {l : List α} (hl : Pairwise R l) {p : α → Prop} {f : ∀ a, p a → β}
-    (h : ∀ x ∈ l, p x) {S : β → β → Prop}
-    (hS : ∀ ⦃x⦄ (hx : p x) ⦃y⦄ (hy : p y), R x y → S (f x hx) (f y hy)) :
+theorem Pairwise.pmap {l : List α} (hl : Pairwise R l) {p : α  Prop} {f : ∀ a, p a  β}
+    (h : ∀ x ∈ l, p x) {S : β  β  Prop}
+    (hS : ∀ ⦃x⦄ (hx : p x) ⦃y⦄ (hy : p y), R x y  S (f x hx) (f y hy)) :
     Pairwise S (l.pmap f h) := by
   refine (pairwise_pmap h).2 (Pairwise.imp_of_mem ?_ hl)
   intros; apply hS; assumption
@@ -277,10 +277,10 @@ theorem nodup_nil : @Nodup α [] :=
 theorem nodup_cons {a : α} {l : List α} : Nodup (a :: l) ↔ a ∉ l ∧ Nodup l := by
   simp only [Nodup, pairwise_cons, forall_mem_ne]
 
-theorem Nodup.sublist : l₁ <+ l₂ → Nodup l₂ → Nodup l₁ :=
+theorem Nodup.sublist : l₁ <+ l₂  Nodup l₂  Nodup l₁ :=
   Pairwise.sublist
 
-theorem Sublist.nodup : l₁ <+ l₂ → Nodup l₂ → Nodup l₁ :=
+theorem Sublist.nodup : l₁ <+ l₂  Nodup l₂  Nodup l₁ :=
   Nodup.sublist
 
 theorem getElem?_inj {xs : List α}

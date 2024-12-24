@@ -78,7 +78,7 @@ theorem go_denote_eq (aig : AIG BVBit) (a : Nat) (assign : Assignment) (curr : N
     (hcurr : curr ≤ w) (s : AIG.RefVec aig curr) :
     ∀ (idx : Nat) (hidx1 : idx < w),
         curr ≤ idx
-          →
+          
         ⟦
           (go aig w a curr s hcurr).aig,
           (go aig w a curr s hcurr).vec.get idx hidx1,

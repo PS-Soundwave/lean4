@@ -5,7 +5,7 @@ Tests that simp applies the equational lemmas in order. In particular,
 a catch-all at the end is tried afte the others
 -/
 
-def foo : Bool → Nat → Nat
+def foo : Bool  Nat  Nat
   | _, 0 => 0
   | .true, n+1 => foo .true n
   | _, n+1 => foo .false n
@@ -17,7 +17,7 @@ termination_by _ n => n
 /-- info: foo.eq_2 (n : Nat) : foo true n.succ = foo true n -/
 #guard_msgs in
 #check foo.eq_2
-/-- info: foo.eq_3 (x✝ : Bool) (n : Nat) (x_3 : x✝ = true → False) : foo x✝ n.succ = foo false n -/
+/-- info: foo.eq_3 (x✝ : Bool) (n : Nat) (x_3 : x✝ = true  False) : foo x✝ n.succ = foo false n -/
 #guard_msgs in
 #check foo.eq_3
 

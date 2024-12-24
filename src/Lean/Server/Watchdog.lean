@@ -890,7 +890,7 @@ section MessageHandling
     tryWriteMessage uri r
 
   def handleRequest (id : RequestID) (method : String) (params : Json) : ServerM Unit := do
-    let handle α β [FromJson α] [ToJson β] (handler : α → ServerM β) : ServerM Unit := do
+    let handle α β [FromJson α] [ToJson β] (handler : α  ServerM β) : ServerM Unit := do
       let hOut := (← read).hOut
       try
         let params ← parseParams α params
@@ -935,7 +935,7 @@ section MessageHandling
         forwardRequestToWorker id method params
 
   def handleNotification (method : String) (params : Json) : ServerM Unit := do
-    let handle := fun α [FromJson α] (handler : α → ServerM Unit) =>
+    let handle := fun α [FromJson α] (handler : α  ServerM Unit) =>
       parseParams α params >>= handler
     match method with
     | "textDocument/didOpen" =>

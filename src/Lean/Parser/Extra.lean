@@ -210,7 +210,7 @@ attribute [run_builtin_parser_attribute_hooks] sepByIndent sepBy1Indent
 
 /-- No-op parser combinator that annotates subtrees to be ignored in syntax patterns. -/
 @[run_builtin_parser_attribute_hooks, builtin_doc, inline]
-def patternIgnore : Parser → Parser := node `patternIgnore
+def patternIgnore : Parser  Parser := node `patternIgnore
 
 /-- No-op parser that advises the pretty printer to emit a non-breaking space. -/
 @[builtin_doc, inline] def ppHardSpace : Parser := skip
@@ -219,11 +219,11 @@ def patternIgnore : Parser → Parser := node `patternIgnore
 /-- No-op parser that advises the pretty printer to emit a hard line break. -/
 @[builtin_doc, inline] def ppLine : Parser := skip
 /-- No-op parser combinator that advises the pretty printer to emit a `Format.fill` node. -/
-@[builtin_doc, inline] def ppRealFill : Parser → Parser := id
+@[builtin_doc, inline] def ppRealFill : Parser  Parser := id
 /-- No-op parser combinator that advises the pretty printer to emit a `Format.group` node. -/
-@[builtin_doc, inline] def ppRealGroup : Parser → Parser := id
+@[builtin_doc, inline] def ppRealGroup : Parser  Parser := id
 /-- No-op parser combinator that advises the pretty printer to indent the given syntax without grouping it. -/
-@[builtin_doc, inline] def ppIndent : Parser → Parser := id
+@[builtin_doc, inline] def ppIndent : Parser  Parser := id
 /--
   No-op parser combinator that advises the pretty printer to group and indent the given syntax.
   By default, only syntax categories are grouped. -/
@@ -231,7 +231,7 @@ def patternIgnore : Parser → Parser := node `patternIgnore
 /--
   No-op parser combinator that advises the pretty printer to dedent the given syntax.
   Dedenting can in particular be used to counteract automatic indentation. -/
-@[builtin_doc, inline] def ppDedent : Parser → Parser := id
+@[builtin_doc, inline] def ppDedent : Parser  Parser := id
 
 /--
   No-op parser combinator that allows the pretty printer to omit the group and
@@ -249,7 +249,7 @@ def patternIgnore : Parser → Parser := node `patternIgnore
   No-op parser combinator that advises the pretty printer to dedent the given syntax,
   if it was grouped by the category parser.
   Dedenting can in particular be used to counteract automatic indentation. -/
-@[builtin_doc, inline] def ppDedentIfGrouped : Parser → Parser := id
+@[builtin_doc, inline] def ppDedentIfGrouped : Parser  Parser := id
 
 /--
   No-op parser combinator that prints a line break.

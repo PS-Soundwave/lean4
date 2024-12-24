@@ -11,9 +11,9 @@ instance : Inhabited Cmd where
   default := Cmd.init default default default
 
 namespace Cmd
-  def name    : Cmd → String        | init v _ _ => v
-  def subCmds : Cmd → Array Cmd     | init _ v _ => v
-  def flags   : Cmd → Array Unit    | init _ _ v => v
+  def name    : Cmd  String        | init v _ _ => v
+  def subCmds : Cmd  Array Cmd     | init _ v _ => v
+  def flags   : Cmd  Array Unit    | init _ _ v => v
 
   def subCmd? (c : Cmd) (name : String)     : Option Cmd  := c.subCmds.find? (·.name = name)
   def flag?   (c : Cmd) (longName : String) : Option Unit := c.flags.find? (·.longName = longName)
@@ -55,13 +55,13 @@ def parse (c : Cmd) : Id Cmd.Parsed := do
     name           := cmdName,
     flags          := flags
   }
-  -- If we remove `∨ cmd.hasFlag "version" ∧ parsedCmd.hasFlag "version"` from the condition below,
+  -- If we remove ` cmd.hasFlag "version" ∧ parsedCmd.hasFlag "version"` from the condition below,
   -- the timeout turns into an error. If we also remove `∧ parsedCmd.hasFlag "help"`, it works fine.
   -- Error:
   -- synthesized type class instance is not definitionally equal to expression inferred by typing rules, synthesized
   -- instDecidableAnd
   -- inferred
   -- ?m.4652 flags✝ positionalArgs variableArgs
-  if cmd.hasFlag "help" ∧ parsedCmd.hasFlag "help" ∨ cmd.hasFlag "version" ∧ parsedCmd.hasFlag "version" then
+  if cmd.hasFlag "help" ∧ parsedCmd.hasFlag "help"  cmd.hasFlag "version" ∧ parsedCmd.hasFlag "version" then
     return parsedCmd
   return parsedCmd

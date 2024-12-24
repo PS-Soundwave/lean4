@@ -1,4 +1,4 @@
-class magma (α) where op : α → α → α
+class magma (α) where op : α  α  α
 
 infix:70 " ⋆ " => magma.op (self := inferInstance)
 
@@ -17,12 +17,12 @@ class idMagma (α) extends leftIdMagma α, rightIdMagma α
 
 class monoid (α) extends idMagma α, semigroup α
 
-def magmaMonoid : leftIdMagma (base → base) := {
+def magmaMonoid : leftIdMagma (base  base) := {
   op := Function.comp
   identity := id
 }
 
-def fnCompMonoid : monoid (base → base) := {
+def fnCompMonoid : monoid (base  base) := {
   op := Function.comp, identity := id
 }
 
@@ -32,12 +32,12 @@ structure A (α) where
   subsingleton : ∀ a b : α, a = b := by assumption
 
 structure B (α) where
-  op : α → α → α
+  op : α  α  α
   idempotent : ∀ a : α, op a a = a := by assumption
   fav : α := by assumption
 
 structure C (α) where
-  op : α → α → α
+  op : α  α  α
   comm : ∀ a b : α, op a b = op b a := by assumption
 
 structure D (α) extends A α, B α

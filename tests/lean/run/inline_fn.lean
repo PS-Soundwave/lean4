@@ -3,7 +3,7 @@
 def f {α : Type} [Add α] (x : α) :=
 x + x + x
 
-partial def h : Nat → Nat
+partial def h : Nat  Nat
 | 0     => 10
 | n+1   => n * h n
 

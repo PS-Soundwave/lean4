@@ -16,16 +16,16 @@ namespace DiscrTree
 Discrimination tree key. See `DiscrTree`
 -/
 inductive Key where
-  | const : Name → Nat → Key
-  | fvar  : FVarId → Nat → Key
-  | lit   : Literal → Key
+  | const : Name  Nat  Key
+  | fvar  : FVarId  Nat  Key
+  | lit   : Literal  Key
   | star  : Key
   | other : Key
   | arrow : Key
-  | proj  : Name → Nat → Nat → Key
+  | proj  : Name  Nat  Nat  Key
   deriving Inhabited, BEq, Repr
 
-protected def Key.hash : Key → UInt64
+protected def Key.hash : Key  UInt64
   | .const n a   => mixHash 5237 $ mixHash (hash n) (hash a)
   | .fvar n a    => mixHash 3541 $ mixHash (hash n) (hash a)
   | .lit v       => mixHash 1879 $ hash v
@@ -62,7 +62,7 @@ Notes regarding term reduction at the `DiscrTree` module.
 
 - In `simp`, we want to have `simp` theorem such as
 ```
-@[simp] theorem liftOn_mk (a : α) (f : α → γ) (h : ∀ a₁ a₂, r a₁ a₂ → f a₁ = f a₂) :
+@[simp] theorem liftOn_mk (a : α) (f : α  γ) (h : ∀ a₁ a₂, r a₁ a₂  f a₁ = f a₂) :
     Quot.liftOn (Quot.mk r a) f h = f a := rfl
 ```
 If we enable `iota`, then the lhs is reduced to `f a`.
@@ -79,7 +79,7 @@ inductive Ty where
 @[reducible] def Ty.interp (ty : Ty) : Type :=
   Ty.casesOn (motive := fun _ => Type) ty Int Bool
 
-def test {a b c : Ty} (f : a.interp → b.interp → c.interp) (x : a.interp) (y : b.interp) : c.interp :=
+def test {a b c : Ty} (f : a.interp  b.interp  c.interp) (x : a.interp) (y : b.interp) : c.interp :=
   f x y
 
 def f (a b : Ty.bool.interp) : Ty.bool.interp :=

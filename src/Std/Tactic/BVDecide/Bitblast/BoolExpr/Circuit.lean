@@ -24,12 +24,12 @@ variable {β : Type} [Hashable β] [DecidableEq β]
 Turn a `BoolExpr` into an `Entrypoint`.
 -/
 @[specialize]
-def ofBoolExprCached (expr : BoolExpr α) (atomHandler : AIG β → α → Entrypoint β)
+def ofBoolExprCached (expr : BoolExpr α) (atomHandler : AIG β  α  Entrypoint β)
     [LawfulOperator β (fun _ => α) atomHandler] : Entrypoint β :=
   go AIG.empty expr atomHandler |>.val
 where
   @[specialize]
-  go (aig : AIG β) (expr : BoolExpr α) (atomHandler : AIG β → α → Entrypoint β)
+  go (aig : AIG β) (expr : BoolExpr α) (atomHandler : AIG β  α  Entrypoint β)
       [LawfulOperator β (fun _ => α) atomHandler] :
       ExtendingEntrypoint aig :=
     match expr with
@@ -82,7 +82,7 @@ where
 
 namespace ofBoolExprCached
 
-variable (atomHandler : AIG β → α → Entrypoint β) [LawfulOperator β (fun _ => α) atomHandler]
+variable (atomHandler : AIG β  α  Entrypoint β) [LawfulOperator β (fun _ => α) atomHandler]
 
 theorem go_le_size (expr : BoolExpr α) (aig : AIG β) :
     aig.decls.size ≤ (ofBoolExprCached.go aig expr atomHandler).val.aig.decls.size :=

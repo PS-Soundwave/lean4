@@ -39,7 +39,7 @@ from the inner node to the root node of the `InfoTree` available, with partial c
 inner nodes taking priority over contexts of outer nodes.
 -/
 def PartialContextInfo.mergeIntoOuter?
-    : (inner : PartialContextInfo) → (outer? : Option ContextInfo) → Option ContextInfo
+    : (inner : PartialContextInfo)  (outer? : Option ContextInfo)  Option ContextInfo
   | .commandCtx info, none =>
     some { info with }
   | .parentDeclCtx _, none =>
@@ -49,7 +49,7 @@ def PartialContextInfo.mergeIntoOuter?
   | .parentDeclCtx innerParentDecl, some outer =>
     some { outer with parentDecl? := innerParentDecl }
 
-def CompletionInfo.stx : CompletionInfo → Syntax
+def CompletionInfo.stx : CompletionInfo  Syntax
   | dot i ..          => i.stx
   | id stx ..         => stx
   | dotId stx ..      => stx
@@ -63,19 +63,19 @@ def CompletionInfo.stx : CompletionInfo → Syntax
 Obtains the `LocalContext` from this `CompletionInfo` if available and yields an empty context
 otherwise.
 -/
-def CompletionInfo.lctx : CompletionInfo → LocalContext
+def CompletionInfo.lctx : CompletionInfo  LocalContext
   | dot i ..            => i.lctx
   | id _ _ _ lctx ..    => lctx
   | dotId _ _ lctx ..   => lctx
   | fieldId _ _ lctx .. => lctx
   | _                   => .empty
 
-def CustomInfo.format : CustomInfo → Format
+def CustomInfo.format : CustomInfo  Format
   | i => f!"CustomInfo({i.value.typeName})"
 
 instance : ToFormat CustomInfo := ⟨CustomInfo.format⟩
 
-partial def InfoTree.findInfo? (p : Info → Bool) (t : InfoTree) : Option Info :=
+partial def InfoTree.findInfo? (p : Info  Bool) (t : InfoTree) : Option Info :=
   match t with
   | context _ t => findInfo? p t
   | node i ts   =>
@@ -202,7 +202,7 @@ def DelabTermInfo.format (ctx : ContextInfo) (info : DelabTermInfo) : IO Format 
 def ChoiceInfo.format (ctx : ContextInfo) (info : ChoiceInfo) : Format :=
   f!"Choice @ {formatElabInfo ctx info.toElabInfo}"
 
-def Info.format (ctx : ContextInfo) : Info → IO Format
+def Info.format (ctx : ContextInfo) : Info  IO Format
   | ofTacticInfo i         => i.format ctx
   | ofTermInfo i           => i.format ctx
   | ofPartialTermInfo i    => pure <| i.format ctx
@@ -218,7 +218,7 @@ def Info.format (ctx : ContextInfo) : Info → IO Format
   | ofDelabTermInfo i      => i.format ctx
   | ofChoiceInfo i         => pure <| i.format ctx
 
-def Info.toElabInfo? : Info → Option ElabInfo
+def Info.toElabInfo? : Info  Option ElabInfo
   | ofTacticInfo i         => some i.toElabInfo
   | ofTermInfo i           => some i.toElabInfo
   | ofPartialTermInfo i    => some i.toElabInfo
@@ -248,7 +248,7 @@ def Info.toElabInfo? : Info → Option ElabInfo
 
   See `Term.SavedState.restore`.
 -/
-def Info.updateContext? : Option ContextInfo → Info → Option ContextInfo
+def Info.updateContext? : Option ContextInfo  Info  Option ContextInfo
   | some ctx, ofTacticInfo i => some { ctx with mctx := i.mctxAfter }
   | ctx?, _ => ctx?
 
@@ -269,7 +269,7 @@ partial def InfoTree.format (tree : InfoTree) (ctx? : Option ContextInfo := none
 section
 variable [Monad m] [MonadInfoTree m]
 
-@[inline] private def modifyInfoTrees (f : PersistentArray InfoTree → PersistentArray InfoTree) : m Unit :=
+@[inline] private def modifyInfoTrees (f : PersistentArray InfoTree  PersistentArray InfoTree) : m Unit :=
   modifyInfoState fun s => { s with trees := f s.trees }
 
 /-- Returns the current array of InfoTrees and resets it to an empty array. -/
@@ -342,7 +342,7 @@ after `x` is executed.
 def withInfoContext'
     [MonadFinally m]
     (x : m α)
-    (mkInfo : α → m (Sum Info MVarId))
+    (mkInfo : α  m (Sum Info MVarId))
     (mkInfoOnError : m Info) :
     m α := do
   if (← getInfoState).enabled then
@@ -361,7 +361,7 @@ def withInfoContext'
 
 /-- Saves the current list of trees `t₀`, runs `x` to produce a new tree list `t₁` and
 runs `mkInfoTree t₁` to get `n : InfoTree` and then restores the trees to be `t₀ ++ [n]`.-/
-def withInfoTreeContext [MonadFinally m] (x : m α) (mkInfoTree : PersistentArray InfoTree → m InfoTree) : m α := do
+def withInfoTreeContext [MonadFinally m] (x : m α) (mkInfoTree : PersistentArray InfoTree  m InfoTree) : m α := do
   if (← getInfoState).enabled then
     let treesSaved ← getResetInfoTrees
     Prod.fst <$> MonadFinally.tryFinally' x fun _ => do

@@ -153,7 +153,7 @@ def nonIndicesFirst (recArgInfos : Array RecArgInfo) : Array RecArgInfo := Id.ru
   let (indices,nonIndices) := recArgInfos.partition (indicesPos.contains ·.recArgPos)
   return nonIndices ++ indices
 
-private def dedup [Monad m] (eq : α → α → m Bool) (xs : Array α) : m (Array α) := do
+private def dedup [Monad m] (eq : α  α  m Bool) (xs : Array α) : m (Array α) := do
   let mut ret := #[]
   for x in xs do
     unless (← ret.anyM (eq · x)) do
@@ -173,7 +173,7 @@ group `group`.
 Because of nested inductives this function has the ability to change the `recArgInfo`.
 Consider
 ```
-inductive Tree where | node : List Tree → Tree
+inductive Tree where | node : List Tree  Tree
 ```
 then when we look for arguments whose type is part of the group `Tree`, we want to also consider
 the argument of type `List Tree`, even though that argument’s `RecArgInfo` refers to initially to
@@ -233,7 +233,7 @@ def allCombinations (xss : Array (Array α)) : Option (Array (Array α)) :=
 
 
 def tryAllArgs (fnNames : Array Name) (xs : Array Expr) (values : Array Expr)
-   (termArg?s : Array (Option TerminationArgument)) (k : Array RecArgInfo → M α) : M α := do
+   (termArg?s : Array (Option TerminationArgument)) (k : Array RecArgInfo  M α) : M α := do
   let mut report := m!""
   -- Gather information on all possible recursive arguments
   let mut recArgInfoss := #[]

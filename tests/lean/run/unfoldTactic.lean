@@ -43,7 +43,7 @@ example : let x := 1; let y := 2 + x; y = 3 := by
 Do not reorder hypotheses. (`unfold` makes a change)
 -/
 set_option linter.unusedVariables false in
-example : let ty := Int; ty → Nat → Nat := by
+example : let ty := Int; ty  Nat  Nat := by
   intro ty a a
   unfold ty at *
   exact a

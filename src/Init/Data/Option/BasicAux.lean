@@ -11,7 +11,7 @@ universe u
 
 namespace Option
 
-@[inline] def get! {α : Type u} [Inhabited α] : Option α → α
+@[inline] def get! {α : Type u} [Inhabited α] : Option α  α
   | some x => x
   | none   => panic! "value is none"
 

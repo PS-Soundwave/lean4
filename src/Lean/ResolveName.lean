@@ -28,17 +28,17 @@ def ensureReservedNameAvailable [Monad m] [MonadEnv m] [MonadError m] (declName 
     throwReservedNameNotAvailable declName reservedName
 
 /-- Global reference containing all reserved name predicates. -/
-builtin_initialize reservedNamePredicatesRef : IO.Ref (Array (Environment → Name → Bool)) ← IO.mkRef #[]
+builtin_initialize reservedNamePredicatesRef : IO.Ref (Array (Environment  Name  Bool)) ← IO.mkRef #[]
 
 /--
 Registers a new reserved name predicate.
 -/
-def registerReservedNamePredicate (p : Environment → Name → Bool) : IO Unit := do
+def registerReservedNamePredicate (p : Environment  Name  Bool) : IO Unit := do
   unless (← initializing) do
     throw (IO.userError "failed to register reserved name suffix predicate, this operation can only be performed during initialization")
   reservedNamePredicatesRef.modify fun ps => ps.push p
 
-builtin_initialize reservedNamePredicatesExt : EnvExtension (Array (Environment → Name → Bool)) ←
+builtin_initialize reservedNamePredicatesExt : EnvExtension (Array (Environment  Name  Bool)) ←
   registerEnvExtension reservedNamePredicatesRef.get
 
 /--
@@ -110,7 +110,7 @@ private def resolveQualifiedName (env : Environment) (ns : Name) (id : Name) : L
     else resolvedIds
 
 /-- Check surrounding namespaces -/
-private def resolveUsingNamespace (env : Environment) (id : Name) : Name → List Name
+private def resolveUsingNamespace (env : Environment) (id : Name) : Name  List Name
   | ns@(.str p _) =>
     match resolveQualifiedName env ns id with
     | []          => resolveUsingNamespace env id p
@@ -131,7 +131,7 @@ private def resolveExact (env : Environment) (id : Name) : Option Name :=
       else none
 
 /-- Check `OpenDecl`s -/
-private def resolveOpenDecls (env : Environment) (id : Name) : List OpenDecl → List Name → List Name
+private def resolveOpenDecls (env : Environment) (id : Name) : List OpenDecl  List Name  List Name
   | [], resolvedIds => resolvedIds
   | OpenDecl.simple ns exs :: openDecls, resolvedIds =>
     if exs.contains id then
@@ -199,7 +199,7 @@ def resolveNamespaceUsingScope? (env : Environment) (n : Name) (ns : Name) : Opt
     if env.isNamespace n then some n else none
   | _ => unreachable!
 
-def resolveNamespaceUsingOpenDecls (env : Environment) (n : Name) : List OpenDecl → List Name
+def resolveNamespaceUsingOpenDecls (env : Environment) (n : Name) : List OpenDecl  List Name
   | [] => []
   | OpenDecl.simple ns exs :: ds =>
     if env.isNamespace (ns ++ n) && !exs.contains n then
@@ -226,7 +226,7 @@ def resolveNamespace (env : Environment) (ns : Name) (openDecls : List OpenDecl)
 
 end ResolveName
 
-class MonadResolveName (m : Type → Type) where
+class MonadResolveName (m : Type  Type) where
   getCurrNamespace   : m Name
   getOpenDecls       : m (List OpenDecl)
 
@@ -273,7 +273,7 @@ def resolveNamespaceCore [Monad m] [MonadResolveName m] [MonadEnv m] [MonadError
   return nss
 
 /-- Given a namespace identifier, return a list of possible interpretations. -/
-def resolveNamespace [Monad m] [MonadResolveName m] [MonadEnv m] [MonadError m] : Ident → m (List Name)
+def resolveNamespace [Monad m] [MonadResolveName m] [MonadEnv m] [MonadError m] : Ident  m (List Name)
   | stx@⟨Syntax.ident _ _ n pre⟩ => do
     let pre := pre.filterMap fun
       | .namespace ns => some ns
@@ -314,7 +314,7 @@ def ensureNoOverload [Monad m] [MonadError m] (n : Name) (cs : List Name) : m Na
 def resolveGlobalConstNoOverloadCore [Monad m] [MonadResolveName m] [MonadEnv m] [MonadError m] (n : Name) : m Name := do
   ensureNoOverload n (← resolveGlobalConstCore n)
 
-def preprocessSyntaxAndResolve [Monad m] [MonadError m] (stx : Syntax) (k : Name → m (List Name)) : m (List Name) := do
+def preprocessSyntaxAndResolve [Monad m] [MonadError m] (stx : Syntax) (k : Name  m (List Name)) : m (List Name) := do
   match stx with
   | .ident _ _ n pre => do
     let pre := pre.filterMap fun

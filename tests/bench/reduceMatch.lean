@@ -7,9 +7,9 @@ import Lean
 
 section decidability_instances
 
-variable {α : Type} {p : α → Prop} [DecidablePred p]
+variable {α : Type} {p : α  Prop} [DecidablePred p]
 
-instance decidableBex : ∀ (l : List α), Decidable (∃ x, x ∈ l → p x)
+instance decidableBex : ∀ (l : List α), Decidable (∃ x, x ∈ l  p x)
   | []    => isFalse sorry
   | x::xs =>
     match ‹DecidablePred p› x with
@@ -18,8 +18,8 @@ instance decidableBex : ∀ (l : List α), Decidable (∃ x, x ∈ l → p x)
       | isTrue h₂  => isTrue sorry
       | isFalse h₂ => isFalse sorry
 
-instance decidableBall (l : List α) : Decidable (∀ x, x ∈ l → p x) :=
-  match (inferInstance : Decidable <| ∃ x, x ∈ l → ¬ p x) with
+instance decidableBall (l : List α) : Decidable (∀ x, x ∈ l  p x) :=
+  match (inferInstance : Decidable <| ∃ x, x ∈ l  ¬ p x) with
   | isFalse h => isTrue $ fun x hx => match ‹DecidablePred p› x with
     | isTrue h' => h'
     | isFalse h' => False.elim $ h sorry

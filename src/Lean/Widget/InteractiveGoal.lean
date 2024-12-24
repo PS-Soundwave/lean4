@@ -133,7 +133,7 @@ def addInteractiveHypothesisBundle (hyps : Array InteractiveHypothesisBundle)
 
 open Meta in
 variable [MonadControlT MetaM n] [Monad n] [MonadError n] [MonadOptions n] [MonadMCtx n] in
-def withGoalCtx (goal : MVarId) (action : LocalContext → MetavarDecl → n α) : n α := do
+def withGoalCtx (goal : MVarId) (action : LocalContext  MetavarDecl  n α) : n α := do
   let mctx ← getMCtx
   let some mvarDecl := mctx.findDecl? goal
     | throwError "unknown goal {goal.name}"

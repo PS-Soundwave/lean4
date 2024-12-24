@@ -4,11 +4,11 @@ class Enumerable (α : Type u) where
   elems    : List α
   complete : ∀ a : α, a ∈ elems
 
-def List.allTrue (p : α → Prop) [(a : α) → Decidable (p a)] : List α → Bool
+def List.allTrue (p : α  Prop) [(a : α)  Decidable (p a)] : List α  Bool
   | [] => true
   | a :: as => p a && allTrue p as
 
-theorem List.of_allTrue [(a : α) → Decidable (p a)] (hc : allTrue p as) (hin : a ∈ as) : p a := by
+theorem List.of_allTrue [(a : α)  Decidable (p a)] (hc : allTrue p as) (hin : a ∈ as) : p a := by
   induction as with
   | nil => contradiction
   | cons b bs ih =>
@@ -16,11 +16,11 @@ theorem List.of_allTrue [(a : α) → Decidable (p a)] (hc : allTrue p as) (hin 
     | head => simp [*]
     | tail _ h => exact ih hc.2 h
 
-theorem List.allTrue_of_forall [(a : α) → Decidable (p a)] (h : ∀ a, p a) : allTrue p as := by
+theorem List.allTrue_of_forall [(a : α)  Decidable (p a)] (h : ∀ a, p a) : allTrue p as := by
   induction as <;> simp [allTrue, *]
 
-instance [Enumerable α] (p : α → Prop) [(a : α) → Decidable (p a)] : Decidable (∀ a, p a) :=
-  have : List.allTrue p Enumerable.elems → (a : α) → p a :=
+instance [Enumerable α] (p : α  Prop) [(a : α)  Decidable (p a)] : Decidable (∀ a, p a) :=
+  have : List.allTrue p Enumerable.elems  (a : α)  p a :=
     fun h a => List.of_allTrue h (Enumerable.complete a)
   decidable_of_decidable_of_iff (Iff.intro this List.allTrue_of_forall)
 
@@ -34,7 +34,7 @@ instance : Enumerable States where
   complete a := by cases a <;> decide
 
 open States
-def f : States → States → States
+def f : States  States  States
 | s0, s0 => s0
 | s0, s1 => s0
 | s0, s2 => s0

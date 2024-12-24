@@ -23,7 +23,7 @@ variable {entryTy stateTy : Type}
   /- Add an entry to the cache. `init` is `True` while building the initial
      cache from the loaded imports, in which case the input cache may assumed to
      be unshared and amenable to destructive updates. -/
-  (addEntry : Π (init : Bool), environment → stateTy → entryTy → stateTy) :
+  (addEntry : Π (init : Bool), environment  stateTy  entryTy  stateTy) :
   IO (EnvironmentExtension entryTy stateTy) := default _
 
 variable {entryTy' stateTy' : Type}
@@ -34,15 +34,15 @@ variable {entryTy' stateTy' : Type}
 @[extern "lean_environment_ext_register_dep"] constant registerDep
    (fromExt : EnvironmentExtension entryTy stateTy)
    (toExt : EnvironmentExtension entryTy' stateTy')
-   (convertEntry : entryTy → entryTy')
+   (convertEntry : entryTy  entryTy')
    : IO Unit := default _
 
-@[extern "lean_environment_ext_add_entry"] constant addEntry (ext : EnvironmentExtension entryTy stateTy) (entry : entryTy) : environment → environment := id
+@[extern "lean_environment_ext_add_entry"] constant addEntry (ext : EnvironmentExtension entryTy stateTy) (entry : entryTy) : environment  environment := id
 
 --constant getModuleEntries (ext : EnvironmentExtension entryTy stateTy) (mod : ModID) : IO (Array entryTy)
 
 /-- Retrieve the State of an environment extension. -/
-@[extern "lean_environment_ext_get_state"] constant getState [Inhabited stateTy] : EnvironmentExtension entryTy stateTy → environment → stateTy := default _
+@[extern "lean_environment_ext_get_state"] constant getState [Inhabited stateTy] : EnvironmentExtension entryTy stateTy  environment  stateTy := default _
 end EnvironmentExtension
 
 structure ScopedEnvironmentExtension.Scope (entryTy stateTy : Type) :=
@@ -54,7 +54,7 @@ EnvironmentExtension (Bool × entryTy) (List (ScopedEnvironmentExtension.Scope e
 
 namespace ScopedEnvironmentExtension
 structure Info :=
-(pushScope popScope : environment → environment)
+(pushScope popScope : environment  environment)
 
 def scopedExtsRef.init : IO (IO.Ref (List Info)) := IO.mkRef []
 @[init scopedExtsRef.init] private constant scopedExtsRef : IO.Ref (List Info) := default _
@@ -63,7 +63,7 @@ def scopedExts : IO (List Info) := scopedExtsRef.get
 variable {entryTy stateTy : Type}
 
 def register (key : Option String) (emptyState : stateTy)
-  (addEntry : Π (init : Bool), environment → stateTy → entryTy → stateTy)
+  (addEntry : Π (init : Bool), environment  stateTy  entryTy  stateTy)
   : IO (ScopedEnvironmentExtension entryTy stateTy) :=
 EnvironmentExtension.register key [{state := emptyState, localEntries := []}] $
   λ init env st ⟨persistent, e⟩,
@@ -99,12 +99,12 @@ structure AttributeExtension (stateTy : Type) :=
 /-- `cacheTy`-oblivious attribute data available to the Elaborator. -/
 structure AttributeInfo :=
 (attr : Name)
-(addActiveEntry (persistent : Bool) : AttributeEntry → environment → environment)
+(addActiveEntry (persistent : Bool) : AttributeEntry  environment  environment)
 (scopedExt : EnvironmentExtension AttributeEntry (List AttributeEntry))
 
 namespace AttributeInfo
-def addScopedEntry (attr : AttributeInfo) : AttributeEntry → environment → environment := attr.scopedExt.addEntry
-def activateScopedEntries (attr : AttributeInfo) (declOpen : Name → Bool) (env : environment) : environment :=
+def addScopedEntry (attr : AttributeInfo) : AttributeEntry  environment  environment := attr.scopedExt.addEntry
+def activateScopedEntries (attr : AttributeInfo) (declOpen : Name  Bool) (env : environment) : environment :=
 ((attr.scopedExt.getState env).filter (λ e : AttributeEntry, declOpen e.decl)).foldr (attr.addActiveEntry true) env
 end AttributeInfo
 
@@ -117,7 +117,7 @@ namespace AttributeExtension
 variable {stateTy : Type}
 
 def register (attr : Name) (emptyState : stateTy)
-  (addEntry : Π (init : Bool), environment → stateTy → AttributeEntry → stateTy)
+  (addEntry : Π (init : Bool), environment  stateTy  AttributeEntry  stateTy)
   : IO (AttributeExtension stateTy) := do
   ext ← AttributeExtension.mk
     <$> ScopedEnvironmentExtension.register (toString attr) emptyState addEntry

@@ -61,9 +61,9 @@ pure ()
 
 #eval tst3
 
-inductive Vec.{u} (α : Type u) : Nat → Type u
+inductive Vec.{u} (α : Type u) : Nat  Type u
 | nil            : Vec α 0
-| cons {n : Nat} : α → Vec α n → Vec α (n+1)
+| cons {n : Nat} : α  Vec α n  Vec α (n+1)
 
 def tst4 : MetaM Unit :=
 withLocalDeclD `x nat fun x =>

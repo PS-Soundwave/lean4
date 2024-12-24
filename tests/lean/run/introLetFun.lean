@@ -21,6 +21,6 @@ example : have x := 2; ∀ _ : Nat, x = x := by
 /-!
 Check that it works for `letFun` with an eta reduced argument.
 -/
-example (p : Nat → Prop) (h : ∀ x, p x) : letFun 2 p := by
+example (p : Nat  Prop) (h : ∀ x, p x) : letFun 2 p := by
   intro
   apply h

@@ -123,7 +123,7 @@ def uriEscapeByte (b : UInt8) (s := "") : String :=
   s.push '%' |>.push (hexEncodeByte <| b >>> 4) |>.push (hexEncodeByte <| b &&& 0xF)
 
 /-- Folds a monadic function over the UTF-8 bytes of `Char` from most significant to least significant. -/
-@[specialize] def foldlUtf8M [Monad m] (c : Char) (f : σ → UInt8 → m σ) (init : σ) : m σ := do
+@[specialize] def foldlUtf8M [Monad m] (c : Char) (f : σ  UInt8  m σ) (init : σ) : m σ := do
   let s := init
   let v := c.val
   if v ≤ 0x7f then
@@ -144,7 +144,7 @@ def uriEscapeByte (b : UInt8) (s := "") : String :=
     let s ← f s <| v.toUInt8 &&& 0x3f ||| 0x80
     return s
 
-abbrev foldlUtf8 (c : Char) (f : σ → UInt8 → σ) (init : σ) : σ :=
+abbrev foldlUtf8 (c : Char) (f : σ  UInt8  σ) (init : σ) : σ :=
   Id.run <| foldlUtf8M c f init
 
 example : foldlUtf8 c (fun l b => b::l) List.nil = (String.utf8EncodeChar c).reverse := by

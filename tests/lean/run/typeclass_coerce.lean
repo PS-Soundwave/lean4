@@ -11,9 +11,9 @@ set_option synthInstance.checkSynthOrder false
 
 
 class HasCoerce (a : Type) (b : Type) :=
-(coerce : a → b)
+(coerce : a  b)
 
-def coerce {a b : Type} [HasCoerce a b] : a → b :=
+def coerce {a b : Type} [HasCoerce a b] : a  b :=
 @HasCoerce.coerce a b _
 
 instance coerceTrans {a b c : Type} [HasCoerce a b] [HasCoerce b c] : HasCoerce a c :=
@@ -25,16 +25,16 @@ instance coerceBoolToProp : HasCoerce Bool Prop :=
 instance coerceDecidableEq (x : Bool) : Decidable (coerce x) :=
 inferInstanceAs (Decidable (x = true))
 
-instance coerceSubtype {a : Type} {p : a → Prop} : HasCoerce {x // p x} a :=
+instance coerceSubtype {a : Type} {p : a  Prop} : HasCoerce {x // p x} a :=
 ⟨Subtype.val⟩
 
-instance liftCoerceFn {a₁ a₂ b₁ b₂ : Type} [HasCoerce a₂ a₁] [HasCoerce b₁ b₂] : HasCoerce (a₁ → b₁) (a₂ → b₂) :=
+instance liftCoerceFn {a₁ a₂ b₁ b₂ : Type} [HasCoerce a₂ a₁] [HasCoerce b₁ b₂] : HasCoerce (a₁  b₁) (a₂  b₂) :=
 ⟨fun f x => coerce (f (coerce x))⟩
 
-instance liftCoerceFnRange {a b₁ b₂ : Type} [HasCoerce b₁ b₂] : HasCoerce (a → b₁) (a → b₂) :=
+instance liftCoerceFnRange {a b₁ b₂ : Type} [HasCoerce b₁ b₂] : HasCoerce (a  b₁) (a  b₂) :=
 ⟨fun f x => coerce (f x)⟩
 
-instance liftCoerceFnDom {a₁ a₂ b : Type} [HasCoerce a₂ a₁] : HasCoerce (a₁ → b) (a₂ → b) :=
+instance liftCoerceFnDom {a₁ a₂ b : Type} [HasCoerce a₂ a₁] : HasCoerce (a₁  b) (a₂  b) :=
 ⟨fun f x => f (coerce x)⟩
 
 instance liftCoercePair {a₁ a₂ b₁ b₂ : Type} [HasCoerce a₁ a₂] [HasCoerce b₁ b₂] : HasCoerce (a₁ × b₁) (a₂ × b₂) :=
@@ -89,5 +89,5 @@ set_option synthInstance.maxHeartbeats 500000
 
 /-- info: liftCoerceFn -/
 #guard_msgs in
-#synth HasCoerce (Top Unit Nat.zero.succ.succ.succ.succ.succ.succ.succ.succ.succ.succ.succ.succ → Top Unit Nat.zero)
-                 (Top Unit Nat.zero → Top Unit Nat.zero.succ.succ.succ.succ.succ.succ.succ.succ.succ.succ.succ.succ)
+#synth HasCoerce (Top Unit Nat.zero.succ.succ.succ.succ.succ.succ.succ.succ.succ.succ.succ.succ  Top Unit Nat.zero)
+                 (Top Unit Nat.zero  Top Unit Nat.zero.succ.succ.succ.succ.succ.succ.succ.succ.succ.succ.succ.succ)

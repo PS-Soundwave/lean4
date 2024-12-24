@@ -22,7 +22,7 @@ Preprocesses the expressions to improve the effectiveness of `elimRecursion`.
 * Beta reduce terms where the recursive function occurs in the lambda term.
   Example:
   ```
-  def f : Nat → Nat
+  def f : Nat  Nat
     | 0 => 1
     | i+1 => (fun x => f x) i
   ```
@@ -30,7 +30,7 @@ Preprocesses the expressions to improve the effectiveness of `elimRecursion`.
 * Floats out the RecApp markers.
   Example:
   ```
-  def f : Nat → Nat
+  def f : Nat  Nat
     | 0 => 1
     | i+1 => (f x) i
   ```

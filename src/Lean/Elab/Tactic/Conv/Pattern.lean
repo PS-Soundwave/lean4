@@ -54,18 +54,18 @@ inductive PatternMatchState where
 namespace PatternMatchState
 
 /-- Is this pattern no longer interested in accepting matches? -/
-def isDone : PatternMatchState → Bool
+def isDone : PatternMatchState  Bool
   | .all _ => false
   | .occs _ _ remaining => remaining.isEmpty
 
 /-- Is this pattern interested in accepting the next match? -/
-def isReady : PatternMatchState → Bool
+def isReady : PatternMatchState  Bool
   | .all _ => true
   | .occs _ idx ((i, _) :: _) => idx == i
   | _ => false
 
 /-- Assuming `isReady` returned false, this advances to the next match. -/
-def skip : PatternMatchState → PatternMatchState
+def skip : PatternMatchState  PatternMatchState
   | .occs subgoals idx remaining => .occs subgoals (idx + 1) remaining
   | s => s
 
@@ -73,7 +73,7 @@ def skip : PatternMatchState → PatternMatchState
 Assuming `isReady` returned true, this adds the generated subgoal to the list
 and advances to the next match.
 -/
-def accept (mvarId : MVarId) : PatternMatchState → PatternMatchState
+def accept (mvarId : MVarId) : PatternMatchState  PatternMatchState
   | .all subgoals => .all (subgoals.push mvarId)
   | .occs subgoals idx ((_, n) :: remaining) => .occs (subgoals.push (n, mvarId)) (idx + 1) remaining
   | s => s

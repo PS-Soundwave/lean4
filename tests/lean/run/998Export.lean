@@ -24,8 +24,8 @@ structure State where
 deriving Inhabited
 
 class OfState (α : Type) [BEq α] [Hashable α] where
-  get : State → Alloc α
-  modify : (Alloc α → Alloc α) → State → State
+  get : State  Alloc α
+  modify : (Alloc α  Alloc α)  State  State
 
 instance : OfState Name where
   get s := s.names

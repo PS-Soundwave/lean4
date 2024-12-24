@@ -51,7 +51,7 @@ def testInvalid (tomlFile : FilePath) : BaseIO TestOutcome := do
   | .fail l => return .pass (← mkMessageLogString l)
   | .error e => return .error (toString e)
 
-@[inline] def Fin.forM [Monad m] (n) (f : Fin n → m Unit) : m Unit :=
+@[inline] def Fin.forM [Monad m] (n) (f : Fin n  m Unit) : m Unit :=
   loop 0
 where
   loop (i : Nat) : m Unit := do

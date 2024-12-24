@@ -59,10 +59,10 @@ deriving ToJson, FromJson, Repr, BEq
 
 -- set_option trace.Elab.command true
 inductive E
-| W : WInfo → E
+| W : WInfo  E
 | WAlt (a b : Nat)
-| X : Nat → Nat → E
-| Y : Nat → E
+| X : Nat  Nat  E
+| Y : Nat  E
 | YAlt (a : Nat)
 | Z
 deriving ToJson, FromJson, Repr, BEq
@@ -86,8 +86,8 @@ run_meta checkToJson E.Z (json "Z")
 run_meta checkRoundTrip E.Z
 
 inductive ERec
-| mk : Nat → ERec
-| W : ERec → ERec
+| mk : Nat  ERec
+| W : ERec  ERec
 deriving ToJson, FromJson, Repr, BEq
 
 run_meta checkToJson (ERec.W (ERec.mk 6)) (json { W : { mk : 6 }})
@@ -95,8 +95,8 @@ run_meta checkRoundTrip (ERec.mk 7)
 run_meta checkRoundTrip (ERec.W (ERec.mk 8))
 
 inductive ENest
-| mk : Nat → ENest
-| W : (Array ENest) → ENest
+| mk : Nat  ENest
+| W : (Array ENest)  ENest
 deriving ToJson, FromJson, Repr, BEq
 
 run_meta checkToJson (ENest.W #[ENest.mk 9]) (json { W : [{ mk : 9 }]})
@@ -104,7 +104,7 @@ run_meta checkRoundTrip (ENest.mk 10)
 run_meta checkRoundTrip (ENest.W #[ENest.mk 11])
 
 inductive EParam (α : Type)
-| mk : α → EParam α
+| mk : α  EParam α
 deriving ToJson, FromJson, Repr, BEq
 
 run_meta checkToJson (EParam.mk 12) (json { mk : 12 })

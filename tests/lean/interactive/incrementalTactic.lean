@@ -27,7 +27,7 @@ def trailingWhitespace : True := by
 -- RESET
 -- this used to restore the wrong elab state because of input context mis-tracking
 def haveBug : True := by
-  have (a : Nat) : Nat → True := by
+  have (a : Nat) : Nat  True := by
     intro n m
   --^ sync
   --^ delete: "intro n m"

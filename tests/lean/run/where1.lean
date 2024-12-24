@@ -1,4 +1,4 @@
-partial def f (x : Nat) : Nat → Nat
+partial def f (x : Nat) : Nat  Nat
   | 0   => x + 1
   | i+1 => h i + 2
 where
@@ -8,7 +8,7 @@ where
 def reverse (as : List α) : List α :=
   loop as []
 where
-  loop : List α → List α → List α
+  loop : List α  List α  List α
     | [],    acc => acc
     | a::as, acc => loop as (a::acc)
 

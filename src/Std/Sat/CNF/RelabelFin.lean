@@ -18,7 +18,7 @@ Obtain the literal with the largest identifier in `c`.
 def Clause.maxLiteral (c : Clause Nat) : Option Nat := (c.map (·.1)) |>.max?
 
 theorem Clause.of_maxLiteral_eq_some (c : Clause Nat) (h : c.maxLiteral = some maxLit) :
-    ∀ lit, Mem lit c → lit ≤ maxLit := by
+    ∀ lit, Mem lit c  lit ≤ maxLit := by
   intro lit hlit
   simp only [maxLiteral, List.max?_eq_some_iff', List.mem_map, forall_exists_index, and_imp,
     forall_apply_eq_imp_iff₂] at h
@@ -51,14 +51,14 @@ def maxLiteral (f : CNF Nat) : Option Nat :=
   List.filterMap Clause.maxLiteral f |>.max?
 
 theorem of_maxLiteral_eq_some' (f : CNF Nat) (h : f.maxLiteral = some maxLit) :
-    ∀ clause, clause ∈ f → clause.maxLiteral = some localMax → localMax ≤ maxLit := by
+    ∀ clause, clause ∈ f  clause.maxLiteral = some localMax  localMax ≤ maxLit := by
   intro clause hclause1 hclause2
   simp [maxLiteral, List.max?_eq_some_iff'] at h
   rcases h with ⟨_, hclause3⟩
   apply hclause3 localMax clause hclause1 hclause2
 
 theorem of_maxLiteral_eq_some (f : CNF Nat) (h : f.maxLiteral = some maxLit) :
-    ∀ lit, Mem lit f → lit ≤ maxLit := by
+    ∀ lit, Mem lit f  lit ≤ maxLit := by
   intro lit hlit
   dsimp [Mem] at hlit
   rcases hlit with ⟨clause, ⟨hclause1, hclause2⟩⟩

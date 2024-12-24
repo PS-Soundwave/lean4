@@ -13,7 +13,7 @@ namespace Lean.Compiler.LCNF
 namespace PullLetDecls
 
 structure Context where
-  isCandidateFn : LetDecl → FVarIdSet → CompilerM Bool
+  isCandidateFn : LetDecl  FVarIdSet  CompilerM Bool
   included : FVarIdSet := {}
 
 structure State where
@@ -86,14 +86,14 @@ mutual
 
 end
 
-def PullM.run (x : PullM α) (isCandidateFn : LetDecl → FVarIdSet → CompilerM Bool) : CompilerM α :=
+def PullM.run (x : PullM α) (isCandidateFn : LetDecl  FVarIdSet  CompilerM Bool) : CompilerM α :=
   x { isCandidateFn } |>.run' {}
 
 end PullLetDecls
 
 open PullLetDecls
 
-def Decl.pullLetDecls (decl : Decl) (isCandidateFn : LetDecl → FVarIdSet → CompilerM Bool) : CompilerM Decl := do
+def Decl.pullLetDecls (decl : Decl) (isCandidateFn : LetDecl  FVarIdSet  CompilerM Bool) : CompilerM Decl := do
   PullM.run (isCandidateFn := isCandidateFn) do
     withParams decl.params do
       let value ← decl.value.mapCodeM pullDecls

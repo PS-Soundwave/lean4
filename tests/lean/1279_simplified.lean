@@ -1,7 +1,7 @@
-inductive Arrow : Type → Type → Type 1
+inductive Arrow : Type  Type  Type 1
   | id   : Arrow a a
   | unit : Arrow Unit Unit
-  | comp : Arrow β γ → Arrow α β → Arrow α γ
+  | comp : Arrow β γ  Arrow α β  Arrow α γ
 deriving Repr
 
 def Arrow.compose (f : Arrow β γ) (g : Arrow α β) : Arrow α γ :=

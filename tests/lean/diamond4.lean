@@ -3,10 +3,10 @@ class A (α : Type) where
   zero : α
 
 class B (α : Type) extends A α where
-  add : α → α → α
+  add : α  α  α
 
 class C (α : Type) extends A α where
-  mul : α → α → α
+  mul : α  α  α
 
 set_option structureDiamondWarning false
 

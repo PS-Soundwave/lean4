@@ -48,28 +48,28 @@ instance : Append (OrdHashSet α) := ⟨OrdHashSet.append⟩
 def ofArray (arr : Array α) : OrdHashSet α :=
   mkEmpty arr.size |>.appendArray arr
 
-@[inline] def all (f : α → Bool) (self : OrdHashSet α) : Bool  :=
+@[inline] def all (f : α  Bool) (self : OrdHashSet α) : Bool  :=
   self.toArray.all f
 
-@[inline] def any (f : α → Bool) (self : OrdHashSet α) : Bool  :=
+@[inline] def any (f : α  Bool) (self : OrdHashSet α) : Bool  :=
   self.toArray.any f
 
-@[inline] def foldl (f : β → α → β) (init : β) (self : OrdHashSet α) : β :=
+@[inline] def foldl (f : β  α  β) (init : β) (self : OrdHashSet α) : β :=
   self.toArray.foldl f init
 
-@[inline] def foldlM [Monad m] (f : β → α → m β) (init : β) (self : OrdHashSet α) : m β :=
+@[inline] def foldlM [Monad m] (f : β  α  m β) (init : β) (self : OrdHashSet α) : m β :=
   self.toArray.foldlM f init
 
-@[inline] def foldr (f : α → β → β) (init : β) (self : OrdHashSet α) : β :=
+@[inline] def foldr (f : α  β  β) (init : β) (self : OrdHashSet α) : β :=
   self.toArray.foldr f init
 
-@[inline] def foldrM [Monad m] (f : α → β → m β) (init : β) (self : OrdHashSet α) : m β :=
+@[inline] def foldrM [Monad m] (f : α  β  m β) (init : β) (self : OrdHashSet α) : m β :=
   self.toArray.foldrM f init
 
-@[inline] def forM [Monad m] (f : α → m PUnit) (self : OrdHashSet α) : m PUnit :=
+@[inline] def forM [Monad m] (f : α  m PUnit) (self : OrdHashSet α) : m PUnit :=
   self.toArray.forM f
 
-@[inline] protected def forIn [Monad m] (self : OrdHashSet α) (init : β) (f : α → β → m (ForInStep β)) : m β :=
+@[inline] protected def forIn [Monad m] (self : OrdHashSet α) (init : β) (f : α  β  m (ForInStep β)) : m β :=
   ForIn.forIn self.toArray init f
 
 instance : ForIn m (OrdHashSet α) α := ⟨OrdHashSet.forIn⟩

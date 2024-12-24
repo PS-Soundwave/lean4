@@ -3,7 +3,7 @@ import Lean
 open Lean
 open Lean.Elab
 
-def run {α} [ToString α] : Unhygienic α → String := toString ∘ Unhygienic.run
+def run {α} [ToString α] : Unhygienic α  String := toString  Unhygienic.run
 
 #eval run `()
 #eval run `(Nat.one)

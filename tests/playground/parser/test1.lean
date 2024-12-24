@@ -61,7 +61,7 @@ match p.test s with
 | Except.error msg := IO.println msg
 | Except.ok stx    := IO.println "ok" -- IO.println stx -- IO.println "ok"
 
-def mkTestString1 : Nat → String → String
+def mkTestString1 : Nat  String  String
 | 0     s := s
 | (n+1) s := mkTestString1 n $
   s ++ "{} /- /- comment2 -/ -/ "
@@ -72,7 +72,7 @@ def test1 (n : Nat) : IO Unit :=
 let s := mkTestString1 n "" in
 test testParser1 s
 
-def mkTestString2 : Nat → String → String
+def mkTestString2 : Nat  String  String
 | 0     s := s
 | (n+1) s := mkTestString2 n $
   s ++ "(xyz) /- /- comment2 -/ -/ "

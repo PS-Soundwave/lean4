@@ -8,7 +8,7 @@ Explanation: At this point in elaboration, universe level unification has commit
   u ≤ ?u+1
   v ≤ ?u+1
 However, such constraint(s) usually indicate that the resulting universe level should have been in a different form. For example, if the resulting type is of the form 'Sort (_ + 1)' and a constructor argument is in universe `Sort u`, then universe inference would yield `Sort (u + 1)`, but the resulting type `Sort (max 1 u)` would avoid being in a higher universe than necessary.
-S6 : Sort (max w₁ w₂) → Type w₂ → Sort (max w₁ (w₂ + 1))
+S6 : Sort (max w₁ w₂)  Type w₂  Sort (max w₁ (w₂ + 1))
 univInference.lean:45:48-45:62: error: invalid universe polymorphic resulting type, the resulting universe is not 'Prop', but it may be 'Prop' for some parameter values:
   Sort (max u v)
 Possible solution: use levels of the form 'max 1 _' or '_ + 1' to ensure the universe is of the form 'Type _'.

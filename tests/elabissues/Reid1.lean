@@ -1,5 +1,5 @@
 structure constantFunction (α β : Type) :=
-(f : α → β)
+(f : α  β)
 (h : ∀ a₁ a₂, f a₁ = f a₂)
 
 instance {α β : Type} : HasCoeToFun (constantFunction α β) :=

@@ -19,7 +19,7 @@ info: [@f Nat a, @f Nat b]
 warning: declaration uses 'sorry'
 -/
 #guard_msgs in
-example (a b c d : Nat) : @f Nat a = b → @f (g Nat) a = c → @f (g Nat) b = d → a = b → False := by
+example (a b c d : Nat) : @f Nat a = b  @f (g Nat) a = c  @f (g Nat) b = d  a = b  False := by
   -- State should have only two `f`-applications: `@f Nat a`, `@f Nat b`
   -- Note that `@f (g Nat) b` has been canonicalized to `@f Nat b`.
   -- Thus, if `a` and `b` equivalence classes are merged, `grind` can still detect that

@@ -1,5 +1,5 @@
 inductive S
-| mk : (_foo : Nat → Int) → S
+| mk : (_foo : Nat  Int)  S
 
 namespace S
 

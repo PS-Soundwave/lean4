@@ -25,7 +25,7 @@ kdef Univ'.{u} : Sort (imax 1 u + 1) := Sort (imax 1 u + 1)
 def Univ := Univ'.{0}
 #check (Univ : Univ) -- !!!
 
-example : Sort (imax u v + 1) := Unit → Sort (imax u v)
+example : Sort (imax u v + 1) := Unit  Sort (imax u v)
 -- (kernel) declaration type mismatch, '_example' has type
 --   Type (max 0 (imax u v))
 -- but it is expected to have type

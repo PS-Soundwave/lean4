@@ -10,11 +10,11 @@ import Lean.Elab.InfoTree.Main
 
 namespace Lean
 
-private def getIOTypeArg : Expr → Option Expr
+private def getIOTypeArg : Expr  Option Expr
   | Expr.app (Expr.const `IO _) arg => some arg
   | _                               => none
 
-private def isUnitType : Expr → Bool
+private def isUnitType : Expr  Bool
   | Expr.const `Unit _ => true
   | _                  => false
 

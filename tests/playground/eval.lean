@@ -3,13 +3,13 @@ open Lean
 
 abbrev ConstantTable (α : Type) := HashMap Name α
 
-def mkSimpleFnTable : IO (IO.Ref (ConstantTable (Nat → Nat))) :=
+def mkSimpleFnTable : IO (IO.Ref (ConstantTable (Nat  Nat))) :=
 IO.mkRef {}
 
 @[init mkSimpleFnTable]
-constant simpleFnTable : IO.Ref (ConstantTable (Nat → Nat)) := default _
+constant simpleFnTable : IO.Ref (ConstantTable (Nat  Nat)) := default _
 
-def registerSimpleFn (n : Name) (fn : Nat → Nat) : IO Unit :=
+def registerSimpleFn (n : Name) (fn : Nat  Nat) : IO Unit :=
 do ini ← IO.initializing,
    unless ini (throw "we should only register functions during initialization"),
    simpleFnTable.modify (λ m, m.insert n fn)

@@ -23,8 +23,8 @@ def getLinterMissingDocs (o : Options) : Bool := getLinterValue linter.missingDo
 
 namespace MissingDocs
 
-abbrev SimpleHandler := Syntax → CommandElabM Unit
-abbrev Handler := Bool → SimpleHandler
+abbrev SimpleHandler := Syntax  CommandElabM Unit
+abbrev Handler := Bool  SimpleHandler
 
 def SimpleHandler.toHandler (h : SimpleHandler) : Handler :=
   fun enabled stx => if enabled then h stx else pure ()

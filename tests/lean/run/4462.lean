@@ -1,4 +1,4 @@
-def Matrix (α β R : Type) := α → β → R
+def Matrix (α β R : Type) := α  β  R
 
 instance [DecidableEq α] : OfNat (Matrix α α Nat) 1 where
   ofNat x y := if x = y then 1 else 0

@@ -1,6 +1,6 @@
 structure Magma where
   carrier   : Type u
-  mul : carrier → carrier → carrier
+  mul : carrier  carrier  carrier
 
 instance : CoeSort Magma (Type u) where
   coe m := m.carrier
@@ -10,7 +10,7 @@ def mul {s : Magma} (a b : s) : s :=
 
 infixl:70 (priority := high) " * " => mul
 
-example {S : Magma} (a b c : S) : b = c → a * b = a * c := by
+example {S : Magma} (a b c : S) : b = c  a * b = a * c := by
   intro h; rw [h]
 
 def Nat.Magma : Magma where

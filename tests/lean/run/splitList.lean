@@ -1,14 +1,14 @@
-inductive ListSplit : List α → Type _
+inductive ListSplit : List α  Type _
   | split l₁ l₂ : ListSplit (l₁ ++ l₂)
 
-def splitList : (l : List α) → ListSplit l
+def splitList : (l : List α)  ListSplit l
   | [] => ListSplit.split [] []
   | h :: t => ListSplit.split [h] t
 
-@[simp] def ListSplit.left {as : List α} : ListSplit as → List α
+@[simp] def ListSplit.left {as : List α} : ListSplit as  List α
   | split a b => a
 
-@[simp] def ListSplit.right {as : List α} : ListSplit as → List α
+@[simp] def ListSplit.right {as : List α} : ListSplit as  List α
   | split a b => b
 
 /-- Helper theorem for justifying termination. -/
@@ -17,7 +17,7 @@ theorem splitList_length (as : List α) (h₁ : as.length > 1) (h₂ : as = bs) 
   | [] => contradiction
   | a :: as => simp_arith [← h₂, splitList]; simp_arith at h₁; assumption
 
-def len : List α → Nat
+def len : List α  Nat
   | []      => 0
   | a :: [] => 1
   | l@h₁:(a :: b :: as) =>
@@ -68,7 +68,7 @@ namespace Ex2
 /--
 `len` example again but with the proofs at `decreasing_by`
 -/
-def len : List α → Nat
+def len : List α  Nat
   | []      => 0
   | a :: [] => 1
   | l@h₁:(a :: b :: as) =>

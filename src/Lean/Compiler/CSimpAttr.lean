@@ -22,7 +22,7 @@ structure State where
   thmNames : SSet Name := {}
   deriving Inhabited
 
-def State.switch : State → State
+def State.switch : State  State
   | { map, thmNames } => { map := map.switch, thmNames := thmNames.switch }
 
 builtin_initialize ext : SimpleScopedEnvExtension Entry State ←

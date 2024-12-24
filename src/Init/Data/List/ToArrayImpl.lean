@@ -11,7 +11,7 @@ Auxiliary definition for `List.toArray`.
 `List.toArrayAux as r = r ++ as.toArray`
 -/
 @[inline_if_reduce]
-def List.toArrayAux : List α → Array α → Array α
+def List.toArrayAux : List α  Array α  Array α
   | nil,       r => r
   | cons a as, r => toArrayAux as (r.push a)
 

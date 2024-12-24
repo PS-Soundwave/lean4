@@ -57,10 +57,10 @@ example : Sum Nat (List Nat) := by
   right
   exact [0]
 
-example : (1 = 1) ∨ (2 = 3) := by
+example : (1 = 1)  (2 = 3) := by
   left
   rfl
 
-example : (1 = 2) ∨ (3 = 3) := by
+example : (1 = 2)  (3 = 3) := by
   right
   rfl

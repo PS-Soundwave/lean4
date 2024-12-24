@@ -1,4 +1,4 @@
-structure Op (α : Type _) where op : α → α → α
+structure Op (α : Type _) where op : α  α  α
 variable {α}
 variable (s : Op α)
 local infixr:60 " ∙ " => s.op

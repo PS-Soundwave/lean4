@@ -48,8 +48,8 @@ include n in
 theorem t7 : ∃ (n : Nat), n = n := by exists n
 
 /-! traversal order bug broke instance inclusion -/
-variable {M N : Type} (r : N → N → Prop)
-class IsTrans (N : Type) (r : N → N → Prop) : Prop
+variable {M N : Type} (r : N  N  Prop)
+class IsTrans (N : Type) (r : N  N  Prop) : Prop
 variable [IsTrans N r] {a b c d : N}
 /--
 warning: automatically included section variable(s) unused in theorem 'act_rel_of_rel_of_act_rel':

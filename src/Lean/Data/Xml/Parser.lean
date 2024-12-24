@@ -34,8 +34,8 @@ def Char : Parser LeanChar :=
   let c ← any
   let cNat := c.toNat
   if (0x20 ≤ cNat ∧ cNat ≤ 0xD7FF)
-   ∨ (0xE000 ≤ cNat ∧ cNat ≤ 0xFFFD)
-   ∨ (0x10000 ≤ cNat ∧ cNat ≤ 0x10FFFF) then pure c else fail "expected xml char")
+    (0xE000 ≤ cNat ∧ cNat ≤ 0xFFFD)
+    (0x10000 ≤ cNat ∧ cNat ≤ 0x10FFFF) then pure c else fail "expected xml char")
   <|> pchar '\t' <|> endl
 
 /-- https://www.w3.org/TR/xml/#NT-S -/
@@ -63,8 +63,8 @@ private def nameStartCharRanges : Array (Nat × Nat) :=
 /-- https://www.w3.org/TR/xml/#NT-NameStartChar -/
 def NameStartChar : Parser LeanChar := attempt do
   let c ← any
-  if ('A' ≤ c ∧ c ≤ 'Z') ∨ ('a' ≤ c ∧ c ≤ 'z') then pure c
-  else if c = ':' ∨ c = '_' then pure c
+  if ('A' ≤ c ∧ c ≤ 'Z')  ('a' ≤ c ∧ c ≤ 'z') then pure c
+  else if c = ':'  c = '_' then pure c
   else
     let cNum := c.toNat
     if nameStartCharRanges.any (fun (lo, hi) => lo ≤ cNum ∧ cNum ≤ hi) then pure c
@@ -73,7 +73,7 @@ def NameStartChar : Parser LeanChar := attempt do
 /-- https://www.w3.org/TR/xml/#NT-NameChar -/
 def NameChar : Parser LeanChar :=
   NameStartChar <|> digit <|> pchar '-' <|> pchar '.' <|> pchar '\xB7'
-  <|> satisfy (λ c => ('\u0300' ≤ c ∧ c ≤ '\u036F') ∨ ('\u203F' ≤ c ∧ c ≤ '\u2040'))
+  <|> satisfy (λ c => ('\u0300' ≤ c ∧ c ≤ '\u036F')  ('\u203F' ≤ c ∧ c ≤ '\u2040'))
 
 /-- https://www.w3.org/TR/xml/#NT-Name -/
 def Name : Parser String := do
@@ -260,7 +260,7 @@ def EnumeratedType : Parser Unit :=
 def AttType : Parser Unit :=
   StringType <|> TokenizedType <|> EnumeratedType
 
-def predefinedEntityToChar : String → Option LeanChar
+def predefinedEntityToChar : String  Option LeanChar
 | "lt" => some '<'
 | "gt" => some '>'
 | "amp" => some '&'
@@ -406,7 +406,7 @@ def Attribute : Parser (String × String) := do
   let value ← AttValue
   return (name, value)
 
-protected def elementPrefix : Parser (Array Content → Element) := do
+protected def elementPrefix : Parser (Array Content  Element) := do
   skipChar '<'
   let name ← Name
   let attributes ← many (attempt <| S *> Attribute)
@@ -414,11 +414,11 @@ protected def elementPrefix : Parser (Array Content → Element) := do
   return Element.Element name (RBMap.fromList attributes.toList compare)
 
 /-- https://www.w3.org/TR/xml/#NT-EmptyElemTag -/
-def EmptyElemTag (elem : Array Content → Element) : Parser Element := do
+def EmptyElemTag (elem : Array Content  Element) : Parser Element := do
   skipString "/>" *> pure (elem #[])
 
 /-- https://www.w3.org/TR/xml/#NT-STag -/
-def STag (elem : Array Content → Element) : Parser (Array Content → Element) := do
+def STag (elem : Array Content  Element) : Parser (Array Content  Element) := do
   skipChar '>' *> pure elem
 
 /-- https://www.w3.org/TR/xml/#NT-ETag -/
@@ -452,7 +452,7 @@ mutual
     let xs ← many do
       let y ←
         attempt (some <$> Content.Element <$> element)
-        <|> (do let c ← Reference; pure <| c.map (Content.Character ∘ Char.toString))
+        <|> (do let c ← Reference; pure <| c.map (Content.Character  Char.toString))
         <|> some <$> Content.Character <$> CDSect
         <|> PI *> pure none
         <|> some <$> Content.Comment <$> Comment

@@ -239,7 +239,7 @@ trace (and/or `extraDepTrace`) has changed.
 If `text := true`, `file` is handled as a text file rather than a binary file.
 -/
 @[inline] def buildFileAfterDep
-  (file : FilePath) (dep : Job α) (build : α → JobM PUnit)
+  (file : FilePath) (dep : Job α) (build : α  JobM PUnit)
   (extraDepTrace : JobM _ := pure BuildTrace.nil) (text := false)
 : SpawnM (Job FilePath) :=
   dep.mapM fun depInfo => do
@@ -254,7 +254,7 @@ If `text := true`, `file` is handled as a text file rather than a binary file.
 -/
 @[inline, deprecated buildFileAfterDep (since := "2024-12-06")]
 abbrev buildFileAfterDepList
-  (file : FilePath) (deps : List (Job α)) (build : List α → JobM PUnit)
+  (file : FilePath) (deps : List (Job α)) (build : List α  JobM PUnit)
   (extraDepTrace : JobM _ := pure BuildTrace.nil) (text := false)
 : SpawnM (Job FilePath) := do
   buildFileAfterDep file (.collectList deps) build extraDepTrace text
@@ -266,7 +266,7 @@ If `text := true`, `file` is handled as a text file rather than a binary file.
 -/
 @[inline, deprecated buildFileAfterDep (since := "2024-12-06")]
 def buildFileAfterDepArray
-  (file : FilePath) (deps : Array (Job α)) (build : Array α → JobM PUnit)
+  (file : FilePath) (deps : Array (Job α)) (build : Array α  JobM PUnit)
   (extraDepTrace : JobM _ := pure BuildTrace.nil) (text := false)
 : SpawnM (Job FilePath) := do
   buildFileAfterDep file (.collectArray deps) build extraDepTrace text

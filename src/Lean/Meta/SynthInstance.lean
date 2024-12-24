@@ -66,10 +66,10 @@ structure ConsumerNode where
   deriving Inhabited
 
 inductive Waiter where
-  | consumerNode : ConsumerNode → Waiter
+  | consumerNode : ConsumerNode  Waiter
   | root         : Waiter
 
-def Waiter.isRoot : Waiter → Bool
+def Waiter.isRoot : Waiter  Bool
   | .consumerNode _ => false
   | .root           => true
 
@@ -357,7 +357,7 @@ def tryResolve (mvar : Expr) (inst : Instance) : MetaM (Option (MetavarContext �
 
       Consider the following definition.
       ```
-      def filter (p : α → Prop) [inst : DecidablePred p] (xs : List α) : List α :=
+      def filter (p : α  Prop) [inst : DecidablePred p] (xs : List α) : List α :=
         match xs with
         | [] => []
         | x :: xs' => if p x then x :: filter p xs' else filter p xs'
@@ -383,7 +383,7 @@ def tryAnswer (mctx : MetavarContext) (mvar : Expr) (answer : Answer) : SynthM (
       return none
 
 /-- Move waiters that are waiting for the given answer to the resume stack. -/
-def wakeUp (answer : Answer) : Waiter → SynthM Unit
+def wakeUp (answer : Answer) : Waiter  SynthM Unit
   | .root               => do
     /- Recall that we now use `ignoreLevelMVarDepth := true`. Thus, we should allow solutions
        containing universe metavariables, and not check `answer.result.paramNames.isEmpty`.
@@ -432,11 +432,11 @@ def addAnswer (cNode : ConsumerNode) : SynthM Unit := do
       waiters.forM (wakeUp answer)
 
 /--
-  Return `true` if a type of the form `(a_1 : A_1) → ... → (a_n : A_n) → B` has an unused argument `a_i`.
+  Return `true` if a type of the form `(a_1 : A_1)  ...  (a_n : A_n)  B` has an unused argument `a_i`.
 
   Remark: This is syntactic check and no reduction is performed.
 -/
-private def hasUnusedArguments : Expr → Bool
+private def hasUnusedArguments : Expr  Bool
   | .forallE _ _ b _ => !b.hasLooseBVar 0 || hasUnusedArguments b
   | _ => false
 
@@ -444,18 +444,18 @@ private def hasUnusedArguments : Expr → Bool
   If the type of the metavariable `mvar` has unused argument, return a pair `(α, transformer)`
   where `α` is a new type without the unused arguments and the `transformer` is a function for converting a
   solution with type `α` into a value that can be assigned to `mvar`.
-  Example: suppose `mvar` has type `(a : A) → (b : B a) → (c : C a) → D a c`, the result is the pair
+  Example: suppose `mvar` has type `(a : A)  (b : B a)  (c : C a)  D a c`, the result is the pair
   ```
-  ((a : A) → (c : C a) → D a c,
-   fun (f : (a : A) → (c : C a) → D a c) (a : A) (b : B a) (c : C a) => f a c
+  ((a : A)  (c : C a)  D a c,
+   fun (f : (a : A)  (c : C a)  D a c) (a : A) (b : B a) (c : C a) => f a c
   )
   ```
 
   This method is used to improve the effectiveness of the TC resolution procedure. It was suggested and prototyped by
-  Tomas Skrivan. It improves the support for instances of type `a : A → C` where `a` does not appear in class `C`.
+  Tomas Skrivan. It improves the support for instances of type `a : A  C` where `a` does not appear in class `C`.
   When we look for such an instance it is enough to look for an instance `c : C` and then return `fun _ => c`.
 
-  Tomas' approach makes sure that instance of a type like `a : A → C` never gets tabled/cached. More on that later.
+  Tomas' approach makes sure that instance of a type like `a : A  C` never gets tabled/cached. More on that later.
   At the core is this method. it takes an expression E and does two things:
 
   The modification to TC resolution works this way: We are looking for an instance of `E`, if it is tabled
@@ -489,10 +489,10 @@ def consume (cNode : ConsumerNode) : SynthM Unit := do
     This may happen when a local instance type depends on other local instances.
     For example, in Mathlib, we have
     ```
-    @Submodule.setLike : {R : Type u_1} → {M : Type u_2} →
-      [_inst_1 : Semiring R] →
-      [_inst_2 : AddCommMonoid M] →
-      [_inst_3 : @ModuleS R M _inst_1 _inst_2] →
+    @Submodule.setLike : {R : Type u_1}  {M : Type u_2} 
+      [_inst_1 : Semiring R] 
+      [_inst_2 : AddCommMonoid M] 
+      [_inst_3 : @ModuleS R M _inst_1 _inst_2] 
       SetLike (@Submodule R M _inst_1 _inst_2 _inst_3) M
     ```
   -/
@@ -536,7 +536,7 @@ def consume (cNode : ConsumerNode) : SynthM Unit := do
 def getTop : SynthM GeneratorNode :=
   return (← get).generatorStack.back!
 
-@[inline] def modifyTop (f : GeneratorNode → GeneratorNode) : SynthM Unit :=
+@[inline] def modifyTop (f : GeneratorNode  GeneratorNode) : SynthM Unit :=
   modify fun s => { s with generatorStack := s.generatorStack.modify (s.generatorStack.size - 1) f }
 
 /-- Try the next instance in the node on the top of the generator stack. -/

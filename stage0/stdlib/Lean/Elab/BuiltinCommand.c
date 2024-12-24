@@ -31906,7 +31906,7 @@ static lean_object* _init_l_List_forIn_x27_loop___at_Lean_Elab_Command_elabWhere
 _start:
 {
 lean_object* x_1; 
-x_1 = lean_mk_string_unchecked("→", 3, 1);
+x_1 = lean_mk_string_unchecked("", 3, 1);
 return x_1;
 }
 }

@@ -75,7 +75,7 @@ inductive InjectionResult where
 
 
 def injectionIntro (mvarId : MVarId) (numEqs : Nat) (newNames : List Name) (tryToClear := true) : MetaM InjectionResult :=
-  let rec go : Nat → MVarId → Array FVarId → List Name → MetaM InjectionResult
+  let rec go : Nat  MVarId  Array FVarId  List Name  MetaM InjectionResult
     | 0, mvarId, fvarIds, remainingNames =>
       return InjectionResult.subgoal mvarId fvarIds remainingNames
     | n+1, mvarId, fvarIds, name::remainingNames => do

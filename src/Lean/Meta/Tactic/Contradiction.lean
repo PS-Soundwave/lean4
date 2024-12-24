@@ -19,7 +19,7 @@ structure Contradiction.Config where
   searchFuel : Nat  := 16
   /-- Support for hypotheses such as
      ```
-     h : (x y : Nat) (ys : List Nat) → x = 0 → y::ys = [a, b, c] → False
+     h : (x y : Nat) (ys : List Nat)  x = 0  y::ys = [a, b, c]  False
      ```
      This kind of hypotheses appear when proving conditional equation theorems for match expressions. -/
   genDiseq : Bool := false
@@ -107,7 +107,7 @@ where
 /--
   Close goal if `localDecl` is a "generalized disequality". Example:
   ```
-  h : (x y : Nat) (ys : List Nat) → x = 0 → y::ys = [a, b, c] → False
+  h : (x y : Nat) (ys : List Nat)  x = 0  y::ys = [a, b, c]  False
   ```
   This kind of hypotheses is created when we generate conditional equations for match expressions.
 -/
@@ -125,7 +125,7 @@ private def processGenDiseq (mvarId : MVarId) (localDecl : LocalDecl) : MetaM Bo
             ...
             ns' : NEList String
             h' : NEList.notUno ns' = true
-            : ∀ (ns : NEList String) (h : NEList.notUno ns = true), Value.lam (Lambda.mk ns' h') = Value.lam (Lambda.mk ns h) → False
+            : ∀ (ns : NEList String) (h : NEList.notUno ns = true), Value.lam (Lambda.mk ns' h') = Value.lam (Lambda.mk ns h)  False
             ⊢ h_1 l a = h_2 v
 
            ```

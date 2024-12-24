@@ -38,11 +38,11 @@ theorem ex2 (x : Nat) (y : Nat) (h : y ≠ 5) : ∃ z, g (x+1) y = 2 * z := by
 
 /--
 info: x y : Nat
-h : y = 5 → False
+h : y = 5  False
 ⊢ ∃ z, 2 * f x y = 2 * z
 -/
 #guard_msgs in
-theorem ex3 (x : Nat) (y : Nat) (h : y = 5 → False) : ∃ z, f (x+1) y = 2 * z := by
+theorem ex3 (x : Nat) (y : Nat) (h : y = 5  False) : ∃ z, f (x+1) y = 2 * z := by
   simp [f, h]
   trace_state
   apply Exists.intro
@@ -60,11 +60,11 @@ theorem ex3 (x : Nat) (y : Nat) (h : y = 5 → False) : ∃ z, f (x+1) y = 2 * z
 
 /--
 info: x y z : Nat
-h : y = 5 → z = 6 → False
+h : y = 5  z = 6  False
 ⊢ ∃ w, 2 * f2 x y z = 2 * w
 -/
 #guard_msgs in
-theorem ex4 (x y z : Nat) (h : y = 5 → z = 6 → False) : ∃ w, f2 (x+1) y z = 2 * w := by
+theorem ex4 (x y z : Nat) (h : y = 5  z = 6  False) : ∃ w, f2 (x+1) y z = 2 * w := by
   simp [f2, h]
   trace_state
   apply Exists.intro
@@ -95,7 +95,7 @@ theorem ex7 (x y z : Nat) (h2 : z ≠ 6) (h3 : y ≠ 6) : ∃ w, f3 (x+1) y z = 
   apply Exists.intro
   rfl
 
-theorem ex8 (x y z : Nat) (h2 : y = 5 → z = 6 → False) (h3 : y = 6 → z = 4 → False) : ∃ w, f3 (x+1) y z = 2 * w := by
+theorem ex8 (x y z : Nat) (h2 : y = 5  z = 6  False) (h3 : y = 6  z = 4  False) : ∃ w, f3 (x+1) y z = 2 * w := by
   simp [f3, h2,  h3]
   apply Exists.intro
   rfl

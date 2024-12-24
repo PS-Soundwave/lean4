@@ -3,29 +3,29 @@ inductive Expr where
   | op  (lhs rhs : Expr)
   deriving Inhabited, Repr
 
-def List.getIdx : List α → Nat → α → α
+def List.getIdx : List α  Nat  α  α
   | [],    i,   u => u
   | a::as, 0,   u => a
   | a::as, i+1, u => getIdx as i u
 
 structure Context (α : Type u) where
-  op      : α → α → α
-  assoc   : (a b c : α) → op (op a b) c = op a (op b c)
-  comm    : (a b : α) → op a b = op b a
+  op      : α  α  α
+  assoc   : (a b c : α)  op (op a b) c = op a (op b c)
+  comm    : (a b : α)  op a b = op b a
   vars    : List α
   someVal : α
 
 theorem Context.left_comm (ctx : Context α) (a b c : α) : ctx.op a (ctx.op b c) = ctx.op b (ctx.op a c) := by
   rw [← ctx.assoc, ctx.comm a b, ctx.assoc]
 
-def Expr.denote (ctx : Context α) : Expr → α
+def Expr.denote (ctx : Context α) : Expr  α
   | Expr.op a b => ctx.op (denote ctx a) (denote ctx b)
   | Expr.var i  => ctx.vars.getIdx i ctx.someVal
 
 theorem Expr.denote_op (ctx : Context α) (a b : Expr) : denote ctx (Expr.op a b) = ctx.op (denote ctx a) (denote ctx b) :=
   rfl
 
-def Expr.concat : Expr → Expr → Expr
+def Expr.concat : Expr  Expr  Expr
   | Expr.op a b, c => Expr.op a (concat b c)
   | Expr.var i, c  => Expr.op (Expr.var i) c
 
@@ -34,7 +34,7 @@ theorem Expr.denote_concat (ctx : Context α) (a b : Expr) : denote ctx (concat 
   | var i => rfl
   | op _ _ _ ih => simp [denote, concat, ih, ctx.assoc]
 
-def Expr.flat : Expr → Expr
+def Expr.flat : Expr  Expr
   | Expr.op a b => concat (flat a) (flat b)
   | Expr.var i  => Expr.var i
 
@@ -48,20 +48,20 @@ theorem Expr.eq_of_flat (ctx : Context α) (a b : Expr) (h : flat a = flat b) : 
   simp [denote_flat] at h
   assumption
 
-def Expr.length : Expr → Nat
+def Expr.length : Expr  Nat
   | op a b => 1 + b.length
   | _      => 1
 
 def Expr.sort (e : Expr) : Expr :=
   loop e.length e
 where
-  loop : Nat → Expr → Expr
+  loop : Nat  Expr  Expr
     | fuel+1, Expr.op a e =>
       let (e₁, e₂) := swap a e
       Expr.op e₁ (loop fuel e₂)
     | _, e => e
 
-  swap : Expr → Expr → Expr × Expr
+  swap : Expr  Expr  Expr × Expr
     | Expr.var i, Expr.op (Expr.var j) e =>
       if i > j then
         let (e₁, e₂) := swap (Expr.var j) e

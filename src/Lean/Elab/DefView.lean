@@ -14,11 +14,11 @@ inductive DefKind where
   | def | instance | theorem | example | opaque | abbrev
   deriving Inhabited, BEq
 
-def DefKind.isTheorem : DefKind → Bool
+def DefKind.isTheorem : DefKind  Bool
   | .theorem => true
   | _        => false
 
-def DefKind.isExample : DefKind → Bool
+def DefKind.isExample : DefKind  Bool
   | .example => true
   | _        => false
 

@@ -73,7 +73,7 @@ test [
 "f ({x : a} -> b)",
 "f (x : a) -> b",
 "f ((x : a) -> b)",
-"(f : (n : Nat) → Vector Nat n) -> Nat",
+"(f : (n : Nat)  Vector Nat n) -> Nat",
 "∀ x y (z : Nat), x > y -> x > y - z",
 "
 match x with
@@ -114,7 +114,7 @@ do
   let (a, b) := (b, a);
   pure (a + b)",
 "do { x ← f a; pure $ a + a }",
-"let f : Nat → Nat → Nat
+"let f : Nat  Nat  Nat
    | 0 a     := a + 10
    | (n+1) b := n * b;
 f 20",

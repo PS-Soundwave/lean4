@@ -1,4 +1,4 @@
-example : (p → q → False) ↔ (¬ p ∨ ¬ q) := by
+example : (p  q  False) ↔ (¬ p  ¬ q) := by
   apply Iff.intro
   · intro h
     by_cases hp:p <;> by_cases hq:q

@@ -28,20 +28,20 @@ namespace HashMap
 
 namespace Raw
 
-theorem WF.filterMap [BEq α] [Hashable α] {m : Raw α β} {f : α → β → Option γ} (h : m.WF) :
+theorem WF.filterMap [BEq α] [Hashable α] {m : Raw α β} {f : α  β  Option γ} (h : m.WF) :
     (m.filterMap f).WF :=
   ⟨DHashMap.Raw.WF.filterMap h.out⟩
 
-theorem WF.map [BEq α] [Hashable α] {m : Raw α β} {f : α → β → γ} (h : m.WF) : (m.map f).WF :=
+theorem WF.map [BEq α] [Hashable α] {m : Raw α β} {f : α  β  γ} (h : m.WF) : (m.map f).WF :=
   ⟨DHashMap.Raw.WF.map h.out⟩
 
 end Raw
 
-@[inline, inherit_doc DHashMap.filterMap] def filterMap [BEq α] [Hashable α] (f : α → β → Option γ)
+@[inline, inherit_doc DHashMap.filterMap] def filterMap [BEq α] [Hashable α] (f : α  β  Option γ)
     (m : HashMap α β) : HashMap α γ :=
   ⟨m.inner.filterMap f⟩
 
-@[inline, inherit_doc DHashMap.map] def map [BEq α] [Hashable α] (f : α → β → γ) (m : HashMap α β) :
+@[inline, inherit_doc DHashMap.map] def map [BEq α] [Hashable α] (f : α  β  γ) (m : HashMap α β) :
     HashMap α γ :=
   ⟨m.inner.map f⟩
 

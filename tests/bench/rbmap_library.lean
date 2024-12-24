@@ -4,7 +4,7 @@ open Lean
 
 abbrev Tree : Type := RBMap Nat Bool compare
 
-def mkMapAux : Nat → Tree → Tree
+def mkMapAux : Nat  Tree  Tree
   | 0,   m => m
   | n+1, m => mkMapAux n (m.insert n (n % 10 = 0))
 

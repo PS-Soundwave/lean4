@@ -33,7 +33,7 @@ private def mkEqAndProof (lhs rhs : Expr) : MetaM (Expr × Expr) := do
   else
     pure (mkApp4 (mkConst ``HEq [u]) lhsType lhs rhsType rhs, mkApp2 (mkConst ``HEq.refl [u]) lhsType lhs)
 
-private partial def withNewEqs (targets targetsNew : Array Expr) (k : Array Expr → Array Expr → MetaM α) : MetaM α :=
+private partial def withNewEqs (targets targetsNew : Array Expr) (k : Array Expr  Array Expr  MetaM α) : MetaM α :=
   let rec loop (i : Nat) (newEqs : Array Expr) (newRefls : Array Expr) := do
     if i < targets.size then
       let (newEqType, newRefl) ← mkEqAndProof targets[i]! targetsNew[i]!
@@ -272,7 +272,7 @@ def _root_.Lean.MVarId.cases (mvarId : MVarId) (majorFVarId : FVarId) (givenName
 /--
 Keep applying `cases` on any hypothesis that satisfies `p`.
 -/
-def _root_.Lean.MVarId.casesRec (mvarId : MVarId) (p : LocalDecl → MetaM Bool) : MetaM (List MVarId) :=
+def _root_.Lean.MVarId.casesRec (mvarId : MVarId) (p : LocalDecl  MetaM Bool) : MetaM (List MVarId) :=
   saturate mvarId fun mvarId =>
     mvarId.withContext do
       for localDecl in (← getLCtx) do

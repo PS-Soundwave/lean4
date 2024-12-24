@@ -10,13 +10,13 @@ import Lean.Util.PtrSet
 namespace Lean.Expr
 
 @[extern "lean_replace_expr"]
-opaque replaceImpl (f? : @& (Expr → Option Expr)) (e : @& Expr) : Expr
+opaque replaceImpl (f? : @& (Expr  Option Expr)) (e : @& Expr) : Expr
 
-@[inline] def replace (f? : Expr → Option Expr) (e : Expr) : Expr :=
+@[inline] def replace (f? : Expr  Option Expr) (e : Expr) : Expr :=
   replaceImpl f? e
 
 @[specialize]
-def replaceNoCache (f? : Expr → Option Expr) (e : Expr) : Expr :=
+def replaceNoCache (f? : Expr  Option Expr) (e : Expr) : Expr :=
   match f? e with
   | some eNew => eNew
   | none      => match e with

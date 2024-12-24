@@ -1,15 +1,15 @@
 {"textDocument": {"uri": "file:///plainGoal.lean"},
  "position": {"line": 0, "character": 20}}
-{"rendered": "```lean\nα : Sort ?u\n⊢ α → α\n```",
- "goals": ["α : Sort ?u\n⊢ α → α"]}
+{"rendered": "```lean\nα : Sort ?u\n⊢ α  α\n```",
+ "goals": ["α : Sort ?u\n⊢ α  α"]}
 {"textDocument": {"uri": "file:///plainGoal.lean"},
  "position": {"line": 0, "character": 21}}
-{"rendered": "```lean\nα : Sort ?u\n⊢ α → α\n```",
- "goals": ["α : Sort ?u\n⊢ α → α"]}
+{"rendered": "```lean\nα : Sort ?u\n⊢ α  α\n```",
+ "goals": ["α : Sort ?u\n⊢ α  α"]}
 {"textDocument": {"uri": "file:///plainGoal.lean"},
  "position": {"line": 3, "character": 2}}
-{"rendered": "```lean\nα : Sort ?u\n⊢ α → α\n```",
- "goals": ["α : Sort ?u\n⊢ α → α"]}
+{"rendered": "```lean\nα : Sort ?u\n⊢ α  α\n```",
+ "goals": ["α : Sort ?u\n⊢ α  α"]}
 {"textDocument": {"uri": "file:///plainGoal.lean"},
  "position": {"line": 3, "character": 3}}
 {"rendered": "```lean\nα : Sort ?u\na : α\n⊢ α\n```",
@@ -20,8 +20,8 @@
  "goals": ["α : Sort ?u\na : α\n⊢ α"]}
 {"textDocument": {"uri": "file:///plainGoal.lean"},
  "position": {"line": 10, "character": 20}}
-{"rendered": "```lean\nα : Sort ?u\n⊢ α → α\n```",
- "goals": ["α : Sort ?u\n⊢ α → α"]}
+{"rendered": "```lean\nα : Sort ?u\n⊢ α  α\n```",
+ "goals": ["α : Sort ?u\n⊢ α  α"]}
 {"textDocument": {"uri": "file:///plainGoal.lean"},
  "position": {"line": 15, "character": 9}}
 {"rendered": "```lean\ncase zero\n⊢ 0 + 0 = 0\n```",
@@ -77,14 +77,14 @@
  "goals": ["a b : Nat\n⊢ a = b"]}
 {"textDocument": {"uri": "file:///plainGoal.lean"},
  "position": {"line": 51, "character": 20}}
-{"rendered": "```lean\nα : Sort ?u\n⊢ α → α\n```",
- "goals": ["α : Sort ?u\n⊢ α → α"]}
+{"rendered": "```lean\nα : Sort ?u\n⊢ α  α\n```",
+ "goals": ["α : Sort ?u\n⊢ α  α"]}
 {"textDocument": {"uri": "file:///plainGoal.lean"},
  "position": {"line": 55, "character": 3}}
 {"rendered":
- "```lean\nα : Sort u_1\np : α → Prop\na b : α\ninst✝ : DecidablePred p\nh : ∀ {p : α → Prop} [inst : DecidablePred p], p a → p b\n⊢ p a\n```",
+ "```lean\nα : Sort u_1\np : α  Prop\na b : α\ninst✝ : DecidablePred p\nh : ∀ {p : α  Prop} [inst : DecidablePred p], p a  p b\n⊢ p a\n```",
  "goals":
- ["α : Sort u_1\np : α → Prop\na b : α\ninst✝ : DecidablePred p\nh : ∀ {p : α → Prop} [inst : DecidablePred p], p a → p b\n⊢ p a"]}
+ ["α : Sort u_1\np : α  Prop\na b : α\ninst✝ : DecidablePred p\nh : ∀ {p : α  Prop} [inst : DecidablePred p], p a  p b\n⊢ p a"]}
 {"textDocument": {"uri": "file:///plainGoal.lean"},
  "position": {"line": 61, "character": 3}}
 {"rendered": "```lean\ncase left\n⊢ True\n```", "goals": ["case left\n⊢ True"]}

@@ -13,7 +13,7 @@ A work-around is
 -/
 
 -- set_option trace.Elab.definition.wf true
-def foo : (n : Nat) → ∃ m, m > n
+def foo : (n : Nat)  ∃ m, m > n
  | 0 => ⟨1, Nat.zero_lt_one⟩
  | n+1 => by
   cases foo n
@@ -33,7 +33,7 @@ decreasing_by
       match n with
       | 0 => Exists.intro 1 Nat.zero_lt_one
       | Nat.succ n =>
-        Exists.casesOn (motive := fun t => foo n = t → ∃ m, m > n + 1) (foo n)
+        Exists.casesOn (motive := fun t => foo n = t  ∃ m, m > n + 1) (foo n)
           (fun w h h_1 => Exists.intro (w + 1) (Nat.succ_lt_succ h)) (Eq.refl (foo n))
 -/
 
@@ -42,18 +42,18 @@ decreasing_by
 Contexts
 
 n: Nat
-x✝: ∀ (y : Nat), (invImage (fun a => sizeOf a) instWellFoundedRelation).1 y (Nat.succ n) → ∃ m, m > y
+x✝: ∀ (y : Nat), (invImage (fun a => sizeOf a) instWellFoundedRelation).1 y (Nat.succ n)  ∃ m, m > y
 t✝: ∃ m, m > n
 ⊢ (invImage (fun a => sizeOf a) instWellFoundedRelation).1 n (Nat.succ n)
 n: Nat
-x✝: ∀ (y : Nat), (invImage (fun a => sizeOf a) instWellFoundedRelation).1 y (Nat.succ n) → ∃ m, m > y
+x✝: ∀ (y : Nat), (invImage (fun a => sizeOf a) instWellFoundedRelation).1 y (Nat.succ n)  ∃ m, m > y
 ⊢ (invImage (fun a => sizeOf a) instWellFoundedRelation).1 n (Nat.succ n)
 n: Nat
-x✝: ∀ (y : Nat), (invImage (fun a => sizeOf a) instWellFoundedRelation).1 y (Nat.succ n) → ∃ m, m > y
+x✝: ∀ (y : Nat), (invImage (fun a => sizeOf a) instWellFoundedRelation).1 y (Nat.succ n)  ∃ m, m > y
 w✝: Nat
 h✝: w✝ > n
 ⊢ (invImage (fun a => sizeOf a) instWellFoundedRelation).1 n (Nat.succ n)
 n: Nat
-x✝: ∀ (y : Nat), (invImage (fun a => sizeOf a) instWellFoundedRelation).1 y (Nat.succ n) → ∃ m, m > y
+x✝: ∀ (y : Nat), (invImage (fun a => sizeOf a) instWellFoundedRelation).1 y (Nat.succ n)  ∃ m, m > y
 ⊢ (invImage (fun a => sizeOf a) instWellFoundedRelation).1 n (Nat.succ n)
 -/

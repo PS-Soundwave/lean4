@@ -54,7 +54,7 @@ instance : OfNat Ordinal n :=
 Converts a `Ordinal` representing a day index into a corresponding `Weekday`. This function is useful
 for mapping numerical representations to days of the week.
 -/
-def ofOrdinal : Ordinal → Weekday
+def ofOrdinal : Ordinal  Weekday
   | 1 => .monday
   | 2 => .tuesday
   | 3 => .wednesday
@@ -66,7 +66,7 @@ def ofOrdinal : Ordinal → Weekday
 /--
 Converts a `Weekday` to a `Ordinal`.
 -/
-def toOrdinal : Weekday → Ordinal
+def toOrdinal : Weekday  Ordinal
   | .monday => 1
   | .tuesday => 2
   | .wednesday => 3
@@ -78,7 +78,7 @@ def toOrdinal : Weekday → Ordinal
 /--
 Converts a `Weekday` to a `Nat`.
 -/
-def toNat : Weekday → Nat
+def toNat : Weekday  Nat
   | .monday => 1
   | .tuesday => 2
   | .wednesday => 3
@@ -90,7 +90,7 @@ def toNat : Weekday → Nat
 /--
 Converts a `Nat` to an `Option Weekday`.
 -/
-def ofNat? : Nat → Option Weekday
+def ofNat? : Nat  Option Weekday
   | 1 => some .monday
   | 2 => some .tuesday
   | 3 => some .wednesday
@@ -112,7 +112,7 @@ def ofNat! (n : Nat) : Weekday :=
 /--
 Gets the next `Weekday`.
 -/
-def next : Weekday → Weekday
+def next : Weekday  Weekday
   | .monday => .tuesday
   | .tuesday => .wednesday
   | .wednesday => .thursday
@@ -124,7 +124,7 @@ def next : Weekday → Weekday
 /--
 Check if it's a weekend.
 -/
-def isWeekend : Weekday → Bool
+def isWeekend : Weekday  Bool
   | .saturday => true
   | .sunday => true
   | _ => false

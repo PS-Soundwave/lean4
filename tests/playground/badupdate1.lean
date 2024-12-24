@@ -7,10 +7,10 @@ a.modify 0 (+1)
 def f1 (s : S Nat) : S Nat :=
 { vals := inc0 s.vals, .. s}
 
-def f2 : S Nat → S Nat
+def f2 : S Nat  S Nat
 | ⟨vals, sz⟩ := ⟨inc0 vals, sz⟩
 
-def test (f : S Nat → S Nat) (n : Nat): IO Unit :=
+def test (f : S Nat  S Nat) (n : Nat): IO Unit :=
 let s : S Nat := { vals := mkArray (n*100) n, sz := n*100 } in
 let s         := n.repeat f s in
 IO.println (s.vals.get 0)

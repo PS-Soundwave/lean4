@@ -1,6 +1,6 @@
 abbrev Value := BitVec 32
 
-def Env := String → Value
+def Env := String  Value
 
 namespace Env
 
@@ -19,7 +19,7 @@ end Env
 @[simp] theorem Env.get_set_same {ρ : Env} : (ρ.set x v).get x = v := by
   simp [get, set]
 
-@[simp] theorem Env.get_set_different {ρ : Env} : x ≠ y → (ρ.set x v).get y = ρ.get y := by
+@[simp] theorem Env.get_set_different {ρ : Env} : x ≠ y  (ρ.set x v).get y = ρ.get y := by
   intro; simp [get, set, *]
 
 example : (((Env.init 0).set "x" 1).set "y" 2).get "y" = 2 := by
@@ -40,10 +40,10 @@ example : "hello" != "foo" := by
 example : "hello" == "hello" := by
   simp
 
-example : "hello" == "foo" → False := by
+example : "hello" == "foo"  False := by
   simp
 
-example : "hello" = "foo" → False := by
+example : "hello" = "foo"  False := by
   simp [-String.reduceEq]
   guard_target =ₛ ¬ "hello" = "foo"
   simp

@@ -18,7 +18,7 @@ open Meta
 private def throwToBelowFailed : MetaM α :=
   throwError "toBelow failed"
 
-partial def searchPProd (e : Expr) (F : Expr) (k : Expr → Expr → MetaM α) : MetaM α := do
+partial def searchPProd (e : Expr) (F : Expr) (k : Expr  Expr  MetaM α) : MetaM α := do
   match (← whnf e) with
   | .app (.app (.const `PProd _) d1) d2 =>
         (do searchPProd d1 (.proj ``PProd 0 F) k)
@@ -61,7 +61,7 @@ private partial def toBelowAux (C : Expr) (belowDict : Expr) (arg : Expr) (F : E
 
 /-- See `toBelow` -/
 private def withBelowDict [Inhabited α] (below : Expr) (numIndParams : Nat)
-    (positions : Positions) (k : Array Expr → Expr → MetaM α) : MetaM α := do
+    (positions : Positions) (k : Array Expr  Expr  MetaM α) : MetaM α := do
   let numTypeFormers := positions.size
   let belowType ← inferType below
   trace[Elab.definition.structural] "belowType: {belowType}"
@@ -81,7 +81,7 @@ private def withBelowDict [Inhabited α] (below : Expr) (numIndParams : Nat)
     for poss in positions, motiveType in motiveTypes do
       for pos in poss do
         CTypes := CTypes.set! pos motiveType
-    let CDecls : Array (Name × (Array Expr → MetaM Expr)) ← CTypes.mapM fun t => do
+    let CDecls : Array (Name × (Array Expr  MetaM Expr)) ← CTypes.mapM fun t => do
         return ((← mkFreshUserName `C), fun _ => pure t)
     withLocalDeclsD CDecls fun Cs => do
       -- We have to pack these canary motives like we packed the real motives
@@ -99,7 +99,7 @@ private def withBelowDict [Inhabited α] (below : Expr) (numIndParams : Nat)
 
   For example, when trying to show that the following function terminates using structural recursion
   ```lean
-  def addAdjacent : List Nat → List Nat
+  def addAdjacent : List Nat  List Nat
   | []       => []
   | [a]      => [a]
   | a::b::as => (a+b) :: addAdjacent as
@@ -235,7 +235,7 @@ the right universe levels, the parameters, and the motives.
 It was already checked earlier in `checkCodomainsLevel` that the functions live in the same universe.
 -/
 def mkBRecOnConst (recArgInfos : Array RecArgInfo) (positions : Positions)
-   (motives : Array Expr) : MetaM (Nat → Expr) := do
+   (motives : Array Expr) : MetaM (Nat  Expr) := do
   let indGroup := recArgInfos[0]!.indGroupInst
   let motive := motives[0]!
   let brecOnUniv ← lambdaTelescope motive fun _ type => getLevel type
@@ -262,7 +262,7 @@ combinators. This assumes that all `.brecOn` functions of a mutual inductive hav
 It also undoes the permutation and packing done by `packMotives`
 -/
 def inferBRecOnFTypes (recArgInfos : Array RecArgInfo) (positions : Positions)
-    (brecOnConst : Nat → Expr) : MetaM (Array Expr) := do
+    (brecOnConst : Nat  Expr) : MetaM (Array Expr) := do
   let numTypeFormers := positions.size
   let recArgInfo := recArgInfos[0]! -- pick an arbitrary one
   let brecOn := brecOnConst recArgInfo.indIdx
@@ -283,7 +283,7 @@ def inferBRecOnFTypes (recArgInfos : Array RecArgInfo) (positions : Positions)
 Completes the `.brecOn` for the given function.
 The `value` is the function with (only) the fixed parameters moved into the context.
 -/
-def mkBrecOnApp (positions : Positions) (fnIdx : Nat) (brecOnConst : Nat → Expr)
+def mkBrecOnApp (positions : Positions) (fnIdx : Nat) (brecOnConst : Nat  Expr)
     (FArgs : Array Expr) (recArgInfo : RecArgInfo) (value : Expr) : MetaM Expr := do
   lambdaTelescope value fun ys _value => do
     let (indexMajorArgs, otherArgs) := recArgInfo.pickIndicesMajor ys

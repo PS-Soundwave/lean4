@@ -1,5 +1,5 @@
 class Pretty (α : Type u) where
-  pretty : α → Std.Format
+  pretty : α  Std.Format
 
 export Pretty (pretty)
 

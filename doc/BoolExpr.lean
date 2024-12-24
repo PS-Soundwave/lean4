@@ -8,7 +8,7 @@ inductive BoolExpr where
   | not (p : BoolExpr)
   deriving Repr, BEq, DecidableEq
 
-def BoolExpr.isValue : BoolExpr → Bool
+def BoolExpr.isValue : BoolExpr  Bool
   | val _ => true
   | _     => false
 
@@ -21,29 +21,29 @@ deriving instance DecidableEq for BoolExpr
 
 #eval decide (BoolExpr.val true = BoolExpr.val false)
 
-#check (a b : BoolExpr) → Decidable (a = b)
+#check (a b : BoolExpr)  Decidable (a = b)
 
 abbrev Context := AssocList String Bool
 
-def denote (ctx : Context) : BoolExpr → Bool
+def denote (ctx : Context) : BoolExpr  Bool
   | BoolExpr.or p q => denote ctx p || denote ctx q
   | BoolExpr.not p  => !denote ctx p
   | BoolExpr.val b => b
   | BoolExpr.var x => if let some b := ctx.find? x then b else false
 
-def simplify : BoolExpr → BoolExpr
+def simplify : BoolExpr  BoolExpr
   | or p q => mkOr (simplify p) (simplify q)
   | not p  => mkNot (simplify p)
   | e      => e
 where
-  mkOr : BoolExpr → BoolExpr → BoolExpr
+  mkOr : BoolExpr  BoolExpr  BoolExpr
     | p, val true   => val true
     | p, val false  => p
     | val true, p   => val true
     | val false, p  => p
     | p, q          => or p q
 
-  mkNot : BoolExpr → BoolExpr
+  mkNot : BoolExpr  BoolExpr
     | val b => val (!b)
     | p     => not p
 
@@ -94,10 +94,10 @@ macro_rules
  | `(`[BExpr| true])     => `(val true)
  | `(`[BExpr| false])    => `(val false)
  | `(`[BExpr| $x:ident]) => `(var $(quote x.getId.toString))
- | `(`[BExpr| $p ∨ $q])  => `(or `[BExpr| $p] `[BExpr| $q])
+ | `(`[BExpr| $p  $q])  => `(or `[BExpr| $p] `[BExpr| $q])
  | `(`[BExpr| ¬ $p])     => `(not `[BExpr| $p])
 
-#check `[BExpr| ¬ p ∨ q]
+#check `[BExpr| ¬ p  q]
 
 syntax entry := ident " ↦ " term:max
 syntax entry,* "⊢" term : term
@@ -107,5 +107,5 @@ macro_rules
     let xs := xs.map fun x => quote x.getId.toString
     `(denote (List.toAssocList [$[($xs, $vs)],*]) `[BExpr| $p])
 
-#check b ↦ true ⊢ b ∨ b
-#eval  a ↦ false, b ↦ false ⊢ b ∨ a
+#check b ↦ true ⊢ b  b
+#eval  a ↦ false, b ↦ false ⊢ b  a

@@ -1,7 +1,7 @@
 inductive Foo where
   | c1 (x : Nat) | c2 | c3 | c4
 
-def bla : Foo → Nat
+def bla : Foo  Nat
   | .c1 x => x + 1
   | _     => 2
 

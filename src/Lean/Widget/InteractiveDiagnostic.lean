@@ -13,8 +13,8 @@ namespace Lean.Widget
 open Lsp Server
 
 inductive StrictOrLazy (α β : Type) : Type
-  | strict : α → StrictOrLazy α β
-  | lazy : β → StrictOrLazy α β
+  | strict : α  StrictOrLazy α β
+  | lazy : β  StrictOrLazy α β
   deriving Inhabited, RpcEncodable
 
 structure LazyTraceChildren where
@@ -25,9 +25,9 @@ structure LazyTraceChildren where
 inductive MsgEmbed where
   /-- A piece of Lean code with elaboration/typing data.
   Note: does not necessarily correspond to an `Expr`, the name is for RPC API compatibility. -/
-  | expr : CodeWithInfos → MsgEmbed
+  | expr : CodeWithInfos  MsgEmbed
   /-- An interactive goal display. -/
-  | goal : InteractiveGoal → MsgEmbed
+  | goal : InteractiveGoal  MsgEmbed
   /-- A widget instance.
 
   `alt` is a fallback rendering of the widget
@@ -88,7 +88,7 @@ In the second stage, we recursively transform such a `Format` into `TaggedText M
 to the rule above by first pretty-printing it and then grabbing data referenced by the tags from
 all the nested arrays (such as the `infos` array in the example above).
 
-We cannot easily do the translation in a single `MessageData → TaggedText MsgEmbed` step because
+We cannot easily do the translation in a single `MessageData  TaggedText MsgEmbed` step because
 that would effectively require reimplementing the (stateful, to keep track of indentation)
 `Format.prettyM` algorithm.
 -/
@@ -140,7 +140,7 @@ where
     ngen          := { namePrefix := `_diag }
   }
 
-  go (nCtx : NamingContext) : Option MessageDataContext → MessageData → MsgFmtM Format
+  go (nCtx : NamingContext) : Option MessageDataContext  MessageData  MsgFmtM Format
   | none,     ofFormatWithInfos ⟨fmt, _⟩ => withIgnoreTags fmt
   | some ctx, ofFormatWithInfos ⟨fmt, infos⟩ => do
     let t ← pushEmbed <| EmbedFmt.code (mkContextInfo nCtx ctx) infos

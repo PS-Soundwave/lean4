@@ -64,7 +64,7 @@ inductive Entry where
   | parser    (catName : Name) (declName : Name) (leading : Bool) (p : Parser) (prio : Nat) : Entry
   deriving Inhabited
 
-def Entry.toOLeanEntry : Entry → OLeanEntry
+def Entry.toOLeanEntry : Entry  OLeanEntry
   | token v             => OLeanEntry.token v
   | kind v              => OLeanEntry.kind v
   | category c d b      => OLeanEntry.category c d b
@@ -171,8 +171,8 @@ def ParserExtension.addEntryImpl (s : State) (e : Entry) : State :=
 /-- Parser aliases for making `ParserDescr` extensible -/
 inductive AliasValue (α : Type) where
   | const  (p : α)
-  | unary  (p : α → α)
-  | binary (p : α → α → α)
+  | unary  (p : α  α)
+  | binary (p : α  α  α)
 
 abbrev AliasTable (α) := NameMap (AliasValue α)
 
@@ -192,13 +192,13 @@ def getConstAlias {α} (mapRef : IO.Ref (AliasTable α)) (aliasName : Name) : IO
   | some (AliasValue.binary _) => throw ↑s!"parser '{aliasName}' is not a constant, it takes two arguments"
   | none   => throw ↑s!"parser '{aliasName}' was not found"
 
-def getUnaryAlias {α} (mapRef : IO.Ref (AliasTable α)) (aliasName : Name) : IO (α → α) := do
+def getUnaryAlias {α} (mapRef : IO.Ref (AliasTable α)) (aliasName : Name) : IO (α  α) := do
   match (← getAlias mapRef aliasName) with
   | some (AliasValue.unary v) => pure v
   | some _ => throw ↑s!"parser '{aliasName}' does not take one argument"
   | none   => throw ↑s!"parser '{aliasName}' was not found"
 
-def getBinaryAlias {α} (mapRef : IO.Ref (AliasTable α)) (aliasName : Name) : IO (α → α → α) := do
+def getBinaryAlias {α} (mapRef : IO.Ref (AliasTable α)) (aliasName : Name) : IO (α  α  α) := do
   match (← getAlias mapRef aliasName) with
   | some (AliasValue.binary v) => pure v
   | some _ => throw ↑s!"parser '{aliasName}' does not take two arguments"
@@ -228,8 +228,8 @@ def registerAlias (aliasName declName : Name) (p : ParserAliasValue) (kind? : Op
   parserAliases2infoRef.modify (·.insert aliasName { info with declName })
 
 instance : Coe Parser ParserAliasValue := { coe := AliasValue.const }
-instance : Coe (Parser → Parser) ParserAliasValue := { coe := AliasValue.unary }
-instance : Coe (Parser → Parser → Parser) ParserAliasValue := { coe := AliasValue.binary }
+instance : Coe (Parser  Parser) ParserAliasValue := { coe := AliasValue.unary }
+instance : Coe (Parser  Parser  Parser) ParserAliasValue := { coe := AliasValue.binary }
 
 def isParserAlias (aliasName : Name) : IO Bool := do
   match (← getAlias parserAliasesRef aliasName) with
@@ -248,7 +248,7 @@ def ensureBinaryParserAlias (aliasName : Name) : IO Unit :=
 def ensureConstantParserAlias (aliasName : Name) : IO Unit :=
   discard $ getConstAlias parserAliasesRef aliasName
 
-unsafe def mkParserOfConstantUnsafe (constName : Name) (compileParserDescr : ParserDescr → ImportM Parser) : ImportM (Bool × Parser) := do
+unsafe def mkParserOfConstantUnsafe (constName : Name) (compileParserDescr : ParserDescr  ImportM Parser) : ImportM (Bool × Parser) := do
   let env  := (← read).env
   let opts := (← read).opts
   match env.find? constName with
@@ -272,10 +272,10 @@ unsafe def mkParserOfConstantUnsafe (constName : Name) (compileParserDescr : Par
     | _ => throw ↑s!"unexpected parser type at '{constName}' (`ParserDescr`, `TrailingParserDescr`, `Parser` or `TrailingParser` expected)"
 
 @[implemented_by mkParserOfConstantUnsafe]
-opaque mkParserOfConstantAux (constName : Name) (compileParserDescr : ParserDescr → ImportM Parser) : ImportM (Bool × Parser)
+opaque mkParserOfConstantAux (constName : Name) (compileParserDescr : ParserDescr  ImportM Parser) : ImportM (Bool × Parser)
 
 partial def compileParserDescr (categories : ParserCategories) (d : ParserDescr) : ImportM Parser :=
-  let rec visit : ParserDescr → ImportM Parser
+  let rec visit : ParserDescr  ImportM Parser
     | ParserDescr.const n                             => getConstAlias parserAliasesRef n
     | ParserDescr.unary n d                           => return (← getUnaryAlias parserAliasesRef n) (← visit d)
     | ParserDescr.binary n d₁ d₂                      => return (← getBinaryAlias parserAliasesRef n) (← visit d₁) (← visit d₂)
@@ -329,7 +329,7 @@ builtin_initialize
       runParserAttributeHooks Name.anonymous decl (builtin := false)
   }
 
-private def ParserExtension.OLeanEntry.toEntry (s : State) : OLeanEntry → ImportM Entry
+private def ParserExtension.OLeanEntry.toEntry (s : State) : OLeanEntry  ImportM Entry
   | token tk       => return Entry.token tk
   | kind k         => return Entry.kind k
   | category c d l => return Entry.category c d l
@@ -377,7 +377,7 @@ register_builtin_option internal.parseQuotWithCurrentStage : Bool := {
 }
 
 /-- Run `declName` if possible and inside a quotation, or else `p`. The `ParserInfo` will always be taken from `p`. -/
-def evalInsideQuot (declName : Name) : Parser → Parser := withFn fun f c s =>
+def evalInsideQuot (declName : Name) : Parser  Parser := withFn fun f c s =>
   if c.quotDepth > 0 && !c.suppressInsideQuot && internal.parseQuotWithCurrentStage.get c.options && c.env.contains declName then
     evalParserConst declName c s
   else
@@ -566,7 +566,7 @@ builtin_initialize registerBuiltinDynamicParserAttribute `command_parser `comman
 @[inline] def commandParser (rbp : Nat := 0) : Parser :=
   categoryParser `command rbp
 
-private def withNamespaces (ids : Array Name) (addOpenSimple : Bool) : ParserFn → ParserFn := adaptUncacheableContextFn fun c =>
+private def withNamespaces (ids : Array Name) (addOpenSimple : Bool) : ParserFn  ParserFn := adaptUncacheableContextFn fun c =>
   let c := ids.foldl (init := c) fun c id =>
     let nss := ResolveName.resolveNamespace c.env c.currNamespace c.openDecls id
     let (env, openDecls) := nss.foldl (init := (c.env, c.openDecls)) fun (env, openDecls) ns =>
@@ -603,7 +603,7 @@ def withOpenFn (p : ParserFn) : ParserFn := fun c s =>
     p c s
 
 
-@[inline] def withOpen : Parser → Parser := withFn withOpenFn
+@[inline] def withOpen : Parser  Parser := withFn withOpenFn
 
 /-- If the parsing stack is of the form `#[.., openDecl]`, we process the open declaration, and execute `p` -/
 def withOpenDeclFn (p : ParserFn) : ParserFn := fun c s =>
@@ -613,7 +613,7 @@ def withOpenDeclFn (p : ParserFn) : ParserFn := fun c s =>
   else
     p c s
 
-@[inline] def withOpenDecl : Parser → Parser := withFn withOpenDeclFn
+@[inline] def withOpenDecl : Parser  Parser := withFn withOpenDeclFn
 
 /--
 Helper environment extension that gives us access to built-in aliases in pure parser functions.

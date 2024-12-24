@@ -195,35 +195,35 @@ section Unverified
 
 /-! We currently do not provide lemmas for the functions below. -/
 
-@[inline, inherit_doc DHashMap.filter] def filter (f : α → β → Bool)
+@[inline, inherit_doc DHashMap.filter] def filter (f : α  β  Bool)
     (m : HashMap α β) : HashMap α β :=
   ⟨m.inner.filter f⟩
 
-@[inline, inherit_doc DHashMap.partition] def partition (f : α → β → Bool)
+@[inline, inherit_doc DHashMap.partition] def partition (f : α  β  Bool)
     (m : HashMap α β) : HashMap α β × HashMap α β :=
   let ⟨l, r⟩ := m.inner.partition f
   ⟨⟨l⟩, ⟨r⟩⟩
 
-@[inline, inherit_doc DHashMap.foldM] def foldM {m : Type w → Type w}
-    [Monad m] {γ : Type w} (f : γ → α → β → m γ) (init : γ) (b : HashMap α β) : m γ :=
+@[inline, inherit_doc DHashMap.foldM] def foldM {m : Type w  Type w}
+    [Monad m] {γ : Type w} (f : γ  α  β  m γ) (init : γ) (b : HashMap α β) : m γ :=
   b.inner.foldM f init
 
 @[inline, inherit_doc DHashMap.fold] def fold {γ : Type w}
-    (f : γ → α → β → γ) (init : γ) (b : HashMap α β) : γ :=
+    (f : γ  α  β  γ) (init : γ) (b : HashMap α β) : γ :=
   b.inner.fold f init
 
-@[inline, inherit_doc DHashMap.forM] def forM {m : Type w → Type w} [Monad m]
-    (f : (a : α) → β → m PUnit) (b : HashMap α β) : m PUnit :=
+@[inline, inherit_doc DHashMap.forM] def forM {m : Type w  Type w} [Monad m]
+    (f : (a : α)  β  m PUnit) (b : HashMap α β) : m PUnit :=
   b.inner.forM f
 
-@[inline, inherit_doc DHashMap.forIn] def forIn {m : Type w → Type w} [Monad m]
-    {γ : Type w} (f : (a : α) → β → γ → m (ForInStep γ)) (init : γ) (b : HashMap α β) : m γ :=
+@[inline, inherit_doc DHashMap.forIn] def forIn {m : Type w  Type w} [Monad m]
+    {γ : Type w} (f : (a : α)  β  γ  m (ForInStep γ)) (init : γ) (b : HashMap α β) : m γ :=
   b.inner.forIn f init
 
-instance [BEq α] [Hashable α] {m : Type w → Type w} : ForM m (HashMap α β) (α × β) where
+instance [BEq α] [Hashable α] {m : Type w  Type w} : ForM m (HashMap α β) (α × β) where
   forM m f := m.forM (fun a b => f (a, b))
 
-instance [BEq α] [Hashable α] {m : Type w → Type w} : ForIn m (HashMap α β) (α × β) where
+instance [BEq α] [Hashable α] {m : Type w  Type w} : ForIn m (HashMap α β) (α × β) where
   forIn m init f := m.forIn (fun a b acc => f (a, b) acc) init
 
 @[inline, inherit_doc DHashMap.Const.toList] def toList (m : HashMap α β) :
@@ -245,12 +245,12 @@ instance [BEq α] [Hashable α] {m : Type w → Type w} : ForIn m (HashMap α β
     Array β :=
   m.inner.valuesArray
 
-@[inline, inherit_doc DHashMap.modify] def modify (m : HashMap α β) (a : α) (f : β → β) : HashMap α β :=
+@[inline, inherit_doc DHashMap.modify] def modify (m : HashMap α β) (a : α) (f : β  β) : HashMap α β :=
   match m.get? a with
   | none => m
   | some b => m.erase a |>.insert a (f b)
 
-@[inline, inherit_doc DHashMap.alter] def alter (m : HashMap α β) (a : α) (f : Option β → Option β) : HashMap α β :=
+@[inline, inherit_doc DHashMap.alter] def alter (m : HashMap α β) (a : α) (f : Option β  Option β) : HashMap α β :=
   match m.get? a with
   | none =>
     match f none with
@@ -302,7 +302,7 @@ end Std.HashMap
 Groups all elements `x`, `y` in `xs` with `key x == key y` into the same array
 `(xs.groupByKey key).find! (key x)`. Groups preserve the relative order of elements in `xs`.
 -/
-def Array.groupByKey [BEq α] [Hashable α] (key : β → α) (xs : Array β)
+def Array.groupByKey [BEq α] [Hashable α] (key : β  α) (xs : Array β)
     : Std.HashMap α (Array β) := Id.run do
   let mut groups := ∅
   for x in xs do
@@ -313,6 +313,6 @@ def Array.groupByKey [BEq α] [Hashable α] (key : β → α) (xs : Array β)
 Groups all elements `x`, `y` in `xs` with `key x == key y` into the same list
 `(xs.groupByKey key).find! (key x)`. Groups preserve the relative order of elements in `xs`.
 -/
-def List.groupByKey [BEq α] [Hashable α] (key : β → α) (xs : List β) :
+def List.groupByKey [BEq α] [Hashable α] (key : β  α) (xs : List β) :
     Std.HashMap α (List β) :=
   xs.foldr (init := ∅) fun x acc => acc.alter (key x) (fun v => x :: v.getD [])

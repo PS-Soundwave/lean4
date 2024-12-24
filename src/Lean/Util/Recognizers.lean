@@ -70,7 +70,7 @@ namespace Expr
 def natAdd? (e : Expr) : Option (Expr × Expr) :=
   e.app2? ``Nat.add
 
-@[inline] def arrow? : Expr → Option (Expr × Expr)
+@[inline] def arrow? : Expr  Option (Expr × Expr)
   | Expr.forallE _ α β _ => if β.hasLooseBVars then none else some (α, β)
   | _                    => none
 
@@ -109,7 +109,7 @@ def prod? (e : Expr) : Option (Expr × Expr) :=
 /--
 Checks if an expression is a `Name` literal, and if so returns the name.
 -/
-def name? : Expr → Option Name
+def name? : Expr  Option Name
   | .const ``Lean.Name.anonymous _ => Name.anonymous
   | mkApp2 (.const ``Lean.Name.str _) n (.lit (.strVal s)) => (name? n).map (·.str s)
   | mkApp2 (.const ``Lean.Name.num _) n i =>

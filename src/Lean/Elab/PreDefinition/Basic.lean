@@ -35,7 +35,7 @@ structure PreDefinition where
   termination : TerminationHints
   deriving Inhabited
 
-def PreDefinition.filterAttrs (preDef : PreDefinition) (p : Attribute → Bool) : PreDefinition :=
+def PreDefinition.filterAttrs (preDef : PreDefinition) (p : Attribute  Bool) : PreDefinition :=
   { preDef with modifiers := preDef.modifiers.filterAttrs p }
 
 /--

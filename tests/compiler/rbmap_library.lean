@@ -4,10 +4,10 @@ open Lean
 def check (b : Bool) : IO Unit := do
 unless b do IO.println "ERROR"
 
-def sz {α β : Type} {cmp : α → α → Ordering} (m : RBMap α β cmp) : Nat :=
+def sz {α β : Type} {cmp : α  α  Ordering} (m : RBMap α β cmp) : Nat :=
 m.fold (fun sz _ _ => sz+1) 0
 
-def depth {α β : Type} {cmp : α → α → Ordering} (m : RBMap α β cmp) : Nat :=
+def depth {α β : Type} {cmp : α  α  Ordering} (m : RBMap α β cmp) : Nat :=
 m.depth Nat.max
 
 def tst1 : IO Unit :=
@@ -39,7 +39,7 @@ do let Map := RBMap Nat Nat compare
 
 abbrev Map := RBMap Nat Nat compare
 
-def mkRandMap (max : Nat) : Nat → Map → Array (Nat × Nat) → IO (Map × Array (Nat × Nat))
+def mkRandMap (max : Nat) : Nat  Map  Array (Nat × Nat)  IO (Map × Array (Nat × Nat))
 | 0,     m, a => pure (m, a)
 | n+1,   m, a => do
   let k ← IO.rand 0 max

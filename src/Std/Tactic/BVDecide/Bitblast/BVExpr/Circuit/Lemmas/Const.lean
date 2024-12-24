@@ -76,11 +76,11 @@ theorem go_denote_mem_prefix (aig : AIG α) (idx : Nat) (hidx)
   · intros
     apply go_le_size
 
-theorem go_denote_eq (aig : AIG α) (c : BitVec w) (assign : α → Bool)
+theorem go_denote_eq (aig : AIG α) (c : BitVec w) (assign : α  Bool)
     (curr : Nat) (hcurr : curr ≤ w) (s : AIG.RefVec aig curr) :
     ∀ (idx : Nat) (hidx1 : idx < w),
         curr ≤ idx
-          →
+          
         ⟦
           (go aig c curr s hcurr).aig,
           (go aig c curr s hcurr).vec.get idx hidx1,
@@ -113,7 +113,7 @@ termination_by w - curr
 end blastConst
 
 @[simp]
-theorem denote_blastConst (aig : AIG α) (c : BitVec w) (assign : α → Bool) :
+theorem denote_blastConst (aig : AIG α) (c : BitVec w) (assign : α  Bool) :
     ∀ (idx : Nat) (hidx : idx < w),
         ⟦(blastConst aig c).aig, (blastConst aig c).vec.get idx hidx, assign⟧
           =

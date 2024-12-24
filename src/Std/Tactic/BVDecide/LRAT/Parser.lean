@@ -159,7 +159,7 @@ partial def parseLit : Parser Int := do
 where
   go (uidx : UInt64) (shift : UInt64) : Parser Int := do
     let uch ← any
-    if shift == 28 && ((uch &&& ~~~15) != 0) then
+    if shift == 28 && ((uch &&& 15) != 0) then
       fail "Excessive literal"
     else if uch == 0 then
       fail "Invalid zero byte in literal"

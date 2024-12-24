@@ -53,7 +53,7 @@ for `WellFoundedRelation β` using `invImage`.
 -/
 def elabWFRel (declNames : Array Name) (unaryPreDefName : Name) (prefixArgs : Array Expr)
     (argsPacker : ArgsPacker) (argType : Expr) (termArgs : TerminationArguments)
-    (k : Expr → TermElabM α) : TermElabM α := withDeclName unaryPreDefName do
+    (k : Expr  TermElabM α) : TermElabM α := withDeclName unaryPreDefName do
   let α := argType
   let u ← getLevel α
   let β ← checkCodomains declNames prefixArgs argsPacker.arities termArgs

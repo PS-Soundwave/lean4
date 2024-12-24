@@ -1,17 +1,17 @@
 example: ¬ n + 1 = n := λ h => nomatch h
 
 
-inductive Term (L: Nat → Type) (n : Nat) : Nat → Type _
+inductive Term (L: Nat  Type) (n : Nat) : Nat  Type _
 | var  (k: Fin n)                           : Term L n 0
 | func (f: L l)                             : Term L n l
 | app  (t: Term L n (l + 1)) (s: Term L n 0): Term L n l
 
 namespace Term
 
-inductive SubTermOf: Term L n l₁ → Term L n l₂ → Prop
+inductive SubTermOf: Term L n l₁  Term L n l₂  Prop
 | refl: SubTermOf t t
-| appL: SubTermOf t s₁ → SubTermOf t (app s₁ s₂)
-| appR: SubTermOf t s₂ → SubTermOf t (app s₁ s₂)
+| appL: SubTermOf t s₁  SubTermOf t (app s₁ s₂)
+| appR: SubTermOf t s₂  SubTermOf t (app s₁ s₂)
 
 theorem app_SubTermOf {t₁: Term L n (l+1)}
   (h: (app t₁ t₂).SubTermOf t₃):

@@ -27,30 +27,30 @@ example : nat_lit 2 = x := by
 /--
 warning: declaration uses 'sorry'
 ---
-info: α : Nat → Type
-f : (n : Nat) → α n
+info: α : Nat  Type
+f : (n : Nat)  α n
 x : α (OfNat.ofNat 2)
 ⊢ f (OfNat.ofNat 2) = x
 -/
 #guard_msgs in
-example (α : Nat → Type) (f : (n : Nat) → α n) (x : α 2) : f (nat_lit 2) = x := by
+example (α : Nat  Type) (f : (n : Nat)  α n) (x : α 2) : f (nat_lit 2) = x := by
   simp only
   trace_state
   sorry
 
 /--
 info: x : Nat
-f : Nat → Nat
+f : Nat  Nat
 h : f (OfNat.ofNat 2) = x
 ⊢ f (OfNat.ofNat 2) = x
 ---
 info: x : Nat
-f : Nat → Nat
+f : Nat  Nat
 h : f (OfNat.ofNat 2) = x
 ⊢ f 2 = x
 -/
 #guard_msgs in
-example (f : Nat → Nat) (h : f 2 = x) : f 2 = x := by
+example (f : Nat  Nat) (h : f 2 = x) : f 2 = x := by
   trace_state
   simp [OfNat.ofNat]
   trace_state
@@ -59,18 +59,18 @@ example (f : Nat → Nat) (h : f 2 = x) : f 2 = x := by
 /--
 warning: declaration uses 'sorry'
 ---
-info: α : Nat → Type
-f : (n : Nat) → α n
+info: α : Nat  Type
+f : (n : Nat)  α n
 x : α (OfNat.ofNat 2)
 ⊢ f (OfNat.ofNat 2) = x
 ---
-info: α : Nat → Type
-f : (n : Nat) → α n
+info: α : Nat  Type
+f : (n : Nat)  α n
 x : α (OfNat.ofNat 2)
 ⊢ f 2 = x
 -/
 #guard_msgs in
-example (α : Nat → Type) (f : (n : Nat) → α n) (x : α 2) : f 2 = x := by
+example (α : Nat  Type) (f : (n : Nat)  α n) (x : α 2) : f 2 = x := by
   trace_state
   simp [OfNat.ofNat]
   trace_state

@@ -1,6 +1,6 @@
 --
 
-axiom p {α β} : α → β → Prop
+axiom p {α β} : α  β  Prop
 axiom foo {α β} (a : α) (b : β) : p a b
 
 example : p 0 0 := by simp [foo]
@@ -21,7 +21,7 @@ example : p 0 0 ∧ p 1 1 := by
 
 namespace Foo
 
-axiom p {α} : α → Prop
+axiom p {α} : α  Prop
 axiom foo {α} [ToString α] (n : Nat) (a : α) : p a
 
 example : p 0 := by simp [foo 0]

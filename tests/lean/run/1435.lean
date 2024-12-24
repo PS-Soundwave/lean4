@@ -1,6 +1,6 @@
 class LinearOrder (α : Type _) extends LE α, LT α
 
-theorem le_of_not_gt [LinearOrder α] {a b : α} : ¬ a > b → a ≤ b := sorry
+theorem le_of_not_gt [LinearOrder α] {a b : α} : ¬ a > b  a ≤ b := sorry
 
 instance : LinearOrder Nat where
   lt := Nat.lt

@@ -31,7 +31,7 @@ structure StructFieldInfo where
   value?   : Option Expr := none
   deriving Inhabited, Repr
 
-private def addCtorFields (fieldInfos : Array StructFieldInfo) : Nat → Expr → TermElabM Expr
+private def addCtorFields (fieldInfos : Array StructFieldInfo) : Nat  Expr  TermElabM Expr
   | 0,   type => pure type
   | i+1, type => do
     let info := fieldInfos[i]!

@@ -105,7 +105,7 @@ set_option pp.explicit true
 end
 
 structure Fn (α β : Type) where
-  toFun : α → β
+  toFun : α  β
 
 variable (f : Fn Nat Int)
 
@@ -121,7 +121,7 @@ Check that field notation doesn't disrupt unexpansion.
 -/
 notation:max "☺ " f:max => Fn.toFun f
 
-/-- info: ☺ f : Nat → Int -/
+/-- info: ☺ f : Nat  Int -/
 #guard_msgs in #check f.toFun
 
 /-- info: ☺ f 0 : Int -/
@@ -164,11 +164,11 @@ Special case: do not use generalized field notation for numeric literals.
 Verifying that unexpanders defined by `infix` interact properly with generalized field notation
 -/
 structure MySet (α : Type) where
-  p : α → Prop
+  p : α  Prop
 
 namespace MySet
 
-def MySubset {α : Type} (s t : MySet α) : Prop := ∀ x, s.p x → t.p x
+def MySubset {α : Type} (s t : MySet α) : Prop := ∀ x, s.p x  t.p x
 
 infix:50 " ⊆⊆ " => MySubset
 

@@ -75,7 +75,7 @@ As a final example consider the context
 (x_2 : Nat)
 (x_3 : Nat)
 (x   : Nat := fact (10 + x_1 + x_2 + x_3))
-(ty  : Type := Nat → Nat)
+(ty  : Type := Nat  Nat)
 (f   : ty := fun x => x)
 (n   : Nat := 20)
 (z   : f 10)
@@ -86,7 +86,7 @@ and we use this module to compute an auxiliary definition for the term
 ```
 we obtain
 ```lean
-def aux (x : Nat) (f : Nat → Nat) (z : Nat) : Nat×Nat :=
+def aux (x : Nat) (f : Nat  Nat) (z : Nat) : Nat×Nat :=
 let n : Nat := 20;
 (let y : {v // v=n} := {val := 20, property := ex._proof_1}; y.val+n+f x, z+10)
 ```
@@ -122,7 +122,7 @@ structure State where
 
 abbrev ClosureM := ReaderT Context $ StateRefT State MetaM
 
-@[inline] def visitLevel (f : Level → ClosureM Level) (u : Level) : ClosureM Level := do
+@[inline] def visitLevel (f : Level  ClosureM Level) (u : Level) : ClosureM Level := do
   if !u.hasMVar && !u.hasParam then
     pure u
   else
@@ -134,7 +134,7 @@ abbrev ClosureM := ReaderT Context $ StateRefT State MetaM
       modify fun s => { s with visitedLevel := s.visitedLevel.insert u v }
       pure v
 
-@[inline] def visitExpr (f : Expr → ClosureM Expr) (e : Expr) : ClosureM Expr := do
+@[inline] def visitExpr (f : Expr  ClosureM Expr) (e : Expr) : ClosureM Expr := do
   if !e.hasLevelParam && !e.hasFVar && !e.hasMVar then
     pure e
   else
@@ -152,7 +152,7 @@ def mkNewLevelParam (u : Level) : ClosureM Level := do
   modify fun s => { s with levelParams := s.levelParams.push p, nextLevelIdx := s.nextLevelIdx + 1, levelArgs := s.levelArgs.push u }
   pure $ mkLevelParam p
 
-partial def collectLevelAux : Level → ClosureM Level
+partial def collectLevelAux : Level  ClosureM Level
   | u@(Level.succ v)   => return u.updateSucc! (← visitLevel collectLevelAux v)
   | u@(Level.max v w)  => return u.updateMax! (← visitLevel collectLevelAux v) (← visitLevel collectLevelAux w)
   | u@(Level.imax v w) => return u.updateIMax! (← visitLevel collectLevelAux v) (← visitLevel collectLevelAux w)

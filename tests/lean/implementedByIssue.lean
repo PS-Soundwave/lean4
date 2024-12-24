@@ -1,7 +1,7 @@
 namespace Hidden
 
 structure Array (α : Type u) (n : Nat) : Type u where
-  data : (i : Fin n) → α
+  data : (i : Fin n)  α
 
 @[extern "some_extern"]
 def get {α} {n : Nat}

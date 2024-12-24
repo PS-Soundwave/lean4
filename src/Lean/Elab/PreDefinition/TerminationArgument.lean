@@ -83,7 +83,7 @@ def TerminationArgument.elab (funName : Name) (type : Expr) (arity extraParams :
   check r
   pure { ref := hint.ref, structural := hint.structural, fn := r}
   where
-    parameters : Nat → MessageData
+    parameters : Nat  MessageData
     | 1 => "one parameter"
     | n => m!"{n} parameters"
 
@@ -107,7 +107,7 @@ def TerminationArgument.delab (arity : Nat) (extraParams : Nat) (termArg : Termi
   lambdaBoundedTelescope termArg.fn (arity - extraParams) fun _ys e => do
     pure (← delabCore e (delab := go extraParams #[])).1
   where
-    go : Nat → TSyntaxArray `ident → DelabM (TSyntax ``terminationBy)
+    go : Nat  TSyntaxArray `ident  DelabM (TSyntax ``terminationBy)
     | 0, vars => do
       let stxBody ← Delaborator.delab
       let hole : TSyntax `Lean.Parser.Term.hole ← `(hole|_)

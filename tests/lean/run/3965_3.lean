@@ -5,10 +5,10 @@ variable {α : Type u}
 
 class Preorder (α : Type u) extends LE α, LT α
 
-theorem le_trans [Preorder α] : ∀ {a b c : α}, a ≤ b → b ≤ c → a ≤ c := sorry
+theorem le_trans [Preorder α] : ∀ {a b c : α}, a ≤ b  b ≤ c  a ≤ c := sorry
 
 class PartialOrder (α : Type u) extends Preorder α where
-  le_antisymm : ∀ a b : α, a ≤ b → b ≤ a → a = b
+  le_antisymm : ∀ a b : α, a ≤ b  b ≤ a  a = b
 
 end Mathlib.Init.Order.Defs
 
@@ -16,7 +16,7 @@ section Mathlib.Init.Set
 
 set_option autoImplicit true
 
-def Set (α : Type u) := α → Prop
+def Set (α : Type u) := α  Prop
 
 namespace Set
 
@@ -26,7 +26,7 @@ protected def Mem (s : Set α) (a : α) : Prop :=
 instance : Membership α (Set α) :=
   ⟨Set.Mem⟩
 
-def image (f : α → β) (s : Set α) : Set β := fun b => ∃ a, ∃ (_ : a ∈ s), f a = b
+def image (f : α  β) (s : Set α) : Set β := fun b => ∃ a, ∃ (_ : a ∈ s), f a = b
 
 end Set
 
@@ -41,10 +41,10 @@ end Mathlib.Data.Subtype
 section Mathlib.Order.Notation
 
 class Sup (α : Type _) where
-  sup : α → α → α
+  sup : α  α  α
 
 class Inf (α : Type _) where
-  inf : α → α → α
+  inf : α  α  α
 
 @[inherit_doc]
 infixl:68 " ⊔ " => Sup.sup
@@ -86,22 +86,22 @@ universe u
 
 variable {α : Type u}
 
-def Preorder.lift {α β} [Preorder β] (f : α → β) : Preorder α where
+def Preorder.lift {α β} [Preorder β] (f : α  β) : Preorder α where
   le x y := f x ≤ f y
   lt x y := f x < f y
 
-def PartialOrder.lift {α β} [PartialOrder β] (f : α → β) : PartialOrder α :=
+def PartialOrder.lift {α β} [PartialOrder β] (f : α  β) : PartialOrder α :=
   { Preorder.lift f with le_antisymm := sorry }
 
 namespace Subtype
 
-instance le [LE α] {p : α → Prop} : LE (Subtype p) :=
+instance le [LE α] {p : α  Prop} : LE (Subtype p) :=
   ⟨fun x y ↦ (x : α) ≤ y⟩
 
-instance lt [LT α] {p : α → Prop} : LT (Subtype p) :=
+instance lt [LT α] {p : α  Prop} : LT (Subtype p) :=
   ⟨fun x y ↦ (x : α) < y⟩
 
-instance partialOrder [PartialOrder α] (p : α → Prop) : PartialOrder (Subtype p) :=
+instance partialOrder [PartialOrder α] (p : α  Prop) : PartialOrder (Subtype p) :=
   PartialOrder.lift (fun (a : Subtype p) ↦ (a : α))
 
 end Subtype
@@ -116,20 +116,20 @@ variable {α : Type u}
 class SemilatticeSup (α : Type u) extends Sup α, PartialOrder α where
   protected le_sup_left : ∀ a b : α, a ≤ a ⊔ b
   protected le_sup_right : ∀ a b : α, b ≤ a ⊔ b
-  protected sup_le : ∀ a b c : α, a ≤ c → b ≤ c → a ⊔ b ≤ c
+  protected sup_le : ∀ a b c : α, a ≤ c  b ≤ c  a ⊔ b ≤ c
 
 section SemilatticeSup
 
 variable [SemilatticeSup α] {a b c : α}
 
-theorem sup_le : a ≤ c → b ≤ c → a ⊔ b ≤ c := sorry
+theorem sup_le : a ≤ c  b ≤ c  a ⊔ b ≤ c := sorry
 
 end SemilatticeSup
 
 class SemilatticeInf (α : Type u) extends Inf α, PartialOrder α where
   protected inf_le_left : ∀ a b : α, a ⊓ b ≤ a
   protected inf_le_right : ∀ a b : α, a ⊓ b ≤ b
-  protected le_inf : ∀ a b c : α, a ≤ b → a ≤ c → a ≤ b ⊓ c
+  protected le_inf : ∀ a b c : α, a ≤ b  a ≤ c  a ≤ b ⊓ c
 
 section SemilatticeInf
 
@@ -145,16 +145,16 @@ class Lattice (α : Type u) extends SemilatticeSup α, SemilatticeInf α
 
 namespace Subtype
 
-protected def semilatticeSup [SemilatticeSup α] {P : α → Prop}
-    (Psup : ∀ ⦃x y⦄, P x → P y → P (x ⊔ y)) :
+protected def semilatticeSup [SemilatticeSup α] {P : α  Prop}
+    (Psup : ∀ ⦃x y⦄, P x  P y  P (x ⊔ y)) :
     SemilatticeSup { x : α // P x } where
   sup x y := ⟨x.1 ⊔ y.1, sorry⟩
   le_sup_left _ _ := sorry
   le_sup_right _ _ := sorry
   sup_le _ _ _ h1 h2 := sorry
 
-protected def semilatticeInf [SemilatticeInf α] {P : α → Prop}
-    (Pinf : ∀ ⦃x y⦄, P x → P y → P (x ⊓ y)) :
+protected def semilatticeInf [SemilatticeInf α] {P : α  Prop}
+    (Pinf : ∀ ⦃x y⦄, P x  P y  P (x ⊓ y)) :
     SemilatticeInf { x : α // P x } where
   inf x y := ⟨x.1 ⊓ y.1, sorry⟩
   inf_le_left _ _ := sorry
@@ -192,10 +192,10 @@ universe u
 variable {α : Type u}
 
 class SupSet (α : Type _) where
-  sSup : Set α → α
+  sSup : Set α  α
 
 class InfSet (α : Type _) where
-  sInf : Set α → α
+  sInf : Set α  α
 
 export SupSet (sSup)
 
@@ -208,23 +208,23 @@ section Mathlib.Order.CompleteLattice
 variable {α : Type _}
 
 class CompleteSemilatticeSup (α : Type _) extends PartialOrder α, SupSet α where
-  sSup_le : ∀ s a, (∀ b ∈ s, b ≤ a) → sSup s ≤ a
+  sSup_le : ∀ s a, (∀ b ∈ s, b ≤ a)  sSup s ≤ a
 
 section
 
 variable [CompleteSemilatticeSup α] {s t : Set α} {a b : α}
 
-theorem sSup_le : (∀ b ∈ s, b ≤ a) → sSup s ≤ a := sorry
+theorem sSup_le : (∀ b ∈ s, b ≤ a)  sSup s ≤ a := sorry
 end
 
 class CompleteSemilatticeInf (α : Type _) extends PartialOrder α, InfSet α where
-  le_sInf : ∀ s a, (∀ b ∈ s, a ≤ b) → a ≤ sInf s
+  le_sInf : ∀ s a, (∀ b ∈ s, a ≤ b)  a ≤ sInf s
 
 section
 
 variable [CompleteSemilatticeInf α] {s t : Set α} {a b : α}
 
-theorem le_sInf : (∀ b ∈ s, a ≤ b) → a ≤ sInf s := sorry
+theorem le_sInf : (∀ b ∈ s, a ≤ b)  a ≤ sInf s := sorry
 
 end
 

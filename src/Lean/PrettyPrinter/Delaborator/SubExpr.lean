@@ -23,7 +23,7 @@ def OptionsPerPos.insertAt (optionsPerPos : OptionsPerPos) (pos : SubExpr.Pos) (
   optionsPerPos.insert pos <| opts.insert name value
 
 /-- Merges two collections of options, where the second overrides the first. -/
-def OptionsPerPos.merge : OptionsPerPos → OptionsPerPos → OptionsPerPos :=
+def OptionsPerPos.merge : OptionsPerPos  OptionsPerPos  OptionsPerPos :=
   RBMap.mergeBy (fun _ => KVMap.mergeBy (fun _ _ dv => dv))
 
 namespace SubExpr
@@ -31,7 +31,7 @@ namespace SubExpr
 open Lean.SubExpr
 
 variable {α : Type} [Inhabited α]
-variable {m : Type → Type} [Monad m]
+variable {m : Type  Type} [Monad m]
 
 section Descend
 
@@ -55,7 +55,7 @@ def withType (x : m α) : m α := do
 Uses `xa` to compute the fold across the arguments of an application,
 where `xf` provides the initial value and is evaluated in the context of the head of the application.
 -/
-partial def withAppFnArgs (xf : m α) (xa : α → m α) : m α := do
+partial def withAppFnArgs (xf : m α) (xa : α  m α) : m α := do
   if (← getExpr).isApp then
     let acc ← withAppFn (withAppFnArgs xf xa)
     withAppArg (xa acc)
@@ -66,7 +66,7 @@ Uses `xa` to compute the fold across up to `maxArgs` outermost arguments of an a
 where `xf` provides the initial value and is evaluated in the context of the application minus
 the arguments being folded across.
 -/
-def withBoundedAppFnArgs (maxArgs : Nat) (xf : m α) (xa : α → m α) : m α := do
+def withBoundedAppFnArgs (maxArgs : Nat) (xf : m α) (xa : α  m α) : m α := do
   match maxArgs, (← getExpr) with
   | maxArgs' + 1, .app .. =>
     let acc ← withAppFn (withBoundedAppFnArgs maxArgs' xf xa)
@@ -91,7 +91,7 @@ Assumes the `SubExpr` is a lambda or forall.
 2. Evaluates `v` using the fvar for the local declaration.
 3. Enters the binding body, and evaluates `x` using this result.
 -/
-def withBindingBody' (n : Name) (v : Expr → m β) (x : β → m α) : m α := do
+def withBindingBody' (n : Name) (v : Expr  m β) (x : β  m α) : m α := do
   let e ← getExpr
   Meta.withLocalDecl n e.binderInfo e.bindingDomain! fun fvar => do
     let b ← v fvar
@@ -147,7 +147,7 @@ structure HoleIterator where
 section Hole
 
 variable {α : Type} [Inhabited α]
-variable {m : Type → Type} [Monad m]
+variable {m : Type  Type} [Monad m]
 variable [MonadStateOf HoleIterator m]
 
 def HoleIterator.toPos (iter : HoleIterator) : Pos :=

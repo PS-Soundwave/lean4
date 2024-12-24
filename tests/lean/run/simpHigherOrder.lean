@@ -12,7 +12,7 @@ example (l : List Nat)  :
   simp [List.foldl_subtype]
 
 
-theorem foldr_to_sum (l : List Nat) (f : Nat → Nat → Nat) (g : Nat → Nat)
+theorem foldr_to_sum (l : List Nat) (f : Nat  Nat  Nat) (g : Nat  Nat)
   (h : ∀ acc x, f x acc = g x + acc) :
   l.foldr f 0 = Nat.sum (l.map g) := by
   rw [Nat.sum, List.foldr_map]
@@ -46,7 +46,7 @@ example (l : List Nat) :
 -- An example with zipWith
 
 theorem zipWith_ignores_right
-  (l₁ : List α) (l₂ : List β) (f : α → β → γ) (g : α → γ)
+  (l₁ : List α) (l₂ : List β) (f : α  β  γ) (g : α  γ)
   (h : ∀ a b, f a b = g a) :
   List.zipWith f l₁ l₂ = List.map g (l₁.take l₂.length) := by
   induction l₁ generalizing l₂ with

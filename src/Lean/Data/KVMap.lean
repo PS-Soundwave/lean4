@@ -24,11 +24,11 @@ def DataValue.beqExp (a b : DataValue) : Bool :=
   a == b
 
 @[export lean_mk_bool_data_value] def mkBoolDataValueEx (b : Bool) : DataValue := DataValue.ofBool b
-@[export lean_data_value_bool] def DataValue.getBoolEx : DataValue → Bool
+@[export lean_data_value_bool] def DataValue.getBoolEx : DataValue  Bool
   | DataValue.ofBool b => b
   | _                  => false
 
-def DataValue.sameCtor : DataValue → DataValue → Bool
+def DataValue.sameCtor : DataValue  DataValue  Bool
   | .ofString _, .ofString _ => true
   | .ofBool _,   .ofBool _   => true
   | .ofName _,   .ofName _   => true
@@ -38,7 +38,7 @@ def DataValue.sameCtor : DataValue → DataValue → Bool
   | _,           _           => false
 
 @[export lean_data_value_to_string]
-def DataValue.str : DataValue → String
+def DataValue.str : DataValue  String
   | .ofString v => v
   | .ofBool v   => toString v
   | .ofName v   => toString v
@@ -73,34 +73,34 @@ instance : ToString KVMap := ⟨fun m => toString m.entries⟩
 def empty : KVMap :=
   {}
 
-def isEmpty : KVMap → Bool
+def isEmpty : KVMap  Bool
   | ⟨m⟩ => m.isEmpty
 
 def size (m : KVMap) : Nat :=
   m.entries.length
 
-def findCore : List (Name × DataValue) → Name → Option DataValue
+def findCore : List (Name × DataValue)  Name  Option DataValue
   | [],       _  => none
   | (k,v)::m, k' => if k == k' then some v else findCore m k'
 
-def find : KVMap → Name → Option DataValue
+def find : KVMap  Name  Option DataValue
   | ⟨m⟩, k => findCore m k
 
 def findD (m : KVMap) (k : Name) (d₀ : DataValue) : DataValue :=
   (m.find k).getD d₀
 
-def insertCore : List (Name × DataValue) → Name → DataValue → List (Name × DataValue)
+def insertCore : List (Name × DataValue)  Name  DataValue  List (Name × DataValue)
   | [],       k', v' => [(k',v')]
   | (k,v)::m, k', v' => if k == k' then (k, v') :: m else (k, v) :: insertCore m k' v'
 
-def insert : KVMap → Name → DataValue → KVMap
+def insert : KVMap  Name  DataValue  KVMap
   | ⟨m⟩, k, v => ⟨insertCore m k v⟩
 
 def contains (m : KVMap) (n : Name) : Bool :=
   (m.find n).isSome
 
 /-- Erase an entry from the map -/
-def erase : KVMap → Name → KVMap
+def erase : KVMap  Name  KVMap
   | ⟨m⟩, k => ⟨m.filter fun a => a.1 ≠ k⟩
 
 def getString (m : KVMap) (k : Name) (defVal := "") : String :=
@@ -152,47 +152,47 @@ def setSyntax (m : KVMap) (k : Name) (v : Syntax) : KVMap :=
   m.insert k (DataValue.ofSyntax v)
 
 /-- Update a `String` entry based on its current value. -/
-def updateString (m : KVMap) (k : Name) (f : String → String) : KVMap :=
+def updateString (m : KVMap) (k : Name) (f : String  String) : KVMap :=
   m.insert k <| DataValue.ofString <| f <| m.getString k
 
 /-- Update a `Nat` entry based on its current value. -/
-def updateNat (m : KVMap) (k : Name) (f : Nat → Nat) : KVMap :=
+def updateNat (m : KVMap) (k : Name) (f : Nat  Nat) : KVMap :=
   m.insert k <| DataValue.ofNat <| f <| m.getNat k
 
 /-- Update an `Int` entry based on its current value. -/
-def updateInt (m : KVMap) (k : Name) (f : Int → Int) : KVMap :=
+def updateInt (m : KVMap) (k : Name) (f : Int  Int) : KVMap :=
   m.insert k <| DataValue.ofInt <| f <| m.getInt k
 
 /-- Update a `Bool` entry based on its current value. -/
-def updateBool (m : KVMap) (k : Name) (f : Bool → Bool) : KVMap :=
+def updateBool (m : KVMap) (k : Name) (f : Bool  Bool) : KVMap :=
   m.insert k <| DataValue.ofBool <| f <| m.getBool k
 
 /-- Update a `Name` entry based on its current value. -/
-def updateName (m : KVMap) (k : Name) (f : Name → Name) : KVMap :=
+def updateName (m : KVMap) (k : Name) (f : Name  Name) : KVMap :=
   m.insert k <| DataValue.ofName <| f <| m.getName k
 
 /-- Update a `Syntax` entry based on its current value. -/
-def updateSyntax (m : KVMap) (k : Name) (f : Syntax → Syntax) : KVMap :=
+def updateSyntax (m : KVMap) (k : Name) (f : Syntax  Syntax) : KVMap :=
   m.insert k <| DataValue.ofSyntax <| f <| m.getSyntax k
 
-@[inline] protected def forIn.{w, w'} {δ : Type w} {m : Type w → Type w'} [Monad m]
-  (kv : KVMap) (init : δ) (f : Name × DataValue → δ → m (ForInStep δ)) : m δ :=
+@[inline] protected def forIn.{w, w'} {δ : Type w} {m : Type w  Type w'} [Monad m]
+  (kv : KVMap) (init : δ) (f : Name × DataValue  δ  m (ForInStep δ)) : m δ :=
   forIn kv.entries init f
 
 instance : ForIn m KVMap (Name × DataValue) where
   forIn := KVMap.forIn
 
-def subsetAux : List (Name × DataValue) → KVMap → Bool
+def subsetAux : List (Name × DataValue)  KVMap  Bool
   | [],          _  => true
   | (k, v₁)::m₁, m₂ =>
     match m₂.find k with
     | some v₂ => v₁ == v₂ && subsetAux m₁ m₂
     | none    => false
 
-def subset : KVMap → KVMap → Bool
+def subset : KVMap  KVMap  Bool
   | ⟨m₁⟩, m₂ => subsetAux m₁ m₂
 
-def mergeBy (mergeFn : Name → DataValue → DataValue → DataValue) (l r : KVMap)
+def mergeBy (mergeFn : Name  DataValue  DataValue  DataValue) (l r : KVMap)
     : KVMap := Id.run do
   let mut result := l
   for ⟨k, vᵣ⟩ in r do
@@ -209,8 +209,8 @@ instance : BEq KVMap where
   beq := eqv
 
 class Value (α : Type) where
-  toDataValue  : α → DataValue
-  ofDataValue? : DataValue → Option α
+  toDataValue  : α  DataValue
+  ofDataValue? : DataValue  Option α
 
 @[inline] def get? {α : Type} [Value α] (m : KVMap) (k : Name) : Option α :=
   m.find k |>.bind Value.ofDataValue?
@@ -221,7 +221,7 @@ class Value (α : Type) where
 @[inline] def set {α : Type} [Value α] (m : KVMap) (k : Name) (v : α) : KVMap :=
   m.insert k (Value.toDataValue v)
 
-@[inline] def update {α : Type} [Value α] (m : KVMap) (k : Name) (f : Option α → Option α) : KVMap :=
+@[inline] def update {α : Type} [Value α] (m : KVMap) (k : Name) (f : Option α  Option α) : KVMap :=
   match f (m.get? k) with
   | some a => m.set k a
   | none => m.erase k

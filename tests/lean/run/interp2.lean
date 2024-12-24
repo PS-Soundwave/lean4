@@ -1,6 +1,6 @@
-inductive Vector' (α : Type u) : Nat → Type u
+inductive Vector' (α : Type u) : Nat  Type u
   | nil : Vector' α 0
-  | cons : α → Vector' α n → Vector' α (n+1)
+  | cons : α  Vector' α n  Vector' α (n+1)
 
 infix:67 " :: " => Vector'.cons
 
@@ -9,35 +9,35 @@ inductive Ty where
   | bool
   | fn (a r : Ty)
 
-abbrev Ty.interp : Ty → Type
+abbrev Ty.interp : Ty  Type
   | int    => Int
   | bool   => Bool
-  | fn a r => a.interp → r.interp
+  | fn a r => a.interp  r.interp
 
-inductive HasType : Fin n → Vector' Ty n → Ty → Type where
+inductive HasType : Fin n  Vector' Ty n  Ty  Type where
   | stop : HasType 0 (ty :: ctx) ty
-  | pop  : HasType k ctx ty → HasType k.succ (u :: ctx) ty
+  | pop  : HasType k ctx ty  HasType k.succ (u :: ctx) ty
 
-inductive Expr : Vector' Ty n → Ty → Type where
-  | var   : HasType i ctx ty → Expr ctx ty
-  | val   : Int → Expr ctx Ty.int
-  | lam   : Expr (a :: ctx) ty → Expr ctx (Ty.fn a ty)
-  | app   : Expr ctx (Ty.fn a ty) → Expr ctx a → Expr ctx ty
-  | op    : (a.interp → b.interp → c.interp) → Expr ctx a → Expr ctx b → Expr ctx c
-  | ife   : Expr ctx Ty.bool → Expr ctx a → Expr ctx a → Expr ctx a
-  | delay : (Unit → Expr ctx a) → Expr ctx a
+inductive Expr : Vector' Ty n  Ty  Type where
+  | var   : HasType i ctx ty  Expr ctx ty
+  | val   : Int  Expr ctx Ty.int
+  | lam   : Expr (a :: ctx) ty  Expr ctx (Ty.fn a ty)
+  | app   : Expr ctx (Ty.fn a ty)  Expr ctx a  Expr ctx ty
+  | op    : (a.interp  b.interp  c.interp)  Expr ctx a  Expr ctx b  Expr ctx c
+  | ife   : Expr ctx Ty.bool  Expr ctx a  Expr ctx a  Expr ctx a
+  | delay : (Unit  Expr ctx a)  Expr ctx a
 
-inductive Env : Vector' Ty n → Type where
+inductive Env : Vector' Ty n  Type where
   | nil  : Env Vector'.nil
-  | cons : Ty.interp a → Env ctx → Env (a :: ctx)
+  | cons : Ty.interp a  Env ctx  Env (a :: ctx)
 
 infix:67 " :: " => Env.cons
 
-def lookup : HasType i ctx ty → Env ctx → ty.interp
+def lookup : HasType i ctx ty  Env ctx  ty.interp
   | .stop,  x :: xs => x
   | .pop k, x :: xs => lookup k xs
 
-def interp (env : Env ctx) : Expr ctx ty → ty.interp := fun e =>
+def interp (env : Env ctx) : Expr ctx ty  ty.interp := fun e =>
   match e with
   | .var i     => lookup i env
   | .val x     => x

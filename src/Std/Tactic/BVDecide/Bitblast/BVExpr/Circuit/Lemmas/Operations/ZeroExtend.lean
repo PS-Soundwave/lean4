@@ -82,10 +82,10 @@ theorem go_denote_mem_prefix (aig : AIG α) (w : Nat) (input : AIG.RefVec aig w)
     apply go_le_size
 
 theorem go_denote_eq (aig : AIG α) (w : Nat) (input : AIG.RefVec aig w) (newWidth curr : Nat)
-    (hcurr : curr ≤ newWidth) (s : AIG.RefVec aig curr) (assign : α → Bool) :
+    (hcurr : curr ≤ newWidth) (s : AIG.RefVec aig curr) (assign : α  Bool) :
     ∀ (idx : Nat) (hidx1 : idx < newWidth),
         curr ≤ idx
-          →
+          
         ⟦
           (go aig w input newWidth curr hcurr s).aig,
           (go aig w input newWidth curr hcurr s).vec.get idx hidx1,
@@ -143,7 +143,7 @@ end blastZeroExtend
 
 @[simp]
 theorem denote_blastZeroExtend (aig : AIG α) (target : ExtendTarget aig newWidth)
-    (assign : α → Bool) :
+    (assign : α  Bool) :
     ∀ (idx : Nat) (hidx : idx < newWidth),
         ⟦(blastZeroExtend aig target).aig, (blastZeroExtend aig target).vec.get idx hidx, assign⟧
           =

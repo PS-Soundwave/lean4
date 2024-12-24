@@ -12,9 +12,9 @@ example : hgroup 0 Unit := by
   admit
 
 -- TODO: we should improve univere inference. It should be
--- hgroup.{u} : Nat → Type u → Type u
+-- hgroup.{u} : Nat  Type u  Type u
 /--
-info: hgroup.{u_1, u_2} : Nat → Type (max u_1 u_2) → Type (max u_1 u_2)
+info: hgroup.{u_1, u_2} : Nat  Type (max u_1 u_2)  Type (max u_1 u_2)
 -/
 #guard_msgs in
 #check hgroup

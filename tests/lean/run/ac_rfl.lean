@@ -12,11 +12,11 @@ example (x y : Nat) : 1 + 0 + 0 = 0 + 1 := by ac_rfl
 
 example (x y : Nat) : (x + y = 42) = (y + x = 42) := by ac_rfl
 
-example (x y : Nat) (P : Prop) : (x + y = 42 → P) = (y + x = 42 → P) := by ac_rfl
+example (x y : Nat) (P : Prop) : (x + y = 42  P) = (y + x = 42  P) := by ac_rfl
 
-inductive Vector' (α : Type u) : Nat → Type u where
+inductive Vector' (α : Type u) : Nat  Type u where
   | nil  : Vector' α 0
-  | cons : α → Vector' α n → Vector' α (n+1)
+  | cons : α  Vector' α n  Vector' α (n+1)
 
 def f (n : Nat) (xs : Vector' α n) := xs
 
@@ -30,7 +30,7 @@ theorem ex₃ (n : Nat) : (fun x => n + x) = (fun x => x + n) := by
 #print ex₃
 
 -- Repro: the Prop universe doesn't work
-example (p q : Prop) : (p ∨ p ∨ q ∧ True) = (q ∨ p) := by
+example (p q : Prop) : (p  p  q ∧ True) = (q  p) := by
   ac_rfl
 
 -- Repro: missing withContext

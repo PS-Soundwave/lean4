@@ -16,7 +16,7 @@ namespace PP
 
 abbrev M := ReaderT LocalContext CompilerM
 
-private def join (as : Array α) (f : α → M Format) : M Format := do
+private def join (as : Array α) (f : α  M Format) : M Format := do
   if h : 0 < as.size then
     let mut result ← f as[0]
     for a in as[1:] do
@@ -25,7 +25,7 @@ private def join (as : Array α) (f : α → M Format) : M Format := do
   else
     return .nil
 
-private def prefixJoin (pre : Format) (as : Array α) (f : α → M Format) : M Format := do
+private def prefixJoin (pre : Format) (as : Array α) (f : α  M Format) : M Format := do
   let mut result := .nil
   for a in as do
     result := f!"{result}{pre}{← f a}"

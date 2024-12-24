@@ -10,19 +10,19 @@ import Lean.Compiler.IR.Format
 namespace Lean.IR.Checker
 
 @[extern "lean_get_max_ctor_fields"]
-opaque getMaxCtorFields : Unit → Nat
+opaque getMaxCtorFields : Unit  Nat
 def maxCtorFields := getMaxCtorFields ()
 
 @[extern "lean_get_max_ctor_scalars_size"]
-opaque getMaxCtorScalarsSize : Unit → Nat
+opaque getMaxCtorScalarsSize : Unit  Nat
 def maxCtorScalarsSize := getMaxCtorScalarsSize ()
 
 @[extern "lean_get_max_ctor_tag"]
-opaque getMaxCtorTag : Unit → Nat
+opaque getMaxCtorTag : Unit  Nat
 def maxCtorTag := getMaxCtorTag ()
 
 @[extern "lean_get_usize_size"]
-opaque getUSizeSize : Unit → Nat
+opaque getUSizeSize : Unit  Nat
 def usizeSize := getUSizeSize ()
 
 structure CheckerContext where
@@ -75,7 +75,7 @@ def checkArgs (as : Array Arg) : M Unit :=
   unless ty₁ == ty₂ do
     throw "unexpected type '{ty₁}' != '{ty₂}'"
 
-@[inline] def checkType (ty : IRType) (p : IRType → Bool) (suffix? : Option String := none): M Unit := do
+@[inline] def checkType (ty : IRType) (p : IRType  Bool) (suffix? : Option String := none): M Unit := do
   unless p ty do
    let mut msg := s!"unexpected type '{ty}'"
    if let some suffix := suffix? then
@@ -92,7 +92,7 @@ def getType (x : VarId) : M IRType := do
   | some ty => pure ty
   | none    => throw s!"unknown variable '{x}'"
 
-@[inline] def checkVarType (x : VarId) (p : IRType → Bool) (suffix? : Option String := none) : M Unit := do
+@[inline] def checkVarType (x : VarId) (p : IRType  Bool) (suffix? : Option String := none) : M Unit := do
   let ty ← getType x; checkType ty p suffix?
 
 def checkObjVar (x : VarId) : M Unit :=
@@ -113,7 +113,7 @@ def checkPartialApp (c : FunId) (ys : Array Arg) : M Unit := do
     throw s!"too many arguments too partial application '{c}', num. args: {ys.size}, arity: {decl.params.size}"
   checkArgs ys
 
-def checkExpr (ty : IRType) : Expr → M Unit
+def checkExpr (ty : IRType) : Expr  M Unit
   | Expr.pap f ys           => checkPartialApp f ys *> checkObjType ty -- partial applications should always produce a closure object
   | Expr.ap x ys            => checkObjVar x *> checkArgs ys
   | Expr.fap f ys           => checkFullApp f ys
@@ -151,7 +151,7 @@ def checkExpr (ty : IRType) : Expr → M Unit
      pure $ ctx.addParam p
   withReader (fun _ => { ctx with localCtx := localCtx }) k
 
-partial def checkFnBody : FnBody → M Unit
+partial def checkFnBody : FnBody  M Unit
   | .vdecl x t v b    => do
     checkExpr t v
     markVar x
@@ -173,7 +173,7 @@ partial def checkFnBody : FnBody → M Unit
   | .case _ x _ alts  => checkVar x *> alts.forM (fun alt => checkFnBody alt.body)
   | .unreachable      => pure ()
 
-def checkDecl : Decl → M Unit
+def checkDecl : Decl  M Unit
   | .fdecl (xs := xs) (body := b) .. => withParams xs (checkFnBody b)
   | .extern (xs := xs) .. => withParams xs (pure ())
 

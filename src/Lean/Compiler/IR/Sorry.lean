@@ -15,7 +15,7 @@ structure State where
 
 abbrev M := StateT State CompilerM
 
-def visitExpr : Expr → ExceptT Name M Unit
+def visitExpr : Expr  ExceptT Name M Unit
   | Expr.fap f _  => getSorryDepFor? f
   | Expr.pap f _  => getSorryDepFor? f
   | _             => return ()

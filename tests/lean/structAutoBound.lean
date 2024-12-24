@@ -1,4 +1,4 @@
-structure Foo (β : α → Type v) where
+structure Foo (β : α  Type v) where
   a : α
   b : β a
 

@@ -172,7 +172,7 @@ example (x : Nat) : x % 4 - x % 8 = 0 := by omega
 example {n : Nat} (_ : n > 0) : (2*n - 1) % 2 = 1 := by omega
 
 example (x : Int) (_ : x > 0 ∧ x < -1) : False := by omega
-example (x : Int) (_ : x > 7) : x < 0 ∨ x > 3 := by omega
+example (x : Int) (_ : x > 7) : x < 0  x > 3 := by omega
 
 example (_ : ∃ n : Nat, n < 0) : False := by omega
 example (_ : { x : Int // x < 0 ∧ x > 0 }) : False := by omega
@@ -190,7 +190,7 @@ example (a b c d e : Int)
     (hb : a + 2 * b + c + d + e = 5)
     (hc : a + b + 2 * c + d + e = 6)
     (hd : a + b + c + 2 * d + e = 7)
-    (he : a + b + c + d + 2 * e = 8 ∨ e = 3) : e = 3 := by
+    (he : a + b + c + d + 2 * e = 8  e = 3) : e = 3 := by
   fail_if_success omega (config := { splitDisjunctions := false })
   omega
 
@@ -268,13 +268,13 @@ example (x y : Int) (h : x < y) : x ≠ y := by omega
 
 example (x y : Int) (h : x < y) : ¬ x = y := by omega
 
-example (prime : Nat → Prop) (x y z : Int) (h1 : 2 * x + ((-3) * y) < 0) (h2 : (-4) * x + 2*  z < 0)
+example (prime : Nat  Prop) (x y z : Int) (h1 : 2 * x + ((-3) * y) < 0) (h2 : (-4) * x + 2*  z < 0)
     (h3 : 12 * y + (-4) * z < 0) (_ : prime 7) : False := by omega
 
 example (i n : Nat) (h : (2 : Int) ^ i ≤ 2 ^ n) : (0 : Int) ≤ 2 ^ n - 2 ^ i := by omega
 
 -- Check we use `exfalso` on non-comparison goals.
-example (prime : Nat → Prop) (_ b _ : Nat) (h2 : b > 0) (h3 : b < 0) : prime 10 := by
+example (prime : Nat  Prop) (_ b _ : Nat) (h2 : b > 0) (h3 : b < 0) : prime 10 := by
   omega
 
 example (a b c : Nat) (h2 : (2 : Nat) > 3)  : a + b - c ≥ 3 := by omega
@@ -284,7 +284,7 @@ example (x y : Int)
     (h : 6 + ((x + 4) * x + (6 + 3 * y) * y) = 3 ∧ (x + 4) * x ≥ 0 ∧ (6 + 3 * y) * y ≥ 0) :
     False := by omega
 
-example (mess : Nat → Nat) (S n : Nat) :
+example (mess : Nat  Nat) (S n : Nat) :
     mess S + (n * mess S + n * 2 + 1) < n * mess S + mess S + (n * 2 + 2) := by omega
 
 example (p n p' n' : Nat) (h : p + n' = p' + n) : n + p' = n' + p := by
@@ -308,8 +308,8 @@ example : 0 = 0 := by
 example {x y : Nat} : Prod.Lex (· < ·) (· < ·) (x, x) (Nat.succ y + x, Nat.succ y) := by omega
 
 -- We test the termination proof in-situ:
-def List.permutationsAux.rec' {C : List α → List α → Sort v} (H0 : ∀ is, C [] is)
-    (H1 : ∀ t ts is, C ts (t :: is) → C is [] → C (t :: ts) is) : ∀ l₁ l₂, C l₁ l₂
+def List.permutationsAux.rec' {C : List α  List α  Sort v} (H0 : ∀ is, C [] is)
+    (H1 : ∀ t ts is, C ts (t :: is)  C is []  C (t :: ts) is) : ∀ l₁ l₂, C l₁ l₂
   | [], is => H0 is
   | t :: ts, is =>
       H1 t ts is (permutationsAux.rec' H0 H1 ts (t :: is)) (permutationsAux.rec' H0 H1 is [])
@@ -326,21 +326,21 @@ example (a b : Int) (h : a < 0 ↔ b < 0) (w : b > 3) : a ≥ 0 := by omega
 example (a b : Int) (h : a > 7) (w : b > 2) : a > 0 ↔ b > 0 := by omega
 
 -- Verify that we can prove implications:
-example (a : Int) : a > 0 → a > -1 := by omega
+example (a : Int) : a > 0  a > -1 := by omega
 
 -- Verify that we can introduce multiple arguments:
-example (x y : Int) : x + 1 ≤ y → ¬ y + 1 ≤ x := by omega
+example (x y : Int) : x + 1 ≤ y  ¬ y + 1 ≤ x := by omega
 
 -- Verify that we can handle double negation:
 example (x y : Int) (_ : x < y) (_ : ¬ ¬ y < x) : False := by omega
 
 -- Verify that we don't treat function goals as implications.
-example (a : Nat) (h : a < 0) : Nat → Nat := by omega
+example (a : Nat) (h : a < 0) : Nat  Nat := by omega
 
 -- Example from Cedar:
 example {a₁ a₂ p₁ p₂ : Nat}
-  (h₁ : a₁ = a₂ → ¬p₁ = p₂) :
-  (a₁ < a₂ ∨ a₁ = a₂ ∧ p₁ < p₂) ∨ a₂ < a₁ ∨ a₂ = a₁ ∧ p₂ < p₁ := by omega
+  (h₁ : a₁ = a₂  ¬p₁ = p₂) :
+  (a₁ < a₂  a₁ = a₂ ∧ p₁ < p₂)  a₂ < a₁  a₂ = a₁ ∧ p₂ < p₁ := by omega
 
 -- From https://github.com/leanprover/std4/issues/562
 example {i : Nat} (h1 : i < 330) (_h2 : 7 ∣ (660 + i) * (1319 - i)) : 1319 - i < 1979 := by
@@ -378,8 +378,8 @@ example (i j : Nat) (p : i ≥ j) : True := by
 example (a b : Nat) (h : a % b + 1 = 0) : False := by omega
 
 -- From https://leanprover.zulipchat.com/#narrow/stream/270676-lean4/topic/omega.20regression.20in.204.2E8.2E0-rc1/near/437150155
-example (x : Nat) : x < 2 →
-    (0 = 0 → 0 = 0 → 0 = 0 → 0 = 0 → x < 2) ∧ (0 = 0 → 0 = 0 → 0 = 0 → 0 = 0 → x < 2 → x < 3) := by
+example (x : Nat) : x < 2 
+    (0 = 0  0 = 0  0 = 0  0 = 0  x < 2) ∧ (0 = 0  0 = 0  0 = 0  0 = 0  x < 2  x < 3) := by
   omega
 
 -- Reported in Lean FRO office hours 2024-05-16 by Michael George
@@ -488,11 +488,11 @@ example (x y z : BitVec 8)
 example (x : BitVec 8) (hx : (x + 1) <<< 1 = 3) : False := by
   bv_omega
 
-example (x : BitVec 8) (hx : (x + 1) <<< 1 = 4) : x = 1 ∨ x = 129 := by
+example (x : BitVec 8) (hx : (x + 1) <<< 1 = 4) : x = 1  x = 129 := by
   bv_omega
 
 example (x y : BitVec 64) (_ : x < (y.truncate 32).zeroExtend 64) :
-    ~~~x > (1#64 <<< 63) := by
+    x > (1#64 <<< 63) := by
   bv_omega
 
 -- This example, reported from LNSym,
@@ -523,7 +523,7 @@ example
 -- From https://github.com/leanprover/lean4/issues/5315
 -- This used to fail with an unexpected bound variable error.
 
-def simple_foldl (f: β → α → β) (a: Array α) (i: Nat) (b: β): β :=
+def simple_foldl (f: β  α  β) (a: Array α) (i: Nat) (b: β): β :=
   if h: i < a.size then
     simple_foldl f a (i+1) (f b a[i])
   else
@@ -534,9 +534,9 @@ error: omega could not prove the goal:
 No usable constraints found. You may need to unfold definitions so `omega` can see linear arithmetic facts about `Nat` and `Int`, which may also involve multiplication, division, and modular remainder by constants.
 -/
 #guard_msgs in
-theorem simple_fold_monotonic₁ (a: Array α) (f: β → α → β) (i: Nat) {P: α → β → Prop} {x: α}
+theorem simple_fold_monotonic₁ (a: Array α) (f: β  α  β) (i: Nat) {P: α  β  Prop} {x: α}
   (base: P x b)
-  (mono: ∀ x x' y, P x y → P x (f y x')): P x (simple_foldl f a i b) := by
+  (mono: ∀ x x' y, P x y  P x (f y x')): P x (simple_foldl f a i b) := by
     unfold simple_foldl
     split <;> try trivial
     apply simple_fold_monotonic₁
@@ -611,7 +611,7 @@ where
  b := y
 -/
 #guard_msgs in
-example (x y : Int) : 5 < x ∧ x < 10 → y > 0 := by omega
+example (x y : Int) : 5 < x ∧ x < 10  y > 0 := by omega
 
 /--
 error: omega could not prove the goal:
@@ -634,7 +634,7 @@ where
 -- to make omega fail
 theorem sizeOf_snd_lt_sizeOf_list {α : Type u} {β : Type v} [SizeOf α] [SizeOf β]
   {x y : α × β} {xs : List (α × β)} :
-  y ∈ xs → sizeOf x.snd < 1 + sizeOf xs
+  y ∈ xs  sizeOf x.snd < 1 + sizeOf xs
 := by
   intro h
   have := List.sizeOf_lt_of_mem h

@@ -45,12 +45,12 @@ theorem Bool.ne_to_beq (a b : Bool) : (a ≠ b) = ((!(a == b)) = true) := by
   simp
 
 @[bv_normalize]
-theorem Bool.imp_to_or (a b : Bool) : ((a = true) → (b = true)) = (((!a) || b) = true) := by
+theorem Bool.imp_to_or (a b : Bool) : ((a = true)  (b = true)) = (((!a) || b) = true) := by
   revert a b
   decide
 
 @[bv_normalize]
-theorem Bool.or_to_or (a b : Bool) : ((a = true) ∨ (b = true)) = ((a || b) = true) := by
+theorem Bool.or_to_or (a b : Bool) : ((a = true)  (b = true)) = ((a || b) = true) := by
   simp
 
 @[bv_normalize]

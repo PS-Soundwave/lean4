@@ -1,6 +1,6 @@
 
 
-def half : Nat → Nat
+def half : Nat  Nat
 | 0     => 0
 | 1     => 0
 | (x+2) => half x + 1

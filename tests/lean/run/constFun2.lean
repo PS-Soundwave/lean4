@@ -1,11 +1,11 @@
 structure ConstantFunction (α β : Type) where
-  f : α → β
+  f : α  β
   h : ∀ a b, f a = f b
 
-instance : CoeFun (ConstantFunction α β) (fun _ => α → β) where
+instance : CoeFun (ConstantFunction α β) (fun _ => α  β) where
   coe s := s.f
 
-instance : Coe (ConstantFunction α β) (α → β) where
+instance : Coe (ConstantFunction α β) (α  β) where
   coe s := s.f
 
 def zeroNatNat : ConstantFunction Nat Nat where

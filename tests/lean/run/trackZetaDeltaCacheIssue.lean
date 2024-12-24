@@ -2,7 +2,7 @@ import Lean
 
 open Lean Meta
 
-def g : Nat → String := fun _ => ""
+def g : Nat  String := fun _ => ""
 
 /--
 info: String

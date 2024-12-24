@@ -1,10 +1,10 @@
 structure ConstantFunction where
   domain : Type
   range  : Type
-  f      : domain → range
+  f      : domain  range
   h      : ∀ a b, f a = f b
 
-instance : CoeFun ConstantFunction (fun s => s.domain → s.range) where
+instance : CoeFun ConstantFunction (fun s => s.domain  s.range) where
   coe s := s.f
 
 def zeroNatNat : ConstantFunction where

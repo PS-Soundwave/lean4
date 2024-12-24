@@ -55,10 +55,10 @@ info: 11
 structure Label {β : Type} (v : β) (α : Type) :=
 (val : α)
 
-class HasGetAt {β : Type} (v : β) (α : outParam Type) (m : Type → Type) :=
+class HasGetAt {β : Type} (v : β) (α : outParam Type) (m : Type  Type) :=
 (getAt : m α)
 
-instance monadState.hasGetAt (β : Type) (v : β) (α : Type) (m : Type → Type) [Monad m] [MonadStateOf (Label v α) m] : HasGetAt v α m :=
+instance monadState.hasGetAt (β : Type) (v : β) (α : Type) (m : Type  Type) [Monad m] [MonadStateOf (Label v α) m] : HasGetAt v α m :=
 { getAt := do let a ← getThe (Label v α); pure a.val }
 
 export HasGetAt (getAt)

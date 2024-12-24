@@ -1,2 +1,2 @@
-example (h : P) : P ∨ Q := by
+example (h : P) : P  Q := by
   apply .inl

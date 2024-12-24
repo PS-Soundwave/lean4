@@ -1,7 +1,7 @@
-inductive Foo: List α → Type _
+inductive Foo: List α  Type _
   | mk (l): Foo l
 
-def Foo.length: Foo l → Nat
+def Foo.length: Foo l  Nat
   | mk l => l.length
 
 variable {α : Type u} {Γ Γ': List α} {p: Foo Γ} {h: Γ = Γ'}

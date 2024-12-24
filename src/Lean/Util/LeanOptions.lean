@@ -15,13 +15,13 @@ inductive LeanOptionValue where
   | ofNat    (n : Nat)
   deriving Inhabited, Repr
 
-def LeanOptionValue.ofDataValue? : DataValue → Option LeanOptionValue
+def LeanOptionValue.ofDataValue? : DataValue  Option LeanOptionValue
   | .ofString s => some (.ofString s)
   | .ofBool b   => some (.ofBool b)
   | .ofNat n    => some (.ofNat n)
   | _           => none
 
-def LeanOptionValue.toDataValue : LeanOptionValue → DataValue
+def LeanOptionValue.toDataValue : LeanOptionValue  DataValue
   | .ofString s => .ofString s
   | .ofBool b   => .ofBool b
   | .ofNat n    => .ofNat n
@@ -53,7 +53,7 @@ instance : ToJson LeanOptionValue where
     | (n : Nat)    => n
 
 /-- Formats the lean option value as a CLI flag argument. -/
-def LeanOptionValue.asCliFlagValue : (v : LeanOptionValue) → String
+def LeanOptionValue.asCliFlagValue : (v : LeanOptionValue)  String
   | (s : String) => s!"\"{s}\""
   | (b : Bool)   => toString b
   | (n : Nat)    => toString n

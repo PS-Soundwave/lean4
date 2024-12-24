@@ -1,4 +1,4 @@
-def mkBigPairs : Nat → Array (Nat × Nat) → Array (Nat × Nat)
+def mkBigPairs : Nat  Array (Nat × Nat)  Array (Nat × Nat)
 | 0     ps := ps
 | (n+1) ps := mkBigPairs n (ps.push (n, n))
 

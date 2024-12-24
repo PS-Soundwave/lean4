@@ -26,9 +26,9 @@ exact x+x
 theorem ex2 : h2 10 = 40 :=
 rfl
 
-def foo (f : Nat → Nat) (x : Nat) := f x
-def bla (x : Nat) (f : Nat → Nat) := f x
-def boo (f : Nat → Nat) (g : Bool → Nat) := f (g true)
+def foo (f : Nat  Nat) (x : Nat) := f x
+def bla (x : Nat) (f : Nat  Nat) := f x
+def boo (f : Nat  Nat) (g : Bool  Nat) := f (g true)
 
 #check foo (fun x => ?hole) ?hole
 #check bla ?hole (fun x => ?hole)

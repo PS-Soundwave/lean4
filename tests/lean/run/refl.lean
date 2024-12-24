@@ -22,7 +22,7 @@ example (a : Nat) : a ≤ a := by rfl
 
 structure Foo
 
-def Foo.le (_ _ : Foo) := Unit → True
+def Foo.le (_ _ : Foo) := Unit  True
 instance : LE Foo := ⟨Foo.le⟩
 
 @[refl] theorem Foo.le_refl (a : Foo) : a ≤ a := fun _ => trivial

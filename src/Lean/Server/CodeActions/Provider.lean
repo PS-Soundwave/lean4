@@ -46,17 +46,17 @@ This is the syntax for which code actions will be triggered.
 -/
 inductive FindTacticResult
   /-- The nearest enclosing tactic is a tactic, with the given syntax stack. -/
-  | tactic : Syntax.Stack → FindTacticResult
+  | tactic : Syntax.Stack  FindTacticResult
   /-- The cursor is between tactics, and the nearest enclosing range is a tactic sequence.
   Code actions will insert tactics at index `insertIdx` into the syntax
   (which is a nullNode of `tactic;*` inside a `tacticSeqBracketed` or `tacticSeq1Indented`). -/
-  | tacticSeq : (preferred : Bool) → (insertIdx : Nat) → Syntax.Stack → FindTacticResult
+  | tacticSeq : (preferred : Bool)  (insertIdx : Nat)  Syntax.Stack  FindTacticResult
 
 /--
 Find the syntax on which to trigger tactic code actions.
 This is a pure syntax pass, without regard to elaboration information.
 
-* `preferred : String.Pos → Bool`: used to select "preferred `tacticSeq`s" based on the cursor
+* `preferred : String.Pos  Bool`: used to select "preferred `tacticSeq`s" based on the cursor
   column, when the cursor selection would otherwise be ambiguous. For example, in:
   ```
   · foo
@@ -74,7 +74,7 @@ This is a pure syntax pass, without regard to elaboration information.
 
 The return value is either a selected tactic, or a selected point in a tactic sequence.
 -/
-partial def findTactic? (preferred : String.Pos → Bool) (range : String.Range)
+partial def findTactic? (preferred : String.Pos  Bool) (range : String.Range)
     (root : Syntax) : Option FindTacticResult := do _ ← visit root; ← go [] root
 where
   /-- Returns `none` if we should not visit this syntax at all, and `some false` if we only
@@ -89,7 +89,7 @@ where
   /-- Merges the results of two `FindTacticResult`s. This just prefers the second (inner) one,
   unless the inner tactic is a dispreferred tactic sequence and the outer one is preferred.
   This is used to implement whitespace-sensitive selection of tactic sequences. -/
-  merge : (r₁ : Option FindTacticResult) → (r₂ : FindTacticResult) → FindTacticResult
+  merge : (r₁ : Option FindTacticResult)  (r₂ : FindTacticResult)  FindTacticResult
   | some r₁@(.tacticSeq (preferred := true) ..), .tacticSeq (preferred := false) .. => r₁
   | _, r₂ => r₂
 
@@ -145,7 +145,7 @@ than deep comparison.)
 -/
 partial def findInfoTree? (kind : SyntaxNodeKind) (tgtRange : String.Range)
   (ctx? : Option ContextInfo) (t : InfoTree)
-  (f : ContextInfo → Info → Bool) (canonicalOnly := false) :
+  (f : ContextInfo  Info  Bool) (canonicalOnly := false) :
     Option (ContextInfo × InfoTree) :=
   match t with
   | .context ctx t => findInfoTree? kind tgtRange (ctx.mergeIntoOuter? ctx?) t f canonicalOnly

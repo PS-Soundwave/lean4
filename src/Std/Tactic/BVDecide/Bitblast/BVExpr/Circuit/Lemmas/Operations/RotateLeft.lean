@@ -49,7 +49,7 @@ theorem go_get (aig : AIG α) (distance : Nat) (input : AIG.RefVec aig w)
     (curr : Nat) (hcurr : curr ≤ w) (s : AIG.RefVec aig curr) :
     ∀ (idx : Nat) (hidx1 : idx < w),
         curr ≤ idx
-          →
+          
         (go input distance curr hcurr s).get idx hidx1
           =
         if hidx3 : idx < distance % w then
@@ -89,7 +89,7 @@ end blastRotateLeft
 
 @[simp]
 theorem denote_blastRotateLeft (aig : AIG α) (target : ShiftTarget aig w)
-    (assign : α → Bool) :
+    (assign : α  Bool) :
     ∀ (idx : Nat) (hidx : idx < w),
         ⟦
           (blastRotateLeft aig target).aig,

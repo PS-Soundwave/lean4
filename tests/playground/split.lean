@@ -1,4 +1,4 @@
-def mkBig : Nat → String → String
+def mkBig : Nat  String  String
 | 0 s     := s
 | (k+1) s := mkBig k (s ++ "this is a big string\n")
 

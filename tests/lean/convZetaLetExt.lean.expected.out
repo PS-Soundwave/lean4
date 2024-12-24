@@ -7,20 +7,20 @@ h :
   let x := y;
   f x = k
 ⊢ f y = k
-g : Nat → Nat
+g : Nat  Nat
 y : Nat
 h :
   let x := y;
   g x = 0 + x
 ⊢ g y = 0 + y
-g : Nat → Nat
+g : Nat  Nat
 y : Nat
 h :
   let x := y;
   let z := y + 1;
   g x = 0 + z
 ⊢ g y = y + 1
-g : Nat → Nat
+g : Nat  Nat
 y : Nat
 h :
   let x := y;

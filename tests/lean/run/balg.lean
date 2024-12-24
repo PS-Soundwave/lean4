@@ -4,7 +4,7 @@ universe u
 
 structure Magma where
   α   : Type u
-  mul : α → α → α
+  mul : α  α  α
 
 instance : CoeSort Magma (Type u) where
   coe s := s.α
@@ -45,7 +45,7 @@ instance : Coe CommMonoid CommSemigroup where
     }
 
 structure Group extends Monoid where
-  inv : α → α
+  inv : α  α
   mul_left_inv (a : α) : (inv a) * a = one
 
 instance : CoeSort Group (Type u) where

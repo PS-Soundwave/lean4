@@ -6,7 +6,7 @@ inductive Tensor :=
 | int: Int -> Tensor
 | nested: List Tensor -> Tensor
 
-def hasBaseType: Tensor → Ty → Bool
+def hasBaseType: Tensor  Ty  Bool
   | .int _, Ty.int      => true
   | .int _, Ty.other    => true
   | .nested _, _        => true

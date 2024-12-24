@@ -20,7 +20,7 @@ private def formatInfo (showInfo : Bool) (info : SourceInfo) (f : Format) : Form
   | true, SourceInfo.synthetic pos endPos false     => f!"{pos}:{f}:{endPos}"
   | _,    _                                         => f
 
-partial def formatStxAux (maxDepth : Option Nat) (showInfo : Bool) (depth : Nat) : Syntax → Format
+partial def formatStxAux (maxDepth : Option Nat) (showInfo : Bool) (depth : Nat) : Syntax  Format
   | atom info val        => formatInfo showInfo info <| format (repr val)
   | ident info _ val _   => formatInfo showInfo info <| format "`" ++ format val
   | missing              => "<missing>"
@@ -49,7 +49,7 @@ def formatStx (stx : Syntax) (maxDepth : Option Nat := none) (showInfo := false)
   formatStxAux maxDepth showInfo 0 stx
 
 instance : ToFormat (Syntax) := ⟨formatStx⟩
-instance : ToString (Syntax) := ⟨@toString Format _ ∘ format⟩
+instance : ToString (Syntax) := ⟨@toString Format _  format⟩
 
 instance : ToFormat (TSyntax k) := ⟨(format ·.raw)⟩
 instance : ToString (TSyntax k) := ⟨(toString ·.raw)⟩

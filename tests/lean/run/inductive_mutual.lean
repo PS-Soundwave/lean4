@@ -14,18 +14,18 @@ inductive I2 (α : Type _) where
   | cons2 (x : α) (xs : I1 α)
 end
 /--
-info: inductive I1.{u_1} : Type u_1 → Type u_1
+info: inductive I1.{u_1} : Type u_1  Type u_1
 number of parameters: 1
 constructors:
-I1.nil1 : {α : Type u_1} → I1 α
-I1.cons1 : {α : Type u_1} → α → I2 α → I1 α
+I1.nil1 : {α : Type u_1}  I1 α
+I1.cons1 : {α : Type u_1}  α  I2 α  I1 α
 -/
 #guard_msgs in #print I1
 /--
-info: inductive I2.{u_1} : Type u_1 → Type u_1
+info: inductive I2.{u_1} : Type u_1  Type u_1
 number of parameters: 1
 constructors:
-I2.cons2 : {α : Type u_1} → α → I1 α → I2 α
+I2.cons2 : {α : Type u_1}  α  I1 α  I2 α
 -/
 #guard_msgs in #print I2
 
@@ -44,14 +44,14 @@ end
 info: inductive N1 : Type
 number of parameters: 0
 constructors:
-N1.mk : List N2 → N1
+N1.mk : List N2  N1
 -/
 #guard_msgs in #print N1
 /--
 info: inductive N2 : Type
 number of parameters: 0
 constructors:
-N2.mk : List N1 → N2
+N2.mk : List N1  N2
 -/
 #guard_msgs in #print N2
 /-- info: N1.mk [N2.mk [N1.mk []]] : N1 -/
@@ -65,25 +65,25 @@ variable (α : Type _)
 mutual
 structure S1 (β : Type _) where
   x : α
-  ys : Nat → I3 β
+  ys : Nat  I3 β
 inductive I3 (β : Type _) where
-  | s : S1 β → I3 β
+  | s : S1 β  I3 β
 end
 /--
 info: structure S1.{u_1, u_2} (α : Type u_1) (β : Type u_2) : Type u_1
 number of parameters: 2
 fields:
   S1.x : α
-  S1.ys : Nat → I3 α β
+  S1.ys : Nat  I3 α β
 constructor:
-  S1.mk.{u_1, u_2} {α : Type u_1} {β : Type u_2} (x : α) (ys : Nat → I3 α β) : S1 α β
+  S1.mk.{u_1, u_2} {α : Type u_1} {β : Type u_2} (x : α) (ys : Nat  I3 α β) : S1 α β
 -/
 #guard_msgs in #print S1
 /--
-info: inductive I3.{u_1, u_2} : Type u_1 → Type u_2 → Type u_1
+info: inductive I3.{u_1, u_2} : Type u_1  Type u_2  Type u_1
 number of parameters: 2
 constructors:
-I3.s : {α : Type u_1} → {β : Type u_2} → S1 α β → I3 α β
+I3.s : {α : Type u_1}  {β : Type u_2}  S1 α β  I3 α β
 -/
 #guard_msgs in #print I3
 
@@ -121,5 +121,5 @@ constructor:
 Regression test: make sure `structure` with an explicit resultant type doesn't erroneously reject the type.
 (Fixed by https://github.com/leanprover/lean4/pull/2689)
 -/
-structure SR1 (α : Type u) (Hom : α → α → Sort v) : Type (max u v) where
-  id : (X : α) → Hom X X
+structure SR1 (α : Type u) (Hom : α  α  Sort v) : Type (max u v) where
+  id : (X : α)  Hom X X

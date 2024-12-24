@@ -13,7 +13,7 @@ namespace PrettyPrinter
    See `orelse.parenthesizer` for example -/
 builtin_initialize backtrackExceptionId : InternalExceptionId ← registerInternalExceptionId `backtrackFormatter
 
-unsafe def runForNodeKind {α} (attr : KeyedDeclsAttribute α) (k : SyntaxNodeKind) (interp : ParserDescr → CoreM α) : CoreM α := do
+unsafe def runForNodeKind {α} (attr : KeyedDeclsAttribute α) (k : SyntaxNodeKind) (interp : ParserDescr  CoreM α) : CoreM α := do
   match attr.getValues (← getEnv) k with
   | p::_ => pure p
   | _ =>

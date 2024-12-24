@@ -521,7 +521,7 @@ def quarter (date : PlainDateTime) : Bounded.LE 1 4 :=
 Combines a `PlainDate` and `PlainTime` into a `PlainDateTime`.
 -/
 @[inline]
-def atTime : PlainDate → PlainTime → PlainDateTime :=
+def atTime : PlainDate  PlainTime  PlainDateTime :=
   PlainDateTime.mk
 
 /--
@@ -583,7 +583,7 @@ namespace PlainDate
 Combines a `PlainDate` and `PlainTime` into a `PlainDateTime`.
 -/
 @[inline]
-def atTime : PlainDate → PlainTime → PlainDateTime :=
+def atTime : PlainDate  PlainTime  PlainDateTime :=
   PlainDateTime.mk
 
 end PlainDate

@@ -8,7 +8,7 @@ Author: Leonardo de Moura
 
 namespace lean {
 /*
-inductive RBNode (α : Type u) (β : α → Type v)
+inductive RBNode (α : Type u) (β : α  Type v)
 | leaf  {}                                                                            : RBNode
 | node  (color : Rbcolor) (lchild : RBNode) (key : α) (val : β key) (rchild : RBNode) : RBNode
 */

@@ -270,7 +270,7 @@ where
   The new free variables are tagged as `auxDecl`.
   Remark: `fs.size = headers.size`.
 -/
-private partial def withFunLocalDecls {α} (headers : Array DefViewElabHeader) (k : Array Expr → TermElabM α) : TermElabM α :=
+private partial def withFunLocalDecls {α} (headers : Array DefViewElabHeader) (k : Array Expr  TermElabM α) : TermElabM α :=
   let rec loop (i : Nat) (fvars : Array Expr) := do
     if h : i < headers.size then
       let header := headers[i]
@@ -354,7 +354,7 @@ Runs `k` with a restricted local context where only section variables from `vars
   `sc.includedVars`).
 -/
 private def withHeaderSecVars {α} (vars : Array Expr) (sc : Command.Scope) (headers : Array DefViewElabHeader)
-    (k : Array Expr → TermElabM α) : TermElabM α := do
+    (k : Array Expr  TermElabM α) : TermElabM α := do
   let mut revSectionFVars : Std.HashMap FVarId Name := {}
   for (uid, var) in (← read).sectionFVars do
     revSectionFVars := revSectionFVars.insert var.fvarId! uid
@@ -493,7 +493,7 @@ private def removeUnusedVars (vars : Array Expr) (headers : Array DefViewElabHea
   removeUnused vars used
 
 private def withUsed {α} (vars : Array Expr) (headers : Array DefViewElabHeader) (values : Array Expr) (toLift : List LetRecToLift)
-    (k : Array Expr → TermElabM α) : TermElabM α := do
+    (k : Array Expr  TermElabM α) : TermElabM α := do
   let (lctx, localInsts, vars) ← removeUnusedVars vars headers values toLift
   withLCtx lctx localInsts <| k vars
 
@@ -619,7 +619,7 @@ The let-recs may invoke each other. Example:
 ```
 let rec
   f (x : Nat) := g x + y
-  g : Nat → Nat
+  g : Nat  Nat
     | 0   => 1
     | x+1 => f x + z
 ```
@@ -628,7 +628,7 @@ To close `f` and `g`, `y` and `z` must be in the closure of both.
 That is, we need to generate the top-level definitions.
 ```
 def f (y z x : Nat) := g y z x + y
-def g (y z : Nat) : Nat → Nat
+def g (y z : Nat) : Nat  Nat
   | 0 => 1
   | x+1 => f y z x + z
 ```
@@ -645,7 +645,7 @@ private def isModified : M Bool := do pure (← get).modified
 private def resetModified : M Unit := modify fun s => { s with modified := false }
 private def markModified : M Unit := modify fun s => { s with modified := true }
 private def getUsedFVarsMap : M UsedFVarsMap := do pure (← get).usedFVarsMap
-private def modifyUsedFVars (f : UsedFVarsMap → UsedFVarsMap) : M Unit := modify fun s => { s with usedFVarsMap := f s.usedFVarsMap }
+private def modifyUsedFVars (f : UsedFVarsMap  UsedFVarsMap) : M Unit := modify fun s => { s with usedFVarsMap := f s.usedFVarsMap }
 
 -- merge s₂ into s₁
 private def merge (s₁ s₂ : FVarIdSet) : M FVarIdSet :=
@@ -673,7 +673,7 @@ private def updateUsedVarsOf (fvarId : FVarId) : M Unit := do
         | some otherFVarIds => merge fvarIdsNew otherFVarIds
     modifyUsedFVars fun usedFVars => usedFVars.insert fvarId fvarIdsNew
 
-private partial def fixpoint : Unit → M Unit
+private partial def fixpoint : Unit  M Unit
   | _ => do
     resetModified
     let letRecFVarIds ← read

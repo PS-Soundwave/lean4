@@ -18,17 +18,17 @@ inductive ParseResult (α : Type) (ι : Type) where
 
 end Parsec
 
-def Parsec (ι : Type) (α : Type) : Type := ι → Parsec.ParseResult α ι
+def Parsec (ι : Type) (α : Type) : Type := ι  Parsec.ParseResult α ι
 
 namespace Parsec
 
 class Input (ι : Type) (elem : outParam Type) (idx : outParam Type) [DecidableEq idx] [DecidableEq elem] where
-  pos : ι → idx
-  next : ι → ι
-  curr : ι → elem
-  hasNext : ι → Bool
-  next' (it : ι) : (hasNext it) → ι
-  curr' (it : ι) : (hasNext it) → elem
+  pos : ι  idx
+  next : ι  ι
+  curr : ι  elem
+  hasNext : ι  Bool
+  next' (it : ι) : (hasNext it)  ι
+  curr' (it : ι) : (hasNext it)  elem
 
 variable {α : Type} {ι : Type} {elem : Type} {idx : Type}
 variable [DecidableEq idx] [DecidableEq elem] [Input ι elem idx]
@@ -41,7 +41,7 @@ protected def pure (a : α) : Parsec ι α := fun it =>
   .success it a
 
 @[always_inline, inline]
-def bind {α β : Type} (f : Parsec ι α) (g : α → Parsec ι β) : Parsec ι β := fun it =>
+def bind {α β : Type} (f : Parsec ι α) (g : α  Parsec ι β) : Parsec ι β := fun it =>
   match f it with
   | .success rem a => g a rem
   | .error pos msg => .error pos msg
@@ -56,7 +56,7 @@ def fail (msg : String) : Parsec ι α := fun it =>
   .error it msg
 
 @[inline]
-def tryCatch (p : Parsec ι α) (csuccess : α → Parsec ι β) (cerror : Unit → Parsec ι β)
+def tryCatch (p : Parsec ι α) (csuccess : α  Parsec ι β) (cerror : Unit  Parsec ι β)
     : Parsec ι β := fun it =>
   match p it with
   | .success rem a => csuccess a rem
@@ -65,7 +65,7 @@ def tryCatch (p : Parsec ι α) (csuccess : α → Parsec ι β) (cerror : Unit 
     if Input.pos it = Input.pos rem then cerror () rem else .error rem err
 
 @[always_inline, inline]
-def orElse (p : Parsec ι α) (q : Unit → Parsec ι α) : Parsec ι α :=
+def orElse (p : Parsec ι α) (q : Unit  Parsec ι α) : Parsec ι α :=
   tryCatch p pure q
 
 @[always_inline, inline]
@@ -114,7 +114,7 @@ def any : Parsec ι elem := fun it =>
     .error it unexpectedEndOfInput
 
 @[inline]
-def satisfy (p : elem → Bool) : Parsec ι elem := attempt do
+def satisfy (p : elem  Bool) : Parsec ι elem := attempt do
   let c ← any
   if p c then return c else fail "condition not satisfied"
 
